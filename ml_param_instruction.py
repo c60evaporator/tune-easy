@@ -119,7 +119,7 @@ y = df_athelete[['league']].values  # 目的変数(種目)
 y_int = label_str_to_int(y)  # 目的変数をint型に変換
 model = SVC(kernel='linear')  # 線形SVMを定義
 model.fit(X, y_int)  # SVM学習を実行
-ax = plot_decision_regions(X, y_int[:, 0], clf=model) #識別面を可視化
+ax = plot_decision_regions(X, y_int[:, 0], clf=model) #決定境界を可視化
 plt.xlabel('height [cm]')  # x軸のラベル
 plt.ylabel('weight [kg]')  # y軸のラベル
 legend_int_to_str(ax, y)  # 凡例をint型→str型に変更
@@ -129,11 +129,40 @@ df_athelete = pd.read_csv(f'./nba_nfl_2.csv')
 sns.scatterplot(x='height', y='weight', data=df_athelete, hue='league')  # 説明変数と目的変数のデータ点の散布図をプロット
 plt.xlabel('height [cm]')  # x軸のラベル
 plt.ylabel('weight [kg]')  # y軸のラベル
+# %% 1-3-B) カーネルトリックのイメージ
+def make_donut(diameter, sigma, n):  # ドーナツ作成
+    r = np.vectorize(lambda x: x * sigma + diameter)(np.random.randn(n))  # 動径方向
+    theta = np.vectorize(lambda x: x * 2 * np.pi)(np.random.rand(n))  # 角度方向
+    x = r * np.cos(theta)  # x座標
+    y = r * np.sin(theta)  # y座標
+    return np.stack([x, y], 1)
+plt.figure(figsize=(5,5))
+d1 = make_donut(1, 1, 100)  # 内側ドーナツ
+plt.scatter(d1[:, 0], d1[:, 1], color = 'blue')
+d2 = make_donut(10, 1, 100)  # 外側ドーナツ
+plt.scatter(d2[:, 0], d2[:, 1], color = 'red')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.show()
+def add_x2_plus_y2(data): #x^2+y^2軸を追加
+    x2_plus_y2 = data[:, 0] ** 2 + data[:, 1] ** 2
+    return np.insert(data, data.shape[1], x2_plus_y2, axis=1)
+d1_conv = add_x2_plus_y2(d1)  # 座標変換（内側ドーナツ）
+d2_conv = add_x2_plus_y2(d2)  # 座標変換（外側ドーナツ）
+fig = plt.figure()
+ax = Axes3D(fig)  # 3次元プロット用
+ax.scatter3D(d1_conv[:, 0], d1_conv[:, 1], d1_conv[:, 2], color = 'blue')
+ax.scatter3D(d2_conv[:, 0], d2_conv[:, 1], d2_conv[:, 2], color = 'red')
+ax.set_xlabel('x')
+ax.set_ylabel('y')
+ax.set_zlabel('x^2+y^2')
+ax.view_init(elev=0, azim=30)  # 3次元グラフの向き調整
+
 # %% 1-3-B) RBFカーネルのgammaを変更
 X = df_athelete[['height','weight']].values  # 説明変数(身長、体重)
 y = df_athelete[['league']].values  # 目的変数(種目)
 y_int = label_str_to_int(y)
-for gamma in [0.1, 0.01, 0.001]:  # gammaを変えてループ
+for gamma in [0.1, 0.01, 0.001, 0.0001]:  # gammaを変えてループ
     model = SVC(kernel='rbf', gamma=gamma)  # RBFカーネルのSVMをgammaを変えて定義
     model.fit(X, y_int)  # SVM学習を実行
     ax = plot_decision_regions(X, y_int[:, 0], clf=model)
@@ -143,7 +172,7 @@ for gamma in [0.1, 0.01, 0.001]:  # gammaを変えてループ
     plt.text(175, 140, f'gamma={model.gamma}, C={model.C}')  # gammaとCを表示
     plt.show()
 # %% 1-3-C) Cを変更
-for C in [10, 1, 0.1]:  # gammaを変えてループ
+for C in [10, 1, 0.1]:  # Cを変えてループ
     model = SVC(kernel='rbf', gamma=0.01, C=C)  # RBFカーネルのSVMをCを変えて定義
     model.fit(X, y_int)  # SVM学習を実行
     ax = plot_decision_regions(X, y_int[:, 0], clf=model) 

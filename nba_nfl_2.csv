@@ -1,4 +1,4 @@
-name,event,position,height,weight
+name,league,position,height,weight
 Wilt Chambelain,NBA,C,215.9,113.4
 Bill Russel,NBA,C,208.3,97.5
 Kareem Abdul-Jabbar,NBA,C,218.4,102.1
@@ -7,7 +7,7 @@ Moses Malone,NBA,C,208.3,97.5
 Tim Duncan,NBA,PF,210.8,113.4
 Karl Malone,NBA,PF,205.7,117.5
 Robert Parish,NBA,C,215.9,110.7
-Kelvin Garnett,NBA,PF,210.8,108.9
+Kevin Garnett,NBA,PF,210.8,108.9
 Nate Thurmond,NBA,C,210.8,102.1
 Walt Bellamy,NBA,C,208.3,102.1
 Wes Unseld,NBA,C,200.7,111.1
@@ -21,7 +21,7 @@ Mark Jackson,NBA,PG,190.5,88.5
 Magic Johnson,NBA,PG,205.7,99.8
 Oscar Robertson,NBA,PG,195.6,93
 Chris Paul,NBA,PG,185.4,79.4
-LaBron James,NBA,SF,205.7,113.4
+LeBron James,NBA,SF,205.7,113.4
 Isiah Thomas,NBA,PG,185.4,81.6
 Gary Payton,NBA,PG,193,86.2
 Andre Miller,NBA,PG,190.5,90.7
