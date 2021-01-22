@@ -1,0 +1,10 @@
+{
+    //コンテナの表示名
+    "name": "param_tuning",
+    //プロジェクトのルート（devcontainer.jsonの2階層上）
+    "context": "..",
+    //Dockerfileの名称
+    "dockerFile": "Dockerfile",
+    //マウント先
+    "workspaceMount": "type=bind,source=${localWorkspaceFolder},target=/opt/python/param_tuning_utility"
+}
