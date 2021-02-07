@@ -19,7 +19,7 @@ class XGBRegressorTuning():
     BOOSTER = 'gbtree'  # 学習時ブースター('gbtree':ツリーモデル, 'dart':ツリーモデル, 'gblinesr':線形モデル)
     OBJECTIVE = 'reg:squarederror'  # 学習時に最小化させる損失関数(デフォルト:'reg:squarederror')
     EVAL_METRIC = 'rmse'  # 学習時のデータ評価指標。基本的にはOBJECTIVEと1対1対応(デフォルト:'rmse')
-    EARLY_STOPPING_ROUNDS = 50  # 学習時、評価指標がこの回数連続で改善しなくなった時点でストップ
+    EARLY_STOPPING_ROUNDS = 20  # 学習時、評価指標がこの回数連続で改善しなくなった時点でストップ
     # TODO: SCORINGにデフォルトでRMSEが存在しないので、sklearn.metrics.make_scorerで自作の必要あり(https://qiita.com/kimisyo/items/afdf76b9b6fcade640ed)
     # (https://qiita.com/taruto1215/items/2b1f7224a9a4f43906d8)
     # 最適化対象外パラメータ
@@ -27,6 +27,7 @@ class XGBRegressorTuning():
                       'objective': [OBJECTIVE],  # 最小化させるべき損失関数
                       'random_state': [SEED],  # 乱数シード
                       'booster': [BOOSTER],  # ブースター
+                      'n_estimators': [10000]  # 最大学習サイクル数（評価指標がearly_stopping_rounds連続で改善しなければ打ち切り）
                       }
 
     # グリッドサーチ用パラメータ(https://qiita.com/R1ck29/items/50ba7fa5afa49e334a8f)

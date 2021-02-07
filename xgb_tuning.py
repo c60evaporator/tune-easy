@@ -16,7 +16,7 @@ class XGBRegressorTuning(ParamTuning):
     # 学習器のインスタンス
     CV_MODEL = xgb.XGBRegressor()
     # 学習時のパラメータのデフォルト値
-    FIT_PARAMS = {'early_stopping_rounds': 50  # 学習時、評価指標がこの回数連続で改善しなくなった時点でストップ
+    FIT_PARAMS = {'early_stopping_rounds': 20  # 学習時、評価指標がこの回数連続で改善しなくなった時点でストップ
                   }
     # 最適化で最大化するデフォルト評価指標('r2', 'neg_mean_squared_error', 'neg_mean_squared_log_error')
     SCORING = 'neg_mean_squared_error'
@@ -26,6 +26,7 @@ class XGBRegressorTuning(ParamTuning):
                       'objective': ['reg:squarederror'],  # 最小化させるべき損失関数
                       'random_state': [SEED],  # 乱数シード
                       'booster': ['gbtree'],  # ブースター
+                      'n_estimators': [10000]  # 最大学習サイクル数（評価指標がearly_stopping_rounds連続で改善しなければ打ち切り）
                       }
 
     # グリッドサーチ用パラメータ
