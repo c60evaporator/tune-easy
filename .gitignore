@@ -1,3 +1,4 @@
 Pipfile
 Pipfile.lock
 .vscode/settings.json
+__pycache__
