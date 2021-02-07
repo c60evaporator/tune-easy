@@ -104,6 +104,9 @@ class XGBRegressorTuning():
         early_stopping_rounds : int
             学習時、評価指標がこの回数連続で改善しなくなった時点でストップ
         """
+        # 処理時間測定
+        start = time.time()
+
         # 引数を反映
         cv_params['random_state'] = [seed]
         self.tuning_params = cv_params
@@ -111,7 +114,6 @@ class XGBRegressorTuning():
         self.cv = cv
         self.scoring = scoring
         self.early_stopping_rounds = early_stopping_rounds
-        start = time.time()
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
         if isinstance(cv, numbers.Integral):
             cv = KFold(n_splits=cv, shuffle=True, random_state=seed)
@@ -164,6 +166,9 @@ class XGBRegressorTuning():
         n_iter : int
             ランダムサーチの繰り返し回数
         """
+        # 処理時間測定
+        start = time.time()
+
         # 引数を反映
         cv_params['random_state'] = [seed]
         self.tuning_params = cv_params
@@ -171,7 +176,6 @@ class XGBRegressorTuning():
         self.cv = cv
         self.scoring = scoring
         self.early_stopping_rounds = early_stopping_rounds
-        start = time.time()  # 処理時間測定
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
         if isinstance(cv, numbers.Integral):
             cv = KFold(n_splits=cv, shuffle=True, random_state=seed)
@@ -272,6 +276,9 @@ class XGBRegressorTuning():
         bayes_not_opt_params : dict
             最適化対象外のパラメータ一覧
         """
+        # 処理時間測定
+        start = time.time()
+
         # 引数を反映
         self.tuning_params = beyes_params
         self.bayes_not_opt_params = bayes_not_opt_params
@@ -283,11 +290,11 @@ class XGBRegressorTuning():
         if isinstance(self.cv, numbers.Integral):
             self.cv = KFold(n_splits=self.cv, shuffle=True, random_state=self.seed)
         # ベイズ最適化を実行
-        start = time.time()
         xgb_bo = BayesianOptimization(
             self.xgb_reg_evaluate, beyes_params, random_state=seed)
         xgb_bo.maximize(init_points=init_points, n_iter=n_iter, acq=acq)
         elapsed_time = time.time() - start
+        
         # 評価指標が最大となったときのパラメータを取得
         best_params = xgb_bo.max['params']
         best_params['min_child_weight'] = int(

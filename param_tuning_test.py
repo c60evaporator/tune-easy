@@ -1,4 +1,5 @@
 from xgb_param_tuning import XGBRegressorTuning
+import xgb_tuning
 from xgb_validation import XGBRegressorValidation
 import pandas as pd
 from datetime import datetime
@@ -32,3 +33,18 @@ df = pd.read_csv(f'./osaka_metropolis_english.csv')
 # 目的変数と説明変数を取得（pandasではなくndarrayに変換）
 y = df[[OBJECTIVE_VARIALBLE]].values
 X = df[USE_EXPLANATORY].values
+
+# パラメータ最適化クラス (旧)
+tuning_old = XGBRegressorTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE)
+
+# パラメータ最適化クラス (新)
+tuning_new = xgb_tuning.XGBRegressorTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE)
+
+best_params_old, best_score_old, feature_importance_old, elapsed_time_old = tuning_old.bayes_opt_tuning()
+best_params_new, best_score_new, elapsed_time_new = tuning_new.bayes_opt_tuning()
+print(best_params_old)
+print(best_params_new)
+print(best_score_old)
+print(best_score_new)
+print(elapsed_time_old)
+print(elapsed_time_new)
