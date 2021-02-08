@@ -1,6 +1,7 @@
 # %% 1-2) 標高と気圧で線形回帰
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
 from sklearn.metrics import r2_score, accuracy_score
 from scipy.optimize import curve_fit
@@ -104,6 +105,14 @@ sns.scatterplot(x='height', y='weight', data=df_athelete, hue='league')  # 説�
 plt.xlabel('height [cm]')
 plt.ylabel('weight [kg]')
 
+# %% 標準化の例
+stdsc = StandardScaler()  # 標準化用インスタンス
+norm = stdsc.fit_transform(df_athelete[['height', 'weight']].values)  # 標準化
+df_norm = df_athelete.copy()
+df_norm['height [normalized]'] = pd.Series(norm[:, 0])
+df_norm['weight [normalized]'] = pd.Series(norm[:, 1])
+sns.scatterplot(x='height [normalized]', y='weight [normalized]', data=df_norm, hue='league')
+
 # %% 1-3) 線形SVM
 def label_str_to_int(y):  # 目的変数をstr型→int型に変換(plot_decision_regions用)
     label_names = list(dict.fromkeys(y[:, 0]))
@@ -116,19 +125,22 @@ def legend_int_to_str(ax, y):  # 凡例をint型→str型に変更(plot_decision
 
 X = df_athelete[['height','weight']].values  # 説明変数(身長、体重)
 y = df_athelete[['league']].values  # 目的変数(種目)
+stdsc = StandardScaler()  # 標準化用インスタンス
+X = stdsc.fit_transform(X)  # 説明変数を標準化
 y_int = label_str_to_int(y)  # 目的変数をint型に変換
-model = SVC(kernel='linear')  # 線形SVMを定義
+model = SVC(kernel='linear', C=1000)  # 線形SVMを定義
 model.fit(X, y_int)  # SVM学習を実行
-ax = plot_decision_regions(X, y_int[:, 0], clf=model) #決定境界を可視化
-plt.xlabel('height [cm]')  # x軸のラベル
-plt.ylabel('weight [kg]')  # y軸のラベル
+
+ax = plot_decision_regions(X, y_int[:, 0], clf=model, zoom_factor=2) #決定境界を可視化
+plt.xlabel('height [normalized]')  # x軸のラベル
+plt.ylabel('weight [normalized]')  # y軸のラベル
 legend_int_to_str(ax, y)  # 凡例をint型→str型に変更
 
 # %% 1-3-B) NBA、NFL選手(OF)の身長体重
 df_athelete = pd.read_csv(f'./nba_nfl_2.csv')
 sns.scatterplot(x='height', y='weight', data=df_athelete, hue='league')  # 説明変数と目的変数のデータ点の散布図をプロット
-plt.xlabel('height [cm]')  # x軸のラベル
-plt.ylabel('weight [kg]')  # y軸のラベル
+plt.xlabel('height')  # x軸のラベル
+plt.ylabel('weight')  # y軸のラベル
 # %% 1-3-B) カーネルトリックのイメージ
 def make_donut(diameter, sigma, n):  # ドーナツ作成
     r = np.vectorize(lambda x: x * sigma + diameter)(np.random.randn(n))  # 動径方向
@@ -161,24 +173,26 @@ ax.view_init(elev=0, azim=30)  # 3次元グラフの向き調整
 # %% 1-3-B) RBFカーネルのgammaを変更
 X = df_athelete[['height','weight']].values  # 説明変数(身長、体重)
 y = df_athelete[['league']].values  # 目的変数(種目)
+stdsc = StandardScaler()  # 標準化用インスタンス
+X = stdsc.fit_transform(X)  # 説明変数を標準化
 y_int = label_str_to_int(y)
-for gamma in [0.1, 0.01, 0.001, 0.0001]:  # gammaを変えてループ
+for gamma in [10, 1, 0.1, 0.01]:  # gammaを変えてループ
     model = SVC(kernel='rbf', gamma=gamma)  # RBFカーネルのSVMをgammaを変えて定義
     model.fit(X, y_int)  # SVM学習を実行
-    ax = plot_decision_regions(X, y_int[:, 0], clf=model)
-    plt.xlabel('height [cm]')
-    plt.ylabel('weight [kg]')
+    ax = plot_decision_regions(X, y_int[:, 0], clf=model, zoom_factor=2)
+    plt.xlabel('height [normalized]')
+    plt.ylabel('weight [normalized]')
     legend_int_to_str(ax, y)
-    plt.text(175, 140, f'gamma={model.gamma}, C={model.C}')  # gammaとCを表示
+    plt.text(np.amax(X[:, 0]), np.amin(X[:, 1]), f'gamma={model.gamma}, C={model.C}', verticalalignment='bottom', horizontalalignment='right')  # gammaとCを表示
     plt.show()
 # %% 1-3-C) Cを変更
 for C in [10, 1, 0.1]:  # Cを変えてループ
-    model = SVC(kernel='rbf', gamma=0.01, C=C)  # RBFカーネルのSVMをCを変えて定義
+    model = SVC(kernel='rbf', gamma=1, C=C)  # RBFカーネルのSVMをCを変えて定義
     model.fit(X, y_int)  # SVM学習を実行
-    ax = plot_decision_regions(X, y_int[:, 0], clf=model) 
-    plt.xlabel('height [cm]')
-    plt.ylabel('weight [kg]')
+    ax = plot_decision_regions(X, y_int[:, 0], clf=model, zoom_factor=2) 
+    plt.xlabel('height [normalized]')
+    plt.ylabel('weight [normalized]')
     legend_int_to_str(ax, y)
-    plt.text(175, 140, f'gamma={model.gamma}, C={model.C}')  # gammaとCを表示
+    plt.text(np.amax(X[:, 0]), np.amin(X[:, 1]), f'gamma={model.gamma}, C={model.C}', verticalalignment='bottom', horizontalalignment='right')  # gammaとCを表示
     plt.show()
 # %% gammaと
