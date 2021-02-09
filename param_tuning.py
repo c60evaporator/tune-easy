@@ -77,7 +77,7 @@ class ParamTuning():
     
     def _train_param_generation(self, src_fit_params):
         """
-        学習データから学習時パラメータの生成（例: XGBoostのeval_list）
+        入力データから学習時パラメータの生成（例: XGBoostのeval_list）
         通常はデフォルトのままだが、必要であれば継承先でオーバーライド
 
         Parameters

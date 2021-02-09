@@ -13,7 +13,7 @@ class XGBRegressorTuning(ParamTuning):
     SEEDS = [42, 43, 44, 45, 46, 47, 48, 49, 50, 51]  # デフォルト複数乱数シード
     CV_NUM = 5  # 最適化時のクロスバリデーションのデフォルト分割数
     
-    # 学習器のインスタンス
+    # 学習器のインスタンス (XGBoost)
     CV_MODEL = xgb.XGBRegressor()
     # 学習時のパラメータのデフォルト値
     FIT_PARAMS = {'early_stopping_rounds': 20  # 学習時、評価指標がこの回数連続で改善しなくなった時点でストップ
@@ -70,14 +70,18 @@ class XGBRegressorTuning(ParamTuning):
 
     def _train_param_generation(self, src_fit_params):
         """
-        学習データから学習時パラメータの生成 (eval_set)
+        入力データから学習時パラメータの生成 (eval_set)
         
         Parameters
         ----------
         src_fit_params : Dict
             処理前の学習時パラメータ
         """
-        src_fit_params['eval_set'] = [(self.X, self.y)]
+
+        # src_fit_paramsにeval_setが存在しないとき、入力データをそのまま追加
+        if 'eval_set' not in src_fit_params:
+            src_fit_params['eval_set'] =[(self.X, self.y)]
+
         return src_fit_params
 
     def _bayes_evaluate(self, learning_rate, min_child_weight, subsample, colsample_bytree, max_depth):
