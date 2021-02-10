@@ -96,7 +96,6 @@ class XGBRegressorTuning(ParamTuning):
                   'subsample': subsample,
                   }
         params.update(self.bayes_not_opt_params)  # 最適化対象以外のパラメータも追加
-        params['random_state'] = self.seed
         # XGBoostのモデル作成
         cv_model = copy.deepcopy(self.cv_model)
         cv_model.set_params(**params)

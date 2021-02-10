@@ -301,6 +301,8 @@ class ParamTuning():
         if fit_params == {}:
             fit_params = self.FIT_PARAMS
 
+        # 乱数シードをcv_paramsに追加
+        bayes_not_opt_params['random_state'] = seed
         # 学習データから生成されたパラメータの追加
         fit_params = self._train_param_generation(fit_params)
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
