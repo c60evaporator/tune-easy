@@ -15,8 +15,11 @@ class XGBRegressorTuning(ParamTuning):
     
     # 学習器のインスタンス (XGBoost)
     CV_MODEL = xgb.XGBRegressor()
+    # パイプライン処理時の学習器名称のデフォルト値
+    LEARNER_NAME = None
     # 学習時のパラメータのデフォルト値
-    FIT_PARAMS = {'early_stopping_rounds': 20  # 学習時、評価指標がこの回数連続で改善しなくなった時点でストップ
+    FIT_PARAMS = {'verbose': 0,  # 学習中のコマンドライン出力
+                  'early_stopping_rounds': 20  # 学習時、評価指標がこの回数連続で改善しなくなった時点でストップ
                   }
     # 最適化で最大化するデフォルト評価指標('r2', 'neg_mean_squared_error', 'neg_mean_squared_log_error')
     SCORING = 'neg_mean_squared_error'
@@ -96,12 +99,13 @@ class XGBRegressorTuning(ParamTuning):
                   'subsample': subsample,
                   }
         params.update(self.bayes_not_opt_params)  # 最適化対象以外のパラメータも追加
+        # パイプライン処理のとき、パラメータに学習器名を追加
+        params = self._add_learner_name(self.cv_model, params, self.learner_name)
         # XGBoostのモデル作成
         cv_model = copy.deepcopy(self.cv_model)
         cv_model.set_params(**params)
 
         # cross_val_scoreでクロスバリデーション
-        self.fit_params['verbose'] = 0
         scores = cross_val_score(cv_model, self.X, self.y, cv=self.cv,
                                  scoring=self.scoring, fit_params=self.fit_params, n_jobs=-1)
         val = scores.mean()
