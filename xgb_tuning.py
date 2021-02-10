@@ -60,7 +60,7 @@ class XGBRegressorTuning(ParamTuning):
                     }
     BAYES_NOT_OPT_PARAMS = {k: v[0] for k, v in NOT_OPT_PARAMS.items()}
 
-    # 検証曲線用パラメータ範囲
+    # 範囲選択検証曲線用パラメータ範囲
     VALIDATION_CURVE_PARAMS = {'learning_rate': (0.01, 0.5),
                     'min_child_weight': (1, 40),
                     'max_depth': (1, 15),
@@ -98,7 +98,7 @@ class XGBRegressorTuning(ParamTuning):
         params.update(self.bayes_not_opt_params)  # 最適化対象以外のパラメータも追加
         params['random_state'] = self.seed
         # XGBoostのモデル作成
-        cv_model = copy.deepcopy(self.CV_MODEL)
+        cv_model = copy.deepcopy(self.cv_model)
         cv_model.set_params(**params)
 
         # cross_val_scoreでクロスバリデーション

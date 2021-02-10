@@ -68,12 +68,13 @@ class ParamTuning():
         self.y = y
         self.X_colnames = X_colnames
         self.y_colname = y_colname
-        self.tuning_params = None
-        self.bayes_not_opt_params = None
-        self.seed = None
-        self.cv = None
-        self.fit_params = None
-        self.best_estimator_ = None
+        self.tuning_params = None  # チューニング対象のパラメータとその範囲
+        self.bayes_not_opt_params = None  # チューニング非対象のパラメータ
+        self.seed = None  # 乱数シード
+        self.cv = None  # クロスバリデーション分割法
+        self.cv_model = None  # 最適化対象の学習器インスタンス
+        self.fit_params = None  # 学習時のパラメータ
+        self.best_estimator_ = None  # 最適化された学習モデル
     
     def _train_param_generation(self, src_fit_params):
         """
@@ -86,6 +87,17 @@ class ParamTuning():
             処理前の学習時パラメータ
         """
         return src_fit_params
+    
+    def _set_argument_to_property(self, cv_model, tuning_params, cv, seed, scoring, fit_params):
+        """
+        引数をプロパティ(インスタンス変数)に反映
+        """
+        self.cv_model = cv_model
+        self.tuning_params = tuning_params
+        self.cv = cv
+        self.seed = seed
+        self.scoring = scoring
+        self.fit_params = fit_params
 
     def grid_search_tuning(self, cv_model=None, cv_params=None, cv=None, seed=None, scoring=None, **fit_params):
         """
@@ -97,6 +109,7 @@ class ParamTuning():
             最適化対象の学習器インスタンス
         cv_params : Dict
             最適化対象のパラメータ一覧
+            Pipelineのときは{学習器名__パラメータ名:[パラメータの値候補],‥}で指定する必要あり
         cv : int or KFold
             クロスバリデーション分割法(未指定時 or int入力時はkFoldで分割)
         seed : int
@@ -105,6 +118,7 @@ class ParamTuning():
             最適化で最大化する評価指標('r2', 'neg_mean_squared_error', 'neg_mean_squared_log_error')
         fit_params : Dict
             学習時のパラメータをdict指定(例: XGBoostのearly_stopping_rounds)
+            Pipelineのときは{学習器名__パラメータ名:パラメータの値,‥}で指定する必要あり
         """
         # 処理時間測定
         start = time.time()
@@ -122,18 +136,17 @@ class ParamTuning():
             scoring = self.SCORING
         if fit_params == {}:
             fit_params = self.FIT_PARAMS
-        # 引数をプロパティに反映
+
+        # 乱数シードをcv_paramsに追加
         cv_params['random_state'] = [seed]
-        self.tuning_params = cv_params
-        self.seed = seed
-        self.scoring = scoring
         # 学習データから生成されたパラメータの追加
         fit_params = self._train_param_generation(fit_params)
-        self.fit_params = fit_params
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
         if isinstance(cv, numbers.Integral):
             cv = KFold(n_splits=cv, shuffle=True, random_state=seed)
-        self.cv = cv
+        
+        # 引数をプロパティ(インスタンス変数)に反映
+        self._set_argument_to_property(cv_model, cv_params, cv, seed, scoring, fit_params)
 
         # グリッドサーチのインスタンス作成
         # n_jobs=-1にするとCPU100%で全コア並列計算。とても速い。
@@ -166,6 +179,7 @@ class ParamTuning():
             最適化対象の学習器インスタンス
         cv_params : dict
             最適化対象のパラメータ一覧
+            Pipelineのときは{学習器名__パラメータ名:[パラメータの値候補],‥}で指定する必要あり
         cv : int or KFold
             クロスバリデーション分割法(未指定時 or int入力時はkFoldで分割)
         seed : int
@@ -176,6 +190,7 @@ class ParamTuning():
             ランダムサーチの繰り返し回数
         fit_params : Dict
             学習時のパラメータをdict指定(例: XGBoostのearly_stopping_rounds)
+            Pipelineのときは{学習器名__パラメータ名:パラメータの値,‥}で指定する必要あり
         """
         # 処理時間測定
         start = time.time()
@@ -195,18 +210,17 @@ class ParamTuning():
             n_iter = self.N_ITER_RANDOM
         if fit_params == {}:
             fit_params = self.FIT_PARAMS
-        # 引数をプロパティに反映
+
+        # 乱数シードをcv_paramsに追加
         cv_params['random_state'] = [seed]
-        self.tuning_params = cv_params
-        self.seed = seed
-        self.scoring = scoring
         # 学習データから生成されたパラメータの追加
         fit_params = self._train_param_generation(fit_params)
-        self.fit_params = fit_params
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
         if isinstance(cv, numbers.Integral):
             cv = KFold(n_splits=cv, shuffle=True, random_state=seed)
-        self.cv = cv
+
+        # 引数をプロパティ(インスタンス変数)に反映
+        self._set_argument_to_property(cv_model, cv_params, cv, seed, scoring, fit_params)
 
         # ランダムサーチのインスタンス作成
         # n_jobs=-1にするとCPU100%で全コア並列計算。とても速い。
@@ -243,6 +257,7 @@ class ParamTuning():
         ----------
         beyes_params : dict
             最適化対象のパラメータ範囲
+            Pipelineのときは{学習器名__パラメータ名:(パラメータの探索下限,上限),‥}で指定する必要あり
         cv : int or KFold
             クロスバリデーション分割法(未指定時 or int入力時はkFoldで分割)
         seed : int
@@ -259,6 +274,7 @@ class ParamTuning():
             最適化対象外のパラメータ一覧
         fit_params : Dict
             学習時のパラメータをdict指定(例: XGBoostのearly_stopping_rounds)
+            Pipelineのときは{学習器名__パラメータ名:パラメータの値,‥}で指定する必要あり
         """
         # 処理時間測定
         start = time.time()
@@ -284,18 +300,16 @@ class ParamTuning():
             bayes_not_opt_params = self.BAYES_NOT_OPT_PARAMS
         if fit_params == {}:
             fit_params = self.FIT_PARAMS
-        # 引数をプロパティに反映
-        self.tuning_params = bayes_params
-        self.bayes_not_opt_params = bayes_not_opt_params
-        self.seed = seed
-        self.scoring = scoring
+
         # 学習データから生成されたパラメータの追加
         fit_params = self._train_param_generation(fit_params)
-        self.fit_params = fit_params
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
         if isinstance(cv, numbers.Integral):
             cv = KFold(n_splits=cv, shuffle=True, random_state=seed)
-        self.cv = cv
+
+        # 引数をプロパティ(インスタンス変数)に反映
+        self._set_argument_to_property(cv_model, bayes_params, cv, seed, scoring, fit_params)
+        self.bayes_not_opt_params = bayes_not_opt_params
 
         # ベイズ最適化を実行
         xgb_bo = BayesianOptimization(

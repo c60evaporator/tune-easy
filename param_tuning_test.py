@@ -2,11 +2,12 @@ from xgb_param_tuning import XGBRegressorTuning
 import xgb_tuning
 from xgb_validation import XGBRegressorValidation
 import pandas as pd
+import numpy as np
 from datetime import datetime
 import os
-from sklearn.metrics import r2_score
-from sklearn.model_selection import KFold
-import numpy as np
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+import xgboost as xgb
 
 # 結果出力先
 OUTPUT_DIR = f"{os.getenv('HOMEDRIVE')}{os.getenv('HOMEPATH')}\Desktop"
@@ -40,9 +41,10 @@ tuning_old = XGBRegressorTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIA
 # パラメータ最適化クラス (新)
 tuning_new = xgb_tuning.XGBRegressorTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE)
 
-#best_params_old, best_score_old, feature_importance_old, elapsed_time_old = tuning_old.bayes_opt_tuning()
+best_params_old, best_score_old, feature_importance_old, elapsed_time_old = tuning_old.grid_search_tuning()
 #fit_params = {'early_stopping_rounds': 50, "eval_set": [('a', 'b')]}
-best_params_new, best_score_new, elapsed_time_new = tuning_new.bayes_opt_tuning()
+#pipe = Pipeline([("scaler", StandardScaler()), ("xgb", xgb.XGBRegressor())])
+best_params_new, best_score_new, elapsed_time_new = tuning_new.grid_search_tuning()
 print(best_params_old)
 print(best_params_new)
 print(best_score_old)
