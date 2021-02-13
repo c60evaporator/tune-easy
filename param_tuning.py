@@ -45,6 +45,7 @@ class ParamTuning():
     INIT_POINTS = 20  # 初期観測点の個数(ランダムな探索を何回行うか)
     ACQ = 'ei'  # 獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
     BAYES_PARAMS = {}
+    INT_PARAMS = []  # 整数型のパラメータのリスト(ベイズ最適化時は都度int型変換する)
     BAYES_NOT_OPT_PARAMS = {k: v[0] for k, v in NOT_OPT_PARAMS.items()}
 
     # 検証曲線用パラメータ範囲
@@ -73,6 +74,7 @@ class ParamTuning():
         self.y_colname = y_colname
         self.tuning_params = None  # チューニング対象のパラメータとその範囲
         self.bayes_not_opt_params = None  # チューニング非対象のパラメータ
+        self.int_params = None  # 整数型のパラメータのリスト(ベイズ最適化時は都度int型変換する)
         self.seed = None  # 乱数シード
         self.cv = None  # クロスバリデーション分割法
         self.cv_model = None  # 最適化対象の学習器インスタンス
@@ -155,7 +157,8 @@ class ParamTuning():
             fit_params = self.FIT_PARAMS
 
         # 乱数シードをcv_paramsに追加
-        cv_params['random_state'] = [seed]
+        if 'random_state' in cv_params:
+            cv_params['random_state'] = [seed]
         # 学習データから生成されたパラメータの追加
         fit_params = self._train_param_generation(fit_params)
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
@@ -197,7 +200,7 @@ class ParamTuning():
         ----------
         cv_model : Dict
             最適化対象の学習器インスタンス
-        cv_params : dict
+        cv_params : Dict
             最適化対象のパラメータ一覧
             Pipelineのときは{学習器名__パラメータ名:[パラメータの値候補],‥}で指定する必要あり
         cv : int or KFold
@@ -234,7 +237,8 @@ class ParamTuning():
             fit_params = self.FIT_PARAMS
 
         # 乱数シードをcv_paramsに追加
-        cv_params['random_state'] = [seed]
+        if 'random_state' in cv_params:
+            cv_params['random_state'] = [seed]
         # 学習データから生成されたパラメータの追加
         fit_params = self._train_param_generation(fit_params)
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
@@ -274,13 +278,20 @@ class ParamTuning():
         """
         pass
 
-    def bayes_opt_tuning(self, cv_model=None, bayes_params=None, cv=None, seed=None, scoring=None, learner_name=None, n_iter=None, init_points=None, acq=None, bayes_not_opt_params=None, **fit_params):
+    def _int_conversion(self, bayes_params, int_params):
+        """
+         ベイズ最適化パラメータのうち、整数のものをint型変換
+        """
+        bayes_params = {k: int(v) if k in int_params else v for k, v in bayes_params.items()}
+        return bayes_params
+
+    def bayes_opt_tuning(self, cv_model=None, bayes_params=None, cv=None, seed=None, scoring=None, learner_name=None, n_iter=None, init_points=None, acq=None, bayes_not_opt_params=None, int_params=None, **fit_params):
         """
         ベイズ最適化(bayes_opt)
 
         Parameters
         ----------
-        beyes_params : dict
+        beyes_params : Dict
             最適化対象のパラメータ範囲
             Pipelineのときは{学習器名__パラメータ名:(パラメータの探索下限,上限),‥}で指定する必要あり
         cv : int or KFold
@@ -295,8 +306,10 @@ class ParamTuning():
             初期観測点の個数(ランダムな探索を何回行うか)
         acq : str
             獲得関数('ei', 'pi', 'ucb')
-        bayes_not_opt_params : dict
+        bayes_not_opt_params : Dict
             最適化対象外のパラメータ一覧
+        int_params : List
+            整数型のパラメータのリスト(ベイズ最適化時は都度int型変換する)
         fit_params : Dict
             学習時のパラメータをdict指定(例: XGBoostのearly_stopping_rounds)
             Pipelineのときは{学習器名__パラメータ名:パラメータの値,‥}で指定する必要あり
@@ -325,11 +338,14 @@ class ParamTuning():
             acq = self.ACQ
         if bayes_not_opt_params == None:
             bayes_not_opt_params = self.BAYES_NOT_OPT_PARAMS
+        if int_params == None:
+            int_params = self.INT_PARAMS
         if fit_params == {}:
             fit_params = self.FIT_PARAMS
 
-        # 乱数シードをcv_paramsに追加
-        bayes_not_opt_params['random_state'] = seed
+        # 乱数シードをbayes_not_opt_paramsに追加
+        if 'random_state' in bayes_not_opt_params:
+            bayes_not_opt_params['random_state'] = seed
         # 学習データから生成されたパラメータの追加
         fit_params = self._train_param_generation(fit_params)
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
@@ -341,6 +357,7 @@ class ParamTuning():
         # 引数をプロパティ(インスタンス変数)に反映
         self._set_argument_to_property(cv_model, bayes_params, cv, seed, scoring, fit_params)
         self.bayes_not_opt_params = bayes_not_opt_params
+        self.int_params = int_params
         self.learner_name = learner_name
 
         # ベイズ最適化を実行
@@ -351,10 +368,8 @@ class ParamTuning():
 
         # 評価指標が最大となったときのパラメータを取得
         best_params = xgb_bo.max['params']
-        best_params['min_child_weight'] = int(
-            best_params['min_child_weight'])  # 小数で最適化されるのでint型に直す
-        best_params['max_depth'] = int(
-            best_params['max_depth'])  # 小数で最適化されるのでint型に直す
+        # 整数パラメータはint型に変換
+        best_params = self._int_conversion(best_params, int_params)
         # 最適化対象以外のパラメータも追加
         best_params.update(self.BAYES_NOT_OPT_PARAMS)
         best_params['random_state'] = self.seed

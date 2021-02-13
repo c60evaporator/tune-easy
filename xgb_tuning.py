@@ -61,6 +61,7 @@ class XGBRegressorTuning(ParamTuning):
                     'colsample_bytree': (0.5, 1),
                     'subsample': (0.5, 1)
                     }
+    INT_PARAMS = ['min_child_weight', 'max_depth']  # 整数型のパラメータのリスト(ベイズ最適化時は都度int型変換する)
     BAYES_NOT_OPT_PARAMS = {k: v[0] for k, v in NOT_OPT_PARAMS.items()}
 
     # 範囲選択検証曲線用パラメータ範囲
@@ -93,11 +94,12 @@ class XGBRegressorTuning(ParamTuning):
         """
         # 最適化対象のパラメータ
         params = {'learning_rate': learning_rate,
-                  'min_child_weight': int(min_child_weight),
-                  'max_depth': int(max_depth),
+                  'min_child_weight': min_child_weight,
+                  'max_depth': max_depth,
                   'colsample_bytree': colsample_bytree,
                   'subsample': subsample,
                   }
+        params = self._int_conversion(params, self.int_params)  # 整数パラメータはint型に変換
         params.update(self.bayes_not_opt_params)  # 最適化対象以外のパラメータも追加
         # パイプライン処理のとき、パラメータに学習器名を追加
         params = self._add_learner_name(self.cv_model, params, self.learner_name)
