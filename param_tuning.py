@@ -280,9 +280,9 @@ class ParamTuning():
 
     def _int_conversion(self, bayes_params, int_params):
         """
-         ベイズ最適化パラメータのうち、整数のものをint型変換
+         ベイズ最適化パラメータのうち、整数のものを四捨五入してint型変換
         """
-        bayes_params = {k: int(v) if k in int_params else v for k, v in bayes_params.items()}
+        bayes_params = {k: round(v) if k in int_params else v for k, v in bayes_params.items()}
         return bayes_params
 
     def bayes_opt_tuning(self, cv_model=None, bayes_params=None, cv=None, seed=None, scoring=None, learner_name=None, n_iter=None, init_points=None, acq=None, bayes_not_opt_params=None, int_params=None, **fit_params):
