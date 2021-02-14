@@ -33,12 +33,12 @@ class ParamTuning():
 
     # グリッドサーチ用パラメータ
     CV_PARAMS_GRID = {}
-    CV_PARAMS_GRID.update(NOT_OPT_PARAMS)
+    CV_PARAMS_GRID.update(NOT_OPT_PARAMS)  # 最適化対象外パラメータを追加
 
     # ランダムサーチ用パラメータ
     N_ITER_RANDOM = 200  # ランダムサーチの繰り返し回数
     CV_PARAMS_RANDOM = {}
-    CV_PARAMS_RANDOM.update(NOT_OPT_PARAMS)
+    CV_PARAMS_RANDOM.update(NOT_OPT_PARAMS)  # 最適化対象外パラメータを追加
 
     # ベイズ最適化用パラメータ
     N_ITER_BAYES = 100  # ベイズ最適化の繰り返し回数
@@ -46,7 +46,7 @@ class ParamTuning():
     ACQ = 'ei'  # 獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
     BAYES_PARAMS = {}
     INT_PARAMS = []  # 整数型のパラメータのリスト(ベイズ最適化時は都度int型変換する)
-    BAYES_NOT_OPT_PARAMS = {k: v[0] for k, v in NOT_OPT_PARAMS.items()}
+    BAYES_NOT_OPT_PARAMS = {k: v[0] for k, v in NOT_OPT_PARAMS.items()}  # ベイズ最適化対象外パラメータ
 
     # 検証曲線用パラメータ範囲
     VALIDATION_CURVE_PARAMS = {}
@@ -58,9 +58,9 @@ class ParamTuning():
         Parameters
         ----------
         X : ndarray
-            説明変数データ(pandasではなくndarray)
+            説明変数データ(pandasではなく2次元ndarray)
         y : ndarray
-            目的変数データ
+            目的変数データ(ndarray、2次元でも1次元でも可)
         X_colnames : list(str)
             説明変数のフィールド名
         y_colname : str
@@ -69,7 +69,7 @@ class ParamTuning():
         if X.shape[1] != len(X_colnames):
             raise Exception('width of X must be equal to length of X_colnames')
         self.X = X
-        self.y = y
+        self.y = y.ravel() # 2次元ndarrayのとき、ravel()で1次元に変換
         self.X_colnames = X_colnames
         self.y_colname = y_colname
         self.tuning_params = None  # チューニング対象のパラメータとその範囲
@@ -110,8 +110,10 @@ class ParamTuning():
         パイプライン処理用に、パラメータ名を"学習器名__パラメータ名"に変更
         """
         if isinstance(model, Pipeline):
+            # 学習器名が指定されているとき、パラメータ名を変更して処理を進める(既にパラメータ名に'__'が含まれているパラメータは、変更しない)
             if learner_name is not None:
-                params = {f'{learner_name}__{k}': v for k, v in params.items()}
+                params = {k if '__' in k else f'{learner_name}__{k}': v for k, v in params.items()}
+            # 指定されていないとき、エラーを返す
             else:
                 raise Exception('pipeline model needs "lerner_name" argument')
         return params
@@ -132,7 +134,9 @@ class ParamTuning():
         seed : int
             乱数シード(クロスバリデーション分割用、xgboostの乱数シードはcv_paramsで指定するので注意)
         scoring : str
-            最適化で最大化する評価指標('r2', 'neg_mean_squared_error', 'neg_mean_squared_log_error')
+            最適化で最大化する評価指標('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)
+        learner_name : str
+            パイプライン処理時の学習器名称
         fit_params : Dict
             学習時のパラメータをdict指定(例: XGBoostのearly_stopping_rounds)
             Pipelineのときは{学習器名__パラメータ名:パラメータの値,‥}で指定する必要あり
@@ -208,7 +212,9 @@ class ParamTuning():
         seed : int
             乱数シード(クロスバリデーション分割用、xgboostの乱数シードはcv_paramsで指定するので注意)
         scoring : str
-            最適化で最大化する評価指標('r2', 'neg_mean_squared_error', 'neg_mean_squared_log_error')
+            最適化で最大化する評価指標('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)
+        learner_name : str
+            パイプライン処理時の学習器名称
         n_iter : int
             ランダムサーチの繰り返し回数
         fit_params : Dict
@@ -235,6 +241,8 @@ class ParamTuning():
             n_iter = self.N_ITER_RANDOM
         if fit_params == {}:
             fit_params = self.FIT_PARAMS
+            if 'verbose' in fit_params.keys():
+                fit_params['verbose'] = 0
 
         # 乱数シードをcv_paramsに追加
         if 'random_state' in cv_params:
@@ -292,14 +300,16 @@ class ParamTuning():
         Parameters
         ----------
         beyes_params : Dict
-            最適化対象のパラメータ範囲
-            Pipelineのときは{学習器名__パラメータ名:(パラメータの探索下限,上限),‥}で指定する必要あり
+            最適化対象のパラメータ範囲　{パラメータ名:(パラメータの探索下限,上限),‥}で指定
+            Pipelineのときもkeyに'学習器名__'を追加しないよう注意 (パラメータ名そのものを指定)
         cv : int or KFold
             クロスバリデーション分割法(未指定時 or int入力時はkFoldで分割)
         seed : int
             乱数シード(クロスバリデーション分割用、xgboostの乱数シードはcv_paramsで指定するので注意)
         scoring : str
-            最適化で最大化する評価指標('r2', 'neg_mean_squared_error', 'neg_mean_squared_log_error')
+            最適化で最大化する評価指標('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)
+        learner_name : str
+            パイプライン処理時の学習器名称
         n_iter : int
             ベイズ最適化の繰り返し回数
         init_points : int
@@ -361,20 +371,21 @@ class ParamTuning():
         self.learner_name = learner_name
 
         # ベイズ最適化を実行
-        xgb_bo = BayesianOptimization(
+        bo = BayesianOptimization(
             self._bayes_evaluate, bayes_params, random_state=seed)
-        xgb_bo.maximize(init_points=init_points, n_iter=n_iter, acq=acq)
+        bo.maximize(init_points=init_points, n_iter=n_iter, acq=acq)
         elapsed_time = time.time() - start
 
         # 評価指標が最大となったときのパラメータを取得
-        best_params = xgb_bo.max['params']
+        best_params = bo.max['params']
         # 整数パラメータはint型に変換
         best_params = self._int_conversion(best_params, int_params)
         # 最適化対象以外のパラメータも追加
         best_params.update(self.BAYES_NOT_OPT_PARAMS)
-        best_params['random_state'] = self.seed
+        if 'random_state' in bayes_not_opt_params:
+            best_params['random_state'] = self.seed
         # 評価指標の最大値を取得
-        best_score = xgb_bo.max['target']
+        best_score = bo.max['target']
 
         # 最適モデル保持のため学習（特徴量重要度算出等）
         best_model = copy.deepcopy(cv_model)

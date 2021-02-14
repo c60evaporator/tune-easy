@@ -39,7 +39,7 @@ class XGBRegressorTuning(ParamTuning):
                       'colsample_bytree': [0.5, 0.8, 1.0],  # 列のサブサンプリングを行う比率
                       'subsample': [0.5, 0.8, 1.0]  # 木を構築する前にデータのサブサンプリングを行う比率。1 なら全データ使用、0.5なら半分のデータ使用
                       }
-    CV_PARAMS_GRID.update(NOT_OPT_PARAMS)
+    CV_PARAMS_GRID.update(NOT_OPT_PARAMS)  # 最適化対象外パラメータを追加
 
     # ランダムサーチ用パラメータ
     N_ITER_RANDOM = 200  # ランダムサーチの繰り返し回数
@@ -49,7 +49,7 @@ class XGBRegressorTuning(ParamTuning):
                         'colsample_bytree': [0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
                         'subsample': [0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
                         }
-    CV_PARAMS_RANDOM.update(NOT_OPT_PARAMS)
+    CV_PARAMS_RANDOM.update(NOT_OPT_PARAMS)  # 最適化対象外パラメータを追加
 
     # ベイズ最適化用パラメータ
     N_ITER_BAYES = 100  # ベイズ最適化の繰り返し回数
@@ -62,7 +62,7 @@ class XGBRegressorTuning(ParamTuning):
                     'subsample': (0.5, 1)
                     }
     INT_PARAMS = ['min_child_weight', 'max_depth']  # 整数型のパラメータのリスト(ベイズ最適化時は都度int型変換する)
-    BAYES_NOT_OPT_PARAMS = {k: v[0] for k, v in NOT_OPT_PARAMS.items()}
+    BAYES_NOT_OPT_PARAMS = {k: v[0] for k, v in NOT_OPT_PARAMS.items()}  # ベイズ最適化対象外パラメータ
 
     # 範囲選択検証曲線用パラメータ範囲
     VALIDATION_CURVE_PARAMS = {'learning_rate': (0.01, 0.5),

@@ -1,3 +1,4 @@
+from svm_tuning import SVMClassifierTuning, SVMRegressorTuning
 from xgb_param_tuning import XGBRegressorTuning
 import xgb_tuning
 from xgb_validation import XGBRegressorValidation
@@ -13,8 +14,10 @@ import xgboost as xgb
 OUTPUT_DIR = f"{os.getenv('HOMEDRIVE')}{os.getenv('HOMEPATH')}\Desktop"
 # 最適化で最大化する評価指標('r2', 'neg_mean_squared_error', 'neg_mean_squared_log_error')
 SCORING = 'r2'
-# パラメータ最適化の手法(Grid, Random, Bayes, Optuna)
-PARAM_TUNING_METHODS = ['Bayes']
+# パラメータ最適化の手法(grid, random, bayes, optuna)
+PARAM_TUNING_METHODS = ['grid', 'random', 'bayes']
+# 学習器の種類(xgb_old, xgb, xgb_pipe, svm)
+LEARNING_METHODS = ['xgb_pipe']
 # 最適化で使用する乱数シード一覧
 SEEDS = [42]
 
@@ -35,19 +38,88 @@ df = pd.read_csv(f'./osaka_metropolis_english.csv')
 y = df[[OBJECTIVE_VARIALBLE]].values
 X = df[USE_EXPLANATORY].values
 
-# パラメータ最適化クラス (旧)
-tuning_old = XGBRegressorTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE)
+def xgb_reg_test_old(tuning_algo):
+    # パラメータ最適化クラス (旧)
+    tuning_old = XGBRegressorTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE)
+    if tuning_algo == 'grid':
+        best_params_old, best_score_old, feature_importance_old, elapsed_time_old = tuning_old.grid_search_tuning()
+    elif tuning_algo == 'random':
+        best_params_old, best_score_old, feature_importance_old, elapsed_time_old = tuning_old.random_search_tuning()
+    elif tuning_algo == 'bayes':
+        best_params_old, best_score_old, feature_importance_old, elapsed_time_old = tuning_old.bayes_opt_tuning()
+    return best_params_old, best_score_old, elapsed_time_old
 
-# パラメータ最適化クラス (新)
-tuning_new = xgb_tuning.XGBRegressorTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE)
+def xgb_reg_test(tuning_algo):
+    # パラメータ最適化クラス (新)
+    tuning_new = xgb_tuning.XGBRegressorTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE)
+    if tuning_algo == 'grid':
+        best_params_new, best_score_new, elapsed_time_new = tuning_new.grid_search_tuning()
+    elif tuning_algo == 'random':
+        best_params_new, best_score_new, elapsed_time_new = tuning_new.random_search_tuning()
+    elif tuning_algo == 'bayes':
+        best_params_new, best_score_new, elapsed_time_new = tuning_new.bayes_opt_tuning()
+    return best_params_new, best_score_new, elapsed_time_new
 
-best_params_old, best_score_old, feature_importance_old, elapsed_time_old = tuning_old.grid_search_tuning()
-#fit_params = {'early_stopping_rounds': 50, "eval_set": [('a', 'b')]}
-#pipe = Pipeline([("scaler", StandardScaler()), ("xgb", xgb.XGBRegressor())])
-best_params_new, best_score_new, elapsed_time_new = tuning_new.grid_search_tuning()
-print(best_params_old)
-print(best_params_new)
-print(best_score_old)
-print(best_score_new)
-print(elapsed_time_old)
-print(elapsed_time_new)
+def xgb_pipe_reg_test(tuning_algo):
+    tuning_new = xgb_tuning.XGBRegressorTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE)
+    pipe = Pipeline([("scaler", StandardScaler()), ("xgb", xgb.XGBRegressor())])
+    not_opt_params = {'xgb__eval_metric': 'rmse',  # データの評価指標
+                        'xgb__objective': 'reg:squarederror',  # 最小化させるべき損失関数
+                        'xgb__random_state': 42,  # 乱数シード
+                        'xgb__booster': 'gbtree',  # ブースター
+                        'xgb__n_estimators': 10000  # 最大学習サイクル数（評価指標がearly_stopping_rounds連続で改善しなければ打ち切り）
+                        }
+    bayes_params = {'learning_rate': (0.1, 0.5),
+                        'min_child_weight': (1, 15),
+                        'max_depth': (3, 7),
+                        'colsample_bytree': (0.5, 1),
+                        'subsample': (0.5, 1)
+                        }
+    fit_params = {'xgb__verbose': 1,  # 学習中のコマンドライン出力
+                    'xgb__early_stopping_rounds': 20  # 学習時、評価指標がこの回数連続で改善しなくなった時点でストップ
+                    }
+    if tuning_algo == 'grid':
+        best_params_new, best_score_new, elapsed_time_new = tuning_new.grid_search_tuning(cv_model=pipe, learner_name='xgb')
+    elif tuning_algo == 'random':
+        best_params_new, best_score_new, elapsed_time_new = tuning_new.random_search_tuning(cv_model=pipe, learner_name='xgb')
+    elif tuning_algo == 'bayes':
+        fit_params = {'xgb__verbose': 0,'xgb__early_stopping_rounds': 20}
+        best_params_new, best_score_new, elapsed_time_new = tuning_new.bayes_opt_tuning(cv_model=pipe, learner_name='xgb')
+    return best_params_new, best_score_new, elapsed_time_new
+
+def svm_reg_test(tuning_algo):
+    # パラメータ最適化クラス (新)
+    tuning_new = SVMRegressorTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE)
+    if tuning_algo == 'grid':
+        best_params_new, best_score_new, elapsed_time_new = tuning_new.grid_search_tuning()
+    elif tuning_algo == 'random':
+        best_params_new, best_score_new, elapsed_time_new = tuning_new.random_search_tuning()
+    elif tuning_algo == 'bayes':
+        best_params_new, best_score_new, elapsed_time_new = tuning_new.bayes_opt_tuning()
+    return best_params_new, best_score_new, elapsed_time_new
+
+
+# チューニング実行
+result_list = []
+for learning_algo in LEARNING_METHODS:
+    for tuning_algo in PARAM_TUNING_METHODS:
+        if learning_algo == 'xgb_old':
+            best_params, best_score, elapsed_time = xgb_reg_test_old(tuning_algo)
+        elif learning_algo == 'xgb':
+            best_params, best_score, elapsed_time = xgb_reg_test(tuning_algo)
+        elif learning_algo == 'xgb_pipe':
+            best_params, best_score, elapsed_time = xgb_pipe_reg_test(tuning_algo)
+        elif learning_algo == 'svm':
+            best_params, best_score, elapsed_time = svm_reg_test(tuning_algo)
+        result = {
+            'learning_algo': learning_algo,
+            'tuning_algo': tuning_algo,
+            'best_score': best_score,
+            'elapsed_time': elapsed_time
+        }
+        result.update({f'best_{k}': v for k, v in best_params.items()})
+        result_list.append(result)
+
+# 結果表示
+df_result = pd.DataFrame(result_list)
+print(df_result[['learning_algo', 'tuning_algo', 'best_score', 'elapsed_time']])
