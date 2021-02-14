@@ -17,7 +17,7 @@ SCORING = 'r2'
 # パラメータ最適化の手法(grid, random, bayes, optuna)
 PARAM_TUNING_METHODS = ['grid', 'random', 'bayes']
 # 学習器の種類(xgb_old, xgb, xgb_pipe, svm)
-LEARNING_METHODS = ['xgb_pipe']
+LEARNING_METHODS = ['svm']
 # 最適化で使用する乱数シード一覧
 SEEDS = [42]
 
@@ -79,12 +79,12 @@ def xgb_pipe_reg_test(tuning_algo):
                     'xgb__early_stopping_rounds': 20  # 学習時、評価指標がこの回数連続で改善しなくなった時点でストップ
                     }
     if tuning_algo == 'grid':
-        best_params_new, best_score_new, elapsed_time_new = tuning_new.grid_search_tuning(cv_model=pipe, learner_name='xgb')
+        best_params_new, best_score_new, elapsed_time_new = tuning_new.grid_search_tuning(cv_model=pipe)
     elif tuning_algo == 'random':
-        best_params_new, best_score_new, elapsed_time_new = tuning_new.random_search_tuning(cv_model=pipe, learner_name='xgb')
+        best_params_new, best_score_new, elapsed_time_new = tuning_new.random_search_tuning(cv_model=pipe)
     elif tuning_algo == 'bayes':
         fit_params = {'xgb__verbose': 0,'xgb__early_stopping_rounds': 20}
-        best_params_new, best_score_new, elapsed_time_new = tuning_new.bayes_opt_tuning(cv_model=pipe, learner_name='xgb')
+        best_params_new, best_score_new, elapsed_time_new = tuning_new.bayes_opt_tuning(cv_model=pipe)
     return best_params_new, best_score_new, elapsed_time_new
 
 def svm_reg_test(tuning_algo):
