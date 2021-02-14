@@ -21,8 +21,6 @@ class ParamTuning():
     
     # 学習器のインスタンス
     CV_MODEL = None
-    # パイプライン処理時の学習器名称のデフォルト値
-    LEARNER_NAME = None
     # 学習時のパラメータのデフォルト値
     FIT_PARAMS = {}
      # 最適化で最大化するデフォルト評価指標('r2', 'neg_mean_squared_error', 'neg_mean_squared_log_error')
@@ -105,20 +103,24 @@ class ParamTuning():
         self.scoring = scoring
         self.fit_params = fit_params
 
-    def _add_learner_name(self, model, params, learner_name):
+    def _add_learner_name(self, model, params):
         """
         パイプライン処理用に、パラメータ名を"学習器名__パラメータ名"に変更
         """
         if isinstance(model, Pipeline):
             # 学習器名が指定されているとき、パラメータ名を変更して処理を進める(既にパラメータ名に'__'が含まれているパラメータは、変更しない)
-            if learner_name is not None:
-                params = {k if '__' in k else f'{learner_name}__{k}': v for k, v in params.items()}
+            if self.learner_name is not None:
+                params = {k if '__' in k else f'{self.learner_name}__{k}': v for k, v in params.items()}
             # 指定されていないとき、エラーを返す
             else:
                 raise Exception('pipeline model needs "lerner_name" argument')
         return params
+    
+    def _get_learner_name(self, cv_model):
+        steps = cv_model.steps
+        self.learner_name = steps[len(steps)-1][0]
 
-    def grid_search_tuning(self, cv_model=None, cv_params=None, cv=None, seed=None, scoring=None, learner_name=None, **fit_params):
+    def grid_search_tuning(self, cv_model=None, cv_params=None, cv=None, seed=None, scoring=None, **fit_params):
         """
         グリッドサーチ＋クロスバリデーション
 
@@ -135,8 +137,6 @@ class ParamTuning():
             乱数シード(クロスバリデーション分割用、xgboostの乱数シードはcv_paramsで指定するので注意)
         scoring : str
             最適化で最大化する評価指標('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)
-        learner_name : str
-            パイプライン処理時の学習器名称
         fit_params : Dict
             学習時のパラメータをdict指定(例: XGBoostのearly_stopping_rounds)
             Pipelineのときは{学習器名__パラメータ名:パラメータの値,‥}で指定する必要あり
@@ -155,8 +155,6 @@ class ParamTuning():
             seed = self.SEED
         if scoring == None:
             scoring = self.SCORING
-        if learner_name == None:
-            learner_name = self.LEARNER_NAME
         if fit_params == {}:
             fit_params = self.FIT_PARAMS
 
@@ -168,9 +166,11 @@ class ParamTuning():
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
         if isinstance(cv, numbers.Integral):
             cv = KFold(n_splits=cv, shuffle=True, random_state=seed)
+        # パイプライン処理のとき、最後の要素から学習器名を取得
+        self._get_learner_name(cv_model)
         # パイプライン処理のとき、パラメータに学習器名を追加
-        cv_params = self._add_learner_name(cv_model, cv_params, learner_name)
-        fit_params = self._add_learner_name(cv_model, fit_params, learner_name)
+        cv_params = self._add_learner_name(cv_model, cv_params)
+        fit_params = self._add_learner_name(cv_model, fit_params)
         
         # 引数をプロパティ(インスタンス変数)に反映
         self._set_argument_to_property(cv_model, cv_params, cv, seed, scoring, fit_params)
@@ -196,7 +196,7 @@ class ParamTuning():
         # グリッドサーチでの探索結果を返す
         return gridcv.best_params_, gridcv.best_score_, elapsed_time
 
-    def random_search_tuning(self, cv_model=None, cv_params=None, cv=None, seed=None, scoring=None, learner_name=None, n_iter=None, **fit_params):
+    def random_search_tuning(self, cv_model=None, cv_params=None, cv=None, seed=None, scoring=None, n_iter=None, **fit_params):
         """
         ランダムサーチ＋クロスバリデーション
 
@@ -213,8 +213,6 @@ class ParamTuning():
             乱数シード(クロスバリデーション分割用、xgboostの乱数シードはcv_paramsで指定するので注意)
         scoring : str
             最適化で最大化する評価指標('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)
-        learner_name : str
-            パイプライン処理時の学習器名称
         n_iter : int
             ランダムサーチの繰り返し回数
         fit_params : Dict
@@ -235,8 +233,6 @@ class ParamTuning():
             seed = self.SEED
         if scoring == None:
             scoring = self.SCORING
-        if learner_name == None:
-            learner_name = self.LEARNER_NAME
         if n_iter == None:
             n_iter = self.N_ITER_RANDOM
         if fit_params == {}:
@@ -252,9 +248,11 @@ class ParamTuning():
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
         if isinstance(cv, numbers.Integral):
             cv = KFold(n_splits=cv, shuffle=True, random_state=seed)
+        # パイプライン処理のとき、最後の要素から学習器名を取得
+        self._get_learner_name(cv_model)
         # パイプライン処理のとき、パラメータに学習器名を追加
-        cv_params = self._add_learner_name(cv_model, cv_params, learner_name)
-        fit_params = self._add_learner_name(cv_model, fit_params, learner_name)
+        cv_params = self._add_learner_name(cv_model, cv_params)
+        fit_params = self._add_learner_name(cv_model, fit_params)
 
         # 引数をプロパティ(インスタンス変数)に反映
         self._set_argument_to_property(cv_model, cv_params, cv, seed, scoring, fit_params)
@@ -293,7 +291,7 @@ class ParamTuning():
         bayes_params = {k: round(v) if k in int_params else v for k, v in bayes_params.items()}
         return bayes_params
 
-    def bayes_opt_tuning(self, cv_model=None, bayes_params=None, cv=None, seed=None, scoring=None, learner_name=None, n_iter=None, init_points=None, acq=None, bayes_not_opt_params=None, int_params=None, **fit_params):
+    def bayes_opt_tuning(self, cv_model=None, bayes_params=None, cv=None, seed=None, scoring=None, n_iter=None, init_points=None, acq=None, bayes_not_opt_params=None, int_params=None, **fit_params):
         """
         ベイズ最適化(bayes_opt)
 
@@ -308,8 +306,6 @@ class ParamTuning():
             乱数シード(クロスバリデーション分割用、xgboostの乱数シードはcv_paramsで指定するので注意)
         scoring : str
             最適化で最大化する評価指標('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)
-        learner_name : str
-            パイプライン処理時の学習器名称
         n_iter : int
             ベイズ最適化の繰り返し回数
         init_points : int
@@ -338,8 +334,6 @@ class ParamTuning():
             seed = self.SEED
         if scoring == None:
             scoring = self.SCORING
-        if learner_name == None:
-            learner_name = self.LEARNER_NAME
         if n_iter == None:
             n_iter = self.N_ITER_BAYES
         if init_points == None:
@@ -361,14 +355,15 @@ class ParamTuning():
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
         if isinstance(cv, numbers.Integral):
             cv = KFold(n_splits=cv, shuffle=True, random_state=seed)
+        # パイプライン処理のとき、最後の要素から学習器名を取得
+        self._get_learner_name(cv_model)
         # パイプライン処理のとき、パラメータに学習器名を追加(fit_paramsのみ、調整用パラメータはベイズ最適化用メソッド内で名称変更)
-        fit_params = self._add_learner_name(cv_model, fit_params, learner_name)
+        fit_params = self._add_learner_name(cv_model, fit_params)
 
         # 引数をプロパティ(インスタンス変数)に反映
         self._set_argument_to_property(cv_model, bayes_params, cv, seed, scoring, fit_params)
         self.bayes_not_opt_params = bayes_not_opt_params
         self.int_params = int_params
-        self.learner_name = learner_name
 
         # ベイズ最適化を実行
         bo = BayesianOptimization(
@@ -389,7 +384,7 @@ class ParamTuning():
 
         # 最適モデル保持のため学習（特徴量重要度算出等）
         best_model = copy.deepcopy(cv_model)
-        best_params = self._add_learner_name(best_model, best_params, learner_name)
+        best_params = self._add_learner_name(best_model, best_params)
         best_model.set_params(**best_params)
         best_model.fit(self.X,
                   self.y,

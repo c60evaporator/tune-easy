@@ -15,8 +15,6 @@ class XGBRegressorTuning(ParamTuning):
     
     # 学習器のインスタンス (XGBoost)
     CV_MODEL = xgb.XGBRegressor()
-    # パイプライン処理時の学習器名称のデフォルト値
-    LEARNER_NAME = None
     # 学習時のパラメータのデフォルト値
     FIT_PARAMS = {'verbose': 0,  # 学習中のコマンドライン出力
                   'early_stopping_rounds': 20  # 学習時、評価指標がこの回数連続で改善しなくなった時点でストップ
@@ -102,7 +100,7 @@ class XGBRegressorTuning(ParamTuning):
         params = self._int_conversion(params, self.int_params)  # 整数パラメータはint型に変換
         params.update(self.bayes_not_opt_params)  # 最適化対象以外のパラメータも追加
         # パイプライン処理のとき、パラメータに学習器名を追加
-        params = self._add_learner_name(self.cv_model, params, self.learner_name)
+        params = self._add_learner_name(self.cv_model, params)
         # XGBoostのモデル作成
         cv_model = copy.deepcopy(self.cv_model)
         cv_model.set_params(**params)
