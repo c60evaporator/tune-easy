@@ -116,9 +116,10 @@ class ParamTuning():
                 raise Exception('pipeline model needs "lerner_name" argument')
         return params
     
-    def _get_learner_name(self, cv_model):
-        steps = cv_model.steps
-        self.learner_name = steps[len(steps)-1][0]
+    def _get_learner_name(self, model):
+        if isinstance(model, Pipeline):
+            steps = model.steps
+            self.learner_name = steps[len(steps)-1][0]
 
     def grid_search_tuning(self, cv_model=None, cv_params=None, cv=None, seed=None, scoring=None, **fit_params):
         """
