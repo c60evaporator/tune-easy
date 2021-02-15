@@ -1,4 +1,5 @@
-from svm_tuning import SVMClassifierTuning, SVMRegressorTuning
+# %%ライブラリとデータ読込
+from svm_tuning import SVMRegressorTuning
 from xgb_param_tuning import XGBRegressorTuning
 import xgb_tuning
 from xgb_validation import XGBRegressorValidation
@@ -13,7 +14,7 @@ import xgboost as xgb
 # 結果出力先
 OUTPUT_DIR = f"{os.getenv('HOMEDRIVE')}{os.getenv('HOMEPATH')}\Desktop"
 # 最適化で最大化する評価指標('r2', 'neg_mean_squared_error', 'neg_mean_squared_log_error')
-SCORING = 'r2'
+SCORING = 'neg_mean_squared_error'
 # パラメータ最適化の手法(grid, random, bayes, optuna)
 PARAM_TUNING_METHODS = ['grid', 'random', 'bayes']
 # 学習器の種類(xgb_old, xgb, xgb_pipe, svm)
@@ -29,7 +30,6 @@ EXPLANATORY_VALIABLES = ['1_over60', '2_between_30to60', '3_male_ratio',
 USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio',
     '5_household_member', 'latitude']  # 使用する説明変数
 
-
 # 現在時刻
 dt_now = datetime.now().strftime('%Y%m%d%H%M%S')
 # データ読込
@@ -38,6 +38,10 @@ df = pd.read_csv(f'./osaka_metropolis_english.csv')
 y = df[[OBJECTIVE_VARIALBLE]].values
 X = df[USE_EXPLANATORY].values
 
+# %% 検証曲線のプロット
+
+
+# %% チューニング実行
 def xgb_reg_test_old(tuning_algo):
     # パラメータ最適化クラス (旧)
     tuning_old = XGBRegressorTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE)
