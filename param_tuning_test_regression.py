@@ -16,7 +16,7 @@ OUTPUT_DIR = f"{os.getenv('HOMEDRIVE')}{os.getenv('HOMEPATH')}\Desktop"
 # 最適化で最大化する評価指標('r2', 'neg_mean_squared_error', 'neg_mean_squared_log_error')
 SCORING = 'neg_mean_squared_error'
 # パラメータ最適化の手法(grid, random, bayes, optuna)
-PARAM_TUNING_METHODS = ['grid', 'random', 'bayes']
+PARAM_TUNING_METHODS = ['bayes']
 # 学習器の種類(xgb_old, xgb, xgb_pipe, svm)
 LEARNING_METHODS = ['svm']
 # 最適化で使用する乱数シード一覧
@@ -39,7 +39,8 @@ y = df[[OBJECTIVE_VARIALBLE]].values
 X = df[USE_EXPLANATORY].values
 
 # %% 検証曲線のプロット
-
+tuning_new = SVMRegressorTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE)
+tuning_new.get_validation_curve()
 
 # %% チューニング実行
 def xgb_reg_test_old(tuning_algo):
@@ -51,7 +52,7 @@ def xgb_reg_test_old(tuning_algo):
         best_params_old, best_score_old, feature_importance_old, elapsed_time_old = tuning_old.random_search_tuning()
     elif tuning_algo == 'bayes':
         best_params_old, best_score_old, feature_importance_old, elapsed_time_old = tuning_old.bayes_opt_tuning()
-    return best_params_old, best_score_old, elapsed_time_old
+    return best_params_old, best_score_old, elapsed_time_old, tuning_old
 
 def xgb_reg_test(tuning_algo):
     # パラメータ最適化クラス (新)
@@ -62,7 +63,7 @@ def xgb_reg_test(tuning_algo):
         best_params_new, best_score_new, elapsed_time_new = tuning_new.random_search_tuning()
     elif tuning_algo == 'bayes':
         best_params_new, best_score_new, elapsed_time_new = tuning_new.bayes_opt_tuning()
-    return best_params_new, best_score_new, elapsed_time_new
+    return best_params_new, best_score_new, elapsed_time_new, tuning_new
 
 def xgb_pipe_reg_test(tuning_algo):
     tuning_new = xgb_tuning.XGBRegressorTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE)
@@ -89,7 +90,7 @@ def xgb_pipe_reg_test(tuning_algo):
     elif tuning_algo == 'bayes':
         fit_params = {'xgb__verbose': 0,'xgb__early_stopping_rounds': 20}
         best_params_new, best_score_new, elapsed_time_new = tuning_new.bayes_opt_tuning(cv_model=pipe)
-    return best_params_new, best_score_new, elapsed_time_new
+    return best_params_new, best_score_new, elapsed_time_new, tuning_new
 
 def svm_reg_test(tuning_algo):
     # パラメータ最適化クラス (新)
@@ -100,21 +101,22 @@ def svm_reg_test(tuning_algo):
         best_params_new, best_score_new, elapsed_time_new = tuning_new.random_search_tuning()
     elif tuning_algo == 'bayes':
         best_params_new, best_score_new, elapsed_time_new = tuning_new.bayes_opt_tuning()
-    return best_params_new, best_score_new, elapsed_time_new
+    return best_params_new, best_score_new, elapsed_time_new, tuning_new
 
 
 # チューニング実行
-result_list = []
+result_list = []  # チューニング結果を保持
+validation_curve_list = []  # 検証曲線用にデータ保持
 for learning_algo in LEARNING_METHODS:
     for tuning_algo in PARAM_TUNING_METHODS:
         if learning_algo == 'xgb_old':
-            best_params, best_score, elapsed_time = xgb_reg_test_old(tuning_algo)
+            best_params, best_score, elapsed_time, tuning_instance = xgb_reg_test_old(tuning_algo)
         elif learning_algo == 'xgb':
-            best_params, best_score, elapsed_time = xgb_reg_test(tuning_algo)
+            best_params, best_score, elapsed_time, tuning_instance = xgb_reg_test(tuning_algo)
         elif learning_algo == 'xgb_pipe':
-            best_params, best_score, elapsed_time = xgb_pipe_reg_test(tuning_algo)
+            best_params, best_score, elapsed_time, tuning_instance = xgb_pipe_reg_test(tuning_algo)
         elif learning_algo == 'svm':
-            best_params, best_score, elapsed_time = svm_reg_test(tuning_algo)
+            best_params, best_score, elapsed_time, tuning_instance = svm_reg_test(tuning_algo)
         result = {
             'learning_algo': learning_algo,
             'tuning_algo': tuning_algo,
@@ -123,7 +125,18 @@ for learning_algo in LEARNING_METHODS:
         }
         result.update({f'best_{k}': v for k, v in best_params.items()})
         result_list.append(result)
+        validation_curve_list.append({
+            'learning_algo': learning_algo,
+            'tuning_algo': tuning_algo,
+            'tuning_instance': tuning_instance,
+            'best_params': best_params
+        })
 
 # 結果表示
 df_result = pd.DataFrame(result_list)
 print(df_result[['learning_algo', 'tuning_algo', 'best_score', 'elapsed_time']])
+
+
+# %%検証曲線の表示
+for validation_dict in validation_curve_list:
+    validation_dict['tuning_instance'].plot_best_validation_curve()

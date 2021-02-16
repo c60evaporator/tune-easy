@@ -63,12 +63,12 @@ class XGBRegressorTuning(ParamTuning):
     BAYES_NOT_OPT_PARAMS = {k: v[0] for k, v in NOT_OPT_PARAMS.items()}  # ベイズ最適化対象外パラメータ
 
     # 範囲選択検証曲線用パラメータ範囲
-    VALIDATION_CURVE_PARAMS = {'learning_rate': (0.01, 0.5),
-                    'min_child_weight': (1, 40),
-                    'max_depth': (1, 15),
-                    'colsample_bytree': (0.3, 1),
-                    'subsample': (0.3, 1)
-                    }
+    VALIDATION_CURVE_PARAMS = {'learning_rate': [0.1, 0.2, 0.3, 0.4, 0.5],
+                        'min_child_weight': [1, 3, 5, 7, 9, 11, 13, 15],
+                        'max_depth': [3, 4, 5, 6, 7],
+                        'colsample_bytree': [0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+                        'subsample': [0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+                        }
 
     def _train_param_generation(self, src_fit_params):
         """

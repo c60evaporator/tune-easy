@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from sklearn.model_selection import GridSearchCV, RandomizedSearchCV, cross_val_score, KFold
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV, validation_curve, KFold
 from sklearn.metrics import r2_score
 from sklearn.pipeline import Pipeline
 from bayes_opt import BayesianOptimization
@@ -78,6 +78,7 @@ class ParamTuning():
         self.cv_model = None  # 最適化対象の学習器インスタンス
         self.learner_name = None  # パイプライン処理時の学習器名称
         self.fit_params = None  # 学習時のパラメータ
+        self.best_params = None  # 最適パラメータ
         self.best_estimator_ = None  # 最適化された学習モデル
     
     def _train_param_generation(self, src_fit_params):
@@ -188,9 +189,9 @@ class ParamTuning():
                )
         elapsed_time = time.time() - start
 
-        # 最適パラメータの表示
+        # 最適パラメータの表示と保持
         print('最適パラメータ ' + str(gridcv.best_params_))
-
+        self.best_params = gridcv.best_params_
         # 最適モデルの保持
         self.best_estimator_ = gridcv.best_estimator_
 
@@ -270,12 +271,13 @@ class ParamTuning():
                )
         elapsed_time = time.time() - start
 
-        # 最適パラメータの表示
+        # 最適パラメータの表示と保持
         print('最適パラメータ ' + str(randcv.best_params_))
+        self.best_params = randcv.best_params_
         # 最適モデルの保持
         self.best_estimator_ = randcv.best_estimator_
 
-        # ランダムサーチで探索した最適パラメータ、特徴量重要度、所要時間を返す
+        # ランダムサーチで探索した最適パラメータ、最適スコア、所要時間を返す
         return randcv.best_params_, randcv.best_score_, elapsed_time
 
     @abstractmethod
@@ -298,6 +300,8 @@ class ParamTuning():
 
         Parameters
         ----------
+        cv_model : Dict
+            最適化対象の学習器インスタンス
         beyes_params : Dict
             最適化対象のパラメータ範囲　{パラメータ名:(パラメータの探索下限,上限),‥}で指定
             Pipelineのときもkeyに'学習器名__'を追加しないよう注意 (パラメータ名そのものを指定)
@@ -386,6 +390,7 @@ class ParamTuning():
         # 最適モデル保持のため学習（特徴量重要度算出等）
         best_model = copy.deepcopy(cv_model)
         best_params = self._add_learner_name(best_model, best_params)
+        self.best_params = best_params
         best_model.set_params(**best_params)
         best_model.fit(self.X,
                   self.y,
@@ -396,9 +401,18 @@ class ParamTuning():
         return best_params, best_score, elapsed_time
 
 
-    def get_feature_importances(self, ax=None):
+    def get_feature_importances(self):
         """
-        特徴量重要度の表示と取得
+        特徴量重要度の取得
+        """
+        if self.best_estimator_ is not None:
+            return self.best_estimator_.feature_importances_
+        else:
+            return None
+    
+    def plot_feature_importances(self, ax=None):
+        """
+        特徴量重要度の表示
 
         Parameters
         ----------
@@ -414,8 +428,145 @@ class ParamTuning():
                 plt.barh(features, importances)
             else:
                 ax.barh(features, importances)
-            # 特徴量重要度の
-            return self.best_estimator_.feature_importances_
         else:
+            raise Exception('please tune parameters before plotting feature importances')
+        
+    def _plot_validation_curve(self, ax=None):
+        """
+        検証曲線のプロット
+        """
 
-            return None
+
+    def get_validation_curve(self, cv_model=None,  validation_curve_params=None, cv=None, seed=None, scoring=None, not_opt_params=None, stable_params=None, **fit_params):
+        """
+        検証曲線の取得
+
+        Parameters
+        ----------
+        cv_model : Dict
+            検証曲線対象の学習器インスタンス (Noneならクラス変数から取得)
+        validation_curve_params : Dict[Tuple(float, float)]
+            検証曲線対象のパラメータ範囲 (Noneならクラス変数から取得)
+        cv : int or KFold
+            クロスバリデーション分割法 (None or int入力時はkFoldで分割)
+        seed : int
+            乱数シード (クロスバリデーション分割用、xgboostの乱数シードはcv_paramsで指定するので注意)
+        scoring : str
+            最適化で最大化する評価指標 ('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)
+        not_opt_params : Dict
+            検証曲線対象以外のパラメータ一覧 (Noneならクラス変数BAYES_NOT_OPT_PARAMSから取得)
+        stable_params : Dict
+            検証曲線対象パラメータの、プロット対象以外のときの値 (Noneならデフォルト値)
+        fit_params : Dict
+            学習時のパラメータをdict指定(例: XGBoostのearly_stopping_rounds)
+            Pipelineのときは{学習器名__パラメータ名:パラメータの値,‥}で指定する必要あり
+        """
+        # 引数非指定時、クラス変数から取得
+        if cv_model == None:
+            cv_model = copy.deepcopy(self.CV_MODEL)
+        if validation_curve_params == None:
+            validation_curve_params = self.VALIDATION_CURVE_PARAMS
+        if cv == None:
+            cv = self.CV_NUM
+        if seed == None:
+            seed = self.SEED
+        if scoring == None:
+            scoring = self.SCORING
+        if not_opt_params == None:
+            not_opt_params = self.BAYES_NOT_OPT_PARAMS
+        if fit_params == {}:
+            fit_params = self.FIT_PARAMS
+        
+        # 乱数シードをnot_opt_paramsに追加
+        if 'random_state' in not_opt_params:
+            not_opt_params['random_state'] = seed
+        # 学習データから生成されたパラメータの追加
+        fit_params = self._train_param_generation(fit_params)
+        # 分割法未指定時、cv_numとseedに基づきランダムに分割
+        if isinstance(cv, numbers.Integral):
+            cv = KFold(n_splits=cv, shuffle=True, random_state=seed)
+        # パイプライン処理のとき、最後の要素から学習器名を取得
+        self._get_learner_name(cv_model)
+        # パイプライン処理のとき、パラメータに学習器名を追加
+        validation_curve_params = self._add_learner_name(cv_model, validation_curve_params)
+        fit_params = self._add_learner_name(cv_model, fit_params)
+        not_opt_params = self._add_learner_name(cv_model, not_opt_params)
+
+        # stable_paramsが指定されているとき、not_opt_paramsに追加
+        if stable_params is not None:
+            stable_params = self._add_learner_name(cv_model, stable_params)
+            not_opt_params.update(stable_params)
+        # not_opt_paramsを学習器にセット
+        cv_model.set_params(**not_opt_params)
+
+        # 検証曲線の取得
+        validation_curve_result = {}
+        for k, v in validation_curve_params.items():
+            train_scores, valid_scores = validation_curve(estimator=cv_model,
+                                    X=self.X, y=self.y,
+                                    param_name=k,
+                                    param_range=v,
+                                    fit_params=fit_params,
+                                    cv=cv, scoring=scoring, n_jobs=-1)
+            # 結果をDictに格納
+            validation_curve_result[k] = {'param_values': v,
+                                        'train_scores': train_scores,
+                                        'valid_scores': valid_scores
+                                        }
+        return validation_curve_result
+
+    def plot_first_validation_curve(self, cv_model=None,  validation_curve_params=None, cv=None, seed=None, scoring=None, not_opt_params=None, plot_stats='mean', **fit_params):
+        """
+        初期検討用の検証曲線プロット
+
+        Parameters
+        ----------
+        cv_model : Dict
+            検証曲線対象の学習器インスタンス (Noneならクラス変数から取得)
+        validation_curve_params : Dict[Tuple(float, float)]
+            検証曲線対象のパラメータ範囲 (Noneならクラス変数から取得)
+        cv : int or KFold
+            クロスバリデーション分割法 (None or int入力時はkFoldで分割)
+        seed : int
+            乱数シード (クロスバリデーション分割用、xgboostの乱数シードはcv_paramsで指定するので注意)
+        scoring : str
+            最適化で最大化する評価指標 ('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)
+        not_opt_params : Dict
+            検証曲線対象以外のパラメータ一覧 (Noneならクラス変数BAYES_NOT_OPT_PARAMSから取得)
+        plot_stats : Dict
+            検証曲線としてプロットする統計値 ('mean', 'median')
+        fit_params : Dict
+            学習時のパラメータをdict指定(例: XGBoostのearly_stopping_rounds)
+            Pipelineのときは{学習器名__パラメータ名:パラメータの値,‥}で指定する必要あり
+        """
+        validation_curve_result = self.get_validation_curve(cv_model=cv_model,  validation_curve_params=validation_curve_params, cv=cv, seed=seed, scoring=scoring, not_opt_params=not_opt_params, stable_params=None, **fit_params)
+
+    def plot_best_validation_curve(self, validation_curve_params=None, plot_stats='mean'):
+        """
+        チューニング後の検証曲線プロット (最適)
+
+        Parameters
+        ----------
+        validation_curve_params : Dict[Tuple(float, float)]
+            検証曲線対象のパラメータ範囲 (Noneならクラス変数から取得)
+        plot_stats : Dict
+            検証曲線としてプロットする統計値 ('mean', 'median')
+        """
+        # 引数非指定時、クラス変数から取得
+        if validation_curve_params == None:
+            validation_curve_params = self.VALIDATION_CURVE_PARAMS
+        # パイプライン処理のとき、パラメータに学習器名を追加
+        validation_curve_params = self._add_learner_name(self.cv_model, validation_curve_params)
+        
+        # 最適化未実施時、エラーを出す
+        if self.best_estimator_ is None:
+            raise Exception('please tune parameters before plotting feature importances')
+        # validation_curve_paramsにself.best_paramsを追加して昇順ソート
+        for k, v in validation_curve_params.items():
+            v.append(self.best_params[k])
+            v.sort()
+        # self.best_paramsをnot_opt_paramsとstable_paramsに分割
+        not_opt_params = {k: v for k, v in self.best_params.items() if k not in validation_curve_params.keys()}
+        stable_params = {k: v for k, v in self.best_params.items() if k in validation_curve_params.keys()}
+        # 検証曲線を取得
+        validation_curve_result = self.get_validation_curve(cv_model=self.cv_model,  validation_curve_params=validation_curve_params, cv=self.cv, seed=self.seed, scoring=self.scoring, not_opt_params=not_opt_params, stable_params=stable_params, **self.fit_params)
