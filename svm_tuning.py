@@ -57,6 +57,11 @@ class SVMRegressorTuning(ParamTuning):
                       'C': [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100],
                       'epsilon': [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5]
                     }
+    # 検証曲線表示時のスケール('linear', 'log')
+    VALIDATION_CURVE_SCALES = {'gamma': 'log',
+                      'C': 'log',
+                      'epsilon': 'linear'
+                      }
 
     def _train_param_generation(self, src_fit_params):
         """

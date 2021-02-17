@@ -40,7 +40,7 @@ X = df[USE_EXPLANATORY].values
 
 # %% 検証曲線のプロット
 tuning_new = SVMRegressorTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE)
-tuning_new.get_validation_curve()
+tuning_new.plot_first_validation_curve()
 
 # %% チューニング実行
 def xgb_reg_test_old(tuning_algo):
@@ -136,7 +136,7 @@ for learning_algo in LEARNING_METHODS:
 df_result = pd.DataFrame(result_list)
 print(df_result[['learning_algo', 'tuning_algo', 'best_score', 'elapsed_time']])
 
-
 # %%検証曲線の表示
 for validation_dict in validation_curve_list:
     validation_dict['tuning_instance'].plot_best_validation_curve()
+# %%

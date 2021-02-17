@@ -69,6 +69,13 @@ class XGBRegressorTuning(ParamTuning):
                         'colsample_bytree': [0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
                         'subsample': [0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
                         }
+    # 検証曲線表示時のスケール('linear', 'log')
+    VALIDATION_CURVE_SCALES = {'learning_rate': 'linear',
+                               'min_child_weight': 'linear',
+                               'max_depth': 'linear',
+                               'colsample_bytree': 'linear',
+                               'subsample': 'linear'
+                               }
 
     def _train_param_generation(self, src_fit_params):
         """

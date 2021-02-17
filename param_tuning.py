@@ -1,12 +1,12 @@
 from abc import abstractmethod
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV, validation_curve, KFold
-from sklearn.metrics import r2_score
 from sklearn.pipeline import Pipeline
 from bayes_opt import BayesianOptimization
 import time
 import numbers
 import copy
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 
 class ParamTuning():
@@ -47,7 +47,8 @@ class ParamTuning():
     BAYES_NOT_OPT_PARAMS = {k: v[0] for k, v in NOT_OPT_PARAMS.items()}  # ベイズ最適化対象外パラメータ
 
     # 検証曲線用パラメータ範囲
-    VALIDATION_CURVE_PARAMS = {}
+    VALIDATION_CURVE_PARAMS = {}  # パラメータ範囲
+    VALIDATION_CURVE_SCALES = {}  # 検証曲線表示時のスケール('linear', 'log')
 
     def __init__(self, X, y, X_colnames, y_colname=None):
         """
@@ -198,7 +199,8 @@ class ParamTuning():
         # グリッドサーチでの探索結果を返す
         return gridcv.best_params_, gridcv.best_score_, elapsed_time
 
-    def random_search_tuning(self, cv_model=None, cv_params=None, cv=None, seed=None, scoring=None, n_iter=None, **fit_params):
+    def random_search_tuning(self, cv_model=None, cv_params=None, cv=None, seed=None, scoring=None,
+                             n_iter=None, **fit_params):
         """
         ランダムサーチ＋クロスバリデーション
 
@@ -294,7 +296,8 @@ class ParamTuning():
         bayes_params = {k: round(v) if k in int_params else v for k, v in bayes_params.items()}
         return bayes_params
 
-    def bayes_opt_tuning(self, cv_model=None, bayes_params=None, cv=None, seed=None, scoring=None, n_iter=None, init_points=None, acq=None, bayes_not_opt_params=None, int_params=None, **fit_params):
+    def bayes_opt_tuning(self, cv_model=None, bayes_params=None, cv=None, seed=None, scoring=None,
+                         n_iter=None, init_points=None, acq=None, bayes_not_opt_params=None, int_params=None, **fit_params):
         """
         ベイズ最適化(bayes_opt)
 
@@ -431,13 +434,53 @@ class ParamTuning():
         else:
             raise Exception('please tune parameters before plotting feature importances')
         
-    def _plot_validation_curve(self, ax=None):
+    #TODO:bestパラメータに縦線表示追加
+    def _plot_validation_curve(self, param_name, scoring, param_values, train_scores, valid_scores,
+                               plot_stats='mean', scale='linear', ax=None):
         """
         検証曲線のプロット
         """
+        if ax == None:
+            ax=plt
+        # plot_stats == 'mean'のとき、スコアの平均±標準偏差を表示
+        if plot_stats == 'mean':
+            train_mean = np.mean(train_scores, axis=1)
+            train_std  = np.std(train_scores, axis=1)
+            train_center = train_mean
+            train_high = train_mean + train_std
+            train_low = train_mean - train_std
+            valid_mean = np.mean(valid_scores, axis=1)
+            valid_std  = np.std(valid_scores, axis=1)
+            valid_center = valid_mean
+            valid_high = valid_mean + valid_std
+            valid_low = valid_mean - valid_std
+        # plot_stats == 'median'のとき、スコアの平均±標準偏差を表示
+        elif plot_stats == 'median':
+            train_center = np.median(train_scores, axis=1)
+            train_high = np.amax(train_scores, axis=1)
+            train_low = np.amin(train_scores, axis=1)
+            valid_center = np.median(valid_scores, axis=1)
+            valid_high = np.amax(valid_scores, axis=1)
+            valid_low = np.amin(valid_scores, axis=1)
 
+        # training_scoresをプロット
+        ax.plot(param_values, train_center, color='blue', marker='o', markersize=5, label='training accuracy')
+        ax.fill_between(param_values, train_high, train_low, alpha=0.15, color='blue')
+        # validation_scoresをプロット
+        ax.plot(param_values, valid_center, color='green', linestyle='--', marker='o', markersize=5, label='validation accuracy')
+        ax.fill_between(param_values, valid_high, valid_low, alpha=0.15, color='green')
 
-    def get_validation_curve(self, cv_model=None,  validation_curve_params=None, cv=None, seed=None, scoring=None, not_opt_params=None, stable_params=None, **fit_params):
+        # グラフのスケール調整
+        ax.grid()
+        ax.xscale(scale)
+        ax.legend(loc='lower right')
+        # パラメータ名
+        ax.xlabel(param_name)
+        # スコア名
+        ax.ylabel(scoring)
+
+    def get_validation_curve(self, cv_model=None,  validation_curve_params=None, cv=None, seed=None, scoring=None,
+                             not_opt_params=None, stable_params=None, **fit_params):
         """
         検証曲線の取得
 
@@ -515,7 +558,9 @@ class ParamTuning():
                                         }
         return validation_curve_result
 
-    def plot_first_validation_curve(self, cv_model=None,  validation_curve_params=None, cv=None, seed=None, scoring=None, not_opt_params=None, plot_stats='mean', **fit_params):
+    def plot_first_validation_curve(self, cv_model=None,  validation_curve_params=None, cv=None, seed=None, scoring=None,
+                                    not_opt_params=None, validation_curve_scales=None, plot_stats='mean', axes=None,
+                                    **fit_params):
         """
         初期検討用の検証曲線プロット
 
@@ -533,15 +578,59 @@ class ParamTuning():
             最適化で最大化する評価指標 ('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)
         not_opt_params : Dict
             検証曲線対象以外のパラメータ一覧 (Noneならクラス変数BAYES_NOT_OPT_PARAMSから取得)
+        validation_curve_scales : Dict
+            検証曲線表示時のスケール('linear', 'log')(Noneならクラス変数VALIDATION_CURVE_SCALESから取得)
         plot_stats : Dict
-            検証曲線としてプロットする統計値 ('mean', 'median')
+            検証曲線としてプロットする統計値 ('mean'(平均±標準偏差), 'median'(中央値&最大最小値))
+        axes : List[ax]
+            使用するaxes (Noneなら1枚ずつ別個にプロット)
         fit_params : Dict
             学習時のパラメータをdict指定(例: XGBoostのearly_stopping_rounds)
             Pipelineのときは{学習器名__パラメータ名:パラメータの値,‥}で指定する必要あり
         """
-        validation_curve_result = self.get_validation_curve(cv_model=cv_model,  validation_curve_params=validation_curve_params, cv=cv, seed=seed, scoring=scoring, not_opt_params=not_opt_params, stable_params=None, **fit_params)
+        # 引数非指定時、クラス変数から取得(学習器名追加のため、cv_modelも取得)
+        if validation_curve_params == None:
+            validation_curve_params = self.VALIDATION_CURVE_PARAMS
+        if validation_curve_scales == None:
+            validation_curve_scales = self.VALIDATION_CURVE_SCALES
+        if cv_model == None:
+            cv_model = copy.deepcopy(self.CV_MODEL)
+        # パイプライン処理のとき、最後の要素から学習器名を取得
+        self._get_learner_name(cv_model)
+        # パイプライン処理のとき、パラメータに学習器名を追加
+        validation_curve_params = self._add_learner_name(cv_model, validation_curve_params)
+        validation_curve_scales = self._add_learner_name(cv_model, validation_curve_scales)
 
-    def plot_best_validation_curve(self, validation_curve_params=None, plot_stats='mean'):
+        # 検証曲線を取得
+        validation_curve_result = self.get_validation_curve(cv_model=cv_model,
+                            validation_curve_params=validation_curve_params,
+                            cv=cv,
+                            seed=seed,
+                            scoring=scoring,
+                            not_opt_params=not_opt_params,
+                            stable_params=None,
+                            **fit_params)
+        
+        # 検証曲線をプロット
+        for i, (k, v) in enumerate(validation_curve_result.items()):
+            # プロット用のaxを取得(なければNone)
+            if axes is None:
+                ax = None
+            else:
+                ax = axes[i]
+            # 検証曲線表示時のスケールを取得(なければ'linear')
+            if k in validation_curve_scales.keys():
+                scale = validation_curve_scales[k]
+            else:
+                scale = 'linear'
+            # 検証曲線をプロット
+            self._plot_validation_curve(k, scoring, v['param_values'], v['train_scores'], v['valid_scores'],
+                               plot_stats=plot_stats, scale=scale, ax=ax)
+            if axes is None:
+                plt.show()
+
+    def plot_best_validation_curve(self, validation_curve_params=None, validation_curve_scales=None,
+                                   plot_stats='mean', axes=None):
         """
         チューニング後の検証曲線プロット (最適)
 
@@ -549,14 +638,21 @@ class ParamTuning():
         ----------
         validation_curve_params : Dict[Tuple(float, float)]
             検証曲線対象のパラメータ範囲 (Noneならクラス変数から取得)
+        validation_curve_scales : Dict
+            検証曲線表示時のスケール('linear', 'log')(Noneならクラス変数VALIDATION_CURVE_SCALESから取得)
         plot_stats : Dict
             検証曲線としてプロットする統計値 ('mean', 'median')
+        axes : List[ax]
+            使用するaxes (Noneなら1枚ずつ別個にプロット)
         """
         # 引数非指定時、クラス変数から取得
         if validation_curve_params == None:
             validation_curve_params = self.VALIDATION_CURVE_PARAMS
+        if validation_curve_scales == None:
+            validation_curve_scales = self.VALIDATION_CURVE_SCALES
         # パイプライン処理のとき、パラメータに学習器名を追加
         validation_curve_params = self._add_learner_name(self.cv_model, validation_curve_params)
+        validation_curve_scales = self._add_learner_name(self.cv_model, validation_curve_scales)
         
         # 最適化未実施時、エラーを出す
         if self.best_estimator_ is None:
@@ -569,4 +665,29 @@ class ParamTuning():
         not_opt_params = {k: v for k, v in self.best_params.items() if k not in validation_curve_params.keys()}
         stable_params = {k: v for k, v in self.best_params.items() if k in validation_curve_params.keys()}
         # 検証曲線を取得
-        validation_curve_result = self.get_validation_curve(cv_model=self.cv_model,  validation_curve_params=validation_curve_params, cv=self.cv, seed=self.seed, scoring=self.scoring, not_opt_params=not_opt_params, stable_params=stable_params, **self.fit_params)
+        validation_curve_result = self.get_validation_curve(cv_model=self.cv_model,
+                                validation_curve_params=validation_curve_params,
+                                cv=self.cv,
+                                seed=self.seed,
+                                scoring=self.scoring, 
+                                not_opt_params=not_opt_params,
+                                stable_params=stable_params, 
+                                **self.fit_params)
+        
+        # 検証曲線をプロット
+        for i, (k, v) in enumerate(validation_curve_result.items()):
+            # プロット用のaxを取得(なければNone) TODO:axes2次元でも対応できるよう修正
+            if axes is None:
+                ax = None
+            else:
+                ax = axes[i]
+            # 検証曲線表示時のスケールを取得(なければ'linear')
+            if k in validation_curve_scales.keys():
+                scale = validation_curve_scales[k]
+            else:
+                scale = 'linear'
+            # 検証曲線をプロット
+            self._plot_validation_curve(k, self.scoring, v['param_values'], v['train_scores'], v['valid_scores'],
+                               plot_stats=plot_stats, scale=scale, ax=ax)
+            if axes is None:
+                plt.show()
