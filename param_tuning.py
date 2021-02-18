@@ -8,6 +8,7 @@ import copy
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib
 
 class ParamTuning():
     """
@@ -470,14 +471,17 @@ class ParamTuning():
         ax.plot(param_values, valid_center, color='green', linestyle='--', marker='o', markersize=5, label='validation accuracy')
         ax.fill_between(param_values, valid_high, valid_low, alpha=0.15, color='green')
 
-        # グラフのスケール調整
+        # グラフの表示調整
         ax.grid()
-        ax.xscale(scale)
-        ax.legend(loc='lower right')
-        # パラメータ名
-        ax.xlabel(param_name)
-        # スコア名
-        ax.ylabel(scoring)
+        if isinstance(ax, matplotlib.axes._subplots.Axes):  # axesで1画像プロットするとき
+            ax.set_xscale(scale)  # 対数軸 or 通常軸を指定
+            ax.set_xlabel(param_name)  # パラメータ名を横軸ラベルに
+            ax.set_ylabel(scoring)  # スコア名を縦軸ラベルに
+        else:  # pltで別画像プロットするとき
+            ax.xscale(scale)  # 対数軸 or 通常軸を指定
+            ax.xlabel(param_name)  # パラメータ名を横軸ラベルに
+            ax.ylabel(scoring)  # スコア名を縦軸ラベルに
+        ax.legend(loc='lower right')  # 凡例
 
     def get_validation_curve(self, cv_model=None,  validation_curve_params=None, cv=None, seed=None, scoring=None,
                              not_opt_params=None, stable_params=None, **fit_params):
@@ -616,8 +620,10 @@ class ParamTuning():
             # プロット用のaxを取得(なければNone)
             if axes is None:
                 ax = None
-            else:
+            elif len(axes.shape) == 1:  # 1次元axesのとき
                 ax = axes[i]
+            elif len(axes.shape) == 2:  # 2次元axesのとき
+                ax = axes[i // axes.shape[1]][i % axes.shape[1]]
             # 検証曲線表示時のスケールを取得(なければ'linear')
             if k in validation_curve_scales.keys():
                 scale = validation_curve_scales[k]
@@ -628,6 +634,8 @@ class ParamTuning():
                                plot_stats=plot_stats, scale=scale, ax=ax)
             if axes is None:
                 plt.show()
+        if axes is not None:
+            plt.show()
 
     def plot_best_validation_curve(self, validation_curve_params=None, validation_curve_scales=None,
                                    plot_stats='mean', axes=None):
@@ -676,11 +684,13 @@ class ParamTuning():
         
         # 検証曲線をプロット
         for i, (k, v) in enumerate(validation_curve_result.items()):
-            # プロット用のaxを取得(なければNone) TODO:axes2次元でも対応できるよう修正
+            # プロット用のaxを取得(なければNone)
             if axes is None:
                 ax = None
-            else:
+            elif len(axes.shape) == 1:  # 1次元axesのとき
                 ax = axes[i]
+            elif len(axes.shape) == 2:  # 2次元axesのとき
+                ax = axes[i // axes.shape[1]][i % axes.shape[1]]
             # 検証曲線表示時のスケールを取得(なければ'linear')
             if k in validation_curve_scales.keys():
                 scale = validation_curve_scales[k]
@@ -691,3 +701,5 @@ class ParamTuning():
                                plot_stats=plot_stats, scale=scale, ax=ax)
             if axes is None:
                 plt.show()
+        if axes is not None:
+            plt.show()

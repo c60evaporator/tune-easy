@@ -10,6 +10,8 @@ import os
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 import xgboost as xgb
+import matplotlib.pyplot as plt
+
 
 # 結果出力先
 OUTPUT_DIR = f"{os.getenv('HOMEDRIVE')}{os.getenv('HOMEPATH')}\Desktop"
@@ -39,8 +41,9 @@ y = df[[OBJECTIVE_VARIALBLE]].values
 X = df[USE_EXPLANATORY].values
 
 # %% 検証曲線のプロット
+fig, axes = plt.subplots(3, 1, figsize=(6, 12))
 tuning_new = SVMRegressorTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE)
-tuning_new.plot_first_validation_curve()
+tuning_new.plot_first_validation_curve(axes=axes)
 
 # %% チューニング実行
 def xgb_reg_test_old(tuning_algo):
@@ -137,6 +140,7 @@ df_result = pd.DataFrame(result_list)
 print(df_result[['learning_algo', 'tuning_algo', 'best_score', 'elapsed_time']])
 
 # %%検証曲線の表示
+fig, axes = plt.subplots(3, 1, figsize=(6, 12))
 for validation_dict in validation_curve_list:
-    validation_dict['tuning_instance'].plot_best_validation_curve()
+    validation_dict['tuning_instance'].plot_best_validation_curve(axes=axes)
 # %%
