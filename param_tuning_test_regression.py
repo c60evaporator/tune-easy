@@ -140,6 +140,10 @@ for learning_algo in LEARNING_METHODS:
 df_result = pd.DataFrame(result_list)
 print(df_result[['learning_algo', 'tuning_algo', 'best_score', 'elapsed_time']])
 
+# %%学習曲線の表示
+for validation_dict in validation_curve_list:
+    validation_dict['tuning_instance'].plot_best_learning_curve()
+
 # %%検証曲線の表示
 for validation_dict in validation_curve_list:
     fig, axes = plt.subplots(5, 1, figsize=(6, 18))

@@ -158,11 +158,11 @@ class ParamTuning():
         ----------
         cv_model : Dict
             最適化対象の学習器インスタンス
-        cv_params : Dict
+        cv_params : Dict[str, List[float]]
             最適化対象のパラメータ一覧
             Pipelineのときは{学習器名__パラメータ名:[パラメータの値候補],‥}で指定する必要あり
         cv : int or KFold
-            クロスバリデーション分割法(未指定時 or int入力時はkFoldで分割)
+            クロスバリデーション分割法 (Noneのときクラス変数から取得、int入力時はkFoldで分割)
         seed : int
             乱数シード(クロスバリデーション分割用、xgboostの乱数シードはcv_paramsで指定するので注意)
         scoring : str
@@ -235,11 +235,11 @@ class ParamTuning():
         ----------
         cv_model : Dict
             最適化対象の学習器インスタンス
-        cv_params : Dict
+        cv_params : Dict[str, List[float]]
             最適化対象のパラメータ一覧
             Pipelineのときは{学習器名__パラメータ名:[パラメータの値候補],‥}で指定する必要あり
         cv : int or KFold
-            クロスバリデーション分割法(未指定時 or int入力時はkFoldで分割)
+            クロスバリデーション分割法 (Noneのときクラス変数から取得、int入力時はkFoldで分割)
         seed : int
             乱数シード(クロスバリデーション分割用、xgboostの乱数シードはcv_paramsで指定するので注意)
         scoring : str
@@ -332,11 +332,11 @@ class ParamTuning():
         ----------
         cv_model : Dict
             最適化対象の学習器インスタンス
-        beyes_params : Dict
+        beyes_params : Dict[str, Tuple(float, float)]
             最適化対象のパラメータ範囲　{パラメータ名:(パラメータの探索下限,上限),‥}で指定
             Pipelineのときもkeyに'学習器名__'を追加しないよう注意 (パラメータ名そのものを指定)
         cv : int or KFold
-            クロスバリデーション分割法(未指定時 or int入力時はkFoldで分割)
+            クロスバリデーション分割法 (Noneのときクラス変数から取得、int入力時はkFoldで分割)
         seed : int
             乱数シード(クロスバリデーション分割用、xgboostの乱数シードはcv_paramsで指定するので注意)
         scoring : str
@@ -462,7 +462,7 @@ class ParamTuning():
             raise Exception('please tune parameters before plotting feature importances')
         
     def _plot_validation_curve(self, param_name, scoring, param_values, train_scores, valid_scores,
-                               plot_stats='mean', scale='linear', vline=None, addtext=None, rounddigit=3, ax=None):
+                               plot_stats='mean', scale='linear', vline=None, rounddigit=3, ax=None):
         """
         検証曲線の描画
 
@@ -515,10 +515,10 @@ class ParamTuning():
             valid_low = np.amin(valid_scores, axis=1)
 
         # training_scoresをプロット
-        ax.plot(param_values, train_center, color='blue', marker='o', markersize=5, label='training accuracy')
+        ax.plot(param_values, train_center, color='blue', marker='o', markersize=5, label='training score')
         ax.fill_between(param_values, train_high, train_low, alpha=0.15, color='blue')
         # validation_scoresをプロット
-        ax.plot(param_values, valid_center, color='green', linestyle='--', marker='o', markersize=5, label='validation accuracy')
+        ax.plot(param_values, valid_center, color='green', linestyle='--', marker='o', markersize=5, label='validation score')
         ax.fill_between(param_values, valid_high, valid_low, alpha=0.15, color='green')
 
         # 縦線表示
@@ -552,12 +552,12 @@ class ParamTuning():
 
         Parameters
         ----------
-        cv_model : Dict
+        cv_model : 
             検証曲線対象の学習器インスタンス (Noneならクラス変数から取得)
-        validation_curve_params : Dict[Tuple(float, float)]
+        validation_curve_params : Dict[str, list]
             検証曲線対象のパラメータ範囲 (Noneならクラス変数から取得)
         cv : int or KFold
-            クロスバリデーション分割法 (None or int入力時はkFoldで分割)
+            クロスバリデーション分割法 (Noneのときクラス変数から取得、int入力時はkFoldで分割)
         seed : int
             乱数シード (クロスバリデーション分割用、xgboostの乱数シードはcv_paramsで指定するので注意)
         scoring : str
@@ -634,10 +634,10 @@ class ParamTuning():
         ----------
         cv_model : Dict
             検証曲線対象の学習器インスタンス (Noneならクラス変数から取得)
-        validation_curve_params : Dict[Tuple(float, float)]
+        validation_curve_params : Dict[str, list]
             検証曲線対象のパラメータ範囲 (Noneならクラス変数から取得)
         cv : int or KFold
-            クロスバリデーション分割法 (None or int入力時はkFoldで分割)
+            クロスバリデーション分割法 (Noneのときクラス変数から取得、int入力時はkFoldで分割)
         seed : int
             乱数シード (クロスバリデーション分割用、xgboostの乱数シードはcv_paramsで指定するので注意)
         scoring : str
@@ -706,7 +706,7 @@ class ParamTuning():
 
         Parameters
         ----------
-        validation_curve_params : Dict[Tuple(float, float)]
+        validation_curve_params : Dict[str, list]
             検証曲線対象のパラメータ範囲 (Noneならクラス変数から取得)
         validation_curve_scales : Dict
             検証曲線表示時のスケール('linear', 'log')(Noneならクラス変数VALIDATION_CURVE_SCALESから取得)
@@ -766,3 +766,142 @@ class ParamTuning():
                 plt.show()
         if axes is not None:
             plt.show()
+
+    def plot_learning_curve(self, cv_model=None,  params=None, cv=None, seed=None, scoring=None,
+                            plot_stats='mean', rounddigit=3, ax=None, **fit_params):
+        """
+        学習曲線の取得
+
+        Parameters
+        ----------
+        cv_model : Dict
+            検証曲線対象の学習器インスタンス (Noneならクラス変数から取得)
+        params : Dict[str, float]
+            学習器に使用するパラメータの値 (Noneならデフォルト)
+        cv : int or KFold
+            クロスバリデーション分割法 (Noneのときクラス変数から取得、int入力時はkFoldで分割)
+        seed : int
+            乱数シード (クロスバリデーション分割用、xgboostの乱数シードはcv_paramsで指定するので注意)
+        scoring : str
+            最適化で最大化する評価指標 ('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)
+        plot_stats : str
+            検証曲線としてプロットする統計値 ('mean'(平均±標準偏差), 'median'(中央値&最大最小値))
+        rounddigit : int
+            文字表示の丸め桁数 (vline指定時のみ有効)
+        ax : matplotlib.axes._subplots.Axes
+            表示対象のax（Noneならplt.plotで1枚ごとにプロット
+        fit_params : Dict
+            学習時のパラメータをdict指定(例: XGBoostのearly_stopping_rounds)
+            Pipelineのときは{学習器名__パラメータ名:パラメータの値,‥}で指定する必要あり
+        """
+        # 引数非指定時、クラス変数から取得
+        if cv_model == None:
+            cv_model = copy.deepcopy(self.CV_MODEL)
+        if params == None:
+            params = {}
+        if cv == None:
+            cv = self.CV_NUM
+        if seed == None:
+            seed = self.SEED
+        if scoring == None:
+            scoring = self.SCORING
+        if fit_params == {}:
+            fit_params = self.FIT_PARAMS
+        
+        # 乱数シードをparamsに追加
+        if 'random_state' in params:
+            params['random_state'] = seed
+        # 学習データから生成されたパラメータの追加
+        fit_params = self._train_param_generation(fit_params)
+        # 分割法未指定時、cv_numとseedに基づきランダムに分割
+        if isinstance(cv, numbers.Integral):
+            cv = KFold(n_splits=cv, shuffle=True, random_state=seed)
+        # パイプライン処理のとき、最後の要素から学習器名を取得
+        self._get_learner_name(cv_model)
+        # パイプライン処理のとき、パラメータに学習器名を追加
+        params = self._add_learner_name(cv_model, params)
+        fit_params = self._add_learner_name(cv_model, fit_params)
+        # paramsを学習器にセット
+        cv_model.set_params(**params)
+
+        # 学習曲線の取得
+        train_sizes, train_scores, valid_scores = learning_curve(estimator=cv_model,
+                                                                 X=self.X, y=self.y,
+                                                                 train_sizes=np.linspace(0.1, 1.0, 10),
+                                                                 fit_params=fit_params,
+                                                                 cv=cv, scoring=scoring, n_jobs=-1)
+        
+        # 描画用axがNoneのとき、matplotlib.pyplotを使用
+        if ax == None:
+            ax=plt
+        # plot_stats == 'mean'のとき、スコアの平均±標準偏差を表示
+        if plot_stats == 'mean':
+            train_mean = np.mean(train_scores, axis=1)
+            train_std  = np.std(train_scores, axis=1)
+            train_center = train_mean
+            train_high = train_mean + train_std
+            train_low = train_mean - train_std
+            valid_mean = np.mean(valid_scores, axis=1)
+            valid_std  = np.std(valid_scores, axis=1)
+            valid_center = valid_mean
+            valid_high = valid_mean + valid_std
+            valid_low = valid_mean - valid_std
+        # plot_stats == 'median'のとき、スコアの平均±標準偏差を表示
+        elif plot_stats == 'median':
+            train_center = np.median(train_scores, axis=1)
+            train_high = np.amax(train_scores, axis=1)
+            train_low = np.amin(train_scores, axis=1)
+            valid_center = np.median(valid_scores, axis=1)
+            valid_high = np.amax(valid_scores, axis=1)
+            valid_low = np.amin(valid_scores, axis=1)
+
+        # training_scoresをプロット
+        ax.plot(train_sizes, train_center, color='blue', marker='o', markersize=5, label='training score')
+        ax.fill_between(train_sizes, train_high, train_low, alpha=0.15, color='blue')
+        # validation_scoresをプロット
+        ax.plot(train_sizes, valid_center, color='green', linestyle='--', marker='o', markersize=5, label='validation score')
+        ax.fill_between(train_sizes, valid_high, valid_low, alpha=0.15, color='green')
+
+        # 最高スコアの表示
+        best_score = valid_center[len(valid_center) - 1]
+        # 指定桁数で丸める
+        scoretxt = self._round_digits(best_score, rounddigit=rounddigit, method='format')
+        ax.text(np.amax(train_sizes), valid_low[len(valid_low) - 1], f'best_score={scoretxt}',
+                color='black', verticalalignment='top', horizontalalignment='right')
+
+        # グラフの表示調整
+        ax.grid()
+        if isinstance(ax, matplotlib.axes._subplots.Axes):  # axesで1画像プロットするとき
+            ax.set_xlabel('Number of training samples')  # パラメータ名を横軸ラベルに
+            ax.set_ylabel(scoring)  # スコア名を縦軸ラベルに
+        else:  # pltで別画像プロットするとき
+            ax.xlabel('Number of training samples')  # パラメータ名を横軸ラベルに
+            ax.ylabel(scoring)  # スコア名を縦軸ラベルに
+        ax.legend(loc='lower right')  # 凡例
+
+    def plot_best_learning_curve(self, plot_stats='mean', ax=None):
+        """
+        チューニング後の学習曲線プロット (最適パラメータ使用)
+
+        Parameters
+        ----------
+        plot_stats : Dict
+            検証曲線としてプロットする統計値 ('mean', 'median')
+        ax : matplotlib.axes._subplots.Axes
+            使用するax (Noneならplt.plotで1枚ごとにプロット)
+        """
+        
+        # 最適化未実施時、エラーを出す
+        if self.best_estimator_ is None:
+            raise Exception('please tune parameters before plotting feature importances')
+
+        # 学習曲線をプロット
+        self.plot_learning_curve(cv_model=self.cv_model,
+                                  params=self.best_params,
+                                  cv=self.cv,
+                                  seed=self.seed,
+                                  scoring=self.scoring, 
+                                  plot_stats=plot_stats,
+                                  ax=ax,
+                                  **self.fit_params)
+        plt.show()
