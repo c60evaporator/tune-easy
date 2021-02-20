@@ -68,6 +68,7 @@ def xgb_reg_test(tuning_algo):
         best_params_new, best_score_new, elapsed_time_new = tuning_new.bayes_opt_tuning()
     return best_params_new, best_score_new, elapsed_time_new, tuning_new
 
+
 def xgb_pipe_reg_test(tuning_algo):
     tuning_new = xgb_tuning.XGBRegressorTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE)
     pipe = Pipeline([("scaler", StandardScaler()), ("xgb", xgb.XGBRegressor())])

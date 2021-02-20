@@ -4,6 +4,7 @@ from sklearn.pipeline import Pipeline
 from bayes_opt import BayesianOptimization
 import time
 import numbers
+import decimal
 import copy
 import pandas as pd
 import numpy as np
@@ -120,9 +121,34 @@ class ParamTuning():
         return params
     
     def _get_learner_name(self, model):
+        """
+        パイプライン処理のとき、最後の要素から学習器名を取得
+        """
         if isinstance(model, Pipeline):
             steps = model.steps
             self.learner_name = steps[len(steps)-1][0]
+    
+    def _round_digits(self, src: float, rounddigit: int = None, method='decimal'):
+        """
+        指定桁数で小数を丸める
+
+        Parameters
+        ----------
+        srcdict : Dict[str, float]
+            丸め対象のDict
+        rounddigit : int
+            フィッティング線の表示範囲（標準偏差の何倍まで表示するか指定）
+        method : int
+            桁数決定手法（'decimal':小数点以下, 'sig':有効数字(Decimal指定), 'format':formatで有効桁数指定）
+        """
+        if method == 'decimal':
+            return round(src, rounddigit)
+        elif method == 'sig':
+            with decimal.localcontext() as ctx:
+                ctx.prec = rounddigit
+                return ctx.create_decimal(src)
+        elif method == 'format':
+            return '{:.{width}g}'.format(src, width=rounddigit)
 
     def grid_search_tuning(self, cv_model=None, cv_params=None, cv=None, seed=None, scoring=None, **fit_params):
         """
@@ -435,11 +461,35 @@ class ParamTuning():
         else:
             raise Exception('please tune parameters before plotting feature importances')
         
-    #TODO:bestパラメータに縦線表示追加
     def _plot_validation_curve(self, param_name, scoring, param_values, train_scores, valid_scores,
-                               plot_stats='mean', scale='linear', ax=None):
+                               plot_stats='mean', scale='linear', vline=None, addtext=None, rounddigit=3, ax=None):
         """
-        検証曲線のプロット
+        検証曲線の描画
+
+        Parameters
+        ----------
+        param_name : str
+            横軸プロット対象のパラメータ名
+        scoring : str
+            評価指標 ('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)
+        param_values : ndarray 1d
+            横軸プロット対象のパラメータの値
+        train_scores : ndarray 2d
+            縦軸プロット対象の評価指標の値 (学習用データ)
+        valid_scores : ndarray 2d
+            縦軸プロット対象の評価指標の値 (検証用データ)
+        plot_stats : str
+            検証曲線としてプロットする統計値 ('mean'(平均±標準偏差), 'median'(中央値&最大最小値))
+        scale : str
+            横軸のスケール ('lenear', 'log')
+        vline : float
+            追加する縦線の位置 (最適パラメータの可視化用、Noneなら非表示)
+        addtext : src
+            縦線位置以外に追加する文字列 (最適スコアの表示用、Noneなら非表示)
+        rounddigit : int
+            文字表示の丸め桁数 (vline指定時のみ有効)
+        ax : matplotlib.axes._subplots.Axes
+            表示対象のax（Noneならplt.plotで1枚ごとにプロット）
         """
         if ax == None:
             ax=plt
@@ -470,6 +520,18 @@ class ParamTuning():
         # validation_scoresをプロット
         ax.plot(param_values, valid_center, color='green', linestyle='--', marker='o', markersize=5, label='validation accuracy')
         ax.fill_between(param_values, valid_high, valid_low, alpha=0.15, color='green')
+
+        # 縦線表示
+        if vline is not None:
+            ax.axvline(x=vline, color='gray')  # 縦線表示
+            # 最高スコアの計算
+            best_index = np.where(param_values==vline)
+            best_score = valid_center[best_index][0]
+            # 指定桁数で丸める(https://qiita.com/SUZUKI_Masaya/items/7aa26fb242b6cf237fa4)
+            vlinetxt = self._round_digits(vline, rounddigit=rounddigit, method='format')
+            scoretxt = self._round_digits(best_score, rounddigit=rounddigit, method='format')
+            ax.text(vline, np.amax(valid_center), f'best_{param_name}={vlinetxt}\nbest_score={scoretxt}',
+                    color='black', verticalalignment='bottom', horizontalalignment='left')
 
         # グラフの表示調整
         ax.grid()
@@ -698,7 +760,7 @@ class ParamTuning():
                 scale = 'linear'
             # 検証曲線をプロット
             self._plot_validation_curve(k, self.scoring, v['param_values'], v['train_scores'], v['valid_scores'],
-                               plot_stats=plot_stats, scale=scale, ax=ax)
+                               plot_stats=plot_stats, scale=scale, vline=self.best_params[k], ax=ax)
             if axes is None:
                 plt.show()
         if axes is not None:
