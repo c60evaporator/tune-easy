@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from sklearn.model_selection import GridSearchCV, RandomizedSearchCV, validation_curve, KFold
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV, KFold, validation_curve, learning_curve
 from sklearn.pipeline import Pipeline
 from bayes_opt import BayesianOptimization
 import time
@@ -472,11 +472,11 @@ class ParamTuning():
             横軸プロット対象のパラメータ名
         scoring : str
             評価指標 ('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)
-        param_values : ndarray 1d
+        param_values : list
             横軸プロット対象のパラメータの値
-        train_scores : ndarray 2d
+        train_scores : ndarray 1d
             縦軸プロット対象の評価指標の値 (学習用データ)
-        valid_scores : ndarray 2d
+        valid_scores : ndarray 1d
             縦軸プロット対象の評価指標の値 (検証用データ)
         plot_stats : str
             検証曲線としてプロットする統計値 ('mean'(平均±標準偏差), 'median'(中央値&最大最小値))
@@ -525,7 +525,7 @@ class ParamTuning():
         if vline is not None:
             ax.axvline(x=vline, color='gray')  # 縦線表示
             # 最高スコアの計算
-            best_index = np.where(param_values==vline)
+            best_index = np.where(np.array(param_values)==vline)
             best_score = valid_center[best_index][0]
             # 指定桁数で丸める(https://qiita.com/SUZUKI_Masaya/items/7aa26fb242b6cf237fa4)
             vlinetxt = self._round_digits(vline, rounddigit=rounddigit, method='format')
@@ -729,8 +729,9 @@ class ParamTuning():
             raise Exception('please tune parameters before plotting feature importances')
         # validation_curve_paramsにself.best_paramsを追加して昇順ソート
         for k, v in validation_curve_params.items():
-            v.append(self.best_params[k])
-            v.sort()
+            if self.best_params[k] not in v:
+                v.append(self.best_params[k])
+                v.sort()
         # self.best_paramsをnot_opt_paramsとstable_paramsに分割
         not_opt_params = {k: v for k, v in self.best_params.items() if k not in validation_curve_params.keys()}
         stable_params = {k: v for k, v in self.best_params.items() if k in validation_curve_params.keys()}

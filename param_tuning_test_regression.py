@@ -141,7 +141,7 @@ df_result = pd.DataFrame(result_list)
 print(df_result[['learning_algo', 'tuning_algo', 'best_score', 'elapsed_time']])
 
 # %%検証曲線の表示
-fig, axes = plt.subplots(3, 1, figsize=(6, 12))
 for validation_dict in validation_curve_list:
+    fig, axes = plt.subplots(5, 1, figsize=(6, 18))
     validation_dict['tuning_instance'].plot_best_validation_curve(axes=axes)
 # %%

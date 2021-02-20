@@ -53,7 +53,7 @@ class XGBRegressorTuning(ParamTuning):
     N_ITER_BAYES = 100  # ベイズ最適化の繰り返し回数
     INIT_POINTS = 20  # 初期観測点の個数(ランダムな探索を何回行うか)
     ACQ = 'ei'  # 獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
-    BAYES_PARAMS = {'learning_rate': (0.1, 0.5),
+    BAYES_PARAMS = {'learning_rate': (0.1, 0.3),
                     'min_child_weight': (1, 15),
                     'max_depth': (3, 7),
                     'colsample_bytree': (0.5, 1),
