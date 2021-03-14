@@ -41,8 +41,12 @@ y = df[[OBJECTIVE_VARIALBLE]].values
 X = df[USE_EXPLANATORY].values
 
 # %% 検証曲線のプロット
-fig, axes = plt.subplots(3, 1, figsize=(6, 12))
-tuning_new = SVMRegressorTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE)
+for learning_algo in LEARNING_METHODS:
+    if learning_algo == 'xgb':
+        tuning_new = xgb_tuning.XGBRegressorTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE)
+    elif learning_algo == 'svm':
+        tuning_new = SVMRegressorTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE)
+fig, axes = plt.subplots(5, 1, figsize=(6, 18))
 tuning_new.plot_first_validation_curve(axes=axes)
 
 # %% チューニング実行

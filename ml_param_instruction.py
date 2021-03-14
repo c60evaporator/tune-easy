@@ -45,7 +45,7 @@ plt.text(35, 10, f'r2={r2_score(y, lr.predict(X))}')  # R2乗値を表示
 # %% 1-2-A) 予測値と実測値
 sns.regplot(lr.predict(X), y, ci=0, scatter_kws={'color':'blue'})  # 目的変数の予測値と実測値をプロット
 plt.xlabel('pred_value [°C]')  # 予測値
-plt.ylabel('real_value [°C]')  # 実測値
+plt.ylabel('true_value [°C]')  # 実測値
 plt.text(0, -10, f'r2={r2_score(y, lr.predict(X))}')  # R2乗値を表示
 
 # %% 1-2-A) 2次元説明変数を3次元プロット
@@ -62,7 +62,7 @@ ax.set_zlabel('temperature [°C]')
 lr.fit(X, y)  # 線形回帰実施
 sns.regplot(lr.predict(X), y, ci=0, scatter_kws={'color':'blue'})  # 目的変数の予測値と実測値をプロット
 plt.xlabel('pred_value [°C]')
-plt.ylabel('real_value [°C]')
+plt.ylabel('true_value [°C]')
 plt.text(0, -10, f'r2={r2_score(y, lr.predict(X))}')  # R2乗値を表示
 
 # %% 1-2-B) 動物の身長と体重

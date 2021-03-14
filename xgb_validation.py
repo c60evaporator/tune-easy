@@ -95,7 +95,7 @@ class XGBRegressorValidation():
         detail_dict = {
             'data_index': test_index.tolist(),
             'pred_value': pred.tolist(),
-            'real_value': y_test[:, 0].tolist(),
+            'true_value': y_test[:, 0].tolist(),
             'error': (y_test[:, 0] - pred).tolist(),
         }
         for i, colname in enumerate(self.X_colnames):
@@ -103,13 +103,13 @@ class XGBRegressorValidation():
 
         return detail_dict
 
-    def _calc_scores(self, real, pred, scores):
+    def _calc_scores(self, true, pred, scores):
         """
         評価指標算出
 
         Parameters
         ----------
-        real : list
+        true : list
             実際の値
         pred : list
             推論値
@@ -119,16 +119,16 @@ class XGBRegressorValidation():
         score_dict = {}
         for score in scores.keys():
             if score == 'r2':
-                score_dict['r2'] = r2_score(real, pred)
+                score_dict['r2'] = r2_score(true, pred)
             elif score == 'rmse':
                 score_dict['rmse'] = mean_squared_error(
-                    real, pred, squared=False)
+                    true, pred, squared=False)
             elif score == 'rmsle':
                 score_dict['rmsle'] = np.sqrt(mean_squared_log_error(
-                    real, pred))
+                    true, pred))
             elif score == 'maxerror':
                 score_dict['maxerror'] = max(
-                    [abs(p - r) for r, p in zip(real, pred)])
+                    [abs(p - r) for r, p in zip(true, pred)])
         return score_dict
 
     def cross_validation(self, params, scores=SCORES, train_seed=SEED, cv_seed=SEED, cv=CV_NUM, early_stopping_rounds=EARLY_STOPPING_ROUNDS):
@@ -169,7 +169,7 @@ class XGBRegressorValidation():
                 X_train, X_test, y_train, y_test, test_index, params, early_stopping_rounds=early_stopping_rounds)
             # 評価指標算出
             score_dict = self._calc_scores(
-                detail_dict['real_value'], detail_dict['pred_value'], scores)
+                detail_dict['true_value'], detail_dict['pred_value'], scores)
             # 結果をDataFrameに格納
             df_score = pd.DataFrame([score_dict])  # 指標
             df_score.insert(0, 'cv_cnt', cv_cnt)
@@ -232,7 +232,7 @@ class XGBRegressorValidation():
         # 全ての推論結果を結合
         validation_detail = pd.concat(detail_list, ignore_index=True)
         # 評価指標算出(分割ごとに算出するcross_validationメソッドと異なり、全ての推論値と正解値から一括算出する)
-        score_dict = self._calc_scores(validation_detail['real_value'].values.tolist(
+        score_dict = self._calc_scores(validation_detail['true_value'].values.tolist(
         ), validation_detail['pred_value'].values.tolist(), scores)
         validation_score = pd.DataFrame([score_dict])
         print(score_dict)
