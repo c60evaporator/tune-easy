@@ -86,7 +86,7 @@ class ParamTuning():
     
     def _train_param_generation(self, src_fit_params):
         """
-        入力データから学習時パラメータの生成（例: XGBoostのeval_list）
+        入力データから学習時パラメータの生成 (例: XGBoostのeval_list)
         通常はデフォルトのままだが、必要であれば継承先でオーバーライド
 
         Parameters
@@ -95,6 +95,18 @@ class ParamTuning():
             処理前の学習時パラメータ
         """
         return src_fit_params
+    
+    def _tuning_param_generation(self, src_params):
+        """
+        入力データからチューニング用パラメータの生成 (例: ランダムフォレストのmax_features)
+        通常はデフォルトのままだが、必要であれば継承先でオーバーライド
+
+        Parameters
+        ----------
+        src_params : Dict
+            処理前のチューニング用パラメータ
+        """
+        return src_params
     
     def _set_argument_to_property(self, cv_model, tuning_params, cv, seed, scoring, fit_params):
         """
@@ -191,6 +203,8 @@ class ParamTuning():
         # 乱数シードをcv_paramsに追加
         if 'random_state' in cv_params:
             cv_params['random_state'] = [seed]
+        # 入力データからチューニング用パラメータの生成
+        cv_params = self._tuning_param_generation(cv_params)
         # 学習データから生成されたパラメータの追加
         fit_params = self._train_param_generation(fit_params)
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
@@ -270,10 +284,12 @@ class ParamTuning():
             fit_params = self.FIT_PARAMS
             if 'verbose' in fit_params.keys():
                 fit_params['verbose'] = 0
-
+        
         # 乱数シードをcv_paramsに追加
         if 'random_state' in cv_params:
             cv_params['random_state'] = [seed]
+        # 入力データからチューニング用パラメータの生成
+        cv_params = self._tuning_param_generation(cv_params)
         # 学習データから生成されたパラメータの追加
         fit_params = self._train_param_generation(fit_params)
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
@@ -385,6 +401,8 @@ class ParamTuning():
         # 乱数シードをbayes_not_opt_paramsに追加
         if 'random_state' in bayes_not_opt_params:
             bayes_not_opt_params['random_state'] = seed
+        # 入力データからチューニング用パラメータの生成
+        bayes_params = self._tuning_param_generation(bayes_params)
         # 学習データから生成されたパラメータの追加
         fit_params = self._train_param_generation(fit_params)
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
@@ -589,6 +607,8 @@ class ParamTuning():
         # 乱数シードをnot_opt_paramsに追加
         if 'random_state' in not_opt_params:
             not_opt_params['random_state'] = seed
+        # 入力データからチューニング用パラメータの生成
+        validation_curve_params = self._tuning_param_generation(validation_curve_params)
         # 学習データから生成されたパラメータの追加
         fit_params = self._train_param_generation(fit_params)
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
@@ -661,6 +681,8 @@ class ParamTuning():
             validation_curve_scales = self.VALIDATION_CURVE_SCALES
         if cv_model == None:
             cv_model = copy.deepcopy(self.CV_MODEL)
+        # 入力データからチューニング用パラメータの生成
+        validation_curve_params = self._tuning_param_generation(validation_curve_params)
         # パイプライン処理のとき、最後の要素から学習器名を取得
         self._get_learner_name(cv_model)
         # パイプライン処理のとき、パラメータに学習器名を追加
@@ -720,6 +742,8 @@ class ParamTuning():
             validation_curve_params = self.VALIDATION_CURVE_PARAMS
         if validation_curve_scales == None:
             validation_curve_scales = self.VALIDATION_CURVE_SCALES
+        # 入力データからチューニング用パラメータの生成
+        validation_curve_params = self._tuning_param_generation(validation_curve_params)
         # パイプライン処理のとき、パラメータに学習器名を追加
         validation_curve_params = self._add_learner_name(self.cv_model, validation_curve_params)
         validation_curve_scales = self._add_learner_name(self.cv_model, validation_curve_scales)
