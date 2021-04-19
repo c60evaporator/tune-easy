@@ -195,4 +195,15 @@ for C in [10, 1, 0.1]:  # Cを変えてループ
     legend_int_to_str(ax, y)
     plt.text(np.amax(X[:, 0]), np.amin(X[:, 1]), f'gamma={model.gamma}, C={model.C}', verticalalignment='bottom', horizontalalignment='right')  # gammaとCを表示
     plt.show()
-# %% gammaと
+# %% 回帰可視化Qiita記事用
+import seaborn as sns
+iris = sns.load_dataset("iris")
+from rf_tuning import RFRegressorTuning
+X = iris[['petal_length']].values
+y = iris['sepal_length'].values
+tuning = RFRegressorTuning(X, y, ['petal_length'], y_colname='sepal_length')
+tuning.plot_first_validation_curve(cv=2) # 検証曲線のプロット
+best_params, best_score, elapsed_time = tuning.bayes_opt_tuning(cv=2) #チューニング実行
+tuning.plot_best_learning_curve() # 学習曲線
+tuning.plot_best_validation_curve() # 検証曲線
+# %%
