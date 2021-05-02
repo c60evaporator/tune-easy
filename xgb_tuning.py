@@ -1,5 +1,6 @@
 from param_tuning import ParamTuning
 from sklearn.model_selection import cross_val_score
+from sklearn.metrics import check_scoring
 import copy
 import xgboost as xgb
 
@@ -76,6 +77,14 @@ class XGBRegressorTuning(ParamTuning):
                                'colsample_bytree': 'linear',
                                'subsample': 'linear'
                                }
+    
+    def _additional_init(self, eval_from_test = False, **kwargs):
+        """
+        初期化時の追加処理
+        """
+        # eval_dataをテストデータから取得
+        self.eval_from_test = eval_from_test
+        return
 
     def _train_param_generation(self, src_fit_params):
         """
@@ -113,26 +122,28 @@ class XGBRegressorTuning(ParamTuning):
         cv_model.set_params(**params)
 
         # cross_val_scoreでクロスバリデーション
-        scores = cross_val_score(cv_model, self.X, self.y, cv=self.cv,
-                                 scoring=self.scoring, fit_params=self.fit_params, n_jobs=-1)
-        val = scores.mean()
+        if not self.eval_from_test:
+            scores = cross_val_score(cv_model, self.X, self.y, cv=self.cv,
+                                    scoring=self.scoring, fit_params=self.fit_params, n_jobs=-1)
+            val = scores.mean()
 
         # スクラッチでクロスバリデーション
-        # scores = []
-        # for train, test in self.cv.split(self.X, self.y):
-        #     X_train = self.X[train]
-        #     y_train = self.y[train]
-        #     X_test = self.X[test]
-        #     y_test = self.y[test]
-        #     cv_model.fit(X_train,
-        #              y_train,
-        #              eval_set=[(X_train, y_train)],
-        #              early_stopping_rounds=self.early_stopping_rounds,
-        #              verbose=0
-        #              )
-        #     pred = cv_model.predict(X_test)
-        #     score = r2_score(y_test, pred)
-        #     scores.append(score)
-        # val = sum(scores)/len(scores)
+        else:
+            scores = []
+            for train, test in self.cv.split(self.X, self.y):
+                X_train = self.X[train]
+                y_train = self.y[train]
+                X_test = self.X[test]
+                y_test = self.y[test]
+                # eval_setにテストデータを使用
+                fit_params = self.fit_params
+                fit_params['eval_set'] = [(X_test, y_test)]
+                # 学習
+                cv_model.fit(X_train, y_train,
+                             **fit_params)
+                scorer = check_scoring(cv_model, self.scoring)
+                score = scorer(cv_model, X_test, y_test)
+                scores.append(score)
+            val = sum(scores)/len(scores)
 
         return val

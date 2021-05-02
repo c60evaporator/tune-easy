@@ -52,7 +52,13 @@ class ParamTuning():
     VALIDATION_CURVE_PARAMS = {}  # パラメータ範囲
     VALIDATION_CURVE_SCALES = {}  # 検証曲線表示時のスケール('linear', 'log')
 
-    def __init__(self, X, y, X_colnames, y_colname=None):
+    def _additional_init(self, **kwargs):
+        """
+        初期化時の追加処理 (継承先で記述)
+        """
+        pass
+
+    def __init__(self, X, y, X_colnames, y_colname=None, **kwargs):
         """
         初期化
 
@@ -83,6 +89,8 @@ class ParamTuning():
         self.fit_params = None  # 学習時のパラメータ
         self.best_params = None  # 最適パラメータ
         self.best_estimator_ = None  # 最適化された学習モデル
+        # 追加処理
+        self._additional_init(**kwargs)
     
     def _train_param_generation(self, src_fit_params):
         """

@@ -20,7 +20,7 @@ SCORING = 'neg_mean_squared_error'
 # パラメータ最適化の手法(grid, random, bayes, optuna)
 PARAM_TUNING_METHODS = ['bayes']
 # 学習器の種類(xgb_old, xgb, xgb_pipe, svm)
-LEARNING_METHODS = ['svm']
+LEARNING_METHODS = ['xgb']
 # 最適化で使用する乱数シード一覧
 SEEDS = [42]
 
@@ -47,7 +47,7 @@ for learning_algo in LEARNING_METHODS:
     elif learning_algo == 'svm':
         tuning_new = SVMRegressorTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE)
 fig, axes = plt.subplots(5, 1, figsize=(6, 18))
-tuning_new.plot_first_validation_curve(axes=axes)
+#tuning_new.plot_first_validation_curve(axes=axes)
 
 # %% チューニング実行
 def xgb_reg_test_old(tuning_algo):
@@ -63,7 +63,7 @@ def xgb_reg_test_old(tuning_algo):
 
 def xgb_reg_test(tuning_algo):
     # パラメータ最適化クラス (新)
-    tuning_new = xgb_tuning.XGBRegressorTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE)
+    tuning_new = xgb_tuning.XGBRegressorTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE, eval_from_test=True)
     if tuning_algo == 'grid':
         best_params_new, best_score_new, elapsed_time_new = tuning_new.grid_search_tuning()
     elif tuning_algo == 'random':
