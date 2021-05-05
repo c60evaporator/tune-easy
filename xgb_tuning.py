@@ -138,11 +138,24 @@ class XGBRegressorTuning(ParamTuning):
                 # eval_setにテストデータを使用
                 fit_params = self.fit_params
                 fit_params['eval_set'] = [(X_test, y_test)]
+                fit_params['verbose'] = 0
                 # 学習
                 cv_model.fit(X_train, y_train,
                              **fit_params)
                 scorer = check_scoring(cv_model, self.scoring)
                 score = scorer(cv_model, X_test, y_test)
+
+                # Learning API -> Scikit-learn APIとデフォルトパラメータが異なり結果が変わるので不使用
+                # dtrain = xgb.DMatrix(X_train, label=y_train)
+                # dtest = xgb.DMatrix(X_test, label=y_test)
+                # evals = [(dtrain, 'train'), (dtest, 'eval')]
+                # d_fit_params = {k: v for k, v in fit_params.items()}
+                # d_fit_params['num_boost_round'] = 1000
+                # d_fit_params.pop('eval_set')
+                # d_fit_params.pop('verbose')
+                # dmodel = xgb.train(params, dtrain, evals=evals, **d_fit_params)
+                # pred2 = dmodel.predict(dtest)
+                
                 scores.append(score)
             val = sum(scores)/len(scores)
 
