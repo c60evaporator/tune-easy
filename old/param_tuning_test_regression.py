@@ -1,17 +1,18 @@
 # %%ライブラリとデータ読込
+import sys
+import os
+sys.path.append(os.path.abspath(".."))  # 親ディレクトリからライブラリ読込
 from svm_tuning import SVMRegressorTuning
-from xgb_param_tuning import XGBRegressorTuning
+from old.xgb_param_tuning import XGBRegressorTuning
 import xgb_tuning
-from xgb_validation import XGBRegressorValidation
+from old.xgb_validation import XGBRegressorValidation
 import pandas as pd
 import numpy as np
 from datetime import datetime
-import os
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 import xgboost as xgb
 import matplotlib.pyplot as plt
-
 
 # 結果出力先
 OUTPUT_DIR = f"{os.getenv('HOMEDRIVE')}{os.getenv('HOMEPATH')}\Desktop"
@@ -20,7 +21,7 @@ SCORING = 'neg_mean_squared_error'
 # パラメータ最適化の手法(grid, random, bayes, optuna)
 PARAM_TUNING_METHODS = ['bayes']
 # 学習器の種類(xgb_old, xgb, xgb_pipe, svm)
-LEARNING_METHODS = ['xgb']
+LEARNING_METHODS = ['xgb_old', 'xgb']
 # 最適化で使用する乱数シード一覧
 SEEDS = [42]
 
@@ -35,7 +36,7 @@ USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio',
 # 現在時刻
 dt_now = datetime.now().strftime('%Y%m%d%H%M%S')
 # データ読込
-df = pd.read_csv(f'./osaka_metropolis_english.csv')
+df = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
 # 目的変数と説明変数を取得（pandasではなくndarrayに変換）
 y = df[[OBJECTIVE_VARIALBLE]].values
 X = df[USE_EXPLANATORY].values
@@ -69,7 +70,7 @@ def xgb_reg_test(tuning_algo):
     elif tuning_algo == 'random':
         best_params_new, best_score_new, elapsed_time_new = tuning_new.random_search_tuning()
     elif tuning_algo == 'bayes':
-        best_params_new, best_score_new, elapsed_time_new = tuning_new.bayes_opt_tuning()
+        best_params_new, best_score_new, elapsed_time_new = tuning_new.bayes_opt_tuning(n_iter=10, cv=2)
     return best_params_new, best_score_new, elapsed_time_new, tuning_new
 
 
