@@ -153,4 +153,16 @@ for validation_dict in validation_curve_list:
 for validation_dict in validation_curve_list:
     fig, axes = plt.subplots(5, 1, figsize=(6, 18))
     validation_dict['tuning_instance'].plot_best_validation_curve(axes=axes)
+
+# %% 回帰可視化Qiita記事用
+import seaborn as sns
+iris = sns.load_dataset("iris")
+from rf_tuning import RFRegressorTuning
+X = iris[['petal_width', 'petal_length']].values
+y = iris['sepal_length'].values
+tuning = RFRegressorTuning(X, y, ['petal_width', 'petal_length'], y_colname='sepal_length')
+tuning.plot_first_validation_curve(cv=2) # 検証曲線のプロット
+best_params, best_score, elapsed_time = tuning.bayes_opt_tuning(cv=2) #チューニング実行
+tuning.plot_best_learning_curve() # 学習曲線
+tuning.plot_best_validation_curve() # 検証曲線
 # %%
