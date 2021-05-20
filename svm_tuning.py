@@ -57,8 +57,8 @@ class SVMRegressorTuning(ParamTuning):
                       'C': [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100],
                       'epsilon': [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5]
                     }
-    # 検証曲線表示時のスケール('linear', 'log')
-    VALIDATION_CURVE_SCALES = {'gamma': 'log',
+    # 検証曲線表示等で使用するパラメータのスケール('linear', 'log')
+    PARAM_SCALES = {'gamma': 'log',
                       'C': 'log',
                       'epsilon': 'linear'
                       }
@@ -87,7 +87,7 @@ class SVMRegressorTuning(ParamTuning):
         params.update(self.bayes_not_opt_params)  # 最適化対象以外のパラメータも追加
         # パイプライン処理のとき、パラメータに学習器名を追加
         params = self._add_learner_name(self.cv_model, params)
-        # XGBoostのモデル作成
+        # SVRのモデル作成
         cv_model = copy.deepcopy(self.cv_model)
         cv_model.set_params(**params)
 
@@ -165,6 +165,10 @@ class SVMClassifierTuning(ParamTuning):
     VALIDATION_CURVE_PARAMS = {'gamma': (0.01, 10),
                     'C': (0.1, 10)
                     }
+    # 検証曲線表示等で使用するパラメータのスケール('linear', 'log')
+    PARAM_SCALES = {'gamma': 'log',
+                    'C': 'log'
+                    }
 
     def _train_param_generation(self, src_fit_params):
         """
@@ -189,7 +193,7 @@ class SVMClassifierTuning(ParamTuning):
         params.update(self.bayes_not_opt_params)  # 最適化対象以外のパラメータも追加
         # パイプライン処理のとき、パラメータに学習器名を追加
         params = self._add_learner_name(self.cv_model, params)
-        # XGBoostのモデル作成
+        # SVMのモデル作成
         cv_model = copy.deepcopy(self.cv_model)
         cv_model.set_params(**params)
 

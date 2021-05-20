@@ -65,12 +65,12 @@ class RFRegressorTuning(ParamTuning):
                         'min_samples_leaf': [1, 2, 4, 6, 8, 12, 16]
                         }
     # 検証曲線表示時のスケール('linear', 'log')
-    VALIDATION_CURVE_SCALES = {'n_estimators': 'log',
-                               'max_features': 'linear',
-                               'max_depth': 'log',
-                               'min_samples_split': 'linear',
-                               'min_samples_leaf': 'linear'
-                               }
+    PARAM_SCALES = {'n_estimators': 'log',
+                    'max_features': 'linear',
+                    'max_depth': 'log',
+                    'min_samples_split': 'linear',
+                    'min_samples_leaf': 'linear'
+                    }
 
     def _tuning_param_generation(self, src_params):
         """

@@ -32,7 +32,7 @@ class XGBRegressorTuning(ParamTuning):
                       }
 
     # グリッドサーチ用パラメータ
-    CV_PARAMS_GRID = {'learning_rate': [0.1, 0.3, 0.5],  # 過学習のバランス(高いほど過学習寄り、低いほど汎化寄り)
+    CV_PARAMS_GRID = {'learning_rate': [0.1, 0.3, 0.5],  # 過学習のバランス(高いほど過学習寄り、低いほど汎化寄り）別名eta
                       'min_child_weight': [1, 5, 15],  # 葉に割り当てるスコアwiの合計の最小値。これを下回った場合、それ以上の分割を行わない
                       'max_depth': [3, 5, 7],  # 木の深さの最大値
                       'colsample_bytree': [0.5, 0.8, 1.0],  # 列のサブサンプリングを行う比率
@@ -70,8 +70,8 @@ class XGBRegressorTuning(ParamTuning):
                         'colsample_bytree': [0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
                         'subsample': [0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
                         }
-    # 検証曲線表示時のスケール('linear', 'log')
-    VALIDATION_CURVE_SCALES = {'learning_rate': 'linear',
+    # 検証曲線表示等で使用するパラメータのスケール('linear', 'log')
+    PARAM_SCALES = {'learning_rate': 'linear',
                                'min_child_weight': 'linear',
                                'max_depth': 'linear',
                                'colsample_bytree': 'linear',
