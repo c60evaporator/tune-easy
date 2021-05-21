@@ -102,17 +102,12 @@ class XGBRegressorTuning(ParamTuning):
 
         return src_fit_params
 
-    def _bayes_evaluate(self, learning_rate, min_child_weight, subsample, colsample_bytree, max_depth):
+    def _bayes_evaluate(self, **kwargs):
         """
          ベイズ最適化時の評価指標算出メソッド
         """
         # 最適化対象のパラメータ
-        params = {'learning_rate': learning_rate,
-                  'min_child_weight': min_child_weight,
-                  'max_depth': max_depth,
-                  'colsample_bytree': colsample_bytree,
-                  'subsample': subsample,
-                  }
+        params = kwargs
         params = self._int_conversion(params, self.int_params)  # 整数パラメータはint型に変換
         params.update(self.bayes_not_opt_params)  # 最適化対象以外のパラメータも追加
         # パイプライン処理のとき、パラメータに学習器名を追加

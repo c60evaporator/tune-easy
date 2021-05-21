@@ -36,8 +36,8 @@ class SVMRegressorTuning(ParamTuning):
     # ランダムサーチ用パラメータ
     N_ITER_RANDOM = 200  # ランダムサーチの繰り返し回数
     CV_PARAMS_RANDOM = {'gamma': [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10],
-                      'C': [0.1, 0.2, 0.5, 1, 2, 5, 10],
-                      'epsilon': [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
+                        'C': [0.1, 0.2, 0.5, 1, 2, 5, 10],
+                        'epsilon': [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
                         }
     CV_PARAMS_RANDOM.update(NOT_OPT_PARAMS)  # 最適化対象外パラメータを追加
 
@@ -59,9 +59,9 @@ class SVMRegressorTuning(ParamTuning):
                     }
     # 検証曲線表示等で使用するパラメータのスケール('linear', 'log')
     PARAM_SCALES = {'gamma': 'log',
-                      'C': 'log',
-                      'epsilon': 'linear'
-                      }
+                    'C': 'log',
+                    'epsilon': 'linear'
+                    }
 
     def _train_param_generation(self, src_fit_params):
         """
@@ -74,15 +74,12 @@ class SVMRegressorTuning(ParamTuning):
         """
         return src_fit_params
 
-    def _bayes_evaluate(self, gamma, C, epsilon):
+    def _bayes_evaluate(self, **kwargs):
         """
          ベイズ最適化時の評価指標算出メソッド
         """
         # 最適化対象のパラメータ
-        params = {'gamma': gamma,
-                  'C': C,
-                  'epsilon': epsilon
-                  }
+        params = kwargs
         params = self._int_conversion(params, self.int_params)  # 整数パラメータはint型に変換
         params.update(self.bayes_not_opt_params)  # 最適化対象以外のパラメータも追加
         # パイプライン処理のとき、パラメータに学習器名を追加
@@ -95,24 +92,6 @@ class SVMRegressorTuning(ParamTuning):
         scores = cross_val_score(cv_model, self.X, self.y, cv=self.cv,
                                  scoring=self.scoring, fit_params=self.fit_params, n_jobs=-1)
         val = scores.mean()
-
-        # スクラッチでクロスバリデーション
-        # scores = []
-        # for train, test in self.cv.split(self.X, self.y):
-        #     X_train = self.X[train]
-        #     y_train = self.y[train]
-        #     X_test = self.X[test]
-        #     y_test = self.y[test]
-        #     cv_model.fit(X_train,
-        #              y_train,
-        #              eval_set=[(X_train, y_train)],
-        #              early_stopping_rounds=self.early_stopping_rounds,
-        #              verbose=0
-        #              )
-        #     pred = cv_model.predict(X_test)
-        #     score = r2_score(y_test, pred)
-        #     scores.append(score)
-        # val = sum(scores)/len(scores)
 
         return val
 
@@ -147,7 +126,7 @@ class SVMClassifierTuning(ParamTuning):
     # ランダムサーチ用パラメータ
     N_ITER_RANDOM = 200  # ランダムサーチの繰り返し回数
     CV_PARAMS_RANDOM = {'gamma': [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10],
-                      'C': [0.1, 0.2, 0.5, 1, 2, 5, 10]
+                        'C': [0.1, 0.2, 0.5, 1, 2, 5, 10]
                         }
     CV_PARAMS_RANDOM.update(NOT_OPT_PARAMS)
 
@@ -163,8 +142,8 @@ class SVMClassifierTuning(ParamTuning):
 
     # 範囲選択検証曲線用パラメータ範囲
     VALIDATION_CURVE_PARAMS = {'gamma': (0.01, 10),
-                    'C': (0.1, 10)
-                    }
+                               'C': (0.1, 10)
+                               }
     # 検証曲線表示等で使用するパラメータのスケール('linear', 'log')
     PARAM_SCALES = {'gamma': 'log',
                     'C': 'log'
@@ -181,14 +160,12 @@ class SVMClassifierTuning(ParamTuning):
         """
         return src_fit_params
 
-    def _bayes_evaluate(self, gamma, C):
+    def _bayes_evaluate(self, **kwargs):
         """
          ベイズ最適化時の評価指標算出メソッド
         """
         # 最適化対象のパラメータ
-        params = {'gamma': gamma,
-                  'C': C
-                  }
+        params = kwargs
         params = self._int_conversion(params, self.int_params)  # 整数パラメータはint型に変換
         params.update(self.bayes_not_opt_params)  # 最適化対象以外のパラメータも追加
         # パイプライン処理のとき、パラメータに学習器名を追加

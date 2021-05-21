@@ -106,17 +106,12 @@ class RFRegressorTuning(ParamTuning):
             src_params['max_features'] = dst_max_features
         return src_params
 
-    def _bayes_evaluate(self, n_estimators, max_features, max_depth, min_samples_split, min_samples_leaf):
+    def _bayes_evaluate(self, **kwargs):
         """
         ベイズ最適化時の評価指標算出メソッド
         """
         # 最適化対象のパラメータ
-        params = {'n_estimators': n_estimators,
-                  'max_features': max_features,
-                  'max_depth': max_depth,
-                  'min_samples_split': min_samples_split,
-                  'min_samples_leaf': min_samples_leaf,
-                  }
+        params = kwargs
         params = self._int_conversion(params, self.int_params)  # 整数パラメータはint型に変換
         params.update(self.bayes_not_opt_params)  # 最適化対象以外のパラメータも追加
         # パイプライン処理のとき、パラメータに学習器名を追加
