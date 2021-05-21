@@ -21,7 +21,7 @@ SCORING = 'neg_mean_squared_error'
 # パラメータ最適化の手法(grid, random, bayes, optuna)
 PARAM_TUNING_METHODS = ['bayes']
 # 学習器の種類(xgb_old, xgb, xgb_pipe, svm)
-LEARNING_METHODS = ['xgb_old', 'xgb']
+LEARNING_METHODS = ['xgb']
 # 最適化で使用する乱数シード一覧
 SEEDS = [42]
 
@@ -64,7 +64,7 @@ def xgb_reg_test_old(tuning_algo):
 
 def xgb_reg_test(tuning_algo):
     # パラメータ最適化クラス (新)
-    tuning_new = xgb_tuning.XGBRegressorTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE, eval_from_test=True)
+    tuning_new = xgb_tuning.XGBRegressorTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE, eval_data_source='all')
     if tuning_algo == 'grid':
         best_params_new, best_score_new, elapsed_time_new = tuning_new.grid_search_tuning()
     elif tuning_algo == 'random':

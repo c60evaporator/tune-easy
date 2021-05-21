@@ -52,7 +52,7 @@ class XGBRegressorTuning(ParamTuning):
 
     # ベイズ最適化用パラメータ
     N_ITER_BAYES = 100  # ベイズ最適化の繰り返し回数
-    INIT_POINTS = 20  # 初期観測点の個数(ランダムな探索を何回行うか)
+    INIT_POINTS = 10  # 初期観測点の個数(ランダムな探索を何回行うか)
     ACQ = 'ei'  # 獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
     BAYES_PARAMS = {'learning_rate': (0.1, 0.3),
                     'min_child_weight': (1, 15),
@@ -72,18 +72,24 @@ class XGBRegressorTuning(ParamTuning):
                         }
     # 検証曲線表示等で使用するパラメータのスケール('linear', 'log')
     PARAM_SCALES = {'learning_rate': 'linear',
-                               'min_child_weight': 'linear',
-                               'max_depth': 'linear',
-                               'colsample_bytree': 'linear',
-                               'subsample': 'linear'
-                               }
+                    'min_child_weight': 'linear',
+                    'max_depth': 'linear',
+                    'colsample_bytree': 'linear',
+                    'subsample': 'linear'
+                    }
     
-    def _additional_init(self, eval_from_test = False, **kwargs):
+    def _additional_init(self, eval_data_source = 'all', **kwargs):
         """
         初期化時の追加処理
+        
+        Parameters
+        ----------
+        eval_data_source : str
+            XGBoostのfit_paramsに渡すeval_setのデータ
+            'all'なら全データ、'valid'ならテストデータ、'train'なら学習データ
         """
         # eval_dataをテストデータから取得
-        self.eval_from_test = eval_from_test
+        self.eval_data_source = eval_data_source
         return
 
     def _train_param_generation(self, src_fit_params):
@@ -116,42 +122,15 @@ class XGBRegressorTuning(ParamTuning):
         cv_model = copy.deepcopy(self.cv_model)
         cv_model.set_params(**params)
 
-        # cross_val_scoreでクロスバリデーション
-        if not self.eval_from_test:
+        # eval_data_sourceに全データ指定時(cross_val_scoreでクロスバリデーション)
+        if self.eval_data_source == 'all':
             scores = cross_val_score(cv_model, self.X, self.y, cv=self.cv,
                                     scoring=self.scoring, fit_params=self.fit_params, n_jobs=-1)
             val = scores.mean()
 
-        # スクラッチでクロスバリデーション
+        # eval_data_sourceに学習orテストデータ指定時(スクラッチでクロスバリデーション)
         else:
-            scores = []
-            for train, test in self.cv.split(self.X, self.y):
-                X_train = self.X[train]
-                y_train = self.y[train]
-                X_test = self.X[test]
-                y_test = self.y[test]
-                # eval_setにテストデータを使用
-                fit_params = self.fit_params
-                fit_params['eval_set'] = [(X_test, y_test)]
-                fit_params['verbose'] = 0
-                # 学習
-                cv_model.fit(X_train, y_train,
-                             **fit_params)
-                scorer = check_scoring(cv_model, self.scoring)
-                score = scorer(cv_model, X_test, y_test)
-
-                # Learning API -> Scikit-learn APIとデフォルトパラメータが異なり結果が変わるので不使用
-                # dtrain = xgb.DMatrix(X_train, label=y_train)
-                # dtest = xgb.DMatrix(X_test, label=y_test)
-                # evals = [(dtrain, 'train'), (dtest, 'eval')]
-                # d_fit_params = {k: v for k, v in fit_params.items()}
-                # d_fit_params['num_boost_round'] = 1000
-                # d_fit_params.pop('eval_set')
-                # d_fit_params.pop('verbose')
-                # dmodel = xgb.train(params, dtrain, evals=evals, **d_fit_params)
-                # pred2 = dmodel.predict(dtest)
-                
-                scores.append(score)
+            scores = self._scratch_cross_val(cv_model, self.eval_data_source)
             val = sum(scores)/len(scores)
 
         return val

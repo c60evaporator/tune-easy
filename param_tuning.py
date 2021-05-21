@@ -1,5 +1,6 @@
 from abc import abstractmethod
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV, KFold, validation_curve, learning_curve
+from sklearn.metrics import check_scoring
 from sklearn.pipeline import Pipeline
 from bayes_opt import BayesianOptimization
 import time
@@ -171,6 +172,44 @@ class ParamTuning():
                 return ctx.create_decimal(src)
         elif method == 'format':
             return '{:.{width}g}'.format(src, width=rounddigit)
+
+    def _scratch_cross_val(self, cv_model, eval_data_source):
+        scores = []
+        for train, test in self.cv.split(self.X, self.y):
+            X_train = self.X[train]
+            y_train = self.y[train]
+            X_test = self.X[test]
+            y_test = self.y[test]
+            # fitメソッド実行時のパラメータ指定
+            fit_params = self.fit_params
+            fit_params['verbose'] = 0
+            # eval_setにテストデータを使用
+            if eval_data_source == 'valid':
+                fit_params['eval_set'] = [(X_test, y_test)]
+            # eval_setに学習データを使用
+            elif eval_data_source == 'train':
+                fit_params['eval_set'] = [(X_train, y_train)]
+            else:
+                raise Exception('the "eval_data_source" argument must be "all", "valid", or "train"')
+            # 学習
+            cv_model.fit(X_train, y_train,
+                            **fit_params)
+            scorer = check_scoring(cv_model, self.scoring)
+            score = scorer(cv_model, X_test, y_test)
+
+            # Learning API -> Scikit-learn APIとデフォルトパラメータが異なり結果が変わるので不使用
+            # dtrain = xgb.DMatrix(X_train, label=y_train)
+            # dtest = xgb.DMatrix(X_test, label=y_test)
+            # evals = [(dtrain, 'train'), (dtest, 'eval')]
+            # d_fit_params = {k: v for k, v in fit_params.items()}
+            # d_fit_params['num_boost_round'] = 1000
+            # d_fit_params.pop('eval_set')
+            # d_fit_params.pop('verbose')
+            # dmodel = xgb.train(params, dtrain, evals=evals, **d_fit_params)
+            # pred2 = dmodel.predict(dtest)
+            
+            scores.append(score)
+        return scores
 
     def grid_search_tuning(self, cv_model=None, cv_params=None, cv=None, seed=None, scoring=None, **fit_params):
         """
