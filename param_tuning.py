@@ -88,6 +88,8 @@ class ParamTuning():
         self.learner_name = None  # パイプライン処理時の学習器名称
         self.fit_params = None  # 学習時のパラメータ
         self.best_params = None  # 最適パラメータ
+        self.best_score = None  # 最高スコア
+        self.elapsed_time = None  # 所要時間
         self.best_estimator_ = None  # 最適化された学習モデル
         # 追加処理
         self._additional_init(**kwargs)
@@ -237,16 +239,17 @@ class ParamTuning():
                self.y,
                **fit_params
                )
-        elapsed_time = time.time() - start
-
+        self.elapsed_time = time.time() - start
+        
         # 最適パラメータの表示と保持
         print('最適パラメータ ' + str(gridcv.best_params_))
         self.best_params = gridcv.best_params_
+        self.best_score = gridcv.best_score_
         # 最適モデルの保持
         self.best_estimator_ = gridcv.best_estimator_
 
         # グリッドサーチでの探索結果を返す
-        return gridcv.best_params_, gridcv.best_score_, elapsed_time
+        return gridcv.best_params_, gridcv.best_score_, self.elapsed_time
 
     def random_search_tuning(self, cv_model=None, cv_params=None, cv=None, seed=None, scoring=None,
                              n_iter=None, **fit_params):
@@ -322,16 +325,17 @@ class ParamTuning():
                self.y,
                **fit_params
                )
-        elapsed_time = time.time() - start
-
+        self.elapsed_time = time.time() - start
+        
         # 最適パラメータの表示と保持
         print('最適パラメータ ' + str(randcv.best_params_))
         self.best_params = randcv.best_params_
+        self.best_score = randcv.rand_score_
         # 最適モデルの保持
         self.best_estimator_ = randcv.best_estimator_
 
         # ランダムサーチで探索した最適パラメータ、最適スコア、所要時間を返す
-        return randcv.best_params_, randcv.best_score_, elapsed_time
+        return randcv.best_params_, randcv.best_score_, self.elapsed_time
 
     @abstractmethod
     def _bayes_evaluate(self):
@@ -430,7 +434,7 @@ class ParamTuning():
         bo = BayesianOptimization(
             self._bayes_evaluate, bayes_params, random_state=seed)
         bo.maximize(init_points=init_points, n_iter=n_iter, acq=acq)
-        elapsed_time = time.time() - start
+        self.elapsed_time = time.time() - start
 
         # 評価指標が最大となったときのパラメータを取得
         best_params = bo.max['params']
@@ -454,7 +458,7 @@ class ParamTuning():
                   )
         self.best_estimator_ = best_model
         # ベイズ最適化で探索した最適パラメータ、評価指標最大値、所要時間を返す
-        return best_params, best_score, elapsed_time
+        return best_params, best_score, self.elapsed_time
 
 
     def get_feature_importances(self):

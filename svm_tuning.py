@@ -178,23 +178,5 @@ class SVMClassifierTuning(ParamTuning):
         scores = cross_val_score(cv_model, self.X, self.y, cv=self.cv,
                                  scoring=self.scoring, fit_params=self.fit_params, n_jobs=-1)
         val = scores.mean()
-
-        # スクラッチでクロスバリデーション
-        # scores = []
-        # for train, test in self.cv.split(self.X, self.y):
-        #     X_train = self.X[train]
-        #     y_train = self.y[train]
-        #     X_test = self.X[test]
-        #     y_test = self.y[test]
-        #     cv_model.fit(X_train,
-        #              y_train,
-        #              eval_set=[(X_train, y_train)],
-        #              early_stopping_rounds=self.early_stopping_rounds,
-        #              verbose=0
-        #              )
-        #     pred = cv_model.predict(X_test)
-        #     score = r2_score(y_test, pred)
-        #     scores.append(score)
-        # val = sum(scores)/len(scores)
-
+        
         return val
