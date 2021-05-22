@@ -2,6 +2,7 @@ from abc import abstractmethod
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV, KFold, validation_curve, learning_curve
 from sklearn.metrics import check_scoring
 from sklearn.pipeline import Pipeline
+from sklearn.ensemble import RandomForestRegressor
 from bayes_opt import BayesianOptimization
 import time
 import numbers
@@ -11,6 +12,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
+import seaborn as sns
 
 class ParamTuning():
     """
@@ -83,15 +85,18 @@ class ParamTuning():
         self.tuning_params = None  # チューニング対象のパラメータとその範囲
         self.bayes_not_opt_params = None  # チューニング非対象のパラメータ
         self.int_params = None  # 整数型のパラメータのリスト(ベイズ最適化時は都度int型変換する)
+        self.param_scales = None  # パラメータのスケール('linear', 'log')
         self.seed = None  # 乱数シード
         self.cv = None  # クロスバリデーション分割法
         self.cv_model = None  # 最適化対象の学習器インスタンス
         self.learner_name = None  # パイプライン処理時の学習器名称
         self.fit_params = None  # 学習時のパラメータ
+        self.algo_name = None  # 最後に最適化に使用したアルゴリズム名('grid', 'random', 'bayes-opt', 'optuna')
         self.best_params = None  # 最適パラメータ
         self.best_score = None  # 最高スコア
         self.elapsed_time = None  # 所要時間
-        self.best_estimator_ = None  # 最適化された学習モデル
+        self.best_estimator = None  # 最適化された学習モデル
+        self.search_history = None  # 探索履歴(パラメータ名をキーとしたdict)
         # 追加処理
         self._additional_init(**kwargs)
     
@@ -211,7 +216,8 @@ class ParamTuning():
             scores.append(score)
         return scores
 
-    def grid_search_tuning(self, cv_model=None, cv_params=None, cv=None, seed=None, scoring=None, **fit_params):
+    def grid_search_tuning(self, cv_model=None, cv_params=None, cv=None, seed=None, scoring=None,
+                           param_scales=None, **fit_params):
         """
         グリッドサーチ＋クロスバリデーション
 
@@ -228,6 +234,8 @@ class ParamTuning():
             乱数シード(クロスバリデーション分割用、xgboostの乱数シードはcv_paramsで指定するので注意)
         scoring : str
             最適化で最大化する評価指標('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)
+        param_scales : Dict
+            パラメータのスケール('linear', 'log')(Noneならクラス変数PARAM_SCALESから取得)
         fit_params : Dict
             学習時のパラメータをdict指定(例: XGBoostのearly_stopping_rounds)
             Pipelineのときは{学習器名__パラメータ名:パラメータの値,‥}で指定する必要あり
@@ -246,6 +254,8 @@ class ParamTuning():
             seed = self.SEED
         if scoring == None:
             scoring = self.SCORING
+        if param_scales == None:
+            param_scales = self.PARAM_SCALES
         if fit_params == {}:
             fit_params = self.FIT_PARAMS
 
@@ -264,6 +274,8 @@ class ParamTuning():
         # パイプライン処理のとき、パラメータに学習器名を追加
         cv_params = self._add_learner_name(cv_model, cv_params)
         fit_params = self._add_learner_name(cv_model, fit_params)
+        param_scales = self._add_learner_name(cv_model, param_scales)
+        self.param_scales = param_scales  # パラメータのスケールを保持
         
         # 引数をプロパティ(インスタンス変数)に反映
         self._set_argument_to_property(cv_model, cv_params, cv, seed, scoring, fit_params)
@@ -279,19 +291,25 @@ class ParamTuning():
                **fit_params
                )
         self.elapsed_time = time.time() - start
+        self.algo_name = 'grid'
         
         # 最適パラメータの表示と保持
         print('最適パラメータ ' + str(gridcv.best_params_))
         self.best_params = gridcv.best_params_
         self.best_score = gridcv.best_score_
         # 最適モデルの保持
-        self.best_estimator_ = gridcv.best_estimator_
+        self.best_estimator = gridcv.best_estimator_
+        # 学習履歴の保持
+        self.search_history = {k: gridcv.cv_results_['param_' + k].data.astype(np.float64) for k, v in cv_params.items() if len(v) >= 2}
+        self.search_history['test_score'] = gridcv.cv_results_['mean_test_score']
+
+        self.plot_search_history()
 
         # グリッドサーチでの探索結果を返す
         return gridcv.best_params_, gridcv.best_score_, self.elapsed_time
 
     def random_search_tuning(self, cv_model=None, cv_params=None, cv=None, seed=None, scoring=None,
-                             n_iter=None, **fit_params):
+                             n_iter=None, param_scales=None, **fit_params):
         """
         ランダムサーチ＋クロスバリデーション
 
@@ -310,6 +328,8 @@ class ParamTuning():
             最適化で最大化する評価指標('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)
         n_iter : int
             ランダムサーチの繰り返し回数
+        param_scales : Dict
+            パラメータのスケール('linear', 'log')(Noneならクラス変数PARAM_SCALESから取得)
         fit_params : Dict
             学習時のパラメータをdict指定(例: XGBoostのearly_stopping_rounds)
             Pipelineのときは{学習器名__パラメータ名:パラメータの値,‥}で指定する必要あり
@@ -330,6 +350,8 @@ class ParamTuning():
             scoring = self.SCORING
         if n_iter == None:
             n_iter = self.N_ITER_RANDOM
+        if param_scales == None:
+            param_scales = self.PARAM_SCALES
         if fit_params == {}:
             fit_params = self.FIT_PARAMS
             if 'verbose' in fit_params.keys():
@@ -350,6 +372,8 @@ class ParamTuning():
         # パイプライン処理のとき、パラメータに学習器名を追加
         cv_params = self._add_learner_name(cv_model, cv_params)
         fit_params = self._add_learner_name(cv_model, fit_params)
+        param_scales = self._add_learner_name(cv_model, param_scales)
+        self.param_scales = param_scales  # パラメータのスケールを保持
 
         # 引数をプロパティ(インスタンス変数)に反映
         self._set_argument_to_property(cv_model, cv_params, cv, seed, scoring, fit_params)
@@ -365,13 +389,19 @@ class ParamTuning():
                **fit_params
                )
         self.elapsed_time = time.time() - start
+        self.algo_name = 'random'
         
         # 最適パラメータの表示と保持
         print('最適パラメータ ' + str(randcv.best_params_))
         self.best_params = randcv.best_params_
-        self.best_score = randcv.rand_score_
+        self.best_score = randcv.best_score_
         # 最適モデルの保持
-        self.best_estimator_ = randcv.best_estimator_
+        self.best_estimator = randcv.best_estimator_
+        # 学習履歴の保持
+        self.search_history = {k: randcv.cv_results_['param_' + k].data.astype(np.float64) for k, v in cv_params.items() if len(v) >= 2}
+        self.search_history['test_score'] = randcv.cv_results_['mean_test_score']
+
+        self.plot_search_history()
 
         # ランダムサーチで探索した最適パラメータ、最適スコア、所要時間を返す
         return randcv.best_params_, randcv.best_score_, self.elapsed_time
@@ -391,7 +421,8 @@ class ParamTuning():
         return bayes_params
 
     def bayes_opt_tuning(self, cv_model=None, bayes_params=None, cv=None, seed=None, scoring=None,
-                         n_iter=None, init_points=None, acq=None, bayes_not_opt_params=None, int_params=None, **fit_params):
+                         n_iter=None, init_points=None, acq=None,
+                         bayes_not_opt_params=None, int_params=None, param_scales=None, **fit_params):
         """
         ベイズ最適化(bayes_opt)
 
@@ -418,6 +449,9 @@ class ParamTuning():
             最適化対象外のパラメータ一覧
         int_params : List
             整数型のパラメータのリスト(ベイズ最適化時は都度int型変換する)
+        param_scales : Dict
+            パラメータ
+            のスケール('linear', 'log')(Noneならクラス変数PARAM_SCALESから取得)
         fit_params : Dict
             学習時のパラメータをdict指定(例: XGBoostのearly_stopping_rounds)
             Pipelineのときは{学習器名__パラメータ名:パラメータの値,‥}で指定する必要あり
@@ -446,6 +480,8 @@ class ParamTuning():
             bayes_not_opt_params = self.BAYES_NOT_OPT_PARAMS
         if int_params == None:
             int_params = self.INT_PARAMS
+        if param_scales == None:
+            param_scales = self.PARAM_SCALES
         if fit_params == {}:
             fit_params = self.FIT_PARAMS
 
@@ -461,8 +497,10 @@ class ParamTuning():
             cv = KFold(n_splits=cv, shuffle=True, random_state=seed)
         # パイプライン処理のとき、最後の要素から学習器名を取得
         self._get_learner_name(cv_model)
-        # パイプライン処理のとき、パラメータに学習器名を追加(fit_paramsのみ、調整用パラメータはベイズ最適化用メソッド内で名称変更)
+        # パイプライン処理のとき、パラメータに学習器名を追加(fit_paramsとparam_scalesのみ、調整用パラメータはベイズ最適化用メソッド内で名称変更)
         fit_params = self._add_learner_name(cv_model, fit_params)
+        param_scales = self._add_learner_name(cv_model, param_scales)
+        self.param_scales = param_scales  # パラメータのスケールを保持
 
         # 引数をプロパティ(インスタンス変数)に反映
         self._set_argument_to_property(cv_model, bayes_params, cv, seed, scoring, fit_params)
@@ -474,6 +512,7 @@ class ParamTuning():
             self._bayes_evaluate, bayes_params, random_state=seed)
         bo.maximize(init_points=init_points, n_iter=n_iter, acq=acq)
         self.elapsed_time = time.time() - start
+        self.algo_name = 'bayes-opt'
 
         # 評価指標が最大となったときのパラメータを取得
         best_params = bo.max['params']
@@ -485,6 +524,9 @@ class ParamTuning():
             best_params['random_state'] = self.seed
         # 評価指標の最大値を取得
         best_score = bo.max['target']
+        # 学習履歴の保持
+        self.search_history = pd.DataFrame(bo.space.params, columns=bo.space.keys).to_dict(orient='list')
+        self.search_history['test_score'] = bo.space.target.tolist()
 
         # 最適モデル保持のため学習（特徴量重要度算出等）
         best_model = copy.deepcopy(cv_model)
@@ -495,7 +537,7 @@ class ParamTuning():
                   self.y,
                   **fit_params
                   )
-        self.best_estimator_ = best_model
+        self.best_estimator = best_model
         # ベイズ最適化で探索した最適パラメータ、評価指標最大値、所要時間を返す
         return best_params, best_score, self.elapsed_time
 
@@ -504,8 +546,8 @@ class ParamTuning():
         """
         特徴量重要度の取得
         """
-        if self.best_estimator_ is not None:
-            return self.best_estimator_.feature_importances_
+        if self.best_estimator is not None:
+            return self.best_estimator.feature_importances_
         else:
             return None
     
@@ -518,11 +560,11 @@ class ParamTuning():
         ax : 
             表示対象のax（Noneなら新規作成）
         """
-        if self.best_estimator_ is not None:
+        if self.best_estimator is not None:
             # 特徴量重要度の表示
             features = list(reversed(self.X_colnames))
             importances = list(
-            reversed(self.best_estimator_.feature_importances_.tolist()))
+            reversed(self.best_estimator.feature_importances_.tolist()))
             if ax == None:
                 plt.barh(features, importances)
             else:
@@ -800,7 +842,7 @@ class ParamTuning():
         param_scales = self._add_learner_name(self.cv_model, param_scales)
         
         # 最適化未実施時、エラーを出す
-        if self.best_estimator_ is None:
+        if self.best_estimator is None:
             raise Exception('please tune parameters before plotting feature importances')
         # validation_curve_paramsにself.best_paramsを追加して昇順ソート
         for k, v in validation_curve_params.items():
@@ -808,8 +850,10 @@ class ParamTuning():
                 v.append(self.best_params[k])
                 v.sort()
         # self.best_paramsをnot_opt_paramsとstable_paramsに分割
-        not_opt_params = {k: v for k, v in self.best_params.items() if k not in validation_curve_params.keys()}
-        stable_params = {k: v for k, v in self.best_params.items() if k in validation_curve_params.keys()}
+        not_opt_params = {k: v for k, v in self.best_params.items(
+                          ) if k not in validation_curve_params.keys()}
+        stable_params = {k: v for k, v in self.best_params.items(
+                         ) if k in validation_curve_params.keys()}
         # 検証曲線を取得
         validation_curve_result = self.get_validation_curve(cv_model=self.cv_model,
                                 validation_curve_params=validation_curve_params,
@@ -966,7 +1010,7 @@ class ParamTuning():
         """
         
         # 最適化未実施時、エラーを出す
-        if self.best_estimator_ is None:
+        if self.best_estimator is None:
             raise Exception('please tune parameters before plotting feature importances')
 
         # 学習曲線をプロット
@@ -979,3 +1023,168 @@ class ParamTuning():
                                   ax=ax,
                                   **self.fit_params)
         plt.show()
+
+    def plot_search_history(self, order=None, pair_n=4, subplot_kws=None, heat_kws=None, scatter_kws=None):
+        """
+        探索履歴のプロット（グリッドサーチ：ヒートマップ、その他：散布図）
+
+        Parameters
+        ----------
+        subplot_kws: dict, optional
+            プロット用のplt.subplots()に渡す引数 (例：figsize)
+        pair_n : Dict
+            グリッドサーチ以外の時の図を並べる枚数
+        subplot_kws : Dict[str, float]
+            プロット用のplt.subplots()に渡す引数 (例：figsize)
+        heat_kws : Dict
+            ヒートマップ用のsns.heatmap()に渡す引数 (グリッドサーチのみ)
+        scatter_kws : matplotlib.axes._subplots.Axes
+            プロット用のplt.subplots()に渡す引数 (グリッドサーチ以外)
+        """
+        # subplot_kwsがNoneなら空のdictを入力
+        if subplot_kws is None:
+            subplot_kws = {}
+        # heat_kwsがNoneなら空のdictを入力
+        if heat_kws is None:
+            heat_kws = {}
+        # scatter_kwsがNoneなら空のdictを入力
+        if scatter_kws is None:
+            scatter_kws = {}
+        
+        # 最適化未実施時、エラーを出す
+        if self.best_estimator is None:
+            raise Exception('please tune parameters before plotting feature importances')
+        # パラメータと得点の履歴をDataFrame化
+        df_history = pd.DataFrame(self.search_history)
+        n_params = len(df_history.columns) - 1
+        
+        # パラメータの並び順を指定していないとき、ランダムフォレストのfeature_importancesの並び順とする
+        if order is None:
+            # ランダムフォレストでパラメータとスコアのfeature_importancesを求める
+            rf = RandomForestRegressor()
+            params_array = df_history.drop('test_score', axis=1).values
+            score_array = df_history['test_score'].values
+            rf.fit(params_array, score_array)
+            importances = list(rf.feature_importances_)
+            importances = pd.Series(importances, name='importances',
+                                    index=df_history.drop('test_score', axis=1).columns)
+            # グリッドサーチのとき、要素数→feature_importanceの順でソート
+            if self.algo_name == 'grid':
+                nuniques = df_history.drop('test_score', axis=1).nunique().rename('nuniques')
+                df_order = pd.concat([nuniques, importances], axis=1)
+                df_order = df_order.sort_values(['nuniques', 'importances'], ascending=[False, False])
+                order = df_order.index.tolist()
+                pair_h, pair_w = 1, 1
+                if n_params >= 3:  # パラメータ数3以上のときの縦画像枚数
+                    pair_h = int(df_order.iloc[2, 0])
+                if n_params >= 4:  # パラメータ数4以上のときの横画像枚数
+                    pair_w = int(df_order.iloc[3, 0])
+            # グリッドサーチ以外の時feature_importancesでソート
+            else:
+                order = importances.sort_values(ascending=False).index.tolist()
+                if n_params >= 3:  # パラメータ数3以上のとき
+                    pair_h = pair_n
+                    pair_w = 1
+                    # 3個目のパラメータを分割する区間
+                    min_param3 = df_history[order[2]].min()
+                    max_param3 = df_history[order[2]].max()
+                    if self.param_scales[order[2]] == 'linear':  # 線形軸のとき
+                        separation_param3 = np.linspace(min_param3, max_param3, pair_h + 1)
+                    else:  # 対数軸のとき
+                        separation_param3 = np.logspace(np.log10(min_param3), np.log10(max_param3), pair_h + 1)
+
+                if n_params >= 4:  # パラメータ数4以上のとき
+                    pair_h = pair_n
+                    pair_w = pair_n
+                    # 4個目のパラメータを分割する区間
+                    min_param4 = df_history[order[3]].min()
+                    max_param4 = df_history[order[3]].max()
+                    if self.param_scales[order[3]] == 'linear':  # 線形軸のとき
+                        separation_param4 = np.linspace(min_param4, max_param4, pair_w + 1)
+                    elif self.param_scales[order[3]] == 'log':  # 対数軸のとき
+                        separation_param4 = np.logspace(np.log10(min_param4), np.log10(max_param4), pair_w + 1)
+        # パラメータ数1～2のとき (図は1枚のみ)
+        if n_params <= 2:
+            pair_w = 1
+            pair_h = 1
+
+        # figsize (全ての図全体のサイズ)指定
+        if 'figsize' not in subplot_kws.keys():
+            subplot_kws['figsize'] = (pair_w * 6, pair_h * 5)
+        # プロット用のaxes作成
+        fig, axes = plt.subplots(pair_h, pair_w, **subplot_kws)
+
+        # グリッドサーチのとき、第5パラメータ以降は最適パラメータを指定して算出
+        if self.algo_name == 'grid' and n_params >= 5:
+            for i in range(n_params - 4):
+                df_history = df_history[df_history[order[i + 4]] == self.best_params[order[i + 4]]]
+        # スコアの最大値と最小値を算出（色分けのスケール用）
+        score_max = df_history['test_score'].max()
+        score_min = df_history['test_score'].min()
+
+        ###### 図ごとにプロット ######
+        # パラメータが1個のとき(1次元折れ線グラフ表示)
+        if n_params == 1:
+            df_history = df_history.sort_values[order[0]]
+            axes.plot(df_history[order[0]], df_history['test_score'])
+            axes.set_xscale(self.param_scales[order[0]])  # 対数軸 or 通常軸を指定
+            axes.set_xlabel(order[0])  # パラメータ名を横軸ラベルに
+            axes.set_ylabel('test_score')  # スコア名を縦軸ラベルに
+
+        # パラメータが2個以上のとき(ヒートマップor散布図表示)
+        else:
+            for i in range(pair_h):
+                for j in range(pair_w):
+                    # パラメータが2個のとき (図は1枚のみ)
+                    if n_params == 2:
+                        ax = axes
+                        df_pair = df_history.copy()
+                    # パラメータが3個のとき (図はpair_n × 1枚)
+                    elif n_params == 3:
+                        ax = axes[i]
+                        # グリッドサーチのとき、第3パラメータのユニーク値でデータ分割
+                        if self.algo_name == 'grid':
+                            param3_value = sorted(df_history[order[2]].unique())[i]
+                            df_pair = df_history[df_history[order[2]] == param3_value].copy()
+                        # グリッドサーチ以外のとき、第3パラメータの値とseparation_param3に基づきデータ分割
+                        else:
+                            # 第3パラメータ範囲内のみのデータを抽出
+                            pair_min3 = separation_param3[i]
+                            pair_max3 = separation_param3[i + 1] if i < pair_h - 1 else float('inf')
+                            df_pair = df_history[(df_history[order[2]] >= pair_min3) & (
+                                                df_history[order[2]] < pair_max3)].copy()
+                    # パラメータが4個以上のとき (図はpair_n × pair_n枚)
+                    elif n_params >= 4:
+                        ax = axes[j, i]
+                        # グリッドサーチのとき、第3, 第4パラメータのユニーク値でデータ分割
+                        if self.algo_name == 'grid':
+                            param3_value = sorted(df_history[order[2]].unique())[i]
+                            param4_value = sorted(df_history[order[3]].unique())[j]
+                            df_pair = df_history[(df_history[order[2]] == param3_value) & (df_history[order[3]] == param4_value)].copy()
+                        # グリッドサーチ以外のとき、第3, 第4パラメータの値とseparation_param3, separation_param4に基づきデータ分割
+                        else:
+                            # 第3パラメータ範囲内のみのデータを抽出
+                            pair_min3 = separation_param3[i]
+                            pair_max3 = separation_param3[i + 1] if i < pair_h - 1 else float('inf')
+                            df_pair = df_history[(df_history[order[2]] >= pair_min3) & (
+                                                df_history[order[2]] < pair_max3)].copy()
+                            # 第4パラメータ範囲内のみのデータを抽出
+                            pair_min4 = separation_param4[j]
+                            pair_max4 = separation_param4[j + 1] if j < pair_w - 1 else float('inf')
+                            df_pair = df_pair[(df_pair[order[3]] >= pair_min4) & (
+                                            df_pair[order[3]] < pair_max4)].copy()
+
+                    # グリッドサーチのとき、ヒートマップをプロット
+                    if self.algo_name == 'grid':
+                        # グリッドデータをピボット化
+                        df_pivot = pd.pivot_table(data=df_pair, values='test_score', 
+                                                  columns=order[0], index=order[1], aggfunc=np.mean)
+                        # 上下軸を反転（元々は上方向が小となっているため）
+                        df_pivot = df_pivot.iloc[::-1]
+                        # カラーバーを指定
+                        if 'cbar_kws' not in heat_kws.keys():
+                            heat_kws['cbar_kws'] = {'label': 'score'}
+                        # ヒートマップをプロット
+                        sns.heatmap(df_pivot, ax=ax, cmap='YlGn',
+                                    vmax=score_max, vmin=score_min, center=(score_max+score_min)/2,
+                                    **heat_kws)
