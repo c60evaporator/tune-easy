@@ -303,8 +303,6 @@ class ParamTuning():
         self.search_history = {k: gridcv.cv_results_['param_' + k].data.astype(np.float64) for k, v in cv_params.items() if len(v) >= 2}
         self.search_history['test_score'] = gridcv.cv_results_['mean_test_score']
 
-        self.plot_search_history()
-
         # グリッドサーチでの探索結果を返す
         return gridcv.best_params_, gridcv.best_score_, self.elapsed_time
 
@@ -400,8 +398,6 @@ class ParamTuning():
         # 学習履歴の保持
         self.search_history = {k: randcv.cv_results_['param_' + k].data.astype(np.float64) for k, v in cv_params.items() if len(v) >= 2}
         self.search_history['test_score'] = randcv.cv_results_['mean_test_score']
-
-        self.plot_search_history()
 
         # ランダムサーチで探索した最適パラメータ、最適スコア、所要時間を返す
         return randcv.best_params_, randcv.best_score_, self.elapsed_time
@@ -1056,10 +1052,29 @@ class ParamTuning():
             raise Exception('please tune parameters before plotting feature importances')
         # パラメータと得点の履歴をDataFrame化
         df_history = pd.DataFrame(self.search_history)
-        n_params = len(df_history.columns) - 1
-        
+
+        # パラメータの並び順を指定しているとき、指定したパラメータ以外は使用しない
+        if order is not None:
+            n_params = len(order)
+            new_columns = [param for param in df_history.columns if param in order or param == 'test_score'] # 指定したパラメータ以外を削除した列名リスト
+            # 指定したパラメータ名が存在しないとき、エラーを出す
+            for param in order:
+                if param not in df_history.columns:
+                    raise Exception(f'parameter "{param}" is not included in tuning parameters{list(self.tuning_params.keys())}')
+            # グリッドサーチのとき、指定したパラメータ以外は最適パラメータとのときのスコアを使用
+            if self.algo_name == 'grid':
+                not_order_params = [param for param in df_history.columns if param not in new_columns]
+                for param in not_order_params:
+                    df_history = df_history[df_history[param] == self.best_params[param]]
+            # グリッドサーチ以外のとき、指定したパラメータでグルーピングしたときの最大値を使用
+            else:
+                # df_history.to_csv(r'C:\Users\otlor\OneDrive\デスクトップ\before.csv')
+                df_history = df_history.loc[df_history.groupby(order)['test_score'].idxmax(), :]
+                # df_history.to_csv(r'C:\Users\otlor\OneDrive\デスクトップ\after.csv')
+
         # パラメータの並び順を指定していないとき、ランダムフォレストのfeature_importancesの並び順とする
-        if order is None:
+        else:
+            n_params = len(df_history.columns) - 1
             # ランダムフォレストでパラメータとスコアのfeature_importancesを求める
             rf = RandomForestRegressor()
             params_array = df_history.drop('test_score', axis=1).values
@@ -1119,8 +1134,13 @@ class ParamTuning():
             for i in range(n_params - 4):
                 df_history = df_history[df_history[order[i + 4]] == self.best_params[order[i + 4]]]
         # スコアの最大値と最小値を算出（色分けのスケール用）
-        score_max = df_history['test_score'].max()
         score_min = df_history['test_score'].min()
+        score_max = df_history['test_score'].max()        
+        # 第1＆第2パラメータの設定最大値と最小値を抽出（グラフの軸範囲指定用）
+        param1_min = min(self.tuning_params[order[0]])
+        param1_max = max(self.tuning_params[order[1]])
+        param2_min = min(self.tuning_params[order[0]])
+        param2_max = max(self.tuning_params[order[1]])
 
         ###### 図ごとにプロット ######
         # パラメータが1個のとき(1次元折れ線グラフ表示)
@@ -1181,10 +1201,30 @@ class ParamTuning():
                                                   columns=order[0], index=order[1], aggfunc=np.mean)
                         # 上下軸を反転（元々は上方向が小となっているため）
                         df_pivot = df_pivot.iloc[::-1]
-                        # カラーバーを指定
+                        # カラーマップとカラーバーのラベルを指定
+                        if 'cmap' not in heat_kws.keys():
+                            heat_kws['cmap'] = 'YlGn'
                         if 'cbar_kws' not in heat_kws.keys():
                             heat_kws['cbar_kws'] = {'label': 'score'}
                         # ヒートマップをプロット
-                        sns.heatmap(df_pivot, ax=ax, cmap='YlGn',
-                                    vmax=score_max, vmin=score_min, center=(score_max+score_min)/2,
+                        sns.heatmap(df_pivot, ax=ax,
+                                    vmin=score_min, vmax=score_max, center=(score_max+score_min)/2,
                                     **heat_kws)
+
+                    # グリッドサーチ以外のとき、散布図をプロット
+                    else:
+                        # カラーマップと端部色を指定
+                        if 'cmap' not in scatter_kws.keys():
+                            scatter_kws['cmap'] = 'YlGn'
+                        if 'edgecolors' not in scatter_kws.keys():
+                            scatter_kws['edgecolors'] = 'lightgrey'
+                        sc = ax.scatter(df_pair[order[0]].values, df_pair[order[1]].values,
+                                        c=df_pair['test_score'], vmin=score_min, vmax=score_max,
+                                        **scatter_kws)
+                        cbar = ax.figure.colorbar(sc, None, ax, label='score')  # カラーバー追加
+                        ax.set_xscale(self.param_scales[order[0]])  # 第1パラメータの軸スケールを適用
+                        ax.set_yscale(self.param_scales[order[1]])  # 第2パラメータの軸スケールを適用
+                        ax.set_xlim(param1_min, param1_max)  # X軸表示範囲を第1パラメータ最小値～最大値に
+                        ax.set_ylim(param2_min, param2_max)  # Y軸表示範囲を第2パラメータ最小値～最大値に
+                        ax.set_xlabel(order[0])  # X軸ラベル
+                        ax.set_ylabel(order[1])  # Y軸ラベル
