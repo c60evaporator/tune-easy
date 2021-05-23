@@ -1146,8 +1146,8 @@ class ParamTuning():
         score_max = df_history['test_score'].max()        
         # 第1＆第2パラメータの設定最大値と最小値を抽出（グラフの軸範囲指定用）
         param1_min = min(self.tuning_params[order[0]])
-        param1_max = max(self.tuning_params[order[1]])
-        param2_min = min(self.tuning_params[order[0]])
+        param1_max = max(self.tuning_params[order[0]])
+        param2_min = min(self.tuning_params[order[1]])
         param2_max = max(self.tuning_params[order[1]])
         # グラフの軸範囲を指定（散布図グラフのみ）
         if self.param_scales[order[0]] == 'linear':
