@@ -125,7 +125,7 @@ class ParamTuning():
         """
         return src_params
     
-    def _set_argument_to_property(self, cv_model, tuning_params, cv, seed, scoring, fit_params):
+    def _set_argument_to_property(self, cv_model, tuning_params, cv, seed, scoring, fit_params, param_scales):
         """
         引数をプロパティ(インスタンス変数)に反映
         """
@@ -135,6 +135,7 @@ class ParamTuning():
         self.seed = seed
         self.scoring = scoring
         self.fit_params = fit_params
+        self.param_scales = param_scales
 
     def _add_learner_name(self, model, params):
         """
@@ -279,10 +280,9 @@ class ParamTuning():
         cv_params = self._add_learner_name(cv_model, cv_params)
         fit_params = self._add_learner_name(cv_model, fit_params)
         param_scales = self._add_learner_name(cv_model, param_scales)
-        self.param_scales = param_scales  # パラメータのスケールを保持
         
         # 引数をプロパティ(インスタンス変数)に反映
-        self._set_argument_to_property(cv_model, cv_params, cv, seed, scoring, fit_params)
+        self._set_argument_to_property(cv_model, cv_params, cv, seed, scoring, fit_params, param_scales)
 
         # グリッドサーチのインスタンス作成
         # n_jobs=-1にするとCPU100%で全コア並列計算。とても速い。
@@ -375,10 +375,9 @@ class ParamTuning():
         cv_params = self._add_learner_name(cv_model, cv_params)
         fit_params = self._add_learner_name(cv_model, fit_params)
         param_scales = self._add_learner_name(cv_model, param_scales)
-        self.param_scales = param_scales  # パラメータのスケールを保持
 
         # 引数をプロパティ(インスタンス変数)に反映
-        self._set_argument_to_property(cv_model, cv_params, cv, seed, scoring, fit_params)
+        self._set_argument_to_property(cv_model, cv_params, cv, seed, scoring, fit_params, param_scales)
 
         # ランダムサーチのインスタンス作成
         # n_jobs=-1にするとCPU100%で全コア並列計算。とても速い。
@@ -419,6 +418,20 @@ class ParamTuning():
         """
         bayes_params = {k: round(v) if k in int_params else v for k, v in bayes_params.items()}
         return bayes_params
+
+    def _log10_conversion(self, bayes_params, param_scales):
+        """
+         ベイズ最適化パラメータのうち、対数スケールのものを対数変換（ベイズ最適化メソッドに渡す前に適用）
+        """
+        bayes_params_log = {k: (np.log10(v[0]), np.log10(v[1])) if param_scales[k] == 'log' else v for k, v in bayes_params.items()}
+        return bayes_params_log
+
+    def _pow10_conversion(self, params_log, param_scales):
+        """
+         ベイズ最適化パラメータのうち、対数スケールのものを10のべき乗変換（ベイズ最適化メソッド内で適用）
+        """
+        params = {k: np.power(10, v) if param_scales[k] == 'log' else v for k, v in params_log.items()}
+        return params
 
     def bayes_opt_tuning(self, cv_model=None, bayes_params=None, cv=None, seed=None, scoring=None,
                          n_iter=None, init_points=None, acq=None,
@@ -502,22 +515,26 @@ class ParamTuning():
         param_scales = self._add_learner_name(cv_model, param_scales)
         bayes_not_opt_params = self._add_learner_name(cv_model, bayes_not_opt_params)
         int_params = self._add_learner_name(cv_model, int_params)
-        self.param_scales = param_scales  # パラメータのスケールを保持
 
         # 引数をプロパティ(インスタンス変数)に反映
-        self._set_argument_to_property(cv_model, bayes_params, cv, seed, scoring, fit_params)
+        self._set_argument_to_property(cv_model, bayes_params, cv, seed, scoring, fit_params, param_scales)
         self.bayes_not_opt_params = bayes_not_opt_params
         self.int_params = int_params
 
+        # 引数のスケールを変換(対数スケールパラメータは対数化)
+        bayes_params_log = self._log10_conversion(bayes_params, param_scales)
+
         # ベイズ最適化を実行
         bo = BayesianOptimization(
-            self._bayes_evaluate, bayes_params, random_state=seed)
+            self._bayes_evaluate, bayes_params_log, random_state=seed)
         bo.maximize(init_points=init_points, n_iter=n_iter, acq=acq)
         self.elapsed_time = time.time() - start
         self.algo_name = 'bayes-opt'
 
         # 評価指標が最大となったときのパラメータを取得
         best_params = bo.max['params']
+        # 対数スケールパラメータは10のべき乗をとる
+        best_params = self._pow10_conversion(best_params, param_scales)
         # 整数パラメータはint型に変換
         best_params = self._int_conversion(best_params, int_params)
         # 最適化対象以外のパラメータも追加
@@ -527,8 +544,11 @@ class ParamTuning():
         # 評価指標の最大値を取得
         best_score = bo.max['target']
         # 学習履歴の保持
-        self.search_history = pd.DataFrame(bo.space.params, columns=bo.space.keys).to_dict(orient='list')
-        self.search_history['test_score'] = bo.space.target.tolist()
+        params_history_log = bo.space.params  # 対数スケールのままパラメータ履歴が格納されたndarray
+        scale_array = np.array([np.full(bo.space.params.shape[0], param_scales[k]) for k in bo.space.keys]).T  # スケール変換用ndarray
+        params_hisotry = np.where(scale_array == 'log', np.power(10, params_history_log), params_history_log)  # 対数スケールパラメータは10のべき乗をとる
+        self.search_history = pd.DataFrame(params_hisotry, columns=bo.space.keys).to_dict(orient='list')  # パラメータ履歴をDict化
+        self.search_history['test_score'] = bo.space.target.tolist()  # スコア履歴を追加
 
         # 最適モデル保持のため学習（特徴量重要度算出等）
         best_model = copy.deepcopy(cv_model)
