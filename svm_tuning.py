@@ -82,8 +82,6 @@ class SVMRegressorTuning(ParamTuning):
         params = kwargs
         params = self._int_conversion(params, self.int_params)  # 整数パラメータはint型に変換
         params.update(self.bayes_not_opt_params)  # 最適化対象以外のパラメータも追加
-        # パイプライン処理のとき、パラメータに学習器名を追加
-        params = self._add_learner_name(self.cv_model, params)
         # SVRのモデル作成
         cv_model = copy.deepcopy(self.cv_model)
         cv_model.set_params(**params)
@@ -168,8 +166,6 @@ class SVMClassifierTuning(ParamTuning):
         params = kwargs
         params = self._int_conversion(params, self.int_params)  # 整数パラメータはint型に変換
         params.update(self.bayes_not_opt_params)  # 最適化対象以外のパラメータも追加
-        # パイプライン処理のとき、パラメータに学習器名を追加
-        params = self._add_learner_name(self.cv_model, params)
         # SVMのモデル作成
         cv_model = copy.deepcopy(self.cv_model)
         cv_model.set_params(**params)

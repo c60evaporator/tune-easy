@@ -12,7 +12,9 @@ params = {'gamma':[0.001, 0.01, 0.1, 1, 10],
           'C': [0.01, 0.1, 1, 10],
           'epsilon': [0, 0.05, 0.1]
           }
-#tuning.grid_search_tuning(cv_params=params)
+# tuning.grid_search_tuning(cv_params=params)
+# tuning.random_search_tuning(cv_params=params, n_iter=50)
+# tuning.plot_search_history()
 # %% 5次元パラメータ(XGB)
 from xgb_tuning import XGBRegressorTuning
 from xgboost import XGBRegressor
@@ -29,5 +31,23 @@ params = {'learning_rate': [0.1, 0.3, 0.5],  # 過学習のバランス(高い�
           'colsample_bytree': [0.5, 0.8, 1.0],  # 列のサブサンプリングを行う比率
           'subsample': [0.5, 0.8, 1.0]  # 木を構築する前にデータのサブサンプリングを行う比率。1 なら全データ使用、0.5なら半分のデータ使用
           }
-tuning.grid_search_tuning(cv_params=params)
+# tuning.grid_search_tuning(cv_params=params)
+# tuning.random_search_tuning(cv_params=params, n_iter=50)
+# tuning.plot_search_history()
+# %% 3次元パラメータ(SVR) ベイズ
+from svm_tuning import SVMRegressorTuning
+from sklearn.svm import SVR
+import pandas as pd
+df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
+OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
+USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIALBLE_REG].values
+X = df_reg[USE_EXPLANATORY_REG].values
+tuning = SVMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG)
+params = {'gamma':(0.001, 10),
+          'C': (0.01, 10),
+          'epsilon': (0, 0.1)
+          }
+tuning.bayes_opt_tuning(bayes_params=params, n_iter=50)
+tuning.plot_search_history()
 # %%

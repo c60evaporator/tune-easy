@@ -13,6 +13,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
 import seaborn as sns
+import util_methods
 
 class ParamTuning():
     """
@@ -142,7 +143,10 @@ class ParamTuning():
         if isinstance(model, Pipeline):
             # 学習器名が指定されているとき、パラメータ名を変更して処理を進める(既にパラメータ名に'__'が含まれているパラメータは、変更しない)
             if self.learner_name is not None:
-                params = {k if '__' in k else f'{self.learner_name}__{k}': v for k, v in params.items()}
+                if isinstance(params, dict):  # Dictのとき
+                    params = {k if '__' in k else f'{self.learner_name}__{k}': v for k, v in params.items()}
+                elif isinstance(params, list):  # Listのとき
+                    params = [param if '__' in param else f'{self.learner_name}__{param}' for param in params]
             # 指定されていないとき、エラーを返す
             else:
                 raise Exception('pipeline model needs "lerner_name" argument')
@@ -428,7 +432,6 @@ class ParamTuning():
             最適化対象の学習器インスタンス
         beyes_params : Dict[str, Tuple(float, float)]
             最適化対象のパラメータ範囲　{パラメータ名:(パラメータの探索下限,上限),‥}で指定
-            Pipelineのときもkeyに'学習器名__'を追加しないよう注意 (パラメータ名そのものを指定)
         cv : int or KFold
             クロスバリデーション分割法 (Noneのときクラス変数から取得、int入力時はkFoldで分割)
         seed : int
@@ -493,9 +496,12 @@ class ParamTuning():
             cv = KFold(n_splits=cv, shuffle=True, random_state=seed)
         # パイプライン処理のとき、最後の要素から学習器名を取得
         self._get_learner_name(cv_model)
-        # パイプライン処理のとき、パラメータに学習器名を追加(fit_paramsとparam_scalesのみ、調整用パラメータはベイズ最適化用メソッド内で名称変更)
+        # パイプライン処理のとき、パラメータに学習器名を追加
+        bayes_params = self._add_learner_name(cv_model, bayes_params)
         fit_params = self._add_learner_name(cv_model, fit_params)
         param_scales = self._add_learner_name(cv_model, param_scales)
+        bayes_not_opt_params = self._add_learner_name(cv_model, bayes_not_opt_params)
+        int_params = self._add_learner_name(cv_model, int_params)
         self.param_scales = param_scales  # パラメータのスケールを保持
 
         # 引数をプロパティ(インスタンス変数)に反映
@@ -1020,7 +1026,7 @@ class ParamTuning():
                                   **self.fit_params)
         plt.show()
 
-    def plot_search_history(self, order=None, pair_n=4, subplot_kws=None, heat_kws=None, scatter_kws=None):
+    def plot_search_history(self, order=None, pair_n=4, rounddigits_title=3, subplot_kws=None, heat_kws=None, scatter_kws=None):
         """
         探索履歴のプロット（グリッドサーチ：ヒートマップ、その他：散布図）
 
@@ -1030,6 +1036,8 @@ class ParamTuning():
             プロット用のplt.subplots()に渡す引数 (例：figsize)
         pair_n : Dict
             グリッドサーチ以外の時の図を並べる枚数
+        rounddigits_title : int
+            グラフタイトルのパラメータ値の丸め桁数
         subplot_kws : Dict[str, float]
             プロット用のplt.subplots()に渡す引数 (例：figsize)
         heat_kws : Dict
@@ -1141,6 +1149,19 @@ class ParamTuning():
         param1_max = max(self.tuning_params[order[1]])
         param2_min = min(self.tuning_params[order[0]])
         param2_max = max(self.tuning_params[order[1]])
+        # グラフの軸範囲を指定（散布図グラフのみ）
+        if self.param_scales[order[0]] == 'linear':
+            param1_axis_min = param1_min - 0.1*(param1_max-param1_min)
+            param1_axis_max = param1_max + 0.1*(param1_max-param1_min)
+        elif self.param_scales[order[0]] == 'log':
+            param1_axis_min = param1_min / np.power(10, 0.1*np.log10(param1_max/param1_min))
+            param1_axis_max = param1_max * np.power(10, 0.1*np.log10(param1_max/param1_min))
+        if self.param_scales[order[1]] == 'linear':
+            param2_axis_min = param2_min - 0.1*(param2_max-param2_min)
+            param2_axis_max = param2_max + 0.1*(param2_max-param2_min)
+        elif self.param_scales[order[1]] == 'log':
+            param2_axis_min = param2_min / np.power(10, 0.1*np.log10(param2_max/param2_min))
+            param2_axis_max = param2_max * np.power(10, 0.1*np.log10(param2_max/param2_min))
 
         ###### 図ごとにプロット ######
         # パラメータが1個のとき(1次元折れ線グラフ表示)
@@ -1159,6 +1180,7 @@ class ParamTuning():
                     if n_params == 2:
                         ax = axes
                         df_pair = df_history.copy()
+                    
                     # パラメータが3個のとき (図はpair_n × 1枚)
                     elif n_params == 3:
                         ax = axes[i]
@@ -1170,9 +1192,13 @@ class ParamTuning():
                         else:
                             # 第3パラメータ範囲内のみのデータを抽出
                             pair_min3 = separation_param3[i]
-                            pair_max3 = separation_param3[i + 1] if i < pair_h - 1 else float('inf')
-                            df_pair = df_history[(df_history[order[2]] >= pair_min3) & (
-                                                df_history[order[2]] < pair_max3)].copy()
+                            pair_max3 = separation_param3[i + 1]
+                            if i < pair_h - 1:
+                                df_pair = df_history[(df_history[order[2]] >= pair_min3) & (
+                                                    df_history[order[2]] < pair_max3)].copy()
+                            else:
+                                df_pair = df_history[df_history[order[2]] >= pair_min3].copy()
+                    
                     # パラメータが4個以上のとき (図はpair_n × pair_n枚)
                     elif n_params >= 4:
                         ax = axes[j, i]
@@ -1180,19 +1206,26 @@ class ParamTuning():
                         if self.algo_name == 'grid':
                             param3_value = sorted(df_history[order[2]].unique())[i]
                             param4_value = sorted(df_history[order[3]].unique())[j]
-                            df_pair = df_history[(df_history[order[2]] == param3_value) & (df_history[order[3]] == param4_value)].copy()
+                            df_pair = df_history[(df_history[order[2]] == param3_value) & (
+                                                 df_history[order[3]] == param4_value)].copy()
                         # グリッドサーチ以外のとき、第3, 第4パラメータの値とseparation_param3, separation_param4に基づきデータ分割
                         else:
                             # 第3パラメータ範囲内のみのデータを抽出
                             pair_min3 = separation_param3[i]
-                            pair_max3 = separation_param3[i + 1] if i < pair_h - 1 else float('inf')
-                            df_pair = df_history[(df_history[order[2]] >= pair_min3) & (
-                                                df_history[order[2]] < pair_max3)].copy()
+                            pair_max3 = separation_param3[i + 1]
+                            if i < pair_h - 1:
+                                df_pair = df_history[(df_history[order[2]] >= pair_min3) & (
+                                                    df_history[order[2]] < pair_max3)].copy()
+                            else:
+                                df_pair = df_history[df_history[order[2]] >= pair_min3].copy()
                             # 第4パラメータ範囲内のみのデータを抽出
                             pair_min4 = separation_param4[j]
-                            pair_max4 = separation_param4[j + 1] if j < pair_w - 1 else float('inf')
-                            df_pair = df_pair[(df_pair[order[3]] >= pair_min4) & (
-                                            df_pair[order[3]] < pair_max4)].copy()
+                            pair_max4 = separation_param4[j + 1]
+                            if j < pair_w - 1:
+                                df_pair = df_pair[(df_pair[order[3]] >= pair_min4) & (
+                                                  df_pair[order[3]] < pair_max4)].copy()
+                            else:
+                                df_pair = df_pair[df_pair[order[3]] >= pair_min4].copy()
 
                     # グリッドサーチのとき、ヒートマップをプロット
                     if self.algo_name == 'grid':
@@ -1210,6 +1243,11 @@ class ParamTuning():
                         sns.heatmap(df_pivot, ax=ax,
                                     vmin=score_min, vmax=score_max, center=(score_max+score_min)/2,
                                     **heat_kws)
+                        # グラフタイトルとして、第3、第4パラメータの名称と範囲を記載
+                        if n_params == 3:
+                            ax.set_title(f'{order[2]}={param3_value}')
+                        if n_params == 4:
+                            ax.set_title(f'{order[2]}={param3_value}\n{order[3]}={param4_value}')
 
                     # グリッドサーチ以外のとき、散布図をプロット
                     else:
@@ -1224,7 +1262,15 @@ class ParamTuning():
                         cbar = ax.figure.colorbar(sc, None, ax, label='score')  # カラーバー追加
                         ax.set_xscale(self.param_scales[order[0]])  # 第1パラメータの軸スケールを適用
                         ax.set_yscale(self.param_scales[order[1]])  # 第2パラメータの軸スケールを適用
-                        ax.set_xlim(param1_min, param1_max)  # X軸表示範囲を第1パラメータ最小値～最大値に
-                        ax.set_ylim(param2_min, param2_max)  # Y軸表示範囲を第2パラメータ最小値～最大値に
+                        ax.set_xlim(param1_axis_min, param1_axis_max)  # X軸表示範囲を第1パラメータ最小値～最大値±αに
+                        ax.set_ylim(param2_axis_min, param2_axis_max)  # Y軸表示範囲を第2パラメータ最小値～最大値±αに
                         ax.set_xlabel(order[0])  # X軸ラベル
                         ax.set_ylabel(order[1])  # Y軸ラベル
+                        # グラフタイトルとして、第3、第4パラメータの名称と範囲を記載
+                        if n_params == 3:
+                            ax.set_title(f'{order[2]}={util_methods.round_digits(pair_min3, rounddigit=rounddigits_title)} - {util_methods.round_digits(pair_max3, rounddigit=rounddigits_title)}')
+                        if n_params == 4:
+                            ax.set_title(f'{order[2]}={util_methods.round_digits(pair_min3, rounddigit=rounddigits_title)} - {util_methods.round_digits(pair_max3, rounddigit=rounddigits_title)}\n{order[3]}={util_methods.round_digits(pair_min4, rounddigit=rounddigits_title)} - {util_methods.round_digits(pair_max4, rounddigit=rounddigits_title)}')
+
+        # 字が重なるのでtight_layoutにする
+        plt.tight_layout()
