@@ -4,6 +4,7 @@ from sklearn.metrics import check_scoring
 from sklearn.pipeline import Pipeline
 from sklearn.ensemble import RandomForestRegressor
 from bayes_opt import BayesianOptimization
+import optuna
 import time
 import numbers
 import decimal
@@ -437,7 +438,7 @@ class ParamTuning():
                          n_iter=None, init_points=None, acq=None,
                          bayes_not_opt_params=None, int_params=None, param_scales=None, **fit_params):
         """
-        ベイズ最適化(bayes_opt)
+        ベイズ最適化(BayesianOptimization)
 
         Parameters
         ----------
@@ -549,6 +550,132 @@ class ParamTuning():
         params_hisotry = np.where(scale_array == 'log', np.power(10, params_history_log), params_history_log)  # 対数スケールパラメータは10のべき乗をとる
         self.search_history = pd.DataFrame(params_hisotry, columns=bo.space.keys).to_dict(orient='list')  # パラメータ履歴をDict化
         self.search_history['test_score'] = bo.space.target.tolist()  # スコア履歴を追加
+
+        # 最適モデル保持のため学習（特徴量重要度算出等）
+        best_model = copy.deepcopy(cv_model)
+        best_params = self._add_learner_name(best_model, best_params)
+        self.best_params = best_params
+        best_model.set_params(**best_params)
+        best_model.fit(self.X,
+                  self.y,
+                  **fit_params
+                  )
+        self.best_estimator = best_model
+        # ベイズ最適化で探索した最適パラメータ、評価指標最大値、所要時間を返す
+        return best_params, best_score, self.elapsed_time
+
+    def _optuna_evaluate(self, trial):
+        """
+        Optuna最適化時の評価指標算出メソッド (継承先でオーバーライドが必須)
+        """
+        pass
+
+    def optuna_tuning(self, cv_model=None, bayes_params=None, cv=None, seed=None, scoring=None,
+                      n_trials=None, init_points=None, acq=None,
+                      bayes_not_opt_params=None, int_params=None, param_scales=None, **fit_params):
+        """
+        ベイズ最適化(optuna)
+
+        Parameters
+        ----------
+        cv_model : Dict
+            最適化対象の学習器インスタンス
+        beyes_params : Dict[str, Tuple(float, float)]
+            最適化対象のパラメータ範囲　{パラメータ名:(パラメータの探索下限,上限),‥}で指定
+        cv : int or KFold
+            クロスバリデーション分割法 (Noneのときクラス変数から取得、int入力時はkFoldで分割)
+        seed : int
+            乱数シード(クロスバリデーション分割用、xgboostの乱数シードはcv_paramsで指定するので注意)
+        scoring : str
+            最適化で最大化する評価指標('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)
+        n_trials : int
+            ベイズ最適化の繰り返し回数
+        init_points : int
+            初期観測点の個数(ランダムな探索を何回行うか)
+        acq : str
+            獲得関数('ei', 'pi', 'ucb')
+        bayes_not_opt_params : Dict
+            最適化対象外のパラメータ一覧
+        int_params : List
+            整数型のパラメータのリスト(ベイズ最適化時は都度int型変換する)
+        param_scales : Dict
+            パラメータ
+            のスケール('linear', 'log')(Noneならクラス変数PARAM_SCALESから取得)
+        fit_params : Dict
+            学習時のパラメータをdict指定(例: XGBoostのearly_stopping_rounds)
+            Pipelineのときは{学習器名__パラメータ名:パラメータの値,‥}で指定する必要あり
+        """
+        # 処理時間測定
+        start = time.time()
+
+        # 引数非指定時、クラス変数から取得
+        if cv_model == None:
+            cv_model = copy.deepcopy(self.CV_MODEL)
+        if bayes_params == None:
+            bayes_params = self.BAYES_PARAMS
+        if cv == None:
+            cv = self.CV_NUM
+        if seed == None:
+            seed = self.SEED
+        if scoring == None:
+            scoring = self.SCORING
+        if n_trials == None:
+            n_trials = self.N_ITER_BAYES
+        if init_points == None:
+            init_points = self.INIT_POINTS
+        if acq == None:
+            acq = self.ACQ
+        if bayes_not_opt_params == None:
+            bayes_not_opt_params = self.BAYES_NOT_OPT_PARAMS
+        if int_params == None:
+            int_params = self.INT_PARAMS
+        if param_scales == None:
+            param_scales = self.PARAM_SCALES
+        if fit_params == {}:
+            fit_params = self.FIT_PARAMS
+
+        # 乱数シードをbayes_not_opt_paramsに追加
+        if 'random_state' in bayes_not_opt_params:
+            bayes_not_opt_params['random_state'] = seed
+        # 入力データからチューニング用パラメータの生成
+        bayes_params = self._tuning_param_generation(bayes_params)
+        # 学習データから生成されたパラメータの追加
+        fit_params = self._train_param_generation(fit_params)
+        # 分割法未指定時、cv_numとseedに基づきランダムに分割
+        if isinstance(cv, numbers.Integral):
+            cv = KFold(n_splits=cv, shuffle=True, random_state=seed)
+        # パイプライン処理のとき、最後の要素から学習器名を取得
+        self._get_learner_name(cv_model)
+        # パイプライン処理のとき、パラメータに学習器名を追加
+        bayes_params = self._add_learner_name(cv_model, bayes_params)
+        fit_params = self._add_learner_name(cv_model, fit_params)
+        param_scales = self._add_learner_name(cv_model, param_scales)
+        bayes_not_opt_params = self._add_learner_name(cv_model, bayes_not_opt_params)
+        int_params = self._add_learner_name(cv_model, int_params)
+
+        # 引数をプロパティ(インスタンス変数)に反映
+        self._set_argument_to_property(cv_model, bayes_params, cv, seed, scoring, fit_params, param_scales)
+        self.bayes_not_opt_params = bayes_not_opt_params
+        self.int_params = int_params
+
+        # ベイズ最適化を実行
+        study = optuna.create_study(direction="maximize",
+                                sampler=optuna.samplers.TPESampler(seed=seed))
+        study.optimize(self._optuna_evaluate, n_trials=n_trials)
+        self.elapsed_time = time.time() - start
+        self.algo_name = 'bayes-opt'
+
+        # 評価指標が最大となったときのパラメータを取得
+        best_params = study.best_trial.params
+        # 最適化対象以外のパラメータも追加
+        best_params.update(self.BAYES_NOT_OPT_PARAMS)
+        if 'random_state' in bayes_not_opt_params:
+            best_params['random_state'] = self.seed
+        # 評価指標の最大値を取得
+        best_score = study.best_trial.value
+        # 学習履歴の保持
+        self.search_history = pd.DataFrame([trial.params for trial in study.trials]).to_dict(orient='list')  # パラメータ履歴をDict化
+        self.search_history['test_score'] = [trial.value for trial in study.trials]  # スコア履歴を追加
 
         # 最適モデル保持のため学習（特徴量重要度算出等）
         best_model = copy.deepcopy(cv_model)

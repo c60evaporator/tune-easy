@@ -94,6 +94,28 @@ class SVMRegressorTuning(ParamTuning):
 
         return val
 
+    def _optuna_evaluate(self, trial):
+        """
+        Optuna最適化時の評価指標算出メソッド
+        """
+        # パラメータ格納
+        params = {}
+        for k, v in self.tuning_params.items():
+            log = True if self.param_scales[k] == 'log' else False  # 変数のスケールを指定（対数スケールならTrue）
+            if k in self.int_params:  # int型のとき
+                params[k] = trial.suggest_int(k, v[0], v[1], log=log)
+            else:  # float型のとき
+                params[k] = trial.suggest_float(k, v[0], v[1], log=log)
+        # SVMのモデル作成
+        cv_model = copy.deepcopy(self.cv_model)
+        cv_model.set_params(**params)
+        # cross_val_scoreでクロスバリデーション
+        scores = cross_val_score(cv_model, self.X, self.y, cv=self.cv,
+                                 scoring=self.scoring, fit_params=self.fit_params, n_jobs=-1)
+        val = scores.mean()
+        
+        return val
+
 
 class SVMClassifierTuning(ParamTuning):
     """
@@ -172,6 +194,28 @@ class SVMClassifierTuning(ParamTuning):
         cv_model = copy.deepcopy(self.cv_model)
         cv_model.set_params(**params)
 
+        # cross_val_scoreでクロスバリデーション
+        scores = cross_val_score(cv_model, self.X, self.y, cv=self.cv,
+                                 scoring=self.scoring, fit_params=self.fit_params, n_jobs=-1)
+        val = scores.mean()
+        
+        return val
+
+    def _optuna_evaluate(self, trial):
+        """
+        Optuna最適化時の評価指標算出メソッド
+        """
+        # パラメータ格納
+        params = {}
+        for k, v in self.tuning_params.items():
+            log = True if self.param_scales[k] else False  # 変数のスケールを指定（対数スケールならTrue）
+            if k in self.int_params:  # int型のとき
+                params[k] = trial.suggest_int(k, v[0], v[1], log=log)
+            else:  # float型のとき
+                params[k] = trial.suggest_float(k, v[0], v[1], log=log)
+        # SVMのモデル作成
+        cv_model = copy.deepcopy(self.cv_model)
+        cv_model.set_params(**params)
         # cross_val_scoreでクロスバリデーション
         scores = cross_val_score(cv_model, self.X, self.y, cv=self.cv,
                                  scoring=self.scoring, fit_params=self.fit_params, n_jobs=-1)

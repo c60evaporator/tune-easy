@@ -48,6 +48,7 @@ params = {'gamma':(0.001, 10),
           'C': (0.01, 10),
           'epsilon': (0, 0.1)
           }
-tuning.bayes_opt_tuning(bayes_params=params, n_iter=50)
+#tuning.bayes_opt_tuning(bayes_params=params, n_iter=50)
+tuning.optuna_tuning(bayes_params=params, n_trials=50)
 tuning.plot_search_history()
 # %%
