@@ -571,7 +571,7 @@ class ParamTuning():
         pass
 
     def optuna_tuning(self, cv_model=None, bayes_params=None, cv=None, seed=None, scoring=None,
-                      n_trials=None, init_points=None, acq=None,
+                      n_trials=None, study_kws=None, optimize_kws=None,
                       bayes_not_opt_params=None, int_params=None, param_scales=None, **fit_params):
         """
         ベイズ最適化(optuna)
@@ -590,10 +590,10 @@ class ParamTuning():
             最適化で最大化する評価指標('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)
         n_trials : int
             ベイズ最適化の繰り返し回数
-        init_points : int
-            初期観測点の個数(ランダムな探索を何回行うか)
-        acq : str
-            獲得関数('ei', 'pi', 'ucb')
+        study_kws : Dict
+            optuna.study.creat_studyに渡す引数
+        optimize_kws : Dict
+            optuna.study.Study.optimizeに渡す引数
         bayes_not_opt_params : Dict
             最適化対象外のパラメータ一覧
         int_params : List
@@ -621,10 +621,10 @@ class ParamTuning():
             scoring = self.SCORING
         if n_trials == None:
             n_trials = self.N_ITER_BAYES
-        if init_points == None:
-            init_points = self.INIT_POINTS
-        if acq == None:
-            acq = self.ACQ
+        if study_kws == None:
+            study_kws = {}
+        if optimize_kws == None:
+            optimize_kws = {}
         if bayes_not_opt_params == None:
             bayes_not_opt_params = self.BAYES_NOT_OPT_PARAMS
         if int_params == None:
@@ -660,8 +660,10 @@ class ParamTuning():
 
         # ベイズ最適化を実行
         study = optuna.create_study(direction="maximize",
-                                sampler=optuna.samplers.TPESampler(seed=seed))
-        study.optimize(self._optuna_evaluate, n_trials=n_trials)
+                                    sampler=optuna.samplers.TPESampler(seed=seed),
+                                    **study_kws)
+        study.optimize(self._optuna_evaluate, n_trials=n_trials,
+                       **optimize_kws)
         self.elapsed_time = time.time() - start
         self.algo_name = 'bayes-opt'
 

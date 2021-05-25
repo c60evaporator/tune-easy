@@ -146,6 +146,7 @@ class XGBRegressorTuning(ParamTuning):
                 params[k] = trial.suggest_int(k, v[0], v[1], log=log)
             else:  # float型のとき
                 params[k] = trial.suggest_float(k, v[0], v[1], log=log)
+        params.update(self.bayes_not_opt_params)  # 最適化対象以外のパラメータも追加
         # XGBoostのモデル作成
         cv_model = self.cv_model
         cv_model.set_params(**params)

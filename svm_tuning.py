@@ -84,7 +84,7 @@ class SVMRegressorTuning(ParamTuning):
         params = self._int_conversion(params, self.int_params)  # 整数パラメータはint型に変換
         params.update(self.bayes_not_opt_params)  # 最適化対象以外のパラメータも追加
         # SVRのモデル作成
-        cv_model = copy.deepcopy(self.cv_model)
+        cv_model = self.cv_model
         cv_model.set_params(**params)
 
         # cross_val_scoreでクロスバリデーション
@@ -106,8 +106,9 @@ class SVMRegressorTuning(ParamTuning):
                 params[k] = trial.suggest_int(k, v[0], v[1], log=log)
             else:  # float型のとき
                 params[k] = trial.suggest_float(k, v[0], v[1], log=log)
+        params.update(self.bayes_not_opt_params)  # 最適化対象以外のパラメータも追加
         # SVMのモデル作成
-        cv_model = copy.deepcopy(self.cv_model)
+        cv_model = self.cv_model
         cv_model.set_params(**params)
         # cross_val_scoreでクロスバリデーション
         scores = cross_val_score(cv_model, self.X, self.y, cv=self.cv,
@@ -191,7 +192,7 @@ class SVMClassifierTuning(ParamTuning):
         params = self._int_conversion(params, self.int_params)  # 整数パラメータはint型に変換
         params.update(self.bayes_not_opt_params)  # 最適化対象以外のパラメータも追加
         # SVMのモデル作成
-        cv_model = copy.deepcopy(self.cv_model)
+        cv_model = self.cv_model
         cv_model.set_params(**params)
 
         # cross_val_scoreでクロスバリデーション
@@ -213,8 +214,9 @@ class SVMClassifierTuning(ParamTuning):
                 params[k] = trial.suggest_int(k, v[0], v[1], log=log)
             else:  # float型のとき
                 params[k] = trial.suggest_float(k, v[0], v[1], log=log)
+        params.update(self.bayes_not_opt_params)  # 最適化対象以外のパラメータも追加
         # SVMのモデル作成
-        cv_model = copy.deepcopy(self.cv_model)
+        cv_model = self.cv_model
         cv_model.set_params(**params)
         # cross_val_scoreでクロスバリデーション
         scores = cross_val_score(cv_model, self.X, self.y, cv=self.cv,
