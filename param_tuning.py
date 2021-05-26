@@ -224,7 +224,7 @@ class ParamTuning():
         return scores
 
     def grid_search_tuning(self, cv_model=None, cv_params=None, cv=None, seed=None, scoring=None,
-                           param_scales=None, **fit_params):
+                           param_scales=None, grid_kws=None, **fit_params):
         """
         グリッドサーチ＋クロスバリデーション
 
@@ -243,6 +243,8 @@ class ParamTuning():
             最適化で最大化する評価指標('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)
         param_scales : Dict
             パラメータのスケール('linear', 'log')(Noneならクラス変数PARAM_SCALESから取得)
+        grid_kws : Dict
+            sklearn.model_selection.GridSearchCVに渡す引数(estimator, param_grid, cv, scoring以外)
         fit_params : Dict
             学習時のパラメータをdict指定(例: XGBoostのearly_stopping_rounds)
             Pipelineのときは{学習器名__パラメータ名:パラメータの値,‥}で指定する必要あり
@@ -263,6 +265,8 @@ class ParamTuning():
             scoring = self.SCORING
         if param_scales == None:
             param_scales = self.PARAM_SCALES
+        if grid_kws == None:
+            grid_kws = {}
         if fit_params == {}:
             fit_params = self.FIT_PARAMS
 
@@ -288,8 +292,10 @@ class ParamTuning():
 
         # グリッドサーチのインスタンス作成
         # n_jobs=-1にするとCPU100%で全コア並列計算。とても速い。
+        if 'n_jobs' not in grid_kws.keys():
+            grid_kws['n_jobs'] = -1
         gridcv = GridSearchCV(cv_model, cv_params, cv=cv,
-                          scoring=scoring, n_jobs=-1)
+                              scoring=scoring, **grid_kws)
 
         # グリッドサーチ実行（学習実行）
         gridcv.fit(self.X,
@@ -313,7 +319,7 @@ class ParamTuning():
         return gridcv.best_params_, gridcv.best_score_, self.elapsed_time
 
     def random_search_tuning(self, cv_model=None, cv_params=None, cv=None, seed=None, scoring=None,
-                             n_iter=None, param_scales=None, **fit_params):
+                             n_iter=None, param_scales=None, rand_kws=None, **fit_params):
         """
         ランダムサーチ＋クロスバリデーション
 
@@ -334,6 +340,8 @@ class ParamTuning():
             ランダムサーチの繰り返し回数
         param_scales : Dict
             パラメータのスケール('linear', 'log')(Noneならクラス変数PARAM_SCALESから取得)
+        rand_kws : Dict
+            sklearn.model_selection.RondomizedSearchCVに渡す引数(estimator, param_grid, cv, scoring, n_iter以外)
         fit_params : Dict
             学習時のパラメータをdict指定(例: XGBoostのearly_stopping_rounds)
             Pipelineのときは{学習器名__パラメータ名:パラメータの値,‥}で指定する必要あり
@@ -356,6 +364,8 @@ class ParamTuning():
             n_iter = self.N_ITER_RANDOM
         if param_scales == None:
             param_scales = self.PARAM_SCALES
+        if rand_kws == None:
+            rand_kws = {}
         if fit_params == {}:
             fit_params = self.FIT_PARAMS
             if 'verbose' in fit_params.keys():
@@ -383,8 +393,12 @@ class ParamTuning():
 
         # ランダムサーチのインスタンス作成
         # n_jobs=-1にするとCPU100%で全コア並列計算。とても速い。
-        randcv = RandomizedSearchCV(cv_model, cv_params, cv=cv,
-                                random_state=seed, n_iter=n_iter, scoring=scoring, n_jobs=-1)
+        if 'n_jobs' not in rand_kws.keys():
+            rand_kws['n_jobs'] = -1
+        if 'random_state' not in rand_kws.keys():
+            rand_kws['random_state'] = seed
+        randcv = RandomizedSearchCV(cv_model, cv_params, cv=cv, scoring=scoring,
+                                    n_iter=n_iter, **rand_kws)
 
         # ランダムサーチ実行
         randcv.fit(self.X,
