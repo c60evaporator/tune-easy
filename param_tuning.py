@@ -608,7 +608,7 @@ class ParamTuning():
         study_kws : Dict
             optuna.study.creat_studyに渡す引数
         optimize_kws : Dict
-            optuna.study.Study.optimizeに渡す引数
+            optuna.study.Study.optimizeに渡す引数 (n_trials以外)
         bayes_not_opt_params : Dict
             最適化対象外のパラメータ一覧
         int_params : List
@@ -674,9 +674,11 @@ class ParamTuning():
         self.int_params = int_params
 
         # ベイズ最適化を実行
-        study = optuna.create_study(direction="maximize",
-                                    sampler=optuna.samplers.TPESampler(seed=seed),
-                                    **study_kws)
+        if 'sampler' not in study_kws:  # 指定がなければsamplerにTPESamplerを使用
+            study_kws['sampler'] = optuna.samplers.TPESampler(seed=seed)
+        if 'direction' not in study_kws:  # 指定がなければ最大化方向に最適化
+            study_kws['direction'] = 'maximize'
+        study = optuna.create_study(**study_kws)
         study.optimize(self._optuna_evaluate, n_trials=n_trials,
                        **optimize_kws)
         self.elapsed_time = time.time() - start
