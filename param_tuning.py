@@ -99,6 +99,7 @@ class ParamTuning():
         self.elapsed_time = None  # 所要時間
         self.best_estimator = None  # 最適化された学習モデル
         self.search_history = None  # 探索履歴(パラメータ名をキーとしたdict)
+        self.param_importances = None  # ランダムフォレストで求めたパラメータのスコアに対する重要度
         # 追加処理
         self._additional_init(**kwargs)
     
@@ -1210,6 +1211,17 @@ class ParamTuning():
         # パラメータと得点の履歴をDataFrame化
         df_history = pd.DataFrame(self.search_history)
 
+        # ランダムフォレストでパラメータとスコアのfeature_importancesを求める
+        rf = RandomForestRegressor()
+        params_array = df_history.drop('test_score', axis=1).values
+        score_array = df_history['test_score'].values
+        rf.fit(params_array, score_array)
+        importances = list(rf.feature_importances_)
+        importances = pd.Series(importances, name='importances',
+                                index=df_history.drop('test_score', axis=1).columns)
+        self.param_importances = importances
+
+        ###### パラメータ表示軸の順番を計算 ######
         # パラメータの並び順を指定しているとき、指定したパラメータ以外は使用しない
         if order is not None:
             n_params = len(order)
@@ -1225,21 +1237,11 @@ class ParamTuning():
                     df_history = df_history[df_history[param] == self.best_params[param]]
             # グリッドサーチ以外のとき、指定したパラメータでグルーピングしたときの最大値を使用
             else:
-                # df_history.to_csv(r'C:\Users\otlor\OneDrive\デスクトップ\before.csv')
                 df_history = df_history.loc[df_history.groupby(order)['test_score'].idxmax(), :]
-                # df_history.to_csv(r'C:\Users\otlor\OneDrive\デスクトップ\after.csv')
 
         # パラメータの並び順を指定していないとき、ランダムフォレストのfeature_importancesの並び順とする
         else:
             n_params = len(df_history.columns) - 1
-            # ランダムフォレストでパラメータとスコアのfeature_importancesを求める
-            rf = RandomForestRegressor()
-            params_array = df_history.drop('test_score', axis=1).values
-            score_array = df_history['test_score'].values
-            rf.fit(params_array, score_array)
-            importances = list(rf.feature_importances_)
-            importances = pd.Series(importances, name='importances',
-                                    index=df_history.drop('test_score', axis=1).columns)
             # グリッドサーチのとき、要素数→feature_importanceの順でソート
             if self.algo_name == 'grid':
                 nuniques = df_history.drop('test_score', axis=1).nunique().rename('nuniques')
@@ -1280,6 +1282,7 @@ class ParamTuning():
             pair_w = 1
             pair_h = 1
 
+        ###### グラフのサイズと軸範囲を指定 ######
         # figsize (全ての図全体のサイズ)指定
         if 'figsize' not in subplot_kws.keys():
             subplot_kws['figsize'] = (pair_w * 6, pair_h * 5)
