@@ -1192,7 +1192,8 @@ class ParamTuning():
                                   **self.fit_params)
         plt.show()
 
-    def plot_search_history(self, order=None, pair_n=4, rounddigits_title=3, subplot_kws=None, heat_kws=None, scatter_kws=None):
+    def plot_search_history(self, order=None, pair_n=4, rounddigits_title=3, rank_number=None, rounddigits_score=3,
+                            subplot_kws=None, heat_kws=None, scatter_kws=None):
         """
         探索履歴のプロット（グリッドサーチ：ヒートマップ、その他：散布図）
 
@@ -1204,6 +1205,10 @@ class ParamTuning():
             グリッドサーチ以外の時の図を並べる枚数
         rounddigits_title : int
             グラフタイトルのパラメータ値の丸め桁数
+        rank_number: int, optional
+            スコア上位何番目までを文字表示するか
+        rounddigits_score : int
+            上位スコア表示の丸め桁数
         subplot_kws : Dict[str, float]
             プロット用のplt.subplots()に渡す引数 (例：figsize)
         heat_kws : Dict
@@ -1211,6 +1216,8 @@ class ParamTuning():
         scatter_kws : matplotlib.axes._subplots.Axes
             プロット用のplt.subplots()に渡す引数 (グリッドサーチ以外)
         """
+        if rank_number is None:
+            rank_number = 0
         # subplot_kwsがNoneなら空のdictを入力
         if subplot_kws is None:
             subplot_kws = {}
@@ -1331,6 +1338,10 @@ class ParamTuning():
             param2_axis_min = param2_min / np.power(10, 0.1*np.log10(param2_max/param2_min))
             param2_axis_max = param2_max * np.power(10, 0.1*np.log10(param2_max/param2_min))
 
+        # スコアの上位をdict化して保持
+        rank_index  = np.argsort(-df_history['test_score'].values)[:rank_number]
+        rank_dict = dict(zip(rank_index.tolist(), range(rank_number)))
+
         ###### 図ごとにプロット ######
         # パラメータが1個のとき(1次元折れ線グラフ表示)
         if n_params == 1:
@@ -1436,9 +1447,20 @@ class ParamTuning():
                         ax.set_ylabel(order[1])  # Y軸ラベル
                         # グラフタイトルとして、第3、第4パラメータの名称と範囲を記載
                         if n_params == 3:
-                            ax.set_title(f'{order[2]}={util_methods.round_digits(pair_min3, rounddigit=rounddigits_title)} - {util_methods.round_digits(pair_max3, rounddigit=rounddigits_title)}')
+                            ax.set_title(f'{order[2]}={util_methods.round_digits(pair_min3, rounddigit=rounddigits_title, method="sig")} - {util_methods.round_digits(pair_max3, rounddigit=rounddigits_title, method="sig")}')
                         if n_params == 4:
-                            ax.set_title(f'{order[2]}={util_methods.round_digits(pair_min3, rounddigit=rounddigits_title)} - {util_methods.round_digits(pair_max3, rounddigit=rounddigits_title)}\n{order[3]}={util_methods.round_digits(pair_min4, rounddigit=rounddigits_title)} - {util_methods.round_digits(pair_max4, rounddigit=rounddigits_title)}')
+                            ax.set_title(f'{order[2]}={util_methods.round_digits(pair_min3, rounddigit=rounddigits_title, method="sig")} - {util_methods.round_digits(pair_max3, rounddigit=rounddigits_title, method="sig")}\n{order[3]}={util_methods.round_digits(pair_min4, rounddigit=rounddigits_title, method="sig")} - {util_methods.round_digits(pair_max4, rounddigit=rounddigits_title, method="sig")}')
+
+                    # 誤差上位を文字表示
+                    df_rank = df_pair[df_pair.index.isin(rank_dict.keys())]
+                    for index, row in df_rank.iterrows():
+                        rank_text = f'-<-no{rank_dict[index]+1} score={util_methods.round_digits(row["test_score"], rounddigit=rounddigits_score, method="sig")}'
+                        # グリッドサーチのとき
+                        if self.algo_name == 'grid':
+                            ax.text(df_pivot.columns.get_loc(row[order[0]]) + 0.5, df_pivot.index.get_loc(row[order[1]]) + 0.5, rank_text, verticalalignment='center', horizontalalignment='left')
+                        # グリッドサーチ以外の時
+                        else:
+                            ax.text(row[order[0]], row[order[1]], rank_text, verticalalignment='center', horizontalalignment='left')
 
         # 字が重なるのでtight_layoutにする
         plt.tight_layout()

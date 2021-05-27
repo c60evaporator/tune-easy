@@ -209,7 +209,7 @@ class SVMClassifierTuning(ParamTuning):
         # パラメータ格納
         params = {}
         for k, v in self.tuning_params.items():
-            log = True if self.param_scales[k] else False  # 変数のスケールを指定（対数スケールならTrue）
+            log = True if self.param_scales[k] == 'log' else False  # 変数のスケールを指定（対数スケールならTrue）
             if k in self.int_params:  # int型のとき
                 params[k] = trial.suggest_int(k, v[0], v[1], log=log)
             else:  # float型のとき
