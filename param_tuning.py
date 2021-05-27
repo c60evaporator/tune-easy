@@ -1235,7 +1235,7 @@ class ParamTuning():
         importances = list(rf.feature_importances_)
         importances = pd.Series(importances, name='importances',
                                 index=df_history.drop('test_score', axis=1).columns)
-        self.param_importances = importances
+        self.param_importances = importances.sort_values(ascending=True)
 
         ###### パラメータ表示軸の順番を計算 ######
         # パラメータの並び順を指定しているとき、指定したパラメータ以外は使用しない
@@ -1442,3 +1442,10 @@ class ParamTuning():
 
         # 字が重なるのでtight_layoutにする
         plt.tight_layout()
+        plt.show()
+
+    def plot_param_importances(self):
+        if self.param_importances is None:
+            raise Exception('Run "plot_search_history" method before running "plot_param_importances" method')
+        plt.barh(self.param_importances.index.values, self.param_importances.values)
+        plt.show()

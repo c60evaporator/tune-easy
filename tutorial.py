@@ -51,6 +51,7 @@ params = {'gamma':(0.001, 10),
 #tuning.bayes_opt_tuning(bayes_params=params, n_iter=50)
 #tuning.optuna_tuning(bayes_params=params, n_trials=50)
 #tuning.plot_search_history()
+#tuning.plot_param_importances()
 # %% 5次元パラメータ(XGB)　ベイズ
 from xgb_tuning import XGBRegressorTuning
 from xgboost import XGBRegressor
@@ -70,4 +71,5 @@ params = {'learning_rate': (0.1, 0.5),  # 過学習のバランス(高いほど�
 # tuning.bayes_opt_tuning(bayes_params=params, n_iter=50)
 tuning.optuna_tuning(bayes_params=params, n_trials=50)
 tuning.plot_search_history()
+tuning.plot_param_importances()
 # %%
