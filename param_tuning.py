@@ -1457,7 +1457,7 @@ class ParamTuning():
                         # グラフタイトルとして、第3、第4パラメータの名称と範囲を記載
                         if n_params == 3:
                             ax.set_title(f'{order[2]}={param3_value}')
-                        if n_params == 4:
+                        if n_params >= 4:
                             ax.set_title(f'{order[2]}={param3_value}\n{order[3]}={param4_value}')
 
                     # グリッドサーチ以外のとき、散布図をプロット
@@ -1480,7 +1480,7 @@ class ParamTuning():
                         # グラフタイトルとして、第3、第4パラメータの名称と範囲を記載
                         if n_params == 3:
                             ax.set_title(f'{order[2]}={util_methods.round_digits(pair_min3, rounddigit=rounddigits_title, method="sig")} - {util_methods.round_digits(pair_max3, rounddigit=rounddigits_title, method="sig")}')
-                        if n_params == 4:
+                        if n_params >= 4:
                             ax.set_title(f'{order[2]}={util_methods.round_digits(pair_min3, rounddigit=rounddigits_title, method="sig")} - {util_methods.round_digits(pair_max3, rounddigit=rounddigits_title, method="sig")}\n{order[3]}={util_methods.round_digits(pair_min4, rounddigit=rounddigits_title, method="sig")} - {util_methods.round_digits(pair_max4, rounddigit=rounddigits_title, method="sig")}')
 
                     # 誤差上位を文字表示
