@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from sklearn.model_selection import GridSearchCV, RandomizedSearchCV, KFold, validation_curve, learning_curve
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV, KFold, validation_curve, learning_curve, cross_val_score
 from sklearn.metrics import check_scoring
 from sklearn.pipeline import Pipeline
 from sklearn.ensemble import RandomForestRegressor
@@ -422,11 +422,25 @@ class ParamTuning():
         return randcv.best_params_, randcv.best_score_, self.elapsed_time
 
     @abstractmethod
-    def _bayes_evaluate(self):
+    def _bayes_evaluate(self, **kwargs):
         """
-         ベイズ最適化時の評価指標算出メソッド (継承先でオーバーライドが必須)
+         ベイズ最適化時の評価指標算出メソッド
         """
-        pass
+        # 最適化対象のパラメータ
+        params = kwargs
+        params = self._pow10_conversion(params, self.param_scales)  # 対数パラメータは10のべき乗に変換
+        params = self._int_conversion(params, self.int_params)  # 整数パラメータはint型に変換
+        params.update(self.bayes_not_opt_params)  # 最適化対象以外のパラメータも追加
+        # モデル作成
+        cv_model = self.cv_model
+        cv_model.set_params(**params)
+
+        # cross_val_scoreでクロスバリデーション
+        scores = cross_val_score(cv_model, self.X, self.y, cv=self.cv,
+                                 scoring=self.scoring, fit_params=self.fit_params, n_jobs=-1)
+        val = scores.mean()
+
+        return val
 
     def _int_conversion(self, bayes_params, int_params):
         """
@@ -581,9 +595,26 @@ class ParamTuning():
 
     def _optuna_evaluate(self, trial):
         """
-        Optuna最適化時の評価指標算出メソッド (継承先でオーバーライドが必須)
+        Optuna最適化時の評価指標算出メソッド
         """
-        pass
+        # パラメータ格納
+        params = {}
+        for k, v in self.tuning_params.items():
+            log = True if self.param_scales[k] == 'log' else False  # 変数のスケールを指定（対数スケールならTrue）
+            if k in self.int_params:  # int型のとき
+                params[k] = trial.suggest_int(k, v[0], v[1], log=log)
+            else:  # float型のとき
+                params[k] = trial.suggest_float(k, v[0], v[1], log=log)
+        params.update(self.bayes_not_opt_params)  # 最適化対象以外のパラメータも追加
+        # モデル作成
+        cv_model = self.cv_model
+        cv_model.set_params(**params)
+        # cross_val_scoreでクロスバリデーション
+        scores = cross_val_score(cv_model, self.X, self.y, cv=self.cv,
+                                 scoring=self.scoring, fit_params=self.fit_params, n_jobs=-1)
+        val = scores.mean()
+        
+        return val
 
     def optuna_tuning(self, cv_model=None, bayes_params=None, cv=None, seed=None, scoring=None,
                       n_trials=None, study_kws=None, optimize_kws=None,
