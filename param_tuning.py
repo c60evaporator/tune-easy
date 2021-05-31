@@ -1284,7 +1284,7 @@ class ParamTuning():
             for param in order:
                 if param not in df_history.columns:
                     raise Exception(f'parameter "{param}" is not included in tuning parameters{list(self.tuning_params.keys())}')
-            # グリッドサーチのとき、指定したパラメータ以外は最適パラメータとのときのスコアを使用
+            # グリッドサーチのとき、指定したパラメータ以外は最適パラメータのときのスコアを使用（スコア順位もこのフィルタ後のデータから取得するので注意）
             if self.algo_name == 'grid':
                 not_order_params = [param for param in df_history.columns if param not in new_columns]
                 for param in not_order_params:
@@ -1343,10 +1343,15 @@ class ParamTuning():
         # プロット用のaxes作成
         fig, axes = plt.subplots(pair_h, pair_w, **subplot_kws)
 
+        # スコアの上位をdict化して保持
+        rank_index  = np.argsort(-df_history['test_score'].values, kind='mergesort')[:rank_number]
+        rank_dict = dict(zip(rank_index.tolist(), range(rank_number)))
+
         # グリッドサーチのとき、第5パラメータ以降は最適パラメータを指定して算出
         if self.algo_name == 'grid' and n_params >= 5:
             for i in range(n_params - 4):
                 df_history = df_history[df_history[order[i + 4]] == self.best_params[order[i + 4]]]
+
         # スコアの最大値と最小値を算出（色分けのスケール用）
         score_min = df_history['test_score'].min()
         score_max = df_history['test_score'].max()        
@@ -1368,10 +1373,6 @@ class ParamTuning():
         elif self.param_scales[order[1]] == 'log':
             param2_axis_min = param2_min / np.power(10, 0.1*np.log10(param2_max/param2_min))
             param2_axis_max = param2_max * np.power(10, 0.1*np.log10(param2_max/param2_min))
-
-        # スコアの上位をdict化して保持
-        rank_index  = np.argsort(-df_history['test_score'].values)[:rank_number]
-        rank_dict = dict(zip(rank_index.tolist(), range(rank_number)))
 
         ###### 図ごとにプロット ######
         # パラメータが1個のとき(1次元折れ線グラフ表示)
