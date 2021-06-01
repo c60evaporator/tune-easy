@@ -12,7 +12,8 @@ params = {'gamma':[0.001, 0.01, 0.1, 1, 10],
           'C': [0.01, 0.1, 1, 10],
           'epsilon': [0, 0.05, 0.1]
           }
-# tuning.grid_search_tuning(cv_params=params)
+tuning.grid_search_tuning(cv_params=params)
+tuning.get_search_history()
 # tuning.random_search_tuning(cv_params=params, n_iter=50)
 # tuning.plot_search_map(rank_number=2)
 # %% 5次元パラメータ(XGB)
@@ -48,14 +49,16 @@ params = {'gamma':(0.001, 10),
           'C': (0.01, 10),
           'epsilon': (0, 0.1)
           }
-#tuning.bayes_opt_tuning(bayes_params=params, n_iter=50)
+tuning.bayes_opt_tuning(bayes_params=params, n_iter=50)
 #tuning.optuna_tuning(bayes_params=params, n_trials=50)
+tuning.plot_search_history()
 #tuning.plot_search_map(rank_number=2)
 #tuning.plot_param_importances()
 # %% 5次元パラメータ(XGB)　ベイズ
 from xgb_tuning import XGBRegressorTuning
 from xgboost import XGBRegressor
 import pandas as pd
+import matplotlib.pyplot as plt
 df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
 USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
@@ -71,5 +74,8 @@ params = {'learning_rate': (0.1, 0.5),  # 過学習のバランス(高いほど�
 # tuning.bayes_opt_tuning(bayes_params=params, n_iter=50)
 tuning.optuna_tuning(bayes_params=params, n_trials=50)
 tuning.plot_search_map(rank_number=2)
+# tuning.plot_best_learning_curve()
 # tuning.plot_param_importances()
-# %%
+# tuning.plot_feature_importances()
+# %% 学習曲線
+

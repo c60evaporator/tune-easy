@@ -1093,7 +1093,7 @@ class ParamTuning():
         Parameters
         ----------
         cv_model : Dict
-            検証曲線対象の学習器インスタンス (Noneならクラス変数から取得)
+            学習曲線対象の学習器インスタンス (Noneならクラス変数から取得)
         params : Dict[str, float]
             学習器に使用するパラメータの値 (Noneならデフォルト)
         cv : int or KFold
@@ -1499,3 +1499,32 @@ class ParamTuning():
             raise Exception('Run "plot_search_map" method before running "plot_param_importances" method')
         plt.barh(self.param_importances.index.values, self.param_importances.values)
         plt.show()
+
+    def get_search_history(self):
+        # 最適化未実施時、エラーを出す
+        if self.best_estimator is None:
+            raise Exception('please tune parameters before plotting feature importances')
+        # パラメータと得点の履歴をDataFrame化
+        df_history = pd.DataFrame(self.search_history)
+        score_array = df_history['test_score'].values
+        time_array = df_history['trial_time'].values
+        # その時点までの最大値を取得
+        df_history['max_score'] = df_history.index.map(lambda x: max(score_array[:x+1]))
+        # DataFrameを返す
+        return df_history
+
+    def plot_search_history(self, ax=None, plot_kws=None):
+        # plot_kwsがNoneなら空のdictを入力
+        if plot_kws is None:
+            plot_kws = {}
+        # 描画用axがNoneのとき、matplotlib.pyplot.gca()を使用
+        if ax is None:
+            ax=plt.gca()
+        
+        # パラメータと得点とその最大値の履歴をDataFrame化
+        df_history = self.get_search_history()
+        if 'color' not in plot_kws:
+            plot_kws['color'] = 'red'
+        ax.plot(df_history.index.values, df_history['max_score'], label='training score', **plot_kws)
+        ax.set_xlabel('trials')  # X軸ラベル
+        ax.set_ylabel('max_test_score')  # Y軸ラベル
