@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from sklearn.model_selection import GridSearchCV, RandomizedSearchCV, KFold, validation_curve, learning_curve, cross_val_score
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV, KFold, LeaveOneGroupOut, validation_curve, learning_curve, cross_val_score
 from sklearn.metrics import check_scoring
 from sklearn.pipeline import Pipeline
 from sklearn.ensemble import RandomForestRegressor
@@ -314,6 +314,15 @@ class ParamTuning():
         # 学習履歴の保持
         self.search_history = {k: gridcv.cv_results_['param_' + k].data.astype(np.float64) for k, v in cv_params.items() if len(v) >= 2}
         self.search_history['test_score'] = gridcv.cv_results_['mean_test_score']
+        # 所要時間の保持
+        self.search_history['fit_time'] = gridcv.cv_results_['mean_fit_time']
+        self.search_history['score_time'] = gridcv.cv_results_['mean_score_time']
+        if isinstance(cv, LeaveOneGroupOut):  # LeaveOneGroupOutのとき、クロスバリデーション分割数をcv_groupの数に指定
+            print('TODO: LeaveOneGroupOut LATER')
+            #cv_num = cv.get_n_splits(self.X, self.y, self.groups)
+        else:
+            cv_num = gridcv.n_splits_
+        self.search_history['raw_trial_time'] = (self.search_history['fit_time'] + self.search_history['score_time']) * cv_num
 
         # グリッドサーチでの探索結果を返す
         return gridcv.best_params_, gridcv.best_score_, self.elapsed_time
@@ -417,6 +426,15 @@ class ParamTuning():
         # 学習履歴の保持
         self.search_history = {k: randcv.cv_results_['param_' + k].data.astype(np.float64) for k, v in cv_params.items() if len(v) >= 2}
         self.search_history['test_score'] = randcv.cv_results_['mean_test_score']
+        # 所要時間の保持
+        self.search_history['fit_time'] = randcv.cv_results_['mean_fit_time']
+        self.search_history['score_time'] = randcv.cv_results_['mean_score_time']
+        if isinstance(cv, LeaveOneGroupOut):  # LeaveOneGroupOutのとき、クロスバリデーション分割数をcv_groupの数に指定
+            print('TODO: LeaveOneGroupOut LATER')
+            #cv_num = cv.get_n_splits(self.X, self.y, self.groups)
+        else:
+            cv_num = randcv.n_splits_
+        self.search_history['raw_trial_time'] = (self.search_history['fit_time'] + self.search_history['score_time']) * cv_num
 
         # ランダムサーチで探索した最適パラメータ、最適スコア、所要時間を返す
         return randcv.best_params_, randcv.best_score_, self.elapsed_time
@@ -1507,9 +1525,11 @@ class ParamTuning():
         # パラメータと得点の履歴をDataFrame化
         df_history = pd.DataFrame(self.search_history)
         score_array = df_history['test_score'].values
-        time_array = df_history['trial_time'].values
+        time_array = df_history['raw_trial_time'].values
         # その時点までの最大値を取得
         df_history['max_score'] = df_history.index.map(lambda x: max(score_array[:x+1]))
+        # その時点までの所要時間を取得(最適化クラスから取得した生値)
+        df_history['raw_total_time'] = df_history.index.map(lambda x: sum(time_array[:x+1]))
         # DataFrameを返す
         return df_history
 
