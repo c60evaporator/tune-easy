@@ -764,10 +764,10 @@ class ParamTuning():
             features = list(reversed(self.X_colnames))
             importances = list(
             reversed(self.best_estimator.feature_importances_.tolist()))
-            if ax == None:
-                plt.barh(features, importances)
-            else:
-                ax.barh(features, importances)
+            # 描画用axがNoneのとき、matplotlib.pyplot.gca()を使用
+            if ax is None:
+                ax=plt.gca()
+            ax.barh(features, importances)
         else:
             raise Exception('please tune parameters before plotting feature importances')
         
@@ -1151,7 +1151,7 @@ class ParamTuning():
         
         # 描画用axがNoneのとき、matplotlib.pyplotを使用
         if ax == None:
-            ax=plt
+            ax=plt.gca()
         # plot_stats == 'mean'のとき、スコアの平均±標準偏差を表示
         if plot_stats == 'mean':
             train_mean = np.mean(train_scores, axis=1)
@@ -1188,12 +1188,8 @@ class ParamTuning():
 
         # グラフの表示調整
         ax.grid()
-        if isinstance(ax, matplotlib.axes._subplots.Axes):  # axesで1画像プロットするとき
-            ax.set_xlabel('Number of training samples')  # パラメータ名を横軸ラベルに
-            ax.set_ylabel(scoring)  # スコア名を縦軸ラベルに
-        else:  # pltで別画像プロットするとき
-            ax.xlabel('Number of training samples')  # パラメータ名を横軸ラベルに
-            ax.ylabel(scoring)  # スコア名を縦軸ラベルに
+        ax.set_xlabel('Number of training samples')  # パラメータ名を横軸ラベルに
+        ax.set_ylabel(scoring)  # スコア名を縦軸ラベルに
         ax.legend(loc='lower right')  # 凡例
 
     def plot_best_learning_curve(self, plot_stats='mean', ax=None):
@@ -1500,6 +1496,6 @@ class ParamTuning():
 
     def plot_param_importances(self):
         if self.param_importances is None:
-            raise Exception('Run "plot_search_history" method before running "plot_param_importances" method')
+            raise Exception('Run "plot_search_map" method before running "plot_param_importances" method')
         plt.barh(self.param_importances.index.values, self.param_importances.values)
         plt.show()
