@@ -1223,7 +1223,7 @@ class ParamTuning():
                                   **self.fit_params)
         plt.show()
 
-    def plot_search_history(self, order=None, pair_n=4, rounddigits_title=3, rank_number=None, rounddigits_score=3,
+    def plot_search_map(self, order=None, pair_n=4, rounddigits_title=3, rank_number=None, rounddigits_score=3,
                             subplot_kws=None, heat_kws=None, scatter_kws=None):
         """
         探索履歴のプロット（グリッドサーチ：ヒートマップ、その他：散布図）
