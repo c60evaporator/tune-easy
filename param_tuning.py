@@ -100,6 +100,9 @@ class ParamTuning():
         self.best_estimator = None  # 最適化された学習モデル
         self.search_history = None  # 探索履歴(パラメータ名をキーとしたdict)
         self.param_importances = None  # ランダムフォレストで求めたパラメータのスコアに対する重要度
+        self.start_time = None  # 処理時間計測用スタート値
+        self.preprocess_time = None  # 前処理(最適化スタート前)時間
+        self.elapsed_times = None  # 処理経過時間保存用リスト
         # 追加処理
         self._additional_init(**kwargs)
     
@@ -251,6 +254,7 @@ class ParamTuning():
         """
         # 処理時間測定
         start = time.time()
+        self.start_time = start
 
         # 引数非指定時、クラス変数から取得
         if cv_model == None:
@@ -297,6 +301,8 @@ class ParamTuning():
         gridcv = GridSearchCV(cv_model, cv_params, cv=cv,
                               scoring=scoring, **grid_kws)
 
+        # ここまでに掛かった前処理時間を測定
+        self.preprocess_time = time.time() - start
         # グリッドサーチ実行（学習実行）
         gridcv.fit(self.X,
                self.y,
@@ -357,6 +363,7 @@ class ParamTuning():
         """
         # 処理時間測定
         start = time.time()
+        self.start_time = start
 
         # 引数非指定時、クラス変数から取得
         if cv_model == None:
@@ -409,6 +416,8 @@ class ParamTuning():
         randcv = RandomizedSearchCV(cv_model, cv_params, cv=cv, scoring=scoring,
                                     n_iter=n_iter, **rand_kws)
 
+        # ここまでに掛かった前処理時間を測定
+        self.preprocess_time = time.time() - start
         # ランダムサーチ実行
         randcv.fit(self.X,
                self.y,
@@ -457,6 +466,9 @@ class ParamTuning():
         scores = cross_val_score(cv_model, self.X, self.y, cv=self.cv,
                                  scoring=self.scoring, fit_params=self.fit_params, n_jobs=-1)
         val = scores.mean()
+
+        # 所要時間測定
+        self.elapsed_times.append(time.time() - self.start_time)
 
         return val
 
@@ -518,6 +530,7 @@ class ParamTuning():
         """
         # 処理時間測定
         start = time.time()
+        self.start_time = start
 
         # 引数非指定時、クラス変数から取得
         if cv_model == None:
@@ -572,9 +585,14 @@ class ParamTuning():
         # 引数のスケールを変換(対数スケールパラメータは対数化)
         bayes_params_log = self._log10_conversion(bayes_params, param_scales)
 
-        # ベイズ最適化を実行
+        # ベイズ最適化インスタンス作成
         bo = BayesianOptimization(
             self._bayes_evaluate, bayes_params_log, random_state=seed)
+        
+        # ここまでに掛かった前処理時間を測定
+        self.preprocess_time = time.time() - start
+        self.elapsed_times = [self.preprocess_time]
+        # ベイズ最適化を実行
         bo.maximize(init_points=init_points, n_iter=n_iter, acq=acq)
         self.elapsed_time = time.time() - start
         self.algo_name = 'bayes-opt'
@@ -597,6 +615,9 @@ class ParamTuning():
         params_hisotry = np.where(scale_array == 'log', np.power(10, params_history_log), params_history_log)  # 対数スケールパラメータは10のべき乗をとる
         self.search_history = pd.DataFrame(params_hisotry, columns=bo.space.keys).to_dict(orient='list')  # パラメータ履歴をDict化
         self.search_history['test_score'] = bo.space.target.tolist()  # スコア履歴を追加
+
+        # 所要時間の保持(elapsed_timesの差分)
+        self.search_history['raw_trial_time'] = np.diff(np.array(self.elapsed_times), n=1)
 
         # 最適モデル保持のため学習（特徴量重要度算出等）
         best_model = copy.deepcopy(cv_model)
