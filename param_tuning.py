@@ -615,7 +615,6 @@ class ParamTuning():
         params_hisotry = np.where(scale_array == 'log', np.power(10, params_history_log), params_history_log)  # 対数スケールパラメータは10のべき乗をとる
         self.search_history = pd.DataFrame(params_hisotry, columns=bo.space.keys).to_dict(orient='list')  # パラメータ履歴をDict化
         self.search_history['test_score'] = bo.space.target.tolist()  # スコア履歴を追加
-
         # 所要時間の保持(elapsed_timesの差分)
         self.search_history['raw_trial_time'] = np.diff(np.array(self.elapsed_times), n=1)
 
@@ -692,6 +691,7 @@ class ParamTuning():
         """
         # 処理時間測定
         start = time.time()
+        self.start_time = start
 
         # 引数非指定時、クラス変数から取得
         if cv_model == None:
@@ -743,12 +743,16 @@ class ParamTuning():
         self.bayes_not_opt_params = bayes_not_opt_params
         self.int_params = int_params
 
-        # ベイズ最適化を実行
+        # ベイズ最適化のインスタンス作成
         if 'sampler' not in study_kws:  # 指定がなければsamplerにTPESamplerを使用
             study_kws['sampler'] = optuna.samplers.TPESampler(seed=seed)
         if 'direction' not in study_kws:  # 指定がなければ最大化方向に最適化
             study_kws['direction'] = 'maximize'
         study = optuna.create_study(**study_kws)
+
+        # ここまでに掛かった前処理時間を測定
+        self.preprocess_time = time.time() - start
+        # ベイズ最適化を実行
         study.optimize(self._optuna_evaluate, n_trials=n_trials,
                        **optimize_kws)
         self.elapsed_time = time.time() - start
@@ -765,6 +769,8 @@ class ParamTuning():
         # 学習履歴の保持
         self.search_history = pd.DataFrame([trial.params for trial in study.trials]).to_dict(orient='list')  # パラメータ履歴をDict化
         self.search_history['test_score'] = [trial.value for trial in study.trials]  # スコア履歴を追加
+        # 所要時間の保持
+        self.search_history['raw_trial_time'] = [trial.duration.total_seconds() for trial in study.trials]
 
         # 最適モデル保持のため学習（特徴量重要度算出等）
         best_model = copy.deepcopy(cv_model)
@@ -1551,6 +1557,10 @@ class ParamTuning():
         df_history['max_score'] = df_history.index.map(lambda x: max(score_array[:x+1]))
         # その時点までの所要時間を取得(最適化クラスから取得した生値)
         df_history['raw_total_time'] = df_history.index.map(lambda x: sum(time_array[:x+1]))
+        # その時点までの所要時間を、elapsed_timeとの比率で補正
+        total_tuning_time = np.max(df_history['raw_total_time'])
+        df_history['total_time'] = df_history['raw_total_time'] * self.elapsed_time / total_tuning_time
+
         # DataFrameを返す
         return df_history
 
