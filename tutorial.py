@@ -12,10 +12,11 @@ params = {'gamma':[0.001, 0.01, 0.1, 1, 10],
           'C': [0.01, 0.1, 1, 10],
           'epsilon': [0, 0.05, 0.1]
           }
-tuning.grid_search_tuning(cv_params=params)
-tuning.get_search_history()
-# tuning.random_search_tuning(cv_params=params, n_iter=50)
+#tuning.grid_search_tuning(cv_params=params)
+#tuning.random_search_tuning(cv_params=params, n_iter=50)
+# tuning.plot_search_history(x_axis='time')
 # tuning.plot_search_map(rank_number=2)
+
 # %% 5次元パラメータ(XGB)
 from xgb_tuning import XGBRegressorTuning
 from xgboost import XGBRegressor
@@ -32,8 +33,9 @@ params = {'learning_rate': [0.1, 0.3, 0.5],  # 過学習のバランス(高い�
           'colsample_bytree': [0.5, 0.8, 1.0],  # 列のサブサンプリングを行う比率
           'subsample': [0.5, 0.8, 1.0]  # 木を構築する前にデータのサブサンプリングを行う比率。1 なら全データ使用、0.5なら半分のデータ使用
           }
-# tuning.grid_search_tuning(cv_params=params)
+#tuning.grid_search_tuning(cv_params=params)
 # tuning.random_search_tuning(cv_params=params, n_iter=50)
+#tuning.plot_search_history()
 # tuning.plot_search_map()
 # %% 3次元パラメータ(SVR) ベイズ
 from svm_tuning import SVMRegressorTuning
@@ -49,9 +51,9 @@ params = {'gamma':(0.001, 10),
           'C': (0.01, 10),
           'epsilon': (0, 0.1)
           }
-tuning.bayes_opt_tuning(bayes_params=params, n_iter=50)
-#tuning.optuna_tuning(bayes_params=params, n_trials=50)
-tuning.plot_search_history()
+#tuning.bayes_opt_tuning(bayes_params=params, n_iter=50)
+tuning.optuna_tuning(bayes_params=params, n_trials=50)
+tuning.plot_search_history(x_axis='time')
 #tuning.plot_search_map(rank_number=2)
 #tuning.plot_param_importances()
 # %% 5次元パラメータ(XGB)　ベイズ
@@ -72,8 +74,8 @@ params = {'learning_rate': (0.1, 0.5),  # 過学習のバランス(高いほど�
           'subsample': (0.5, 1.0)  # 木を構築する前にデータのサブサンプリングを行う比率。1 なら全データ使用、0.5なら半分のデータ使用
           }
 # tuning.bayes_opt_tuning(bayes_params=params, n_iter=50)
-tuning.optuna_tuning(bayes_params=params, n_trials=50)
-tuning.plot_search_map(rank_number=2)
+# tuning.optuna_tuning(bayes_params=params, n_trials=50)
+# tuning.plot_search_map(rank_number=2)
 # tuning.plot_best_learning_curve()
 # tuning.plot_param_importances()
 # tuning.plot_feature_importances()

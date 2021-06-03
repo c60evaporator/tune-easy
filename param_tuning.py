@@ -1271,21 +1271,21 @@ class ParamTuning():
 
         Parameters
         ----------
-        subplot_kws: dict, optional
-            プロット用のplt.subplots()に渡す引数 (例：figsize)
-        pair_n : Dict
+        order: List[str]
+            表示する順番 (パラメータ名のリストを指定、グラフ横軸 → グラフ縦軸 → 全体縦軸 → 全体横軸の順番)
+        pair_n : int, optional
             グリッドサーチ以外の時の図を並べる枚数
-        rounddigits_title : int
+        rounddigits_title : int, optional
             グラフタイトルのパラメータ値の丸め桁数
         rank_number: int, optional
             スコア上位何番目までを文字表示するか
-        rounddigits_score : int
+        rounddigits_score : int, optional
             上位スコア表示の丸め桁数
-        subplot_kws : Dict[str, float]
+        subplot_kws : Dict, optional
             プロット用のplt.subplots()に渡す引数 (例：figsize)
-        heat_kws : Dict
+        heat_kws : Dict, optional
             ヒートマップ用のsns.heatmap()に渡す引数 (グリッドサーチのみ)
-        scatter_kws : matplotlib.axes._subplots.Axes
+        scatter_kws : Dict, optional
             プロット用のplt.subplots()に渡す引数 (グリッドサーチ以外)
         """
         if rank_number is None:
@@ -1564,7 +1564,19 @@ class ParamTuning():
         # DataFrameを返す
         return df_history
 
-    def plot_search_history(self, ax=None, plot_kws=None):
+    def plot_search_history(self, ax=None, x_axis='index', plot_kws=None):
+        """
+        探索経過のプロット
+
+        Parameters
+        ----------
+        ax : matplotlib.axes._subplots.Axes, optional
+            表示対象のax（Noneならplt.plotで1枚ごとにプロット）
+        x_axis : str, optional
+            横軸の種類('index':試行回数, 'time':経過時間（合計時間での補正値）
+        plot_kws : Dict
+            プロット用のplt.plotに渡す引数
+        """
         # plot_kwsがNoneなら空のdictを入力
         if plot_kws is None:
             plot_kws = {}
@@ -1576,6 +1588,20 @@ class ParamTuning():
         df_history = self.get_search_history()
         if 'color' not in plot_kws:
             plot_kws['color'] = 'red'
-        ax.plot(df_history.index.values, df_history['max_score'], label='training score', **plot_kws)
-        ax.set_xlabel('trials')  # X軸ラベル
+        # X軸のデータを取得
+        if x_axis == 'index':
+            x = df_history.index.tolist()
+        elif x_axis == 'time':
+            x = [0.0] + df_history['total_time'].tolist()
+        # Y軸のデータを取得
+        y = df_history['max_score'].tolist()
+        if x_axis == 'time':
+            y = [np.min(y)] + y
+
+        # グラフをプロット
+        ax.plot(x, y, label='training score', **plot_kws)
         ax.set_ylabel('max_test_score')  # Y軸ラベル
+        if x_axis == 'index':  # X軸ラベル(試行回数のとき)
+            ax.set_xlabel('trials')
+        elif x_axis == 'time':
+            ax.set_xlabel('time')  # X軸ラベル(経過時間のとき)
