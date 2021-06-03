@@ -1,20 +1,20 @@
 # %% 3次元パラメータ(SVR)
 from svm_tuning import SVMRegressorTuning
-from sklearn.svm import SVR
+from sklearn.model_selection import LeaveOneGroupOut
 import pandas as pd
 df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
 USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
 y = df_reg[OBJECTIVE_VARIALBLE_REG].values
 X = df_reg[USE_EXPLANATORY_REG].values
-tuning = SVMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG)
+tuning = SVMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG, cv_group=df_reg['ward_after'].values)
 params = {'gamma':[0.001, 0.01, 0.1, 1, 10],
           'C': [0.01, 0.1, 1, 10],
           'epsilon': [0, 0.05, 0.1]
           }
-#tuning.grid_search_tuning(cv_params=params)
+tuning.grid_search_tuning(cv_params=params, cv=LeaveOneGroupOut())
 #tuning.random_search_tuning(cv_params=params, n_iter=50)
-# tuning.plot_search_history(x_axis='time')
+tuning.plot_search_history(x_axis='time')
 # tuning.plot_search_map(rank_number=2)
 
 # %% 5次元パラメータ(XGB)

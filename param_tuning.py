@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from sklearn.model_selection import GridSearchCV, RandomizedSearchCV, KFold, LeaveOneGroupOut, validation_curve, learning_curve, cross_val_score
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV, KFold, GroupKFold, LeaveOneGroupOut, validation_curve, learning_curve, cross_val_score
 from sklearn.metrics import check_scoring
 from sklearn.pipeline import Pipeline
 from sklearn.ensemble import RandomForestRegressor
@@ -63,7 +63,7 @@ class ParamTuning():
         """
         pass
 
-    def __init__(self, X, y, X_colnames, y_colname=None, **kwargs):
+    def __init__(self, X, y, X_colnames, y_colname=None, cv_group=None, **kwargs):
         """
         初期化
 
@@ -75,8 +75,10 @@ class ParamTuning():
             目的変数データ(ndarray、2次元でも1次元でも可)
         X_colnames : list(str)
             説明変数のフィールド名
-        y_colname : str
+        y_colname : str, optional
             目的変数のフィールド名
+        cv_group: str, optional
+            GroupKFold、LeaveOneGroupOutのグルーピング対象データ
         """
         if X.shape[1] != len(X_colnames):
             raise Exception('width of X must be equal to length of X_colnames')
@@ -84,6 +86,7 @@ class ParamTuning():
         self.y = y.ravel() # 2次元ndarrayのとき、ravel()で1次元に変換
         self.X_colnames = X_colnames
         self.y_colname = y_colname
+        self.cv_group = cv_group  # GroupKFold, LeaveOneGroupOut用のグルーピング対象データ 
         self.tuning_params = None  # チューニング対象のパラメータとその範囲
         self.bayes_not_opt_params = None  # チューニング非対象のパラメータ
         self.int_params = None  # 整数型のパラメータのリスト(ベイズ最適化時は都度int型変換する)
@@ -290,6 +293,13 @@ class ParamTuning():
         cv_params = self._add_learner_name(cv_model, cv_params)
         fit_params = self._add_learner_name(cv_model, fit_params)
         param_scales = self._add_learner_name(cv_model, param_scales)
+
+        # GroupKFold、LeaveOneGroupOutのとき、cv_groupをグルーピング対象に指定
+        if isinstance(cv, GroupKFold) or isinstance(cv, LeaveOneGroupOut):
+            if self.cv_group is not None:
+                fit_params['groups'] = self.cv_group
+            else:
+                raise Exception('"GroupKFold" and "LeaveOneGroupOut" cross validations need "cv_group" argument at the initialization')
         
         # 引数をプロパティ(インスタンス変数)に反映
         self._set_argument_to_property(cv_model, cv_params, cv, seed, scoring, fit_params, param_scales)
@@ -323,11 +333,7 @@ class ParamTuning():
         # 所要時間の保持
         self.search_history['fit_time'] = gridcv.cv_results_['mean_fit_time']
         self.search_history['score_time'] = gridcv.cv_results_['mean_score_time']
-        if isinstance(cv, LeaveOneGroupOut):  # LeaveOneGroupOutのとき、クロスバリデーション分割数をcv_groupの数に指定
-            print('TODO: LeaveOneGroupOut LATER')
-            #cv_num = cv.get_n_splits(self.X, self.y, self.groups)
-        else:
-            cv_num = gridcv.n_splits_
+        cv_num = gridcv.n_splits_
         self.search_history['raw_trial_time'] = (self.search_history['fit_time'] + self.search_history['score_time']) * cv_num
 
         # グリッドサーチでの探索結果を返す
