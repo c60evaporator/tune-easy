@@ -466,7 +466,6 @@ class ParamTuning():
         scores = cross_val_score(cv_model, self.X, self.y, cv=self.cv,
                                  scoring=self.scoring, fit_params=self.fit_params, n_jobs=-1)
         val = scores.mean()
-
         # 所要時間測定
         self.elapsed_times.append(time.time() - self.start_time)
 

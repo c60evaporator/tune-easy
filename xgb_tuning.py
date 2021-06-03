@@ -1,7 +1,7 @@
 from param_tuning import ParamTuning
 from sklearn.model_selection import cross_val_score
 from sklearn.metrics import check_scoring
-import copy
+import time
 import xgboost as xgb
 
 class XGBRegressorTuning(ParamTuning):
@@ -126,11 +126,12 @@ class XGBRegressorTuning(ParamTuning):
             scores = cross_val_score(cv_model, self.X, self.y, cv=self.cv,
                                     scoring=self.scoring, fit_params=self.fit_params, n_jobs=-1)
             val = scores.mean()
-
         # eval_data_sourceに学習orテストデータ指定時(スクラッチでクロスバリデーション)
         else:
             scores = self._scratch_cross_val(cv_model, self.eval_data_source)
             val = sum(scores)/len(scores)
+        # 所要時間測定
+        self.elapsed_times.append(time.time() - self.start_time)
 
         return val
 
