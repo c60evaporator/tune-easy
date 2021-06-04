@@ -410,6 +410,13 @@ class ParamTuning():
         fit_params = self._add_learner_name(cv_model, fit_params)
         param_scales = self._add_learner_name(cv_model, param_scales)
 
+        # GroupKFold、LeaveOneGroupOutのとき、cv_groupをグルーピング対象に指定
+        if isinstance(cv, GroupKFold) or isinstance(cv, LeaveOneGroupOut):
+            if self.cv_group is not None:
+                fit_params['groups'] = self.cv_group
+            else:
+                raise Exception('"GroupKFold" and "LeaveOneGroupOut" cross validations need "cv_group" argument at the initialization')
+
         # 引数をプロパティ(インスタンス変数)に反映
         self._set_argument_to_property(cv_model, cv_params, cv, seed, scoring, fit_params, param_scales)
 
@@ -444,11 +451,7 @@ class ParamTuning():
         # 所要時間の保持
         self.search_history['fit_time'] = randcv.cv_results_['mean_fit_time']
         self.search_history['score_time'] = randcv.cv_results_['mean_score_time']
-        if isinstance(cv, LeaveOneGroupOut):  # LeaveOneGroupOutのとき、クロスバリデーション分割数をcv_groupの数に指定
-            print('TODO: LeaveOneGroupOut LATER')
-            #cv_num = cv.get_n_splits(self.X, self.y, self.groups)
-        else:
-            cv_num = randcv.n_splits_
+        cv_num = randcv.n_splits_
         self.search_history['raw_trial_time'] = (self.search_history['fit_time'] + self.search_history['score_time']) * cv_num
 
         # ランダムサーチで探索した最適パラメータ、最適スコア、所要時間を返す
@@ -469,7 +472,7 @@ class ParamTuning():
         cv_model.set_params(**params)
 
         # cross_val_scoreでクロスバリデーション
-        scores = cross_val_score(cv_model, self.X, self.y, cv=self.cv,
+        scores = cross_val_score(cv_model, self.X, self.y, cv=self.cv, groups=self.cv_group,
                                  scoring=self.scoring, fit_params=self.fit_params, n_jobs=-1)
         val = scores.mean()
         # 所要時間測定
@@ -582,6 +585,11 @@ class ParamTuning():
         bayes_not_opt_params = self._add_learner_name(cv_model, bayes_not_opt_params)
         int_params = self._add_learner_name(cv_model, int_params)
 
+        # GroupKFold、LeaveOneGroupOutのとき、cv_groupが指定されていなければエラーを出す
+        if isinstance(cv, GroupKFold) or isinstance(cv, LeaveOneGroupOut):
+            if self.cv_group is None:
+                raise Exception('"GroupKFold" and "LeaveOneGroupOut" cross validations need "cv_group" argument at the initialization')
+
         # 引数をプロパティ(インスタンス変数)に反映
         self._set_argument_to_property(cv_model, bayes_params, cv, seed, scoring, fit_params, param_scales)
         self.bayes_not_opt_params = bayes_not_opt_params
@@ -653,7 +661,7 @@ class ParamTuning():
         cv_model = self.cv_model
         cv_model.set_params(**params)
         # cross_val_scoreでクロスバリデーション
-        scores = cross_val_score(cv_model, self.X, self.y, cv=self.cv,
+        scores = cross_val_score(cv_model, self.X, self.y, cv=self.cv, groups=self.cv_group,
                                  scoring=self.scoring, fit_params=self.fit_params, n_jobs=-1)
         val = scores.mean()
         
@@ -742,6 +750,11 @@ class ParamTuning():
         param_scales = self._add_learner_name(cv_model, param_scales)
         bayes_not_opt_params = self._add_learner_name(cv_model, bayes_not_opt_params)
         int_params = self._add_learner_name(cv_model, int_params)
+
+        # GroupKFold、LeaveOneGroupOutのとき、cv_groupが指定されていなければエラーを出す
+        if isinstance(cv, GroupKFold) or isinstance(cv, LeaveOneGroupOut):
+            if self.cv_group is None:
+                raise Exception('"GroupKFold" and "LeaveOneGroupOut" cross validations need "cv_group" argument at the initialization')
 
         # 引数をプロパティ(インスタンス変数)に反映
         self._set_argument_to_property(cv_model, bayes_params, cv, seed, scoring, fit_params, param_scales)
