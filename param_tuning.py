@@ -287,19 +287,16 @@ class ParamTuning():
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
         if isinstance(cv, numbers.Integral):
             cv = KFold(n_splits=cv, shuffle=True, random_state=seed)
+        # GroupKFold、LeaveOneGroupOutのとき、cv_groupが指定されていなければエラーを出す
+        if isinstance(cv, GroupKFold) or isinstance(cv, LeaveOneGroupOut):
+            if self.cv_group is None:
+                raise Exception('"GroupKFold" and "LeaveOneGroupOut" cross validations need "cv_group" argument at the initialization')
         # パイプライン処理のとき、最後の要素から学習器名を取得
         self._get_learner_name(cv_model)
         # パイプライン処理のとき、パラメータに学習器名を追加
         cv_params = self._add_learner_name(cv_model, cv_params)
         fit_params = self._add_learner_name(cv_model, fit_params)
         param_scales = self._add_learner_name(cv_model, param_scales)
-
-        # GroupKFold、LeaveOneGroupOutのとき、cv_groupをグルーピング対象に指定
-        if isinstance(cv, GroupKFold) or isinstance(cv, LeaveOneGroupOut):
-            if self.cv_group is not None:
-                fit_params['groups'] = self.cv_group
-            else:
-                raise Exception('"GroupKFold" and "LeaveOneGroupOut" cross validations need "cv_group" argument at the initialization')
         
         # 引数をプロパティ(インスタンス変数)に反映
         self._set_argument_to_property(cv_model, cv_params, cv, seed, scoring, fit_params, param_scales)
@@ -316,6 +313,7 @@ class ParamTuning():
         # グリッドサーチ実行（学習実行）
         gridcv.fit(self.X,
                self.y,
+               groups=self.cv_group,
                **fit_params
                )
         self.elapsed_time = time.time() - start
@@ -403,19 +401,16 @@ class ParamTuning():
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
         if isinstance(cv, numbers.Integral):
             cv = KFold(n_splits=cv, shuffle=True, random_state=seed)
+        # GroupKFold、LeaveOneGroupOutのとき、cv_groupが指定されていなければエラーを出す
+        if isinstance(cv, GroupKFold) or isinstance(cv, LeaveOneGroupOut):
+            if self.cv_group is None:
+                raise Exception('"GroupKFold" and "LeaveOneGroupOut" cross validations need "cv_group" argument at the initialization')
         # パイプライン処理のとき、最後の要素から学習器名を取得
         self._get_learner_name(cv_model)
         # パイプライン処理のとき、パラメータに学習器名を追加
         cv_params = self._add_learner_name(cv_model, cv_params)
         fit_params = self._add_learner_name(cv_model, fit_params)
         param_scales = self._add_learner_name(cv_model, param_scales)
-
-        # GroupKFold、LeaveOneGroupOutのとき、cv_groupをグルーピング対象に指定
-        if isinstance(cv, GroupKFold) or isinstance(cv, LeaveOneGroupOut):
-            if self.cv_group is not None:
-                fit_params['groups'] = self.cv_group
-            else:
-                raise Exception('"GroupKFold" and "LeaveOneGroupOut" cross validations need "cv_group" argument at the initialization')
 
         # 引数をプロパティ(インスタンス変数)に反映
         self._set_argument_to_property(cv_model, cv_params, cv, seed, scoring, fit_params, param_scales)
@@ -434,6 +429,7 @@ class ParamTuning():
         # ランダムサーチ実行
         randcv.fit(self.X,
                self.y,
+               groups=self.cv_group,
                **fit_params
                )
         self.elapsed_time = time.time() - start
@@ -576,6 +572,11 @@ class ParamTuning():
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
         if isinstance(cv, numbers.Integral):
             cv = KFold(n_splits=cv, shuffle=True, random_state=seed)
+        # GroupKFold、LeaveOneGroupOutのとき、cv_groupが指定されていなければエラーを出す
+        if isinstance(cv, GroupKFold) or isinstance(cv, LeaveOneGroupOut):
+            if self.cv_group is None:
+                raise Exception('"GroupKFold" and "LeaveOneGroupOut" cross validations need "cv_group" argument at the initialization')
+        
         # パイプライン処理のとき、最後の要素から学習器名を取得
         self._get_learner_name(cv_model)
         # パイプライン処理のとき、パラメータに学習器名を追加
@@ -584,11 +585,6 @@ class ParamTuning():
         param_scales = self._add_learner_name(cv_model, param_scales)
         bayes_not_opt_params = self._add_learner_name(cv_model, bayes_not_opt_params)
         int_params = self._add_learner_name(cv_model, int_params)
-
-        # GroupKFold、LeaveOneGroupOutのとき、cv_groupが指定されていなければエラーを出す
-        if isinstance(cv, GroupKFold) or isinstance(cv, LeaveOneGroupOut):
-            if self.cv_group is None:
-                raise Exception('"GroupKFold" and "LeaveOneGroupOut" cross validations need "cv_group" argument at the initialization')
 
         # 引数をプロパティ(インスタンス変数)に反映
         self._set_argument_to_property(cv_model, bayes_params, cv, seed, scoring, fit_params, param_scales)
@@ -742,6 +738,11 @@ class ParamTuning():
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
         if isinstance(cv, numbers.Integral):
             cv = KFold(n_splits=cv, shuffle=True, random_state=seed)
+        # GroupKFold、LeaveOneGroupOutのとき、cv_groupが指定されていなければエラーを出す
+        if isinstance(cv, GroupKFold) or isinstance(cv, LeaveOneGroupOut):
+            if self.cv_group is None:
+                raise Exception('"GroupKFold" and "LeaveOneGroupOut" cross validations need "cv_group" argument at the initialization')
+
         # パイプライン処理のとき、最後の要素から学習器名を取得
         self._get_learner_name(cv_model)
         # パイプライン処理のとき、パラメータに学習器名を追加
@@ -750,11 +751,6 @@ class ParamTuning():
         param_scales = self._add_learner_name(cv_model, param_scales)
         bayes_not_opt_params = self._add_learner_name(cv_model, bayes_not_opt_params)
         int_params = self._add_learner_name(cv_model, int_params)
-
-        # GroupKFold、LeaveOneGroupOutのとき、cv_groupが指定されていなければエラーを出す
-        if isinstance(cv, GroupKFold) or isinstance(cv, LeaveOneGroupOut):
-            if self.cv_group is None:
-                raise Exception('"GroupKFold" and "LeaveOneGroupOut" cross validations need "cv_group" argument at the initialization')
 
         # 引数をプロパティ(インスタンス変数)に反映
         self._set_argument_to_property(cv_model, bayes_params, cv, seed, scoring, fit_params, param_scales)
@@ -969,6 +965,10 @@ class ParamTuning():
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
         if isinstance(cv, numbers.Integral):
             cv = KFold(n_splits=cv, shuffle=True, random_state=seed)
+        # GroupKFold、LeaveOneGroupOutのとき、cv_groupが指定されていなければエラーを出す
+        if isinstance(cv, GroupKFold) or isinstance(cv, LeaveOneGroupOut):
+            if self.cv_group is None:
+                raise Exception('"GroupKFold" and "LeaveOneGroupOut" cross validations need "cv_group" argument at the initialization')
         # パイプライン処理のとき、最後の要素から学習器名を取得
         self._get_learner_name(cv_model)
         # パイプライン処理のとき、パラメータに学習器名を追加
@@ -991,6 +991,7 @@ class ParamTuning():
                                     param_name=k,
                                     param_range=v,
                                     fit_params=fit_params,
+                                    groups=self.cv_group,
                                     cv=cv, scoring=scoring, n_jobs=-1)
             # 結果をDictに格納
             validation_curve_result[k] = {'param_values': v,
@@ -1197,6 +1198,10 @@ class ParamTuning():
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
         if isinstance(cv, numbers.Integral):
             cv = KFold(n_splits=cv, shuffle=True, random_state=seed)
+        # GroupKFold、LeaveOneGroupOutのとき、cv_groupが指定されていなければエラーを出す
+        if isinstance(cv, GroupKFold) or isinstance(cv, LeaveOneGroupOut):
+            if self.cv_group is None:
+                raise Exception('"GroupKFold" and "LeaveOneGroupOut" cross validations need "cv_group" argument at the initialization')
         # パイプライン処理のとき、最後の要素から学習器名を取得
         self._get_learner_name(cv_model)
         # パイプライン処理のとき、パラメータに学習器名を追加
@@ -1210,6 +1215,7 @@ class ParamTuning():
                                                                  X=self.X, y=self.y,
                                                                  train_sizes=np.linspace(0.1, 1.0, 10),
                                                                  fit_params=fit_params,
+                                                                 groups=self.cv_group,
                                                                  cv=cv, scoring=scoring, n_jobs=-1)
         
         # 描画用axがNoneのとき、matplotlib.pyplotを使用
