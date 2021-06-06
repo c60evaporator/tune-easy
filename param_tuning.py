@@ -1328,7 +1328,8 @@ class ParamTuning():
         if self.best_estimator is None:
             raise Exception('please tune parameters before plotting feature importances')
         # パラメータと得点の履歴をDataFrame化
-        df_history = pd.DataFrame(self.search_history)
+        params_cols = list(self.tuning_params.keys()) + ['test_score']
+        df_history = pd.DataFrame(self.search_history)[params_cols]
 
         # ランダムフォレストでパラメータとスコアのfeature_importancesを求める
         rf = RandomForestRegressor()
