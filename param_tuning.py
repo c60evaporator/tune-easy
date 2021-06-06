@@ -1607,6 +1607,7 @@ class ParamTuning():
         # 描画用axがNoneのとき、matplotlib.pyplot.gca()を使用
         if ax is None:
             ax=plt.gca()
+            ax_flg = False
         
         # パラメータと得点とその最大値の履歴をDataFrame化
         df_history = self.get_search_history()
@@ -1629,3 +1630,7 @@ class ParamTuning():
             ax.set_xlabel('trials')
         elif x_axis == 'time':
             ax.set_xlabel('time')  # X軸ラベル(経過時間のとき)
+
+        # ax指定していないとき、グラフを表示
+        if not ax_flg:
+            plt.show()
