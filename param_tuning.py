@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 import seaborn as sns
 import util_methods
+import mlflow
 
 class ParamTuning():
     """
@@ -95,8 +96,8 @@ class ParamTuning():
         self.cv = None  # クロスバリデーション分割法
         self.cv_model = None  # 最適化対象の学習器インスタンス
         self.learner_name = None  # パイプライン処理時の学習器名称
-        self.fit_params = None  # 学習時のパラメータ
-        self.algo_name = None  # 最後に最適化に使用したアルゴリズム名('grid', 'random', 'bayes-opt', 'optuna')
+        self.fit_params = None  # 学習時のパラメータ]
+        self.algo_name = None  # 最適化に使用したアルゴリズム名('grid', 'random', 'bayes-opt', 'optuna')
         self.best_params = None  # 最適パラメータ
         self.best_score = None  # 最高スコア
         self.elapsed_time = None  # 所要時間
@@ -228,6 +229,17 @@ class ParamTuning():
             
             scores.append(score)
         return scores
+
+    def _mlflow_logging(self, log_params, log_metrics, set_tags, log_artifacts):
+        """
+        MLFlowで指定引数と探索履歴をロギング
+        """
+        # パラメータと得点の履歴をDataFrame化
+        df_history = pd.DataFrame(self.search_history)
+        with mlflow.start_run() as run:
+            mlflow.log_param('X_colnames', self.X_colnames)
+            mlflow.log_param('y_colname', self.y_colname)
+            mlflow.log_param('cv_group', self.cv_group)
 
     def grid_search_tuning(self, cv_model=None, cv_params=None, cv=None, seed=None, scoring=None,
                            param_scales=None, grid_kws=None, **fit_params):

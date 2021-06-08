@@ -127,9 +127,8 @@ params = {'learning_rate': (0.1, 0.5),  # 過学習のバランス(高いほど�
 # tuning.plot_best_learning_curve()
 # tuning.plot_param_importances()
 # tuning.plot_feature_importances()
-# %% MLFlow実装　グリッドサーチ
+# %% MLFlow実装　グリッドサーチautolog
 from svm_tuning import SVMRegressorTuning
-from sklearn.model_selection import LeaveOneGroupOut
 import pandas as pd
 import mlflow
 df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
@@ -140,10 +139,9 @@ X = df_reg[USE_EXPLANATORY_REG].values
 tuning = SVMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG, cv_group=df_reg['ward_after'].values)
 mlflow.sklearn.autolog()
 with mlflow.start_run() as run:
-    tuning.grid_search_tuning(cv=LeaveOneGroupOut())
-# %% MLFlow実装　ランダムサーチ
+    tuning.grid_search_tuning()
+# %% MLFlow実装　ランダムサーチautolog
 from svm_tuning import SVMRegressorTuning
-from sklearn.model_selection import LeaveOneGroupOut
 import pandas as pd
 import mlflow
 df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
@@ -154,10 +152,9 @@ X = df_reg[USE_EXPLANATORY_REG].values
 tuning = SVMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG, cv_group=df_reg['ward_after'].values)
 mlflow.sklearn.autolog()
 with mlflow.start_run() as run:
-    tuning.random_search_tuning(cv=LeaveOneGroupOut())
+    tuning.random_search_tuning()
 # %% MLFlow実装　Optuna
 from svm_tuning import SVMRegressorTuning
-from sklearn.model_selection import LeaveOneGroupOut
 import pandas as pd
 import mlflow
 df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
@@ -166,5 +163,5 @@ USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member',
 y = df_reg[OBJECTIVE_VARIALBLE_REG].values
 X = df_reg[USE_EXPLANATORY_REG].values
 tuning = SVMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG, cv_group=df_reg['ward_after'].values)
-
+tuning.optuna_tuning(mlflow_logging=True)
 # %%
