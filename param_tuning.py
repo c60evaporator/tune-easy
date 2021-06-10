@@ -96,7 +96,7 @@ class ParamTuning():
         self.cv = None  # クロスバリデーション分割法
         self.cv_model = None  # 最適化対象の学習器インスタンス
         self.learner_name = None  # パイプライン処理時の学習器名称
-        self.fit_params = None  # 学習時のパラメータ]
+        self.fit_params = None  # 学習時のパラメータ
         self.algo_name = None  # 最適化に使用したアルゴリズム名('grid', 'random', 'bayes-opt', 'optuna')
         self.best_params = None  # 最適パラメータ
         self.best_score = None  # 最高スコア
@@ -234,20 +234,34 @@ class ParamTuning():
         """
         MLFlowで指定引数と探索履歴をロギング
         """
-        # パラメータと得点の履歴をDataFrame化
-        df_history = pd.DataFrame(self.search_history)
-        # MLFlowを起動
-        mlflow.log_param('X_head', self.X[:5, :])
-        mlflow.log_param('y_head', self.y[:5])
-        mlflow.log_param('X_colnames', self.X_colnames)
-        mlflow.log_param('y_colname', self.y_colname)
-        mlflow.log_param('cv_group_head', self.cv_group[:5] if self.cv_group is not None else None)
-        mlflow.log_param('tuning_params', self.tuning_params)
-        mlflow.log_param('not_opt_params', self.bayes_not_opt_params)
-        mlflow.log_param('int_params', self.int_params)
-        mlflow.log_param('param_scales', self.int_params)
-        mlflow.log_param('seed', self.seed)
-        mlflow.log_param('cv', str(self.cv))
+        
+        # パラメータを記載
+        mlflow.log_param('X_head', self.X[:5, :])  # 説明変数の最初5レコード
+        mlflow.log_param('y_head', self.y[:5])  # 目的変数の最初5レコード
+        mlflow.log_param('X_colnames', self.X_colnames)  # 説明変数のカラム名
+        mlflow.log_param('y_colname', self.y_colname)  # 目的変数のカラム名
+        mlflow.log_param('cv_group_head', self.cv_group[:5] if self.cv_group is not None else None)  # GroupKFold, LeaveOneGroupOut用のグルーピング対象データ 
+        mlflow.log_param('tuning_params', self.tuning_params)  # チューニング対象のパラメータとその範囲
+        mlflow.log_param('not_opt_params', self.bayes_not_opt_params)  # チューニング非対象のパラメータ
+        mlflow.log_param('int_params', self.int_params)  # 整数型のパラメータのリスト
+        mlflow.log_param('param_scales', self.int_params)  # パラメータのスケール('linear', 'log')
+        mlflow.log_param('seed', self.seed)  # 乱数シード
+        mlflow.log_param('cv', str(self.cv))  # クロスバリデーション分割法
+        mlflow.log_param('cv_model', str(self.cv_model))  # 最適化対象の学習器インスタンス
+        mlflow.log_param('learner_name', self.learner_name)  # パイプライン処理時の学習器名称
+        mlflow.log_param('fit_params', self.fit_params)  # 学習時のパラメータ
+        mlflow.log_param('algo_name', self.algo_name)  # 最適化に使用したアルゴリズム名('grid', 'random', 'bayes-opt', 'optuna')
+        # チューニング結果を記載
+        best_params_float = {f'best__{k}':v for k, v in self.best_params.items() if isinstance(v, float) or isinstance(v, int)}
+        mlflow.log_metrics(best_params_float)  # 最適パラメータ(数値型)
+        best_params_str = {f'best__{k}':v for k, v in self.best_params.items() if not isinstance(v, float) and not isinstance(v, int)}
+        mlflow.set_tags(best_params_str)  # 最適パラメータ(数値型以外)
+        mlflow.log_metric('best_score', self.best_score)  # 最高スコア
+        mlflow.log_metric('elapsed_time', self.elapsed_time)  # 所要時間
+        mlflow.log_metric('preprocess_time', self.preprocess_time)  # 前処理(最適化スタート前)時間
+        #self.best_estimator = None  # 最適化された学習モデル        
+        #df_history = pd.DataFrame(self.search_history)  # パラメータと得点の履歴をDataFrame化
+        
 
     def grid_search_tuning(self, cv_model=None, cv_params=None, cv=None, seed=None, scoring=None,
                            param_scales=None, mlflow_logging=None, grid_kws=None, **fit_params):
