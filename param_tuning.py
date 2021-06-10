@@ -230,19 +230,27 @@ class ParamTuning():
             scores.append(score)
         return scores
 
-    def _mlflow_logging(self, log_params, log_metrics, set_tags, log_artifacts):
+    def _mlflow_logging(self):
         """
         MLFlowで指定引数と探索履歴をロギング
         """
         # パラメータと得点の履歴をDataFrame化
         df_history = pd.DataFrame(self.search_history)
-        with mlflow.start_run() as run:
-            mlflow.log_param('X_colnames', self.X_colnames)
-            mlflow.log_param('y_colname', self.y_colname)
-            mlflow.log_param('cv_group', self.cv_group)
+        # MLFlowを起動
+        mlflow.log_param('X_head', self.X[:5, :])
+        mlflow.log_param('y_head', self.y[:5])
+        mlflow.log_param('X_colnames', self.X_colnames)
+        mlflow.log_param('y_colname', self.y_colname)
+        mlflow.log_param('cv_group_head', self.cv_group[:5] if self.cv_group is not None else None)
+        mlflow.log_param('tuning_params', self.tuning_params)
+        mlflow.log_param('not_opt_params', self.bayes_not_opt_params)
+        mlflow.log_param('int_params', self.int_params)
+        mlflow.log_param('param_scales', self.int_params)
+        mlflow.log_param('seed', self.seed)
+        mlflow.log_param('cv', str(self.cv))
 
     def grid_search_tuning(self, cv_model=None, cv_params=None, cv=None, seed=None, scoring=None,
-                           param_scales=None, grid_kws=None, **fit_params):
+                           param_scales=None, mlflow_logging=None, grid_kws=None, **fit_params):
         """
         グリッドサーチ＋クロスバリデーション
 
@@ -261,6 +269,8 @@ class ParamTuning():
             最適化で最大化する評価指標('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)
         param_scales : Dict
             パラメータのスケール('linear', 'log')(Noneならクラス変数PARAM_SCALESから取得)
+        mlflow_logging : str
+            MLFlowでの結果記録有無('true':通常の記録, 'with':with構文で記録, None:記録なし)
         grid_kws : Dict
             sklearn.model_selection.GridSearchCVに渡す引数(estimator, param_grid, cv, scoring以外)
         fit_params : Dict
@@ -345,6 +355,15 @@ class ParamTuning():
         self.search_history['score_time'] = gridcv.cv_results_['mean_score_time']
         cv_num = gridcv.n_splits_
         self.search_history['raw_trial_time'] = (self.search_history['fit_time'] + self.search_history['score_time']) * cv_num
+
+        # MLFlowで記録
+        if mlflow_logging == 'true':
+            self._mlflow_logging()
+        elif mlflow_logging == 'with':
+            with mlflow.start_run() as run:
+                self._mlflow_logging()
+        elif mlflow_logging is not None:
+            raise Exception('the "mlflow_logging" argument must be "true", "with" or None')
 
         # グリッドサーチでの探索結果を返す
         return gridcv.best_params_, gridcv.best_score_, self.elapsed_time
