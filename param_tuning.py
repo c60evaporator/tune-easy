@@ -268,7 +268,7 @@ class ParamTuning():
                                     model_output)
         mlflow.sklearn.log_model(self.best_estimator, f'best_model_{self.algo_name}', signature=signature)  # 最適化された学習モデル
         # パラメータと得点の履歴をCSV化してArtifactとして保存
-        df_history = pd.DataFrame(self.search_history)
+        df_history = self.get_search_history()
         df_history.to_csv('search_history.csv')
         mlflow.log_artifact('search_history.csv')
         os.remove('search_history.csv')
@@ -294,7 +294,7 @@ class ParamTuning():
         param_scales : Dict
             パラメータのスケール('linear', 'log')(Noneならクラス変数PARAM_SCALESから取得)
         mlflow_logging : str
-            MLFlowでの結果記録有無('true':通常の記録, 'with':with構文で記録, None:記録なし)
+            MLFlowでの結果記録有無('log':通常の記録, 'with':with構文で記録, None:記録なし)
         grid_kws : Dict
             sklearn.model_selection.GridSearchCVに渡す引数(estimator, param_grid, cv, scoring以外)
         fit_params : Dict
@@ -381,19 +381,19 @@ class ParamTuning():
         self.search_history['raw_trial_time'] = (self.search_history['fit_time'] + self.search_history['score_time']) * cv_num
 
         # MLFlowで記録
-        if mlflow_logging == 'true':
+        if mlflow_logging == 'log':
             self._mlflow_logging()
         elif mlflow_logging == 'with':
             with mlflow.start_run() as run:
                 self._mlflow_logging()
         elif mlflow_logging is not None:
-            raise Exception('the "mlflow_logging" argument must be "true", "with" or None')
+            raise Exception('the "mlflow_logging" argument must be "log", "with" or None')
 
         # グリッドサーチでの探索結果を返す
         return gridcv.best_params_, gridcv.best_score_, self.elapsed_time
 
     def random_search_tuning(self, cv_model=None, cv_params=None, cv=None, seed=None, scoring=None,
-                             n_iter=None, param_scales=None, rand_kws=None, **fit_params):
+                             n_iter=None, param_scales=None, mlflow_logging=None, rand_kws=None, **fit_params):
         """
         ランダムサーチ＋クロスバリデーション
 
@@ -414,6 +414,8 @@ class ParamTuning():
             ランダムサーチの繰り返し回数
         param_scales : Dict
             パラメータのスケール('linear', 'log')(Noneならクラス変数PARAM_SCALESから取得)
+        mlflow_logging : str
+            MLFlowでの結果記録有無('log':通常の記録, 'with':with構文で記録, None:記録なし)
         rand_kws : Dict
             sklearn.model_selection.RondomizedSearchCVに渡す引数(estimator, param_grid, cv, scoring, n_iter以外)
         fit_params : Dict
@@ -505,6 +507,15 @@ class ParamTuning():
         cv_num = randcv.n_splits_
         self.search_history['raw_trial_time'] = (self.search_history['fit_time'] + self.search_history['score_time']) * cv_num
 
+        # MLFlowで記録
+        if mlflow_logging == 'log':
+            self._mlflow_logging()
+        elif mlflow_logging == 'with':
+            with mlflow.start_run() as run:
+                self._mlflow_logging()
+        elif mlflow_logging is not None:
+            raise Exception('the "mlflow_logging" argument must be "log", "with" or None')
+
         # ランダムサーチで探索した最適パラメータ、最適スコア、所要時間を返す
         return randcv.best_params_, randcv.best_score_, self.elapsed_time
 
@@ -554,7 +565,7 @@ class ParamTuning():
 
     def bayes_opt_tuning(self, cv_model=None, bayes_params=None, cv=None, seed=None, scoring=None,
                          n_iter=None, init_points=None, acq=None,
-                         bayes_not_opt_params=None, int_params=None, param_scales=None, **fit_params):
+                         bayes_not_opt_params=None, int_params=None, param_scales=None, mlflow_logging=None, **fit_params):
         """
         ベイズ最適化(BayesianOptimization)
 
@@ -583,6 +594,8 @@ class ParamTuning():
         param_scales : Dict
             パラメータ
             のスケール('linear', 'log')(Noneならクラス変数PARAM_SCALESから取得)
+        mlflow_logging : str
+            MLFlowでの結果記録有無('log':通常の記録, 'with':with構文で記録, None:記録なし)
         fit_params : Dict
             学習時のパラメータをdict指定(例: XGBoostのearly_stopping_rounds)
             Pipelineのときは{学習器名__パラメータ名:パラメータの値,‥}で指定する必要あり
@@ -661,8 +674,9 @@ class ParamTuning():
         self.elapsed_time = time.time() - start
         self.algo_name = 'bayes-opt'
 
-        # 評価指標が最大となったときのパラメータを取得
+        # 最適パラメータとスコアを取得
         best_params = bo.max['params']
+        self.best_score = bo.max['target']
         # 対数スケールパラメータは10のべき乗をとる
         best_params = self._pow10_conversion(best_params, param_scales)
         # 整数パラメータはint型に変換
@@ -671,8 +685,10 @@ class ParamTuning():
         best_params.update(self.BAYES_NOT_OPT_PARAMS)
         if 'random_state' in bayes_not_opt_params:
             best_params['random_state'] = self.seed
-        # 評価指標の最大値を取得
-        best_score = bo.max['target']
+        # パイプライン処理のとき、学習器名を追加
+        best_params = self._add_learner_name(cv_model, best_params)
+        self.best_params = best_params
+
         # 学習履歴の保持
         params_history_log = bo.space.params  # 対数スケールのままパラメータ履歴が格納されたndarray
         scale_array = np.array([np.full(bo.space.params.shape[0], param_scales[k]) for k in bo.space.keys]).T  # スケール変換用ndarray
@@ -684,16 +700,24 @@ class ParamTuning():
 
         # 最適モデル保持のため学習（特徴量重要度算出等）
         best_model = copy.deepcopy(cv_model)
-        best_params = self._add_learner_name(best_model, best_params)
-        self.best_params = best_params
         best_model.set_params(**best_params)
         best_model.fit(self.X,
                   self.y,
                   **fit_params
                   )
         self.best_estimator = best_model
+
+        # MLFlowで記録
+        if mlflow_logging == 'log':
+            self._mlflow_logging()
+        elif mlflow_logging == 'with':
+            with mlflow.start_run() as run:
+                self._mlflow_logging()
+        elif mlflow_logging is not None:
+            raise Exception('the "mlflow_logging" argument must be "log", "with" or None')
+
         # ベイズ最適化で探索した最適パラメータ、評価指標最大値、所要時間を返す
-        return best_params, best_score, self.elapsed_time
+        return self.best_params, self.best_score, self.elapsed_time
 
     def _optuna_evaluate(self, trial):
         """
@@ -720,7 +744,7 @@ class ParamTuning():
 
     def optuna_tuning(self, cv_model=None, bayes_params=None, cv=None, seed=None, scoring=None,
                       n_trials=None, study_kws=None, optimize_kws=None,
-                      bayes_not_opt_params=None, int_params=None, param_scales=None, **fit_params):
+                      bayes_not_opt_params=None, int_params=None, param_scales=None, mlflow_logging=None, **fit_params):
         """
         ベイズ最適化(optuna)
 
@@ -749,6 +773,8 @@ class ParamTuning():
         param_scales : Dict
             パラメータ
             のスケール('linear', 'log')(Noneならクラス変数PARAM_SCALESから取得)
+        mlflow_logging : str
+            MLFlowでの結果記録有無('log':通常の記録, 'with':with構文で記録, None:記録なし)
         fit_params : Dict
             学習時のパラメータをdict指定(例: XGBoostのearly_stopping_rounds)
             Pipelineのときは{学習器名__パラメータ名:パラメータの値,‥}で指定する必要あり
@@ -825,16 +851,19 @@ class ParamTuning():
         study.optimize(self._optuna_evaluate, n_trials=n_trials,
                        **optimize_kws)
         self.elapsed_time = time.time() - start
-        self.algo_name = 'bayes-opt'
+        self.algo_name = 'optuna'
 
-        # 評価指標が最大となったときのパラメータを取得
+        # 最適パラメータとスコアを取得
         best_params = study.best_trial.params
+        self.best_score = study.best_trial.value
         # 最適化対象以外のパラメータも追加
         best_params.update(self.BAYES_NOT_OPT_PARAMS)
         if 'random_state' in bayes_not_opt_params:
             best_params['random_state'] = self.seed
-        # 評価指標の最大値を取得
-        best_score = study.best_trial.value
+        # パイプライン処理のとき、学習器名を追加
+        best_params = self._add_learner_name(cv_model, best_params)
+        self.best_params = best_params
+
         # 学習履歴の保持
         self.search_history = pd.DataFrame([trial.params for trial in study.trials]).to_dict(orient='list')  # パラメータ履歴をDict化
         self.search_history['test_score'] = [trial.value for trial in study.trials]  # スコア履歴を追加
@@ -843,16 +872,24 @@ class ParamTuning():
 
         # 最適モデル保持のため学習（特徴量重要度算出等）
         best_model = copy.deepcopy(cv_model)
-        best_params = self._add_learner_name(best_model, best_params)
-        self.best_params = best_params
         best_model.set_params(**best_params)
         best_model.fit(self.X,
                   self.y,
                   **fit_params
                   )
         self.best_estimator = best_model
+
+        # MLFlowで記録
+        if mlflow_logging == 'log':
+            self._mlflow_logging()
+        elif mlflow_logging == 'with':
+            with mlflow.start_run() as run:
+                self._mlflow_logging()
+        elif mlflow_logging is not None:
+            raise Exception('the "mlflow_logging" argument must be "log", "with" or None')
+        
         # ベイズ最適化で探索した最適パラメータ、評価指標最大値、所要時間を返す
-        return best_params, best_score, self.elapsed_time
+        return self.best_params, self.best_score, self.elapsed_time
 
 
     def get_feature_importances(self):
@@ -1626,6 +1663,7 @@ class ParamTuning():
         plt.show()
 
     def get_search_history(self):
+        """最適化結果をDataFrameで取得"""
         # 最適化未実施時、エラーを出す
         if self.best_estimator is None:
             raise Exception('please tune parameters before plotting feature importances')

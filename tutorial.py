@@ -127,17 +127,48 @@ params = {'learning_rate': (0.1, 0.5),  # 過学習のバランス(高いほど�
 # tuning.plot_best_learning_curve()
 # tuning.plot_param_importances()
 # tuning.plot_feature_importances()
+
 # %% MLFlow実装　グリッドサーチ
 from svm_tuning import SVMRegressorTuning
 import pandas as pd
-import mlflow
 df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
 USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
 y = df_reg[OBJECTIVE_VARIALBLE_REG].values
 X = df_reg[USE_EXPLANATORY_REG].values
-tuning = SVMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG, cv_group=df_reg['ward_after'].values)
+tuning = SVMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG)
 tuning.grid_search_tuning(mlflow_logging='with')
+# %% MLFlow実装　ランダムサーチ
+from svm_tuning import SVMRegressorTuning
+import pandas as pd
+df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
+OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
+USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIALBLE_REG].values
+X = df_reg[USE_EXPLANATORY_REG].values
+tuning = SVMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG)
+tuning.random_search_tuning(mlflow_logging='with')
+# %% MLFlow実装　BayesianOptimization
+from svm_tuning import SVMRegressorTuning
+import pandas as pd
+df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
+OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
+USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIALBLE_REG].values
+X = df_reg[USE_EXPLANATORY_REG].values
+tuning = SVMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG)
+tuning.bayes_opt_tuning(mlflow_logging='with')
+# %% MLFlow実装　Optuna
+from svm_tuning import SVMRegressorTuning
+import pandas as pd
+df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
+OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
+USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIALBLE_REG].values
+X = df_reg[USE_EXPLANATORY_REG].values
+tuning = SVMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG)
+tuning.optuna_tuning(mlflow_logging='with')
+
 # %% MLFlow実装　グリッドサーチautolog
 from svm_tuning import SVMRegressorTuning
 import pandas as pd
@@ -164,16 +195,4 @@ tuning = SVMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIA
 mlflow.sklearn.autolog()
 with mlflow.start_run() as run:
     tuning.random_search_tuning()
-# %% MLFlow実装　Optuna
-from svm_tuning import SVMRegressorTuning
-import pandas as pd
-import mlflow
-df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
-USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIALBLE_REG].values
-X = df_reg[USE_EXPLANATORY_REG].values
-a = df_reg['ward_after'].values[:5]
-tuning = SVMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG, cv_group=df_reg['ward_after'].values)
-tuning.optuna_tuning(mlflow_logging=True)
 # %%
