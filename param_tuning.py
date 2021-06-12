@@ -95,6 +95,7 @@ class ParamTuning():
         self.bayes_not_opt_params = None  # チューニング非対象のパラメータ
         self.int_params = None  # 整数型のパラメータのリスト(ベイズ最適化時は都度int型変換する)
         self.param_scales = None  # パラメータのスケール('linear', 'log')
+        self.scoring = None  # 最大化するスコア
         self.seed = None  # 乱数シード
         self.cv = None  # クロスバリデーション分割法
         self.cv_model = None  # 最適化対象の学習器インスタンス
@@ -247,6 +248,7 @@ class ParamTuning():
         mlflow.log_param('not_opt_params', self.bayes_not_opt_params)  # チューニング非対象のパラメータ
         mlflow.log_param('int_params', self.int_params)  # 整数型のパラメータのリスト
         mlflow.log_param('param_scales', self.int_params)  # パラメータのスケール('linear', 'log')
+        mlflow.log_param('scoring', self.scoring)  # 最大化するスコア
         mlflow.log_param('seed', self.seed)  # 乱数シード
         mlflow.log_param('cv', str(self.cv))  # クロスバリデーション分割法
         mlflow.log_param('cv_model', str(self.cv_model))  # 最適化対象の学習器インスタンス
@@ -255,9 +257,9 @@ class ParamTuning():
         mlflow.log_param('algo_name', self.algo_name)  # 最適化に使用したアルゴリズム名('grid', 'random', 'bayes-opt', 'optuna')
         # チューニング結果を記載
         best_params_float = {f'best__{k}':v for k, v in self.best_params.items() if isinstance(v, float) or isinstance(v, int)}
-        mlflow.log_metrics(best_params_float)  # 最適パラメータ(数値型)
+        mlflow.log_params(best_params_float)  # 最適パラメータ(数値型)
         best_params_str = {f'best__{k}':v for k, v in self.best_params.items() if not isinstance(v, float) and not isinstance(v, int)}
-        mlflow.set_tags(best_params_str)  # 最適パラメータ(数値型以外)
+        mlflow.log_params(best_params_str)  # 最適パラメータ(数値型以外)
         mlflow.log_metric('best_score', self.best_score)  # 最高スコア
         mlflow.log_metric('elapsed_time', self.elapsed_time)  # 所要時間
         mlflow.log_metric('preprocess_time', self.preprocess_time)  # 前処理(最適化スタート前)時間
@@ -480,7 +482,7 @@ class ParamTuning():
             rand_kws['random_state'] = seed
         randcv = RandomizedSearchCV(cv_model, cv_params, cv=cv, scoring=scoring,
                                     n_iter=n_iter, **rand_kws)
-
+        
         # ここまでに掛かった前処理時間を測定
         self.preprocess_time = time.time() - start
         # ランダムサーチ実行
@@ -658,6 +660,8 @@ class ParamTuning():
         self._set_argument_to_property(cv_model, bayes_params, cv, seed, scoring, fit_params, param_scales)
         self.bayes_not_opt_params = bayes_not_opt_params
         self.int_params = int_params
+        # チューニング前のモデルを保持（チューニング中にパラメータ入力されてしまうため）
+        src_model = copy.deepcopy(cv_model)
 
         # 引数のスケールを変換(対数スケールパラメータは対数化)
         bayes_params_log = self._log10_conversion(bayes_params, param_scales)
@@ -706,7 +710,9 @@ class ParamTuning():
                   **fit_params
                   )
         self.best_estimator = best_model
-
+        # チューニング前のモデルを再保持（チューニング中にパラメータ入力されてしまうため）
+        self.cv_model = src_model
+        
         # MLFlowで記録
         if mlflow_logging == 'log':
             self._mlflow_logging()
@@ -837,6 +843,8 @@ class ParamTuning():
         self._set_argument_to_property(cv_model, bayes_params, cv, seed, scoring, fit_params, param_scales)
         self.bayes_not_opt_params = bayes_not_opt_params
         self.int_params = int_params
+        # チューニング前のモデルを保持（チューニング中にパラメータ入力されてしまうため）
+        src_model = copy.deepcopy(cv_model)
 
         # ベイズ最適化のインスタンス作成
         if 'sampler' not in study_kws:  # 指定がなければsamplerにTPESamplerを使用
@@ -878,6 +886,8 @@ class ParamTuning():
                   **fit_params
                   )
         self.best_estimator = best_model
+        # チューニング前のモデルを再保持（チューニング中にパラメータ入力されてしまうため）
+        self.cv_model = src_model
 
         # MLFlowで記録
         if mlflow_logging == 'log':
