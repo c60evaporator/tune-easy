@@ -14,10 +14,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
 import seaborn as sns
-import util_methods
 import mlflow
 import mlflow.sklearn
 from mlflow.models.signature import infer_signature
+import os
+import util_methods
 
 class ParamTuning():
     """
@@ -234,9 +235,8 @@ class ParamTuning():
 
     def _mlflow_logging(self):
         """
-        MLFlowで指定引数と探索履歴をロギング
+        MLFlowで各種情報と探索履歴をロギング
         """
-        
         # パラメータを記載
         mlflow.log_param('X_head', self.X[:5, :])  # 説明変数の最初5レコード
         mlflow.log_param('y_head', self.y[:5])  # 目的変数の最初5レコード
@@ -261,14 +261,17 @@ class ParamTuning():
         mlflow.log_metric('best_score', self.best_score)  # 最高スコア
         mlflow.log_metric('elapsed_time', self.elapsed_time)  # 所要時間
         mlflow.log_metric('preprocess_time', self.preprocess_time)  # 前処理(最適化スタート前)時間
-        # 最適モデルを記載(https://mlflow.org/docs/latest/models.html#how-to-log-models-with-signatures)
-        model_output = self.best_estimator.predict(self.X)
+        # 最適モデルをMLFlow Modelsで保存(https://mlflow.org/docs/latest/models.html#how-to-log-models-with-signatures)
+        model_output = self.best_estimator.predict(self.X)  # モデル出力
         model_output = pd.Series(model_output) if self.y_colname is None else pd.DataFrame(model_output, columns=[self.y_colname])
-        signature = infer_signature(pd.DataFrame(self.X, columns=self.X_colnames),
+        signature = infer_signature(pd.DataFrame(self.X, columns=self.X_colnames),  # モデル入出力の型を自動判定
                                     model_output)
-        mlflow.sklearn.log_model(self.best_estimator, f'best_model_{self.algo_name}', signature=signature)  # 最適化された学習モデル        
-        #df_history = pd.DataFrame(self.search_history)  # パラメータと得点の履歴をDataFrame化
-        
+        mlflow.sklearn.log_model(self.best_estimator, f'best_model_{self.algo_name}', signature=signature)  # 最適化された学習モデル
+        # パラメータと得点の履歴をCSV化してArtifactとして保存
+        df_history = pd.DataFrame(self.search_history)
+        df_history.to_csv('search_history.csv')
+        mlflow.log_artifact('search_history.csv')
+        os.remove('search_history.csv')
 
     def grid_search_tuning(self, cv_model=None, cv_params=None, cv=None, seed=None, scoring=None,
                            param_scales=None, mlflow_logging=None, grid_kws=None, **fit_params):
