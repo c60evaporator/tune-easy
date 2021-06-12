@@ -16,6 +16,8 @@ import matplotlib
 import seaborn as sns
 import util_methods
 import mlflow
+import mlflow.sklearn
+from mlflow.models.signature import infer_signature
 
 class ParamTuning():
     """
@@ -259,7 +261,12 @@ class ParamTuning():
         mlflow.log_metric('best_score', self.best_score)  # 最高スコア
         mlflow.log_metric('elapsed_time', self.elapsed_time)  # 所要時間
         mlflow.log_metric('preprocess_time', self.preprocess_time)  # 前処理(最適化スタート前)時間
-        #self.best_estimator = None  # 最適化された学習モデル        
+        # 最適モデルを記載(https://mlflow.org/docs/latest/models.html#how-to-log-models-with-signatures)
+        model_output = self.best_estimator.predict(self.X)
+        model_output = pd.Series(model_output) if self.y_colname is None else pd.DataFrame(model_output, columns=[self.y_colname])
+        signature = infer_signature(pd.DataFrame(self.X, columns=self.X_colnames),
+                                    model_output)
+        mlflow.sklearn.log_model(self.best_estimator, f'best_model_{self.algo_name}', signature=signature)  # 最適化された学習モデル        
         #df_history = pd.DataFrame(self.search_history)  # パラメータと得点の履歴をDataFrame化
         
 
