@@ -21,7 +21,7 @@ class SVMRegressorTuning(ParamTuning):
     SCORING = 'neg_mean_squared_error'
 
     # 最適化対象外パラメータ
-    NOT_OPT_PARAMS = {'kernel': ['rbf'],  # カーネルの種類 (基本は'rbf')
+    NOT_OPT_PARAMS = {'kernel': 'rbf',  # カーネルの種類 (基本は'rbf')
                       }
 
     # グリッドサーチ用パラメータ
@@ -29,7 +29,6 @@ class SVMRegressorTuning(ParamTuning):
                       'C': [0.01, 0.1, 0.3, 1, 3, 10],  # 正則化項C (小さいと未学習寄り、大きいと過学習寄り)
                       'epsilon': [0, 0.01, 0.02, 0.05, 0.1, 0.2]  # εチューブの範囲 (大きいほど、誤差関数算出対象=サポートベクターから除外されるデータ点が多くなる)
                       }
-    CV_PARAMS_GRID.update(NOT_OPT_PARAMS)  # 最適化対象外パラメータを追加
 
     # ランダムサーチ用パラメータ
     N_ITER_RANDOM = 250  # ランダムサーチの繰り返し回数
@@ -37,7 +36,6 @@ class SVMRegressorTuning(ParamTuning):
                         'C': [0.01, 0.1, 0.2, 0.5, 1, 2, 5, 10],
                         'epsilon': [0, 0.01, 0.02, 0.03, 0.05, 0.1, 0.15, 0.2, 0.3]
                         }
-    CV_PARAMS_RANDOM.update(NOT_OPT_PARAMS)  # 最適化対象外パラメータを追加
 
     # ベイズ最適化用パラメータ
     N_ITER_BAYES = 100  # ベイズ最適化の繰り返し回数
@@ -48,7 +46,9 @@ class SVMRegressorTuning(ParamTuning):
                     'epsilon': (0, 0.2)
                     }
     INT_PARAMS = []
-    BAYES_NOT_OPT_PARAMS = {k: v[0] for k, v in NOT_OPT_PARAMS.items()}  # ベイズ最適化対象外パラメータ
+
+    # Optuna用パラメータ
+    N_ITER_OPTUNA = 300
 
     # 範囲選択検証曲線用パラメータ範囲
     VALIDATION_CURVE_PARAMS = {'gamma': [0.0001, 0.001, 0.01, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 50, 100, 1000],
@@ -90,21 +90,19 @@ class SVMClassifierTuning(ParamTuning):
     SCORING = 'neg_log_loss'
 
     # 最適化対象外パラメータ
-    NOT_OPT_PARAMS = {'kernel': ['rbf'],  # カーネルの種類 (基本は'rbf')
+    NOT_OPT_PARAMS = {'kernel': 'rbf',  # カーネルの種類 (基本は'rbf')
                       }
 
     # グリッドサーチ用パラメータ
     CV_PARAMS_GRID = {'gamma': [0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30, 100],  # RBFカーネルのgamma (小さいと曲率小、大きいと曲率大)
                       'C': [0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30, 100]  # 正則化項C (小さいと未学習寄り、大きいと過学習寄り)
                       }
-    CV_PARAMS_GRID.update(NOT_OPT_PARAMS)
 
     # ランダムサーチ用パラメータ
     N_ITER_RANDOM = 200  # ランダムサーチの繰り返し回数
     CV_PARAMS_RANDOM = {'gamma': [0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100],
                         'C': [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100]
                         }
-    CV_PARAMS_RANDOM.update(NOT_OPT_PARAMS)
 
     # ベイズ最適化用パラメータ
     N_ITER_BAYES = 100  # ベイズ最適化の繰り返し回数
@@ -114,7 +112,9 @@ class SVMClassifierTuning(ParamTuning):
                     'C': (0.1, 10)
                     }
     INT_PARAMS = []
-    BAYES_NOT_OPT_PARAMS = {k: v[0] for k, v in NOT_OPT_PARAMS.items()}
+
+    # Optuna用パラメータ
+    N_ITER_OPTUNA = 300
 
     # 範囲選択検証曲線用パラメータ範囲
     VALIDATION_CURVE_PARAMS = {'gamma': (0.01, 10),

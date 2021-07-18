@@ -76,12 +76,12 @@ params = {'gamma':(0.001, 10),
           'C': (0.01, 10),
           'epsilon': (0, 0.2)
           }
-# tuning.optuna_tuning(bayes_params=params, n_trials=100, cv=LeaveOneGroupOut())
-# tuning.plot_best_validation_curve()
-# tuning.plot_best_learning_curve()
-# tuning.plot_search_history(x_axis='time')
-# tuning.plot_search_map(rank_number=2)
-#tuning.plot_param_importances()
+tuning.optuna_tuning(bayes_params=params, n_trials=1000, cv=LeaveOneGroupOut())
+tuning.plot_best_validation_curve()
+tuning.plot_best_learning_curve()
+tuning.plot_search_history(x_axis='time')
+tuning.plot_search_map(rank_number=2)
+tuning.plot_param_importances()
 
 # %% 5次元パラメータ(XGB)
 from xgb_tuning import XGBRegressorTuning
@@ -99,10 +99,10 @@ params = {'learning_rate': [0.1, 0.3, 0.5],  # 過学習のバランス(高い�
           'colsample_bytree': [0.5, 0.8, 1.0],  # 列のサブサンプリングを行う比率
           'subsample': [0.5, 0.8, 1.0]  # 木を構築する前にデータのサブサンプリングを行う比率。1 なら全データ使用、0.5なら半分のデータ使用
           }
-# tuning.grid_search_tuning(cv_params=params)
-# tuning.random_search_tuning(cv_params=params, n_iter=50)
-# tuning.plot_search_history()
-# tuning.plot_search_map()
+tuning.grid_search_tuning()
+#tuning.random_search_tuning()
+tuning.plot_search_history()
+tuning.plot_search_map()
 
 # %% 5次元パラメータ(XGB)　ベイズ
 from xgb_tuning import XGBRegressorTuning

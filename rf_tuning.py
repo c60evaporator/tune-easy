@@ -22,7 +22,7 @@ class RFRegressorTuning(ParamTuning):
     SCORING = 'neg_mean_squared_error'
 
     # 最適化対象外パラメータ
-    NOT_OPT_PARAMS = {'random_state': [SEED],  # 乱数シード
+    NOT_OPT_PARAMS = {'random_state': SEED,  # 乱数シード
                       }
 
     # グリッドサーチ用パラメータ
@@ -32,7 +32,6 @@ class RFRegressorTuning(ParamTuning):
                       'min_samples_split': [2, 4, 8, 16],  # 列のサブサンプリングを行う比率
                       'min_samples_leaf': [1, 4, 8, 16]  # 木を構築する前にデータのサブサンプリングを行う比率。1 なら全データ使用、0.5なら半分のデータ使用
                       }
-    CV_PARAMS_GRID.update(NOT_OPT_PARAMS)  # 最適化対象外パラメータを追加
 
     # ランダムサーチ用パラメータ
     N_ITER_RANDOM = 200  # ランダムサーチの繰り返し回数
@@ -42,7 +41,6 @@ class RFRegressorTuning(ParamTuning):
                         'min_samples_split': [2, 4, 6, 8, 12, 16, 20],
                         'min_samples_leaf': [1, 2, 4, 6, 8, 12, 16]
                         }
-    CV_PARAMS_RANDOM.update(NOT_OPT_PARAMS)  # 最適化対象外パラメータを追加
 
     # ベイズ最適化用パラメータ
     N_ITER_BAYES = 100  # ベイズ最適化の繰り返し回数
@@ -55,7 +53,9 @@ class RFRegressorTuning(ParamTuning):
                     'min_samples_leaf': (1, 20)
                     }
     INT_PARAMS = ['n_estimators', 'max_features', 'max_depth', 'min_samples_split', 'min_samples_leaf']  # 整数型のパラメータのリスト(ベイズ最適化時は都度int型変換する)
-    BAYES_NOT_OPT_PARAMS = {k: v[0] for k, v in NOT_OPT_PARAMS.items()}  # ベイズ最適化対象外パラメータ
+
+    # Optuna用パラメータ
+    N_ITER_OPTUNA = 300
 
     # 範囲選択検証曲線用パラメータ範囲
     VALIDATION_CURVE_PARAMS = {'n_estimators': [20, 40, 60, 80, 160, 240, 320],
