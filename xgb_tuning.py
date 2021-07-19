@@ -18,7 +18,7 @@ class XGBRegressorTuning(ParamTuning):
     CV_MODEL = xgb.XGBRegressor()
     # 学習時のパラメータのデフォルト値
     FIT_PARAMS = {'verbose': 0,  # 学習中のコマンドライン出力
-                  'early_stopping_rounds': 20,  # 学習時、評価指標がこの回数連続で改善しなくなった時点でストップ
+                  'early_stopping_rounds': 10,  # 学習時、評価指標がこの回数連続で改善しなくなった時点でストップ
                   'eval_metric': 'rmse'  # early_stopping_roundsの評価指標
                   }
     # 最適化で最大化するデフォルト評価指標('r2', 'neg_mean_squared_error', 'neg_mean_squared_log_error')
@@ -41,7 +41,7 @@ class XGBRegressorTuning(ParamTuning):
                       }
 
     # ランダムサーチ用パラメータ
-    N_ITER_RANDOM = 450  # ランダムサーチの繰り返し回数
+    N_ITER_RANDOM = 450  # ランダムサーチの試行数
     CV_PARAMS_RANDOM = {'learning_rate': [0.01, 0.02, 0.05, 0.1, 0.2, 0.3],
                         'min_child_weight': [2, 3, 4, 5, 6, 7, 8],
                         'max_depth': [1, 2, 3, 4],
@@ -53,9 +53,10 @@ class XGBRegressorTuning(ParamTuning):
                         }
 
     # ベイズ最適化用パラメータ
-    N_ITER_BAYES = 120  # ベイズ最適化の繰り返し回数
-    INIT_POINTS = 10  # 初期観測点の個数(ランダムな探索を何回行うか)
-    ACQ = 'ei'  # 獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
+    N_ITER_BAYES = 120  # BayesianOptimizationの試行数
+    INIT_POINTS = 10  # BayesianOptimizationの初期観測点の個数(ランダムな探索を何回行うか)
+    ACQ = 'ei'  # BayesianOptimizationの獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
+    N_ITER_OPTUNA = 300  # Optunaの試行数
     BAYES_PARAMS = {'learning_rate': (0.01, 0.3),
                     'min_child_weight': (2, 8),
                     'max_depth': (1, 4),
@@ -66,9 +67,6 @@ class XGBRegressorTuning(ParamTuning):
                     'gamma': (0.0001, 0.1)
                     }
     INT_PARAMS = ['min_child_weight', 'max_depth']  # 整数型のパラメータのリスト(ベイズ最適化時は都度int型変換する)
-
-    # Optuna用パラメータ
-    N_ITER_OPTUNA = 300
 
     # 範囲選択検証曲線用パラメータ範囲
     VALIDATION_CURVE_PARAMS = {'subsample': [0, 0.1, 0.2, 0.3, 0.4, 0.6, 0.7, 0.8, 0.9, 1.0],
