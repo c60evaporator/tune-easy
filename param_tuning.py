@@ -1462,9 +1462,17 @@ class ParamTuning():
                 not_order_params = [param for param in df_history.columns if param not in new_columns]
                 for param in not_order_params:
                     df_history = df_history[df_history[param] == self.best_params[param]]
+                nuniques = df_history.drop('test_score', axis=1).nunique().rename('nuniques')
+                pair_h, pair_w = 1, 1
+                if n_params >= 3:  # パラメータ数3以上のときの縦画像枚数
+                    pair_h = int(nuniques[order[2]])
+                if n_params >= 4:  # パラメータ数4以上のときの横画像枚数
+                    pair_w = int(nuniques[order[3]])
             # グリッドサーチ以外のとき、指定したパラメータでグルーピングしたときの最大値を使用
             else:
                 df_history = df_history.loc[df_history.groupby(order)['test_score'].idxmax(), :]
+                pair_h = pair_n if n_params >= 3 else 1
+                pair_h = pair_n if n_params >= 4 else 1
 
         # パラメータの並び順を指定していないとき、ランダムフォレストのfeature_importancesの並び順とする
         else:
@@ -1585,7 +1593,7 @@ class ParamTuning():
                     
                     # パラメータが4個以上のとき (図はpair_n × pair_n枚)
                     elif n_params >= 4:
-                        ax = axes[j, i]
+                        ax = axes[i, j]
                         # グリッドサーチのとき、第3, 第4パラメータのユニーク値でデータ分割
                         if self.algo_name == 'grid':
                             param3_value = sorted(df_history[order[2]].unique())[i]
