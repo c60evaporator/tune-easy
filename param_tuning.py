@@ -276,7 +276,7 @@ class ParamTuning():
         mlflow.log_artifact('search_history.csv')
         os.remove('search_history.csv')
 
-    def grid_search_tuning(self, cv_model=None, cv_params=None, cv=None, seed=None, scoring=None,
+    def grid_search_tuning(self, cv_model=None, tuning_params=None, cv=None, seed=None, scoring=None,
                            not_opt_params=None, param_scales=None, mlflow_logging=None, grid_kws=None, **fit_params):
         """
         グリッドサーチ＋クロスバリデーション
@@ -285,7 +285,7 @@ class ParamTuning():
         ----------
         cv_model : Dict
             最適化対象の学習器インスタンス
-        cv_params : Dict[str, List[float]]
+        tuning_params : Dict[str, List[float]]
             最適化対象のパラメータ一覧
             Pipelineのときは{学習器名__パラメータ名:[パラメータの値候補],‥}で指定する必要あり
         cv : int or KFold
@@ -313,8 +313,8 @@ class ParamTuning():
         # 引数非指定時、クラス変数から取得
         if cv_model == None:
             cv_model = copy.deepcopy(self.CV_MODEL)
-        if cv_params == None:
-            cv_params = self.CV_PARAMS_GRID
+        if tuning_params == None:
+            tuning_params = self.CV_PARAMS_GRID
         if cv == None:
             cv = self.CV_NUM
         if seed == None:
@@ -334,7 +334,7 @@ class ParamTuning():
         if 'random_state' in not_opt_params:
             not_opt_params['random_state'] = seed
         # 入力データからチューニング用パラメータの生成
-        cv_params = self._tuning_param_generation(cv_params)
+        tuning_params = self._tuning_param_generation(tuning_params)
         # 学習データから生成されたパラメータの追加
         fit_params = self._train_param_generation(fit_params)
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
@@ -347,13 +347,13 @@ class ParamTuning():
         # パイプライン処理のとき、最後の要素から学習器名を取得
         self._get_learner_name(cv_model)
         # パイプライン処理のとき、パラメータに学習器名を追加
-        cv_params = self._add_learner_name(cv_model, cv_params)
+        tuning_params = self._add_learner_name(cv_model, tuning_params)
         fit_params = self._add_learner_name(cv_model, fit_params)
         param_scales = self._add_learner_name(cv_model, param_scales)
         not_opt_params = self._add_learner_name(cv_model, not_opt_params)
         
         # 引数をプロパティ(インスタンス変数)に反映
-        self._set_argument_to_property(cv_model, cv_params, cv, seed, scoring, fit_params, not_opt_params, param_scales)
+        self._set_argument_to_property(cv_model, tuning_params, cv, seed, scoring, fit_params, not_opt_params, param_scales)
         # チューニング対象外パラメータをモデルに反映
         cv_model.set_params(**not_opt_params)
 
@@ -361,7 +361,7 @@ class ParamTuning():
         # n_jobs=-1にするとCPU100%で全コア並列計算。とても速い。
         if 'n_jobs' not in grid_kws.keys():
             grid_kws['n_jobs'] = -1
-        gridcv = GridSearchCV(cv_model, cv_params, cv=cv,
+        gridcv = GridSearchCV(cv_model, tuning_params, cv=cv,
                               scoring=scoring, **grid_kws)
 
         # ここまでに掛かった前処理時間を測定
@@ -382,7 +382,7 @@ class ParamTuning():
         # 最適モデルの保持
         self.best_estimator = gridcv.best_estimator_
         # 学習履歴の保持
-        self.search_history = {k: gridcv.cv_results_['param_' + k].data.astype(np.float64) for k, v in cv_params.items() if len(v) >= 2}
+        self.search_history = {k: gridcv.cv_results_['param_' + k].data.astype(np.float64) for k, v in tuning_params.items() if len(v) >= 2}
         self.search_history['test_score'] = gridcv.cv_results_['mean_test_score']
         # 所要時間の保持
         self.search_history['fit_time'] = gridcv.cv_results_['mean_fit_time']
@@ -402,7 +402,7 @@ class ParamTuning():
         # グリッドサーチでの探索結果を返す
         return gridcv.best_params_, gridcv.best_score_, self.elapsed_time
 
-    def random_search_tuning(self, cv_model=None, cv_params=None, cv=None, seed=None, scoring=None,
+    def random_search_tuning(self, cv_model=None, tuning_params=None, cv=None, seed=None, scoring=None,
                              n_iter=None,
                              not_opt_params=None, param_scales=None, mlflow_logging=None, rand_kws=None, **fit_params):
         """
@@ -412,7 +412,7 @@ class ParamTuning():
         ----------
         cv_model : Dict
             最適化対象の学習器インスタンス
-        cv_params : Dict[str, List[float]]
+        tuning_params : Dict[str, List[float]]
             最適化対象のパラメータ一覧
             Pipelineのときは{学習器名__パラメータ名:[パラメータの値候補],‥}で指定する必要あり
         cv : int or KFold
@@ -442,8 +442,8 @@ class ParamTuning():
         # 引数非指定時、クラス変数から取得
         if cv_model == None:
             cv_model = copy.deepcopy(self.CV_MODEL)
-        if cv_params == None:
-            cv_params = self.CV_PARAMS_RANDOM
+        if tuning_params == None:
+            tuning_params = self.CV_PARAMS_RANDOM
         if cv == None:
             cv = self.CV_NUM
         if seed == None:
@@ -467,7 +467,7 @@ class ParamTuning():
         if 'random_state' in not_opt_params:
             not_opt_params['random_state'] = seed
         # 入力データからチューニング用パラメータの生成
-        cv_params = self._tuning_param_generation(cv_params)
+        tuning_params = self._tuning_param_generation(tuning_params)
         # 学習データから生成されたパラメータの追加
         fit_params = self._train_param_generation(fit_params)
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
@@ -480,13 +480,13 @@ class ParamTuning():
         # パイプライン処理のとき、最後の要素から学習器名を取得
         self._get_learner_name(cv_model)
         # パイプライン処理のとき、パラメータに学習器名を追加
-        cv_params = self._add_learner_name(cv_model, cv_params)
+        tuning_params = self._add_learner_name(cv_model, tuning_params)
         fit_params = self._add_learner_name(cv_model, fit_params)
         param_scales = self._add_learner_name(cv_model, param_scales)
         not_opt_params = self._add_learner_name(cv_model, not_opt_params)
 
         # 引数をプロパティ(インスタンス変数)に反映
-        self._set_argument_to_property(cv_model, cv_params, cv, seed, scoring, fit_params, not_opt_params, param_scales)
+        self._set_argument_to_property(cv_model, tuning_params, cv, seed, scoring, fit_params, not_opt_params, param_scales)
         # チューニング対象外パラメータをモデルに反映
         cv_model.set_params(**not_opt_params)
 
@@ -496,7 +496,7 @@ class ParamTuning():
             rand_kws['n_jobs'] = -1
         if 'random_state' not in rand_kws.keys():
             rand_kws['random_state'] = seed
-        randcv = RandomizedSearchCV(cv_model, cv_params, cv=cv, scoring=scoring,
+        randcv = RandomizedSearchCV(cv_model, tuning_params, cv=cv, scoring=scoring,
                                     n_iter=n_iter, **rand_kws)
         
         # ここまでに掛かった前処理時間を測定
@@ -517,7 +517,7 @@ class ParamTuning():
         # 最適モデルの保持
         self.best_estimator = randcv.best_estimator_
         # 学習履歴の保持
-        self.search_history = {k: randcv.cv_results_['param_' + k].data.astype(np.float64) for k, v in cv_params.items() if len(v) >= 2}
+        self.search_history = {k: randcv.cv_results_['param_' + k].data.astype(np.float64) for k, v in tuning_params.items() if len(v) >= 2}
         self.search_history['test_score'] = randcv.cv_results_['mean_test_score']
         # 所要時間の保持
         self.search_history['fit_time'] = randcv.cv_results_['mean_fit_time']
@@ -560,19 +560,19 @@ class ParamTuning():
 
         return val
 
-    def _int_conversion(self, bayes_params, int_params):
+    def _int_conversion(self, tuning_params, int_params):
         """
          ベイズ最適化パラメータのうち、整数のものを四捨五入してint型変換
         """
-        bayes_params = {k: round(v) if k in int_params else v for k, v in bayes_params.items()}
-        return bayes_params
+        tuning_params = {k: round(v) if k in int_params else v for k, v in tuning_params.items()}
+        return tuning_params
 
-    def _log10_conversion(self, bayes_params, param_scales):
+    def _log10_conversion(self, tuning_params, param_scales):
         """
          ベイズ最適化パラメータのうち、対数スケールのものを対数変換（ベイズ最適化メソッドに渡す前に適用）
         """
-        bayes_params_log = {k: (np.log10(v[0]), np.log10(v[1])) if param_scales[k] == 'log' else v for k, v in bayes_params.items()}
-        return bayes_params_log
+        tuning_params_log = {k: (np.log10(v[0]), np.log10(v[1])) if param_scales[k] == 'log' else v for k, v in tuning_params.items()}
+        return tuning_params_log
 
     def _pow10_conversion(self, params_log, param_scales):
         """
@@ -581,7 +581,7 @@ class ParamTuning():
         params = {k: np.power(10, v) if param_scales[k] == 'log' else v for k, v in params_log.items()}
         return params
 
-    def bayes_opt_tuning(self, cv_model=None, bayes_params=None, cv=None, seed=None, scoring=None,
+    def bayes_opt_tuning(self, cv_model=None, tuning_params=None, cv=None, seed=None, scoring=None,
                          n_iter=None, init_points=None, acq=None,
                          not_opt_params=None, int_params=None, param_scales=None, mlflow_logging=None, **fit_params):
         """
@@ -591,7 +591,7 @@ class ParamTuning():
         ----------
         cv_model : Dict
             最適化対象の学習器インスタンス
-        beyes_params : Dict[str, Tuple(float, float)]
+        tuning_params : Dict[str, Tuple(float, float)]
             最適化対象のパラメータ範囲　{パラメータ名:(パラメータの探索下限,上限),‥}で指定
         cv : int or KFold
             クロスバリデーション分割法 (Noneのときクラス変数から取得、int入力時はkFoldで分割)
@@ -625,8 +625,8 @@ class ParamTuning():
         # 引数非指定時、クラス変数から取得
         if cv_model == None:
             cv_model = copy.deepcopy(self.CV_MODEL)
-        if bayes_params == None:
-            bayes_params = self.BAYES_PARAMS
+        if tuning_params == None:
+            tuning_params = self.BAYES_PARAMS
         if cv == None:
             cv = self.CV_NUM
         if seed == None:
@@ -652,7 +652,7 @@ class ParamTuning():
         if 'random_state' in not_opt_params:
             not_opt_params['random_state'] = seed
         # 入力データからチューニング用パラメータの生成
-        bayes_params = self._tuning_param_generation(bayes_params)
+        tuning_params = self._tuning_param_generation(tuning_params)
         # 学習データから生成されたパラメータの追加
         fit_params = self._train_param_generation(fit_params)
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
@@ -666,24 +666,24 @@ class ParamTuning():
         # パイプライン処理のとき、最後の要素から学習器名を取得
         self._get_learner_name(cv_model)
         # パイプライン処理のとき、パラメータに学習器名を追加
-        bayes_params = self._add_learner_name(cv_model, bayes_params)
+        tuning_params = self._add_learner_name(cv_model, tuning_params)
         fit_params = self._add_learner_name(cv_model, fit_params)
         param_scales = self._add_learner_name(cv_model, param_scales)
         not_opt_params = self._add_learner_name(cv_model, not_opt_params)
         int_params = self._add_learner_name(cv_model, int_params)
 
         # 引数をプロパティ(インスタンス変数)に反映
-        self._set_argument_to_property(cv_model, bayes_params, cv, seed, scoring, fit_params, not_opt_params, param_scales)
+        self._set_argument_to_property(cv_model, tuning_params, cv, seed, scoring, fit_params, not_opt_params, param_scales)
         self.int_params = int_params
         # チューニング前のモデルを保持（チューニング中にパラメータ入力されてしまうため）
         src_model = copy.deepcopy(cv_model)
 
         # 引数のスケールを変換(対数スケールパラメータは対数化)
-        bayes_params_log = self._log10_conversion(bayes_params, param_scales)
+        tuning_params_log = self._log10_conversion(tuning_params, param_scales)
 
         # ベイズ最適化インスタンス作成
         bo = BayesianOptimization(
-            self._bayes_evaluate, bayes_params_log, random_state=seed)
+            self._bayes_evaluate, tuning_params_log, random_state=seed)
         
         # ここまでに掛かった前処理時間を測定
         self.preprocess_time = time.time() - start
@@ -763,7 +763,7 @@ class ParamTuning():
         
         return val
 
-    def optuna_tuning(self, cv_model=None, bayes_params=None, cv=None, seed=None, scoring=None,
+    def optuna_tuning(self, cv_model=None, tuning_params=None, cv=None, seed=None, scoring=None,
                       n_trials=None, study_kws=None, optimize_kws=None,
                       not_opt_params=None, int_params=None, param_scales=None, mlflow_logging=None, **fit_params):
         """
@@ -773,12 +773,12 @@ class ParamTuning():
         ----------
         cv_model : Dict
             最適化対象の学習器インスタンス
-        beyes_params : Dict[str, Tuple(float, float)]
+        tuning_params : Dict[str, Tuple(float, float)]
             最適化対象のパラメータ範囲　{パラメータ名:(パラメータの探索下限,上限),‥}で指定
         cv : int or KFold
             クロスバリデーション分割法 (Noneのときクラス変数から取得、int入力時はkFoldで分割)
         seed : int
-            乱数シード(クロスバリデーション分割用、xgboostの乱数シードはcv_paramsで指定するので注意)
+            乱数シード(クロスバリデーション分割用、xgboostの乱数シードはnot_opt_paramsで指定するので注意)
         scoring : str
             最適化で最大化する評価指標('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)
         n_trials : int
@@ -807,8 +807,8 @@ class ParamTuning():
         # 引数非指定時、クラス変数から取得
         if cv_model == None:
             cv_model = copy.deepcopy(self.CV_MODEL)
-        if bayes_params == None:
-            bayes_params = self.BAYES_PARAMS
+        if tuning_params == None:
+            tuning_params = self.BAYES_PARAMS
         if cv == None:
             cv = self.CV_NUM
         if seed == None:
@@ -834,7 +834,7 @@ class ParamTuning():
         if 'random_state' in not_opt_params:
             not_opt_params['random_state'] = seed
         # 入力データからチューニング用パラメータの生成
-        bayes_params = self._tuning_param_generation(bayes_params)
+        tuning_params = self._tuning_param_generation(tuning_params)
         # 学習データから生成されたパラメータの追加
         fit_params = self._train_param_generation(fit_params)
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
@@ -848,14 +848,14 @@ class ParamTuning():
         # パイプライン処理のとき、最後の要素から学習器名を取得
         self._get_learner_name(cv_model)
         # パイプライン処理のとき、パラメータに学習器名を追加
-        bayes_params = self._add_learner_name(cv_model, bayes_params)
+        tuning_params = self._add_learner_name(cv_model, tuning_params)
         fit_params = self._add_learner_name(cv_model, fit_params)
         param_scales = self._add_learner_name(cv_model, param_scales)
         not_opt_params = self._add_learner_name(cv_model, not_opt_params)
         int_params = self._add_learner_name(cv_model, int_params)
 
         # 引数をプロパティ(インスタンス変数)に反映
-        self._set_argument_to_property(cv_model, bayes_params, cv, seed, scoring, fit_params, not_opt_params, param_scales)
+        self._set_argument_to_property(cv_model, tuning_params, cv, seed, scoring, fit_params, not_opt_params, param_scales)
         self.int_params = int_params
         # チューニング前のモデルを保持（チューニング中にパラメータ入力されてしまうため）
         src_model = copy.deepcopy(cv_model)
@@ -1044,7 +1044,7 @@ class ParamTuning():
         cv : int or KFold
             クロスバリデーション分割法 (Noneのときクラス変数から取得、int入力時はkFoldで分割)
         seed : int
-            乱数シード (クロスバリデーション分割用、xgboostの乱数シードはcv_paramsで指定するので注意)
+            乱数シード (クロスバリデーション分割用、xgboostの乱数シードはnot_opt_paramsで指定するので注意)
         scoring : str
             最適化で最大化する評価指標 ('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)
         not_opt_params : Dict
@@ -1131,7 +1131,7 @@ class ParamTuning():
         cv : int or KFold
             クロスバリデーション分割法 (Noneのときクラス変数から取得、int入力時はkFoldで分割)
         seed : int
-            乱数シード (クロスバリデーション分割用、xgboostの乱数シードはcv_paramsで指定するので注意)
+            乱数シード (クロスバリデーション分割用、xgboostの乱数シードはnot_opt_paramsで指定するので注意)
         scoring : str
             最適化で最大化する評価指標 ('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)
         not_opt_params : Dict
@@ -1279,7 +1279,7 @@ class ParamTuning():
         cv : int or KFold
             クロスバリデーション分割法 (Noneのときクラス変数から取得、int入力時はkFoldで分割)
         seed : int
-            乱数シード (クロスバリデーション分割用、xgboostの乱数シードはcv_paramsで指定するので注意)
+            乱数シード (クロスバリデーション分割用、xgboostの乱数シードはnot_opt_paramsで指定するので注意)
         scoring : str
             最適化で最大化する評価指標 ('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)
         plot_stats : str
