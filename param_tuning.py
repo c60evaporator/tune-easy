@@ -816,7 +816,7 @@ class ParamTuning():
         if scoring == None:
             scoring = self.SCORING
         if n_trials == None:
-            n_trials = self.N_ITER_BAYES
+            n_trials = self.N_ITER_OPTUNA
         if study_kws == None:
             study_kws = {}
         if optimize_kws == None:
