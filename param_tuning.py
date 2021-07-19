@@ -352,8 +352,8 @@ class ParamTuning():
         param_scales = self._add_learner_name(cv_model, param_scales)
         not_opt_params = self._add_learner_name(cv_model, not_opt_params)
         
-        # 引数をプロパティ(インスタンス変数)に反映
-        self._set_argument_to_property(cv_model, tuning_params, cv, seed, scoring, fit_params, not_opt_params, param_scales)
+        # 引数をプロパティ(インスタンス変数)に反映（チューニング中にパラメータ入力されるため、モデルはdeepcopy）
+        self._set_argument_to_property(copy.deepcopy(cv_model), tuning_params, cv, seed, scoring, fit_params, not_opt_params, param_scales)
         # チューニング対象外パラメータをモデルに反映
         cv_model.set_params(**not_opt_params)
 
@@ -399,8 +399,8 @@ class ParamTuning():
         elif mlflow_logging is not None:
             raise Exception('the "mlflow_logging" argument must be "log", "with" or None')
 
-        # グリッドサーチでの探索結果を返す
-        return gridcv.best_params_, gridcv.best_score_, self.elapsed_time
+        # グリッドサーチで探索した最適パラメータ、チューニング対象外パラメータ、最適スコア、所要時間を返す
+        return gridcv.best_params_, not_opt_params, gridcv.best_score_, self.elapsed_time
 
     def random_search_tuning(self, cv_model=None, tuning_params=None, cv=None, seed=None, scoring=None,
                              n_iter=None,
@@ -485,8 +485,8 @@ class ParamTuning():
         param_scales = self._add_learner_name(cv_model, param_scales)
         not_opt_params = self._add_learner_name(cv_model, not_opt_params)
 
-        # 引数をプロパティ(インスタンス変数)に反映
-        self._set_argument_to_property(cv_model, tuning_params, cv, seed, scoring, fit_params, not_opt_params, param_scales)
+        # 引数をプロパティ(インスタンス変数)に反映（チューニング中にパラメータ入力されるため、モデルはdeepcopy）
+        self._set_argument_to_property(copy.deepcopy(cv_model), tuning_params, cv, seed, scoring, fit_params, not_opt_params, param_scales)
         # チューニング対象外パラメータをモデルに反映
         cv_model.set_params(**not_opt_params)
 
@@ -534,8 +534,8 @@ class ParamTuning():
         elif mlflow_logging is not None:
             raise Exception('the "mlflow_logging" argument must be "log", "with" or None')
 
-        # ランダムサーチで探索した最適パラメータ、最適スコア、所要時間を返す
-        return randcv.best_params_, randcv.best_score_, self.elapsed_time
+        # ランダムサーチで探索した最適パラメータ、チューニング対象外パラメータ、最適スコア、所要時間を返す
+        return randcv.best_params_, not_opt_params, randcv.best_score_, self.elapsed_time
 
     @abstractmethod
     def _bayes_evaluate(self, **kwargs):
@@ -672,11 +672,9 @@ class ParamTuning():
         not_opt_params = self._add_learner_name(cv_model, not_opt_params)
         int_params = self._add_learner_name(cv_model, int_params)
 
-        # 引数をプロパティ(インスタンス変数)に反映
-        self._set_argument_to_property(cv_model, tuning_params, cv, seed, scoring, fit_params, not_opt_params, param_scales)
+        # 引数をプロパティ(インスタンス変数)に反映（チューニング中にパラメータ入力されるため、モデルはdeepcopy）
+        self._set_argument_to_property(copy.deepcopy(cv_model), tuning_params, cv, seed, scoring, fit_params, not_opt_params, param_scales)
         self.int_params = int_params
-        # チューニング前のモデルを保持（チューニング中にパラメータ入力されてしまうため）
-        src_model = copy.deepcopy(cv_model)
 
         # 引数のスケールを変換(対数スケールパラメータは対数化)
         tuning_params_log = self._log10_conversion(tuning_params, param_scales)
@@ -700,10 +698,6 @@ class ParamTuning():
         best_params = self._pow10_conversion(best_params, param_scales)
         # 整数パラメータはint型に変換
         best_params = self._int_conversion(best_params, int_params)
-        # 最適化対象以外のパラメータも追加
-        best_params.update(self.NOT_OPT_PARAMS)
-        if 'random_state' in not_opt_params:
-            best_params['random_state'] = self.seed
         # パイプライン処理のとき、学習器名を追加
         best_params = self._add_learner_name(cv_model, best_params)
         self.best_params = best_params
@@ -718,15 +712,17 @@ class ParamTuning():
         self.search_history['raw_trial_time'] = np.diff(np.array(self.elapsed_times), n=1)
 
         # 最適モデル保持のため学習（特徴量重要度算出等）
+        best_params_refit = {k:v for k,v in best_params.items()}
+        best_params_refit.update(not_opt_params)  # 最適化対象以外のパラメータも追加
+        if 'random_state' in not_opt_params:
+            best_params_refit['random_state'] = self.seed
         best_model = copy.deepcopy(cv_model)
-        best_model.set_params(**best_params)
+        best_model.set_params(**best_params_refit)
         best_model.fit(self.X,
                   self.y,
                   **fit_params
                   )
         self.best_estimator = best_model
-        # チューニング前のモデルを再保持（チューニング中にパラメータ入力されてしまうため）
-        self.cv_model = src_model
         
         # MLFlowで記録
         if mlflow_logging == 'log':
@@ -737,8 +733,9 @@ class ParamTuning():
         elif mlflow_logging is not None:
             raise Exception('the "mlflow_logging" argument must be "log", "with" or None')
 
-        # ベイズ最適化で探索した最適パラメータ、評価指標最大値、所要時間を返す
-        return self.best_params, self.best_score, self.elapsed_time
+        # ベイズ最適化で探索した最適パラメータ、チューニング対象外パラメータ、評価指標最大値、所要時間を返す
+        return self.best_params, not_opt_params, self.best_score, self.elapsed_time
+
 
     def _optuna_evaluate(self, trial):
         """
@@ -854,11 +851,9 @@ class ParamTuning():
         not_opt_params = self._add_learner_name(cv_model, not_opt_params)
         int_params = self._add_learner_name(cv_model, int_params)
 
-        # 引数をプロパティ(インスタンス変数)に反映
-        self._set_argument_to_property(cv_model, tuning_params, cv, seed, scoring, fit_params, not_opt_params, param_scales)
+        # 引数をプロパティ(インスタンス変数)に反映（チューニング中にパラメータ入力されるため、モデルはdeepcopy）
+        self._set_argument_to_property(copy.deepcopy(cv_model), tuning_params, cv, seed, scoring, fit_params, not_opt_params, param_scales)
         self.int_params = int_params
-        # チューニング前のモデルを保持（チューニング中にパラメータ入力されてしまうため）
-        src_model = copy.deepcopy(cv_model)
 
         # ベイズ最適化のインスタンス作成
         if 'sampler' not in study_kws:  # 指定がなければsamplerにTPESamplerを使用
@@ -878,10 +873,6 @@ class ParamTuning():
         # 最適パラメータとスコアを取得
         best_params = study.best_trial.params
         self.best_score = study.best_trial.value
-        # 最適化対象以外のパラメータも追加
-        best_params.update(self.NOT_OPT_PARAMS)
-        if 'random_state' in not_opt_params:
-            best_params['random_state'] = self.seed
         # パイプライン処理のとき、学習器名を追加
         best_params = self._add_learner_name(cv_model, best_params)
         self.best_params = best_params
@@ -893,15 +884,17 @@ class ParamTuning():
         self.search_history['raw_trial_time'] = [trial.duration.total_seconds() for trial in study.trials]
 
         # 最適モデル保持のため学習（特徴量重要度算出等）
+        best_params_refit = {k:v for k,v in best_params.items()}
+        best_params_refit.update(not_opt_params)  # 最適化対象以外のパラメータも追加
+        if 'random_state' in not_opt_params:
+            best_params_refit['random_state'] = self.seed
         best_model = copy.deepcopy(cv_model)
-        best_model.set_params(**best_params)
+        best_model.set_params(**best_params_refit)
         best_model.fit(self.X,
                   self.y,
                   **fit_params
                   )
         self.best_estimator = best_model
-        # チューニング前のモデルを再保持（チューニング中にパラメータ入力されてしまうため）
-        self.cv_model = src_model
 
         # MLFlowで記録
         if mlflow_logging == 'log':
@@ -912,8 +905,8 @@ class ParamTuning():
         elif mlflow_logging is not None:
             raise Exception('the "mlflow_logging" argument must be "log", "with" or None')
         
-        # ベイズ最適化で探索した最適パラメータ、評価指標最大値、所要時間を返す
-        return self.best_params, self.best_score, self.elapsed_time
+        # Optunaで探索した最適パラメータ、チューニング対象外パラメータ、評価指標最大値、所要時間を返す
+        return self.best_params, not_opt_params, self.best_score, self.elapsed_time
 
 
     def get_feature_importances(self):
@@ -1223,25 +1216,23 @@ class ParamTuning():
         # 最適化未実施時、エラーを出す
         if self.best_estimator is None:
             raise Exception('please tune parameters before plotting feature importances')
+        # self.best_paramsに存在しないキーをvalidaion_curve_paramsから削除
+        validation_curve_params = {k: v for k, v in validation_curve_params.items(
+                                  ) if k in self.best_params.keys()}
         # validation_curve_paramsにself.best_paramsを追加して昇順ソート
         for k, v in validation_curve_params.items():
             if self.best_params[k] not in v:
                 v.append(self.best_params[k])
                 v.sort()
-        # self.best_paramsをnot_opt_paramsとstable_paramsに分割
-        not_opt_params = {k: v for k, v in self.best_params.items(
-                          ) if k not in validation_curve_params.keys()}
-        stable_params = {k: v for k, v in self.best_params.items(
-                         ) if k in validation_curve_params.keys()}
         # 検証曲線を取得
         validation_curve_result = self.get_validation_curve(cv_model=self.cv_model,
-                                validation_curve_params=validation_curve_params,
-                                cv=self.cv,
-                                seed=self.seed,
-                                scoring=self.scoring, 
-                                not_opt_params=not_opt_params,
-                                stable_params=stable_params, 
-                                **self.fit_params)
+                                                            validation_curve_params=validation_curve_params,
+                                                            cv=self.cv,
+                                                            seed=self.seed,
+                                                            scoring=self.scoring, 
+                                                            not_opt_params=self.not_opt_params,
+                                                            stable_params=self.best_params, 
+                                                            **self.fit_params)
         
         # 検証曲線をプロット
         for i, (k, v) in enumerate(validation_curve_result.items()):
