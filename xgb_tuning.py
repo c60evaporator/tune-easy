@@ -32,7 +32,7 @@ class XGBRegressorTuning(ParamTuning):
                       }
 
     # グリッドサーチ用パラメータ
-    CV_PARAMS_GRID = {'learning_rate': [0.03, 0.1, 0.3],  # 過学習のバランス(高いほど過学習寄り、低いほど汎化寄り）別名eta
+    CV_PARAMS_GRID = {'learning_rate': [0.01, 0.1, 0.3],  # 過学習のバランス(高いほど過学習寄り、低いほど汎化寄り）別名eta
                       'min_child_weight': [2, 5, 10],  # 葉に割り当てるスコアwiの合計の最小値。これを下回った場合、それ以上の分割を行わない
                       'max_depth': [2, 4, 9],  # 木の深さの最大値
                       'colsample_bytree': [0.2, 0.5, 1.0],  # 列のサブサンプリングを行う比率
@@ -43,8 +43,8 @@ class XGBRegressorTuning(ParamTuning):
     # ランダムサーチ用パラメータ
     N_ITER_RANDOM = 450  # ランダムサーチの試行数
     CV_PARAMS_RANDOM = {'learning_rate': [0.01, 0.02, 0.05, 0.1, 0.2, 0.3],
-                        'min_child_weight': [2, 3, 4, 5, 6, 7, 8],
-                        'max_depth': [1, 2, 3, 4],
+                        'min_child_weight': [2, 3, 4, 5, 6, 7, 8, 9, 10],
+                        'max_depth': [2, 3, 4, 5, 6, 7, 8, 9],
                         'colsample_bytree': [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
                         'subsample': [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
                         'reg_alpha': [0.001, 0.003, 0.01, 0.03, 0.1],
@@ -58,8 +58,8 @@ class XGBRegressorTuning(ParamTuning):
     ACQ = 'ei'  # BayesianOptimizationの獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
     N_ITER_OPTUNA = 300  # Optunaの試行数
     BAYES_PARAMS = {'learning_rate': (0.01, 0.3),
-                    'min_child_weight': (2, 8),
-                    'max_depth': (1, 4),
+                    'min_child_weight': (2, 10),
+                    'max_depth': (2, 9),
                     'colsample_bytree': (0.2, 1.0),
                     'subsample': (0.2, 1.0),
                     'reg_alpha': (0.001, 0.1),
