@@ -34,7 +34,7 @@ class RFRegressorTuning(ParamTuning):
                       }
 
     # ランダムサーチ用パラメータ
-    N_ITER_RANDOM = 200  # ランダムサーチの繰り返し回数
+    N_ITER_RANDOM = 200  # ランダムサーチの試行数
     CV_PARAMS_RANDOM = {'n_estimators': [20, 40, 60, 80, 160, 240, 320],
                         'max_features': ['auto', 'sqrt', 'log2'],
                         'max_depth': [2, 4, 8, 16, 32, 64, 128, 192],
@@ -43,9 +43,10 @@ class RFRegressorTuning(ParamTuning):
                         }
 
     # ベイズ最適化用パラメータ
-    N_ITER_BAYES = 100  # ベイズ最適化の繰り返し回数
-    INIT_POINTS = 20  # 初期観測点の個数(ランダムな探索を何回行うか)
-    ACQ = 'ei'  # 獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
+    N_ITER_BAYES = 100  # BayesianOptimizationの試行数
+    INIT_POINTS = 20  # BayesianOptimizationの初期観測点の個数(ランダムな探索を何回行うか)
+    ACQ = 'ei'  # BayesianOptimizationの獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
+    N_ITER_OPTUNA = 300  # Optunaの試行数
     BAYES_PARAMS = {'n_estimators': (20, 320),
                     'max_features': (1, 64),
                     'max_depth': (2, 192),
@@ -53,9 +54,6 @@ class RFRegressorTuning(ParamTuning):
                     'min_samples_leaf': (1, 20)
                     }
     INT_PARAMS = ['n_estimators', 'max_features', 'max_depth', 'min_samples_split', 'min_samples_leaf']  # 整数型のパラメータのリスト(ベイズ最適化時は都度int型変換する)
-
-    # Optuna用パラメータ
-    N_ITER_OPTUNA = 300
 
     # 範囲選択検証曲線用パラメータ範囲
     VALIDATION_CURVE_PARAMS = {'n_estimators': [20, 40, 60, 80, 160, 240, 320],

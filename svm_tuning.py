@@ -31,24 +31,22 @@ class SVMRegressorTuning(ParamTuning):
                       }
 
     # ランダムサーチ用パラメータ
-    N_ITER_RANDOM = 250  # ランダムサーチの繰り返し回数
+    N_ITER_RANDOM = 250  # ランダムサーチの試行数
     CV_PARAMS_RANDOM = {'gamma': [0.001, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10],
                         'C': [0.01, 0.1, 0.2, 0.5, 1, 2, 5, 10],
                         'epsilon': [0, 0.01, 0.02, 0.03, 0.05, 0.1, 0.15, 0.2, 0.3]
                         }
 
     # ベイズ最適化用パラメータ
-    N_ITER_BAYES = 100  # ベイズ最適化の繰り返し回数
-    INIT_POINTS = 20  # 初期観測点の個数(ランダムな探索を何回行うか)
-    ACQ = 'ei'  # 獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
+    N_ITER_BAYES = 100  # BayesianOptimizationの試行数
+    INIT_POINTS = 20  # BayesianOptimizationの初期観測点の個数(ランダムな探索を何回行うか)
+    ACQ = 'ei'  # BayesianOptimizationの獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
+    N_ITER_OPTUNA = 300  # Optunaの試行数
     BAYES_PARAMS = {'gamma': (0.01, 10),
                     'C': (0.1, 10),
                     'epsilon': (0, 0.2)
                     }
     INT_PARAMS = []
-
-    # Optuna用パラメータ
-    N_ITER_OPTUNA = 300
 
     # 範囲選択検証曲線用パラメータ範囲
     VALIDATION_CURVE_PARAMS = {'gamma': [0.0001, 0.001, 0.01, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 50, 100, 1000],
@@ -99,22 +97,20 @@ class SVMClassifierTuning(ParamTuning):
                       }
 
     # ランダムサーチ用パラメータ
-    N_ITER_RANDOM = 200  # ランダムサーチの繰り返し回数
+    N_ITER_RANDOM = 200  # ランダムサーチの試行数
     CV_PARAMS_RANDOM = {'gamma': [0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100],
                         'C': [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100]
                         }
 
     # ベイズ最適化用パラメータ
-    N_ITER_BAYES = 100  # ベイズ最適化の繰り返し回数
-    INIT_POINTS = 20  # 初期観測点の個数(ランダムな探索を何回行うか)
-    ACQ = 'ei'  # 獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
+    N_ITER_BAYES = 100  # BayesianOptimizationの試行数
+    INIT_POINTS = 20  # BayesianOptimizationの初期観測点の個数(ランダムな探索を何回行うか)
+    ACQ = 'ei'  # BayesianOptimizationの獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
+    N_ITER_OPTUNA = 300  # Optunaの試行数
     BAYES_PARAMS = {'gamma': (0.01, 10),
                     'C': (0.1, 10)
                     }
     INT_PARAMS = []
-
-    # Optuna用パラメータ
-    N_ITER_OPTUNA = 300
 
     # 範囲選択検証曲線用パラメータ範囲
     VALIDATION_CURVE_PARAMS = {'gamma': (0.01, 10),
