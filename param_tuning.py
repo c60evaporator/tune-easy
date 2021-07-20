@@ -1407,7 +1407,7 @@ class ParamTuning():
         pair_n : int, optional
             グリッドサーチ以外の時の図を並べる枚数
         rounddigits_title : int, optional
-            グラフタイトルのパラメータ値の丸め桁数
+            グラフタイトルのパラメータ値の丸め桁数 (グリッドサーチ以外)
         rank_number: int, optional
             スコア上位何番目までを文字表示するか
         rounddigits_score : int, optional
@@ -1725,6 +1725,8 @@ class ParamTuning():
         if ax is None:
             ax=plt.gca()
             ax_flg = False
+        else:
+            ax_flg = True
         
         # パラメータと得点とその最大値の履歴をDataFrame化
         df_history = self.get_search_history()
