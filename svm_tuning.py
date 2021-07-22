@@ -21,7 +21,7 @@ class SVMRegressorTuning(ParamTuning):
     SCORING = 'neg_mean_squared_error'
 
     # 最適化対象外パラメータ
-    NOT_OPT_PARAMS = {'kernel': 'rbf',  # カーネルの種類 (基本は'rbf')
+    NOT_OPT_PARAMS = {'kernel': 'rbf'  # カーネルの種類 (基本は'rbf')
                       }
 
     # グリッドサーチ用パラメータ
@@ -88,7 +88,7 @@ class SVMClassifierTuning(ParamTuning):
     SCORING = 'neg_log_loss'
 
     # 最適化対象外パラメータ
-    NOT_OPT_PARAMS = {'kernel': 'rbf',  # カーネルの種類 (基本は'rbf')
+    NOT_OPT_PARAMS = {'kernel': 'rbf'  # カーネルの種類 (基本は'rbf')
                       }
 
     # グリッドサーチ用パラメータ
