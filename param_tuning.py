@@ -781,7 +781,7 @@ class ParamTuning():
         n_trials : int
             ベイズ最適化の繰り返し回数
         study_kws : Dict
-            optuna.study.creat_studyに渡す引数
+            optuna.study.create_studyに渡す引数
         optimize_kws : Dict
             optuna.study.Study.optimizeに渡す引数 (n_trials以外)
         not_opt_params : Dict
@@ -1449,6 +1449,7 @@ class ParamTuning():
         self.param_importances = importances.sort_values(ascending=True)
 
         ###### パラメータ表示軸の順番を計算 ######
+        pair_h, pair_w = 1, 1  # パラメータ数が2以下の時図は1枚のみ
         # パラメータの並び順を指定しているとき、指定したパラメータ以外は使用しない
         if order is not None:
             n_params = len(order)
@@ -1463,7 +1464,6 @@ class ParamTuning():
                 for param in not_order_params:
                     df_history = df_history[df_history[param] == self.best_params[param]]
                 nuniques = df_history.drop('test_score', axis=1).nunique().rename('nuniques')
-                pair_h, pair_w = 1, 1
                 if n_params >= 3:  # パラメータ数3以上のときの縦画像枚数
                     pair_h = int(nuniques[order[2]])
                 if n_params >= 4:  # パラメータ数4以上のときの横画像枚数
@@ -1472,7 +1472,7 @@ class ParamTuning():
             else:
                 df_history = df_history.loc[df_history.groupby(order)['test_score'].idxmax(), :]
                 pair_h = pair_n if n_params >= 3 else 1
-                pair_h = pair_n if n_params >= 4 else 1
+                pair_w = pair_n if n_params >= 4 else 1
 
         # パラメータの並び順を指定していないとき、ランダムフォレストのfeature_importancesの並び順とする
         else:
@@ -1483,7 +1483,6 @@ class ParamTuning():
                 df_order = pd.concat([nuniques, importances], axis=1)
                 df_order = df_order.sort_values(['nuniques', 'importances'], ascending=[False, False])
                 order = df_order.index.tolist()
-                pair_h, pair_w = 1, 1
                 if n_params >= 3:  # パラメータ数3以上のときの縦画像枚数
                     pair_h = int(df_order.iloc[2, 0])
                 if n_params >= 4:  # パラメータ数4以上のときの横画像枚数
@@ -1491,31 +1490,30 @@ class ParamTuning():
             # グリッドサーチ以外の時feature_importancesでソート
             else:
                 order = importances.sort_values(ascending=False).index.tolist()
-                if n_params >= 3:  # パラメータ数3以上のとき
-                    pair_h = pair_n
-                    pair_w = 1
-                    # 3個目のパラメータを分割する区間
-                    min_param3 = df_history[order[2]].min()
-                    max_param3 = df_history[order[2]].max()
-                    if self.param_scales[order[2]] == 'linear':  # 線形軸のとき
-                        separation_param3 = np.linspace(min_param3, max_param3, pair_h + 1)
-                    else:  # 対数軸のとき
-                        separation_param3 = np.logspace(np.log10(min_param3), np.log10(max_param3), pair_h + 1)
+            
+        # グリッドサーチ以外でパラメータ数が3以上のとき、図の数と各図の軸範囲を指定
+        if self.algo_name != 'grid':
+            if n_params >= 3:  # パラメータ数3以上のとき
+                pair_h = pair_n
+                pair_w = 1
+                # 3個目のパラメータを分割する区間
+                min_param3 = df_history[order[2]].min()
+                max_param3 = df_history[order[2]].max()
+                if self.param_scales[order[2]] == 'linear':  # 線形軸のとき
+                    separation_param3 = np.linspace(min_param3, max_param3, pair_h + 1)
+                else:  # 対数軸のとき
+                    separation_param3 = np.logspace(np.log10(min_param3), np.log10(max_param3), pair_h + 1)
 
-                if n_params >= 4:  # パラメータ数4以上のとき
-                    pair_h = pair_n
-                    pair_w = pair_n
-                    # 4個目のパラメータを分割する区間
-                    min_param4 = df_history[order[3]].min()
-                    max_param4 = df_history[order[3]].max()
-                    if self.param_scales[order[3]] == 'linear':  # 線形軸のとき
-                        separation_param4 = np.linspace(min_param4, max_param4, pair_w + 1)
-                    elif self.param_scales[order[3]] == 'log':  # 対数軸のとき
-                        separation_param4 = np.logspace(np.log10(min_param4), np.log10(max_param4), pair_w + 1)
-        # パラメータ数1～2のとき (図は1枚のみ)
-        if n_params <= 2:
-            pair_w = 1
-            pair_h = 1
+            if n_params >= 4:  # パラメータ数4以上のとき
+                pair_h = pair_n
+                pair_w = pair_n
+                # 4個目のパラメータを分割する区間
+                min_param4 = df_history[order[3]].min()
+                max_param4 = df_history[order[3]].max()
+                if self.param_scales[order[3]] == 'linear':  # 線形軸のとき
+                    separation_param4 = np.linspace(min_param4, max_param4, pair_w + 1)
+                elif self.param_scales[order[3]] == 'log':  # 対数軸のとき
+                    separation_param4 = np.logspace(np.log10(min_param4), np.log10(max_param4), pair_w + 1)
 
         ###### グラフのサイズと軸範囲を指定 ######
         # figsize (全ての図全体のサイズ)指定
@@ -1526,7 +1524,7 @@ class ParamTuning():
 
         # スコアの上位をdict化して保持
         rank_index  = np.argsort(-df_history['test_score'].values, kind='mergesort')[:rank_number]
-        rank_dict = dict(zip(rank_index.tolist(), range(rank_number)))
+        rank_dict = dict(zip(df_history.iloc[rank_index.tolist(), :].index.tolist(), range(rank_number)))
 
         # グリッドサーチのとき、第5パラメータ以降は最適パラメータを指定して算出
         if self.algo_name == 'grid' and n_params >= 5:
