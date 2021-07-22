@@ -4,9 +4,9 @@ from sklearn.metrics import check_scoring
 import time
 import lightgbm as lgbm
 
-class XGBRegressorTuning(ParamTuning):
+class LGBMRegressorTuning(ParamTuning):
     """
-    XGBoost回帰チューニング用クラス
+    LightGBM回帰チューニング用クラス
     """
 
     # 共通定数
