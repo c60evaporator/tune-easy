@@ -31,7 +31,7 @@ class ParamTuning():
     CV_NUM = 5  # 最適化時のクロスバリデーションのデフォルト分割数
     
     # 学習器のインスタンス
-    CV_MODEL = None
+    ESTIMATOR = None
     # 学習時のパラメータのデフォルト値
     FIT_PARAMS = {}
      # 最適化で最大化するデフォルト評価指標('r2', 'neg_mean_squared_error', 'neg_mean_squared_log_error')
@@ -98,7 +98,7 @@ class ParamTuning():
         self.scoring = None  # 最大化するスコア
         self.seed = None  # 乱数シード
         self.cv = None  # クロスバリデーション分割法
-        self.cv_model = None  # 最適化対象の学習器インスタンス
+        self.estimator = None  # 最適化対象の学習器インスタンス
         self.learner_name = None  # パイプライン処理時の学習器名称
         self.fit_params = None  # 学習時のパラメータ
         self.algo_name = None  # 最適化に使用したアルゴリズム名('grid', 'random', 'bayes-opt', 'optuna')
@@ -138,11 +138,11 @@ class ParamTuning():
         """
         return src_params
     
-    def _set_argument_to_property(self, cv_model, tuning_params, cv, seed, scoring, fit_params, not_opt_params, param_scales):
+    def _set_argument_to_property(self, estimator, tuning_params, cv, seed, scoring, fit_params, not_opt_params, param_scales):
         """
         引数をプロパティ(インスタンス変数)に反映
         """
-        self.cv_model = cv_model
+        self.estimator = estimator
         self.tuning_params = tuning_params
         self.cv = cv
         self.seed = seed
@@ -151,11 +151,11 @@ class ParamTuning():
         self.not_opt_params = not_opt_params
         self.param_scales = param_scales
 
-    def _add_learner_name(self, model, params):
+    def _add_learner_name(self, estimator, params):
         """
         パイプライン処理用に、パラメータ名を"学習器名__パラメータ名"に変更
         """
-        if isinstance(model, Pipeline):
+        if isinstance(estimator, Pipeline):
             # 学習器名が指定されているとき、パラメータ名を変更して処理を進める(既にパラメータ名に'__'が含まれているパラメータは、変更しない)
             if self.learner_name is not None:
                 if isinstance(params, dict):  # Dictのとき
@@ -164,15 +164,15 @@ class ParamTuning():
                     params = [param if '__' in param else f'{self.learner_name}__{param}' for param in params]
             # 指定されていないとき、エラーを返す
             else:
-                raise Exception('pipeline model needs "lerner_name" argument')
+                raise Exception('Pipeline needs "lerner_name" argument')
         return params
     
-    def _get_learner_name(self, model):
+    def _get_final_estimator_name(self, estimator):
         """
         パイプライン処理のとき、最後の要素から学習器名を取得
         """
-        if isinstance(model, Pipeline):
-            steps = model.steps
+        if isinstance(estimator, Pipeline):
+            steps = estimator.steps
             self.learner_name = steps[len(steps)-1][0]
     
     def _round_digits(self, src: float, rounddigit: int = None, method='decimal'):
@@ -197,7 +197,7 @@ class ParamTuning():
         elif method == 'format':
             return '{:.{width}g}'.format(src, width=rounddigit)
 
-    def _scratch_cross_val(self, cv_model, eval_data_source):
+    def _scratch_cross_val(self, estimator, eval_data_source):
         scores = []
         for train, test in self.cv.split(self.X, self.y):
             X_train = self.X[train]
@@ -216,10 +216,10 @@ class ParamTuning():
             else:
                 raise Exception('the "eval_data_source" argument must be "all", "valid", or "train"')
             # 学習
-            cv_model.fit(X_train, y_train,
+            estimator.fit(X_train, y_train,
                             **fit_params)
-            scorer = check_scoring(cv_model, self.scoring)
-            score = scorer(cv_model, X_test, y_test)
+            scorer = check_scoring(estimator, self.scoring)
+            score = scorer(estimator, X_test, y_test)
 
             # Learning API -> Scikit-learn APIとデフォルトパラメータが異なり結果が変わるので不使用
             # dtrain = xgb.DMatrix(X_train, label=y_train)
@@ -252,7 +252,7 @@ class ParamTuning():
         mlflow.log_param('scoring', self.scoring)  # 最大化するスコア
         mlflow.log_param('seed', self.seed)  # 乱数シード
         mlflow.log_param('cv', str(self.cv))  # クロスバリデーション分割法
-        mlflow.log_param('cv_model', str(self.cv_model))  # 最適化対象の学習器インスタンス
+        mlflow.log_param('estimator', str(self.estimator))  # 最適化対象の学習器インスタンス
         mlflow.log_param('learner_name', self.learner_name)  # パイプライン処理時の学習器名称
         mlflow.log_param('fit_params', self.fit_params)  # 学習時のパラメータ
         mlflow.log_param('algo_name', self.algo_name)  # 最適化に使用したアルゴリズム名('grid', 'random', 'bayes-opt', 'optuna')
@@ -265,25 +265,25 @@ class ParamTuning():
         mlflow.log_metric('elapsed_time', self.elapsed_time)  # 所要時間
         mlflow.log_metric('preprocess_time', self.preprocess_time)  # 前処理(最適化スタート前)時間
         # 最適モデルをMLFlow Modelsで保存(https://mlflow.org/docs/latest/models.html#how-to-log-models-with-signatures)
-        model_output = self.best_estimator.predict(self.X)  # モデル出力
-        model_output = pd.Series(model_output) if self.y_colname is None else pd.DataFrame(model_output, columns=[self.y_colname])
+        estimator_output = self.best_estimator.predict(self.X)  # モデル出力
+        estimator_output = pd.Series(estimator_output) if self.y_colname is None else pd.DataFrame(estimator_output, columns=[self.y_colname])
         signature = infer_signature(pd.DataFrame(self.X, columns=self.X_colnames),  # モデル入出力の型を自動判定
-                                    model_output)
-        mlflow.sklearn.log_model(self.best_estimator, f'best_model_{self.algo_name}', signature=signature)  # 最適化された学習モデル
+                                    estimator_output)
+        mlflow.sklearn.log_model(self.best_estimator, f'best_estimator_{self.algo_name}', signature=signature)  # 最適化された学習モデル
         # パラメータと得点の履歴をCSV化してArtifactとして保存
         df_history = self.get_search_history()
         df_history.to_csv('search_history.csv')
         mlflow.log_artifact('search_history.csv')
         os.remove('search_history.csv')
 
-    def grid_search_tuning(self, cv_model=None, tuning_params=None, cv=None, seed=None, scoring=None,
+    def grid_search_tuning(self, estimator=None, tuning_params=None, cv=None, seed=None, scoring=None,
                            not_opt_params=None, param_scales=None, mlflow_logging=None, grid_kws=None, **fit_params):
         """
         グリッドサーチ＋クロスバリデーション
 
         Parameters
         ----------
-        cv_model : Dict
+        estimator : Dict
             最適化対象の学習器インスタンス
         tuning_params : Dict[str, List[float]]
             最適化対象のパラメータ一覧
@@ -311,8 +311,8 @@ class ParamTuning():
         self.start_time = start
 
         # 引数非指定時、クラス変数から取得
-        if cv_model == None:
-            cv_model = copy.deepcopy(self.CV_MODEL)
+        if estimator == None:
+            estimator = copy.deepcopy(self.ESTIMATOR)
         if tuning_params == None:
             tuning_params = self.CV_PARAMS_GRID
         if cv == None:
@@ -345,23 +345,23 @@ class ParamTuning():
             if self.cv_group is None:
                 raise Exception('"GroupKFold" and "LeaveOneGroupOut" cross validations need "cv_group" argument at the initialization')
         # パイプライン処理のとき、最後の要素から学習器名を取得
-        self._get_learner_name(cv_model)
+        self._get_final_estimator_name(estimator)
         # パイプライン処理のとき、パラメータに学習器名を追加
-        tuning_params = self._add_learner_name(cv_model, tuning_params)
-        fit_params = self._add_learner_name(cv_model, fit_params)
-        param_scales = self._add_learner_name(cv_model, param_scales)
-        not_opt_params = self._add_learner_name(cv_model, not_opt_params)
+        tuning_params = self._add_learner_name(estimator, tuning_params)
+        fit_params = self._add_learner_name(estimator, fit_params)
+        param_scales = self._add_learner_name(estimator, param_scales)
+        not_opt_params = self._add_learner_name(estimator, not_opt_params)
         
         # 引数をプロパティ(インスタンス変数)に反映（チューニング中にパラメータ入力されるため、モデルはdeepcopy）
-        self._set_argument_to_property(copy.deepcopy(cv_model), tuning_params, cv, seed, scoring, fit_params, not_opt_params, param_scales)
+        self._set_argument_to_property(copy.deepcopy(estimator), tuning_params, cv, seed, scoring, fit_params, not_opt_params, param_scales)
         # チューニング対象外パラメータをモデルに反映
-        cv_model.set_params(**not_opt_params)
+        estimator.set_params(**not_opt_params)
 
         # グリッドサーチのインスタンス作成
         # n_jobs=-1にするとCPU100%で全コア並列計算。とても速い。
         if 'n_jobs' not in grid_kws.keys():
             grid_kws['n_jobs'] = -1
-        gridcv = GridSearchCV(cv_model, tuning_params, cv=cv,
+        gridcv = GridSearchCV(estimator, tuning_params, cv=cv,
                               scoring=scoring, **grid_kws)
 
         # ここまでに掛かった前処理時間を測定
@@ -402,7 +402,7 @@ class ParamTuning():
         # グリッドサーチで探索した最適パラメータ、チューニング対象外パラメータ、最適スコア、所要時間を返す
         return gridcv.best_params_, not_opt_params, gridcv.best_score_, self.elapsed_time
 
-    def random_search_tuning(self, cv_model=None, tuning_params=None, cv=None, seed=None, scoring=None,
+    def random_search_tuning(self, estimator=None, tuning_params=None, cv=None, seed=None, scoring=None,
                              n_iter=None,
                              not_opt_params=None, param_scales=None, mlflow_logging=None, rand_kws=None, **fit_params):
         """
@@ -410,7 +410,7 @@ class ParamTuning():
 
         Parameters
         ----------
-        cv_model : Dict
+        estimator : Dict
             最適化対象の学習器インスタンス
         tuning_params : Dict[str, List[float]]
             最適化対象のパラメータ一覧
@@ -440,8 +440,8 @@ class ParamTuning():
         self.start_time = start
 
         # 引数非指定時、クラス変数から取得
-        if cv_model == None:
-            cv_model = copy.deepcopy(self.CV_MODEL)
+        if estimator == None:
+            estimator = copy.deepcopy(self.ESTIMATOR)
         if tuning_params == None:
             tuning_params = self.CV_PARAMS_RANDOM
         if cv == None:
@@ -478,17 +478,17 @@ class ParamTuning():
             if self.cv_group is None:
                 raise Exception('"GroupKFold" and "LeaveOneGroupOut" cross validations need "cv_group" argument at the initialization')
         # パイプライン処理のとき、最後の要素から学習器名を取得
-        self._get_learner_name(cv_model)
+        self._get_final_estimator_name(estimator)
         # パイプライン処理のとき、パラメータに学習器名を追加
-        tuning_params = self._add_learner_name(cv_model, tuning_params)
-        fit_params = self._add_learner_name(cv_model, fit_params)
-        param_scales = self._add_learner_name(cv_model, param_scales)
-        not_opt_params = self._add_learner_name(cv_model, not_opt_params)
+        tuning_params = self._add_learner_name(estimator, tuning_params)
+        fit_params = self._add_learner_name(estimator, fit_params)
+        param_scales = self._add_learner_name(estimator, param_scales)
+        not_opt_params = self._add_learner_name(estimator, not_opt_params)
 
         # 引数をプロパティ(インスタンス変数)に反映（チューニング中にパラメータ入力されるため、モデルはdeepcopy）
-        self._set_argument_to_property(copy.deepcopy(cv_model), tuning_params, cv, seed, scoring, fit_params, not_opt_params, param_scales)
+        self._set_argument_to_property(copy.deepcopy(estimator), tuning_params, cv, seed, scoring, fit_params, not_opt_params, param_scales)
         # チューニング対象外パラメータをモデルに反映
-        cv_model.set_params(**not_opt_params)
+        estimator.set_params(**not_opt_params)
 
         # ランダムサーチのインスタンス作成
         # n_jobs=-1にするとCPU100%で全コア並列計算。とても速い。
@@ -496,7 +496,7 @@ class ParamTuning():
             rand_kws['n_jobs'] = -1
         if 'random_state' not in rand_kws.keys():
             rand_kws['random_state'] = seed
-        randcv = RandomizedSearchCV(cv_model, tuning_params, cv=cv, scoring=scoring,
+        randcv = RandomizedSearchCV(estimator, tuning_params, cv=cv, scoring=scoring,
                                     n_iter=n_iter, **rand_kws)
         
         # ここまでに掛かった前処理時間を測定
@@ -548,11 +548,11 @@ class ParamTuning():
         params = self._int_conversion(params, self.int_params)  # 整数パラメータはint型に変換
         params.update(self.not_opt_params)  # 最適化対象以外のパラメータも追加
         # モデル作成
-        cv_model = self.cv_model
-        cv_model.set_params(**params)
+        estimator = self.estimator
+        estimator.set_params(**params)
 
         # cross_val_scoreでクロスバリデーション
-        scores = cross_val_score(cv_model, self.X, self.y, cv=self.cv, groups=self.cv_group,
+        scores = cross_val_score(estimator, self.X, self.y, cv=self.cv, groups=self.cv_group,
                                  scoring=self.scoring, fit_params=self.fit_params, n_jobs=-1)
         val = scores.mean()
         # 所要時間測定
@@ -581,7 +581,7 @@ class ParamTuning():
         params = {k: np.power(10, v) if param_scales[k] == 'log' else v for k, v in params_log.items()}
         return params
 
-    def bayes_opt_tuning(self, cv_model=None, tuning_params=None, cv=None, seed=None, scoring=None,
+    def bayes_opt_tuning(self, estimator=None, tuning_params=None, cv=None, seed=None, scoring=None,
                          n_iter=None, init_points=None, acq=None,
                          not_opt_params=None, int_params=None, param_scales=None, mlflow_logging=None, **fit_params):
         """
@@ -589,7 +589,7 @@ class ParamTuning():
 
         Parameters
         ----------
-        cv_model : Dict
+        estimator : Dict
             最適化対象の学習器インスタンス
         tuning_params : Dict[str, Tuple(float, float)]
             最適化対象のパラメータ範囲　{パラメータ名:(パラメータの探索下限,上限),‥}で指定
@@ -623,8 +623,8 @@ class ParamTuning():
         self.start_time = start
 
         # 引数非指定時、クラス変数から取得
-        if cv_model == None:
-            cv_model = copy.deepcopy(self.CV_MODEL)
+        if estimator == None:
+            estimator = copy.deepcopy(self.ESTIMATOR)
         if tuning_params == None:
             tuning_params = self.BAYES_PARAMS
         if cv == None:
@@ -664,16 +664,16 @@ class ParamTuning():
                 raise Exception('"GroupKFold" and "LeaveOneGroupOut" cross validations need "cv_group" argument at the initialization')
         
         # パイプライン処理のとき、最後の要素から学習器名を取得
-        self._get_learner_name(cv_model)
+        self._get_final_estimator_name(estimator)
         # パイプライン処理のとき、パラメータに学習器名を追加
-        tuning_params = self._add_learner_name(cv_model, tuning_params)
-        fit_params = self._add_learner_name(cv_model, fit_params)
-        param_scales = self._add_learner_name(cv_model, param_scales)
-        not_opt_params = self._add_learner_name(cv_model, not_opt_params)
-        int_params = self._add_learner_name(cv_model, int_params)
+        tuning_params = self._add_learner_name(estimator, tuning_params)
+        fit_params = self._add_learner_name(estimator, fit_params)
+        param_scales = self._add_learner_name(estimator, param_scales)
+        not_opt_params = self._add_learner_name(estimator, not_opt_params)
+        int_params = self._add_learner_name(estimator, int_params)
 
         # 引数をプロパティ(インスタンス変数)に反映（チューニング中にパラメータ入力されるため、モデルはdeepcopy）
-        self._set_argument_to_property(copy.deepcopy(cv_model), tuning_params, cv, seed, scoring, fit_params, not_opt_params, param_scales)
+        self._set_argument_to_property(copy.deepcopy(estimator), tuning_params, cv, seed, scoring, fit_params, not_opt_params, param_scales)
         self.int_params = int_params
 
         # 引数のスケールを変換(対数スケールパラメータは対数化)
@@ -699,7 +699,7 @@ class ParamTuning():
         # 整数パラメータはint型に変換
         best_params = self._int_conversion(best_params, int_params)
         # パイプライン処理のとき、学習器名を追加
-        best_params = self._add_learner_name(cv_model, best_params)
+        best_params = self._add_learner_name(estimator, best_params)
         self.best_params = best_params
 
         # 学習履歴の保持
@@ -716,13 +716,13 @@ class ParamTuning():
         best_params_refit.update(not_opt_params)  # 最適化対象以外のパラメータも追加
         if 'random_state' in not_opt_params:
             best_params_refit['random_state'] = self.seed
-        best_model = copy.deepcopy(cv_model)
-        best_model.set_params(**best_params_refit)
-        best_model.fit(self.X,
+        best_estimator = copy.deepcopy(estimator)
+        best_estimator.set_params(**best_params_refit)
+        best_estimator.fit(self.X,
                   self.y,
                   **fit_params
                   )
-        self.best_estimator = best_model
+        self.best_estimator = best_estimator
         
         # MLFlowで記録
         if mlflow_logging == 'log':
@@ -751,16 +751,16 @@ class ParamTuning():
                 params[k] = trial.suggest_float(k, v[0], v[1], log=log)
         params.update(self.not_opt_params)  # 最適化対象以外のパラメータも追加
         # モデル作成
-        cv_model = self.cv_model
-        cv_model.set_params(**params)
+        estimator = self.estimator
+        estimator.set_params(**params)
         # cross_val_scoreでクロスバリデーション
-        scores = cross_val_score(cv_model, self.X, self.y, cv=self.cv, groups=self.cv_group,
+        scores = cross_val_score(estimator, self.X, self.y, cv=self.cv, groups=self.cv_group,
                                  scoring=self.scoring, fit_params=self.fit_params, n_jobs=-1)
         val = scores.mean()
         
         return val
 
-    def optuna_tuning(self, cv_model=None, tuning_params=None, cv=None, seed=None, scoring=None,
+    def optuna_tuning(self, estimator=None, tuning_params=None, cv=None, seed=None, scoring=None,
                       n_trials=None, study_kws=None, optimize_kws=None,
                       not_opt_params=None, int_params=None, param_scales=None, mlflow_logging=None, **fit_params):
         """
@@ -768,7 +768,7 @@ class ParamTuning():
 
         Parameters
         ----------
-        cv_model : Dict
+        estimator : Dict
             最適化対象の学習器インスタンス
         tuning_params : Dict[str, Tuple(float, float)]
             最適化対象のパラメータ範囲　{パラメータ名:(パラメータの探索下限,上限),‥}で指定
@@ -802,8 +802,8 @@ class ParamTuning():
         self.start_time = start
 
         # 引数非指定時、クラス変数から取得
-        if cv_model == None:
-            cv_model = copy.deepcopy(self.CV_MODEL)
+        if estimator == None:
+            estimator = copy.deepcopy(self.ESTIMATOR)
         if tuning_params == None:
             tuning_params = self.BAYES_PARAMS
         if cv == None:
@@ -843,16 +843,16 @@ class ParamTuning():
                 raise Exception('"GroupKFold" and "LeaveOneGroupOut" cross validations need "cv_group" argument at the initialization')
 
         # パイプライン処理のとき、最後の要素から学習器名を取得
-        self._get_learner_name(cv_model)
+        self._get_final_estimator_name(estimator)
         # パイプライン処理のとき、パラメータに学習器名を追加
-        tuning_params = self._add_learner_name(cv_model, tuning_params)
-        fit_params = self._add_learner_name(cv_model, fit_params)
-        param_scales = self._add_learner_name(cv_model, param_scales)
-        not_opt_params = self._add_learner_name(cv_model, not_opt_params)
-        int_params = self._add_learner_name(cv_model, int_params)
+        tuning_params = self._add_learner_name(estimator, tuning_params)
+        fit_params = self._add_learner_name(estimator, fit_params)
+        param_scales = self._add_learner_name(estimator, param_scales)
+        not_opt_params = self._add_learner_name(estimator, not_opt_params)
+        int_params = self._add_learner_name(estimator, int_params)
 
         # 引数をプロパティ(インスタンス変数)に反映（チューニング中にパラメータ入力されるため、モデルはdeepcopy）
-        self._set_argument_to_property(copy.deepcopy(cv_model), tuning_params, cv, seed, scoring, fit_params, not_opt_params, param_scales)
+        self._set_argument_to_property(copy.deepcopy(estimator), tuning_params, cv, seed, scoring, fit_params, not_opt_params, param_scales)
         self.int_params = int_params
 
         # ベイズ最適化のインスタンス作成
@@ -874,7 +874,7 @@ class ParamTuning():
         best_params = study.best_trial.params
         self.best_score = study.best_trial.value
         # パイプライン処理のとき、学習器名を追加
-        best_params = self._add_learner_name(cv_model, best_params)
+        best_params = self._add_learner_name(estimator, best_params)
         self.best_params = best_params
 
         # 学習履歴の保持
@@ -888,13 +888,13 @@ class ParamTuning():
         best_params_refit.update(not_opt_params)  # 最適化対象以外のパラメータも追加
         if 'random_state' in not_opt_params:
             best_params_refit['random_state'] = self.seed
-        best_model = copy.deepcopy(cv_model)
-        best_model.set_params(**best_params_refit)
-        best_model.fit(self.X,
+        best_estimator = copy.deepcopy(estimator)
+        best_estimator.set_params(**best_params_refit)
+        best_estimator.fit(self.X,
                   self.y,
                   **fit_params
                   )
-        self.best_estimator = best_model
+        self.best_estimator = best_estimator
 
         # MLFlowで記録
         if mlflow_logging == 'log':
@@ -1023,14 +1023,14 @@ class ParamTuning():
             ax.ylabel(scoring)  # スコア名を縦軸ラベルに
         ax.legend(loc='lower right')  # 凡例
 
-    def get_validation_curve(self, cv_model=None,  validation_curve_params=None, cv=None, seed=None, scoring=None,
+    def get_validation_curve(self, estimator=None,  validation_curve_params=None, cv=None, seed=None, scoring=None,
                              not_opt_params=None, stable_params=None, **fit_params):
         """
         検証曲線の取得
 
         Parameters
         ----------
-        cv_model : 
+        estimator : 
             検証曲線対象の学習器インスタンス (Noneならクラス変数から取得)
         validation_curve_params : Dict[str, list]
             検証曲線対象のパラメータ範囲 (Noneならクラス変数から取得)
@@ -1049,8 +1049,8 @@ class ParamTuning():
             Pipelineのときは{学習器名__パラメータ名:パラメータの値,‥}で指定する必要あり
         """
         # 引数非指定時、クラス変数から取得
-        if cv_model == None:
-            cv_model = copy.deepcopy(self.CV_MODEL)
+        if estimator == None:
+            estimator = copy.deepcopy(self.ESTIMATOR)
         if validation_curve_params == None:
             validation_curve_params = self.VALIDATION_CURVE_PARAMS
         if cv == None:
@@ -1079,23 +1079,23 @@ class ParamTuning():
             if self.cv_group is None:
                 raise Exception('"GroupKFold" and "LeaveOneGroupOut" cross validations need "cv_group" argument at the initialization')
         # パイプライン処理のとき、最後の要素から学習器名を取得
-        self._get_learner_name(cv_model)
+        self._get_final_estimator_name(estimator)
         # パイプライン処理のとき、パラメータに学習器名を追加
-        validation_curve_params = self._add_learner_name(cv_model, validation_curve_params)
-        fit_params = self._add_learner_name(cv_model, fit_params)
-        not_opt_params = self._add_learner_name(cv_model, not_opt_params)
+        validation_curve_params = self._add_learner_name(estimator, validation_curve_params)
+        fit_params = self._add_learner_name(estimator, fit_params)
+        not_opt_params = self._add_learner_name(estimator, not_opt_params)
 
         # stable_paramsが指定されているとき、not_opt_paramsに追加
         if stable_params is not None:
-            stable_params = self._add_learner_name(cv_model, stable_params)
+            stable_params = self._add_learner_name(estimator, stable_params)
             not_opt_params.update(stable_params)
         # not_opt_paramsを学習器にセット
-        cv_model.set_params(**not_opt_params)
+        estimator.set_params(**not_opt_params)
 
         # 検証曲線の取得
         validation_curve_result = {}
         for k, v in validation_curve_params.items():
-            train_scores, valid_scores = validation_curve(estimator=cv_model,
+            train_scores, valid_scores = validation_curve(estimator=estimator,
                                     X=self.X, y=self.y,
                                     param_name=k,
                                     param_range=v,
@@ -1109,7 +1109,7 @@ class ParamTuning():
                                         }
         return validation_curve_result
 
-    def plot_first_validation_curve(self, cv_model=None,  validation_curve_params=None, cv=None, seed=None, scoring=None,
+    def plot_first_validation_curve(self, estimator=None,  validation_curve_params=None, cv=None, seed=None, scoring=None,
                                     not_opt_params=None, param_scales=None, plot_stats='mean', axes=None,
                                     **fit_params):
         """
@@ -1117,7 +1117,7 @@ class ParamTuning():
 
         Parameters
         ----------
-        cv_model : Dict
+        estimator : Dict
             検証曲線対象の学習器インスタンス (Noneならクラス変数から取得)
         validation_curve_params : Dict[str, list]
             検証曲線対象のパラメータ範囲 (Noneならクラス変数から取得)
@@ -1139,23 +1139,23 @@ class ParamTuning():
             学習時のパラメータをdict指定(例: XGBoostのearly_stopping_rounds)
             Pipelineのときは{学習器名__パラメータ名:パラメータの値,‥}で指定する必要あり
         """
-        # 引数非指定時、クラス変数から取得(学習器名追加のため、cv_modelも取得)
+        # 引数非指定時、クラス変数から取得(学習器名追加のため、estimatorも取得)
         if validation_curve_params == None:
             validation_curve_params = self.VALIDATION_CURVE_PARAMS
         if param_scales == None:
             param_scales = self.PARAM_SCALES
-        if cv_model == None:
-            cv_model = copy.deepcopy(self.CV_MODEL)
+        if estimator == None:
+            estimator = copy.deepcopy(self.ESTIMATOR)
         # 入力データからチューニング用パラメータの生成
         validation_curve_params = self._tuning_param_generation(validation_curve_params)
         # パイプライン処理のとき、最後の要素から学習器名を取得
-        self._get_learner_name(cv_model)
+        self._get_learner_name(estimator)
         # パイプライン処理のとき、パラメータに学習器名を追加
-        validation_curve_params = self._add_learner_name(cv_model, validation_curve_params)
-        param_scales = self._add_learner_name(cv_model, param_scales)
+        validation_curve_params = self._add_learner_name(estimator, validation_curve_params)
+        param_scales = self._add_learner_name(estimator, param_scales)
 
         # 検証曲線を取得
-        validation_curve_result = self.get_validation_curve(cv_model=cv_model,
+        validation_curve_result = self.get_validation_curve(estimator=estimator,
                             validation_curve_params=validation_curve_params,
                             cv=cv,
                             seed=seed,
@@ -1210,8 +1210,8 @@ class ParamTuning():
         # 入力データからチューニング用パラメータの生成
         validation_curve_params = self._tuning_param_generation(validation_curve_params)
         # パイプライン処理のとき、パラメータに学習器名を追加
-        validation_curve_params = self._add_learner_name(self.cv_model, validation_curve_params)
-        param_scales = self._add_learner_name(self.cv_model, param_scales)
+        validation_curve_params = self._add_learner_name(self.estimator, validation_curve_params)
+        param_scales = self._add_learner_name(self.estimator, param_scales)
         
         # 最適化未実施時、エラーを出す
         if self.best_estimator is None:
@@ -1225,7 +1225,7 @@ class ParamTuning():
                 v.append(self.best_params[k])
                 v.sort()
         # 検証曲線を取得
-        validation_curve_result = self.get_validation_curve(cv_model=self.cv_model,
+        validation_curve_result = self.get_validation_curve(estimator=self.estimator,
                                                             validation_curve_params=validation_curve_params,
                                                             cv=self.cv,
                                                             seed=self.seed,
@@ -1256,14 +1256,14 @@ class ParamTuning():
         if axes is not None:
             plt.show()
 
-    def plot_learning_curve(self, cv_model=None,  params=None, cv=None, seed=None, scoring=None,
+    def plot_learning_curve(self, estimator=None,  params=None, cv=None, seed=None, scoring=None,
                             plot_stats='mean', rounddigit=3, ax=None, **fit_params):
         """
         学習曲線の取得
 
         Parameters
         ----------
-        cv_model : Dict
+        estimator : Dict
             学習曲線対象の学習器インスタンス (Noneならクラス変数から取得)
         params : Dict[str, float]
             学習器に使用するパラメータの値 (Noneならデフォルト)
@@ -1284,8 +1284,8 @@ class ParamTuning():
             Pipelineのときは{学習器名__パラメータ名:パラメータの値,‥}で指定する必要あり
         """
         # 引数非指定時、クラス変数から取得
-        if cv_model == None:
-            cv_model = copy.deepcopy(self.CV_MODEL)
+        if estimator == None:
+            estimator = copy.deepcopy(self.ESTIMATOR)
         if params == None:
             params = {}
         if cv == None:
@@ -1310,15 +1310,15 @@ class ParamTuning():
             if self.cv_group is None:
                 raise Exception('"GroupKFold" and "LeaveOneGroupOut" cross validations need "cv_group" argument at the initialization')
         # パイプライン処理のとき、最後の要素から学習器名を取得
-        self._get_learner_name(cv_model)
+        self._get_learner_name(estimator)
         # パイプライン処理のとき、パラメータに学習器名を追加
-        params = self._add_learner_name(cv_model, params)
-        fit_params = self._add_learner_name(cv_model, fit_params)
+        params = self._add_learner_name(estimator, params)
+        fit_params = self._add_learner_name(estimator, fit_params)
         # paramsを学習器にセット
-        cv_model.set_params(**params)
+        estimator.set_params(**params)
 
         # 学習曲線の取得
-        train_sizes, train_scores, valid_scores = learning_curve(estimator=cv_model,
+        train_sizes, train_scores, valid_scores = learning_curve(estimator=estimator,
                                                                  X=self.X, y=self.y,
                                                                  train_sizes=np.linspace(0.1, 1.0, 10),
                                                                  fit_params=fit_params,
@@ -1385,14 +1385,14 @@ class ParamTuning():
             raise Exception('please tune parameters before plotting feature importances')
 
         # 学習曲線をプロット
-        self.plot_learning_curve(cv_model=self.cv_model,
-                                  params=self.best_params,
-                                  cv=self.cv,
-                                  seed=self.seed,
-                                  scoring=self.scoring, 
-                                  plot_stats=plot_stats,
-                                  ax=ax,
-                                  **self.fit_params)
+        self.plot_learning_curve(estimator=self.estimator,
+                                 params=self.best_params,
+                                 cv=self.cv,
+                                 seed=self.seed,
+                                 scoring=self.scoring, 
+                                 plot_stats=plot_stats,
+                                 ax=ax,
+                                 **self.fit_params)
         plt.show()
 
     def plot_search_map(self, order=None, pair_n=4, rounddigits_title=3, rank_number=None, rounddigits_score=3,

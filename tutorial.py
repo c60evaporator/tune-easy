@@ -87,7 +87,7 @@ tuning_params = {'gamma':[0.001, 0.01, 0.03, 0.1, 0.3, 1, 10],
                  'C': [0.01, 0.1, 0.3, 1, 3, 10],
                  'epsilon': [0, 0.01, 0.02, 0.05, 0.1, 0.2]
                  }
-model = SVR()
+svr = SVR()
 not_opt_params = {'kernel': 'rbf'
                   }
 param_scales = {'gamma': 'log',
@@ -95,12 +95,12 @@ param_scales = {'gamma': 'log',
                 'epsilon': 'linear'
                 }
 fig, axes = plt.subplots(1, 3, figsize=(12, 3))
-tuning.plot_first_validation_curve(cv_model=model, validation_curve_params=validation_curve_params,
+tuning.plot_first_validation_curve(estimator=svr, validation_curve_params=validation_curve_params,
                                    cv=LeaveOneGroupOut(), seed=43, scoring='neg_mean_absolute_error',
                                    not_opt_params=not_opt_params, param_scales=param_scales,
                                    plot_stats='median', axes=axes
                                    )
-tuning.grid_search_tuning(cv_model=model, tuning_params=tuning_params,
+tuning.grid_search_tuning(estimator=svr, tuning_params=tuning_params,
                           cv=LeaveOneGroupOut(), seed=43,
                           scoring='neg_mean_absolute_error',
                           not_opt_params=not_opt_params, param_scales=param_scales,
@@ -135,7 +135,7 @@ tuning_params = {'gamma': [0.001, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10],
                  'C': [0.01, 0.1, 0.2, 0.5, 1, 2, 5, 10],
                  'epsilon': [0, 0.01, 0.02, 0.03, 0.05, 0.1, 0.15, 0.2, 0.3]
                  }
-model = SVR()
+svr = SVR()
 not_opt_params = {'kernel': 'rbf'
                   }
 param_scales = {'gamma': 'log',
@@ -146,7 +146,7 @@ validation_curve_params = {'gamma': [0.0001, 0.001, 0.01, 0.05, 0.1, 0.2, 0.5, 1
                            'C': [0.001, 0.01, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 50, 100, 1000],
                            'epsilon': [0, 0.01, 0.02, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5]
                            }
-tuning.random_search_tuning(cv_model=model, tuning_params=tuning_params,
+tuning.random_search_tuning(estimator=svr, tuning_params=tuning_params,
                           cv=LeaveOneGroupOut(), seed=43,
                           scoring='neg_mean_absolute_error', n_iter=200,
                           not_opt_params=not_opt_params, param_scales=param_scales,
@@ -181,7 +181,7 @@ tuning_params = {'gamma':(0.001, 10),
                  'C': (0.01, 10),
                  'epsilon': (0, 0.2)
                  }
-model = SVR()
+svr = SVR()
 not_opt_params = {'kernel': 'rbf'
                   }
 param_scales = {'gamma': 'log',
@@ -192,7 +192,7 @@ validation_curve_params = {'gamma': [0.0001, 0.001, 0.01, 0.05, 0.1, 0.2, 0.5, 1
                            'C': [0.001, 0.01, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 50, 100, 1000],
                            'epsilon': [0, 0.01, 0.02, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5]
                            }
-tuning.bayes_opt_tuning(cv_model=model, tuning_params=tuning_params,
+tuning.bayes_opt_tuning(estimator=svr, tuning_params=tuning_params,
                           cv=LeaveOneGroupOut(), seed=43,
                           scoring='neg_mean_absolute_error', n_iter=150,
                           init_points=15, acq='ucb',
@@ -228,7 +228,7 @@ tuning_params = {'gamma':(0.001, 10),
                  'C': (0.01, 10),
                  'epsilon': (0, 0.2)
                  }
-model = SVR()
+svr = SVR()
 not_opt_params = {'kernel': 'rbf'
                   }
 param_scales = {'gamma': 'log',
@@ -239,7 +239,7 @@ validation_curve_params = {'gamma': [0.0001, 0.001, 0.01, 0.05, 0.1, 0.2, 0.5, 1
                            'C': [0.001, 0.01, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 50, 100, 1000],
                            'epsilon': [0, 0.01, 0.02, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5]
                            }
-tuning.optuna_tuning(cv_model=model, tuning_params=tuning_params,
+tuning.optuna_tuning(estimator=svr, tuning_params=tuning_params,
                      cv=LeaveOneGroupOut(), seed=43,
                      scoring='neg_mean_absolute_error', n_trials=200,
                      study_kws={'sampler': optuna.samplers.CmaEsSampler()},
@@ -313,7 +313,7 @@ tuning_params = {'learning_rate': [0.01, 0.1, 0.3],  # 過学習のバランス(
                  'colsample_bytree': [0.5, 1.0],  # 列のサブサンプリングを行う比率
                  'subsample': [0.5, 0.8, 1.0]  # 木を構築する前にデータのサブサンプリングを行う比率。1 なら全データ使用、0.5なら半分のデータ使用
                  }
-model = XGBRegressor()
+xgbr = XGBRegressor()
 not_opt_params = {'objective': 'reg:pseudohubererror',  # 最小化させるべき損失関数
                   'random_state': 43,  # 乱数シード
                   'booster': 'gbtree',  # ブースター
@@ -336,7 +336,7 @@ validation_curve_params = {'subsample': [0.1, 0.2, 0.3, 0.4, 0.6, 0.7, 0.8, 0.9,
                            'min_child_weight': [1, 3, 5, 7, 9, 11, 13, 15],
                            'max_depth': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
                            }
-tuning.grid_search_tuning(cv_model=model, tuning_params=tuning_params,
+tuning.grid_search_tuning(estimator=xgbr, tuning_params=tuning_params,
                           cv=KFold(n_splits=3, shuffle=True, random_state=43), seed=43,
                           scoring='neg_mean_absolute_error',
                           not_opt_params=not_opt_params, param_scales=param_scales,
@@ -375,7 +375,7 @@ tuning_params = {'learning_rate': [0.01, 0.02, 0.05, 0.1, 0.2, 0.3],
                  'colsample_bytree': [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
                  'subsample': [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
                  }
-model = XGBRegressor()
+xgbr = XGBRegressor()
 not_opt_params = {'objective': 'reg:pseudohubererror',  # 最小化させるべき損失関数
                   'random_state': 43,  # 乱数シード
                   'booster': 'gbtree',  # ブースター
@@ -398,7 +398,7 @@ validation_curve_params = {'subsample': [0.1, 0.2, 0.3, 0.4, 0.6, 0.7, 0.8, 0.9,
                            'min_child_weight': [1, 3, 5, 7, 9, 11, 13, 15],
                            'max_depth': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
                            }
-tuning.random_search_tuning(cv_model=model, tuning_params=tuning_params,
+tuning.random_search_tuning(estimator=xgbr, tuning_params=tuning_params,
                           cv=KFold(n_splits=3, shuffle=True, random_state=43), seed=43,
                           scoring='neg_mean_absolute_error', n_iter=100,
                           not_opt_params=not_opt_params, param_scales=param_scales,
@@ -438,7 +438,7 @@ tuning_params = {'learning_rate': (0.01, 0.3),  # 過学習のバランス(高�
                  'colsample_bytree': (0.4, 1.0),  # 列のサブサンプリングを行う比率
                  'subsample': (0.4, 1.0)  # 木を構築する前にデータのサブサンプリングを行う比率。1 なら全データ使用、0.5なら半分のデータ使用
                  }
-model = XGBRegressor()
+xgbr = XGBRegressor()
 not_opt_params = {'objective': 'reg:pseudohubererror',  # 最小化させるべき損失関数
                   'random_state': 43,  # 乱数シード
                   'booster': 'gbtree',  # ブースター
@@ -462,7 +462,7 @@ validation_curve_params = {'subsample': [0.1, 0.2, 0.3, 0.4, 0.6, 0.7, 0.8, 0.9,
                            'max_depth': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
                            }
 int_params = ['min_child_weight', 'max_depth']
-tuning.bayes_opt_tuning(cv_model=model, tuning_params=tuning_params,
+tuning.bayes_opt_tuning(estimator=xgbr, tuning_params=tuning_params,
                         cv=KFold(n_splits=3, shuffle=True, random_state=43), seed=43,
                         scoring='neg_mean_absolute_error', n_iter=40,
                         init_points=10, acq='ucb',
@@ -504,7 +504,7 @@ tuning_params = {'learning_rate': (0.01, 0.3),  # 過学習のバランス(高�
                  'colsample_bytree': (0.4, 1.0),  # 列のサブサンプリングを行う比率
                  'subsample': (0.4, 1.0)  # 木を構築する前にデータのサブサンプリングを行う比率。1 なら全データ使用、0.5なら半分のデータ使用
                  }
-model = XGBRegressor()
+xgbr = XGBRegressor()
 not_opt_params = {'objective': 'reg:pseudohubererror',  # 最小化させるべき損失関数
                   'random_state': 43,  # 乱数シード
                   'booster': 'gbtree',  # ブースター
@@ -528,7 +528,7 @@ validation_curve_params = {'subsample': [0.1, 0.2, 0.3, 0.4, 0.6, 0.7, 0.8, 0.9,
                            'max_depth': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
                            }
 int_params = ['min_child_weight', 'max_depth']
-tuning.optuna_tuning(cv_model=model, tuning_params=tuning_params,
+tuning.optuna_tuning(estimator=xgbr, tuning_params=tuning_params,
                      cv=KFold(n_splits=3, shuffle=True, random_state=43), seed=43,
                      scoring='neg_mean_absolute_error', n_trials=60,
                      study_kws={'sampler': optuna.samplers.TPESampler(seed=43)},
@@ -638,9 +638,9 @@ tuning_params = {'learning_rate': [0.01, 0.03, 0.1, 0.3],
 fit_params = {'verbose': 0,  # 学習中のコマンドライン出力
               'eval_set':None  # early_stopping_roundsの評価指標算出用データ
               }
-model = XGBRegressor(booster='gbtree', random_state=42, n_estimators=100)
+xgbr = XGBRegressor(booster='gbtree', random_state=42, n_estimators=100)
 tuning = SVMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG)
-tuning.grid_search_tuning(mlflow_logging='with', cv_model=model, tuning_params=tuning_params, **fit_params)
+tuning.grid_search_tuning(mlflow_logging='with', estimator=xgbr, tuning_params=tuning_params, **fit_params)
 
 # %% MLFlow実装　ランダムサーチ
 from svm_tuning import SVMRegressorTuning

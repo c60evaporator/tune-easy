@@ -14,7 +14,7 @@ class SVMRegressorTuning(ParamTuning):
     CV_NUM = 5  # 最適化時のクロスバリデーションのデフォルト分割数
     
     # 学習器のインスタンス (標準化+SVRのパイプライン)
-    CV_MODEL = Pipeline([("scaler", StandardScaler()), ("svr", SVR())])
+    ESTIMATOR = Pipeline([("scaler", StandardScaler()), ("svr", SVR())])
     # 学習時のパラメータのデフォルト値
     FIT_PARAMS = {}
     # 最適化で最大化するデフォルト評価指標('r2', 'neg_mean_squared_error', 'neg_mean_squared_log_error')
@@ -81,7 +81,7 @@ class SVMClassifierTuning(ParamTuning):
     CV_NUM = 5  # 最適化時のクロスバリデーションのデフォルト分割数
     
     # 学習器のインスタンス (標準化+SVRのパイプライン)
-    CV_MODEL = Pipeline([("scaler", StandardScaler()), ("svc", SVC())])
+    ESTIMATOR = Pipeline([("scaler", StandardScaler()), ("svc", SVC())])
     # 学習時のパラメータのデフォルト値
     FIT_PARAMS = {}
     # 最適化で最大化するデフォルト評価指標('neg_log_loss', 'roc_auc', 'PR-AUC', 'F1-score', 'F1_macro')

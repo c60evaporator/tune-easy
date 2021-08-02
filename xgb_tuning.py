@@ -15,7 +15,7 @@ class XGBRegressorTuning(ParamTuning):
     CV_NUM = 5  # 最適化時のクロスバリデーションのデフォルト分割数
     
     # 学習器のインスタンス (XGBoost)
-    CV_MODEL = xgb.XGBRegressor()
+    ESTIMATOR = xgb.XGBRegressor()
     # 学習時のパラメータのデフォルト値
     FIT_PARAMS = {'verbose': 0,  # 学習中のコマンドライン出力
                   'early_stopping_rounds': 10,  # 学習時、評価指標がこの回数連続で改善しなくなった時点でストップ
@@ -129,17 +129,17 @@ class XGBRegressorTuning(ParamTuning):
         params = self._int_conversion(params, self.int_params)  # 整数パラメータはint型に変換
         params.update(self.not_opt_params)  # 最適化対象以外のパラメータも追加
         # XGBoostのモデル作成
-        cv_model = self.cv_model
-        cv_model.set_params(**params)
+        estimator = self.estimator
+        estimator.set_params(**params)
 
         # eval_data_sourceに全データ指定時(cross_val_scoreでクロスバリデーション)
         if self.eval_data_source == 'all':
-            scores = cross_val_score(cv_model, self.X, self.y, cv=self.cv,
+            scores = cross_val_score(estimator, self.X, self.y, cv=self.cv,
                                     scoring=self.scoring, fit_params=self.fit_params, n_jobs=-1)
             val = scores.mean()
         # eval_data_sourceに学習orテストデータ指定時(スクラッチでクロスバリデーション)
         else:
-            scores = self._scratch_cross_val(cv_model, self.eval_data_source)
+            scores = self._scratch_cross_val(estimator, self.eval_data_source)
             val = sum(scores)/len(scores)
         # 所要時間測定
         self.elapsed_times.append(time.time() - self.start_time)
@@ -160,18 +160,18 @@ class XGBRegressorTuning(ParamTuning):
                 params[k] = trial.suggest_float(k, v[0], v[1], log=log)
         params.update(self.not_opt_params)  # 最適化対象以外のパラメータも追加
         # XGBoostのモデル作成
-        cv_model = self.cv_model
-        cv_model.set_params(**params)
+        estimator = self.estimator
+        estimator.set_params(**params)
         
         # eval_data_sourceに全データ指定時(cross_val_scoreでクロスバリデーション)
         if self.eval_data_source == 'all':
-            scores = cross_val_score(cv_model, self.X, self.y, cv=self.cv,
+            scores = cross_val_score(estimator, self.X, self.y, cv=self.cv,
                                     scoring=self.scoring, fit_params=self.fit_params, n_jobs=-1)
             val = scores.mean()
 
         # eval_data_sourceに学習orテストデータ指定時(スクラッチでクロスバリデーション)
         else:
-            scores = self._scratch_cross_val(cv_model, self.eval_data_source)
+            scores = self._scratch_cross_val(estimator, self.eval_data_source)
             val = sum(scores)/len(scores)
         
         return val

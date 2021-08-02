@@ -1,2 +1,2 @@
-# param_tuning_utility
+# param-tuning-utility
 機械学習のパラメータチューニングおよびチューニング結果の可視化を実施するライブラリ

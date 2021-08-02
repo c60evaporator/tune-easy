@@ -15,7 +15,7 @@ class RFRegressorTuning(ParamTuning):
     CV_NUM = 5  # 最適化時のクロスバリデーションのデフォルト分割数
     
     # 学習器のインスタンス (XGBoost)
-    CV_MODEL = RandomForestRegressor()
+    ESTIMATOR = RandomForestRegressor()
     # 学習時のパラメータのデフォルト値
     FIT_PARAMS = {}
     # 最適化で最大化するデフォルト評価指標('r2', 'neg_mean_squared_error', 'neg_mean_squared_log_error')
