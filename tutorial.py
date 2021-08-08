@@ -1,5 +1,5 @@
 # %% デフォルトパラメータ(SVR)　グリッドサーチ
-from svm_tuning import SVMRegressorTuning
+from param_tuning import SVMRegressorTuning
 from sklearn.model_selection import LeaveOneGroupOut
 import pandas as pd
 df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
@@ -17,7 +17,7 @@ tuning.plot_best_learning_curve()
 tuning.plot_param_importances()
 
 # %% デフォルトパラメータ(SVR)　ランダムサーチ
-from svm_tuning import SVMRegressorTuning
+from param_tuning import SVMRegressorTuning
 from sklearn.model_selection import LeaveOneGroupOut
 import pandas as pd
 df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
@@ -34,7 +34,7 @@ tuning.plot_best_validation_curve()
 tuning.plot_param_importances()
 
 # %% デフォルトパラメータ(SVR) BayesianOptimization
-from svm_tuning import SVMRegressorTuning
+from param_tuning import SVMRegressorTuning
 import pandas as pd
 from sklearn.model_selection import LeaveOneGroupOut
 df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
@@ -51,7 +51,7 @@ tuning.plot_best_validation_curve()
 tuning.plot_param_importances()
 
 # %% デフォルトパラメータ(SVR) Optuna
-from svm_tuning import SVMRegressorTuning
+from param_tuning import SVMRegressorTuning
 import pandas as pd
 from sklearn.model_selection import LeaveOneGroupOut
 df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
@@ -68,7 +68,7 @@ tuning.plot_best_validation_curve()
 tuning.plot_param_importances()
 
 # %% 全引数指定(SVR)　グリッドサーチ
-from svm_tuning import SVMRegressorTuning
+from param_tuning import SVMRegressorTuning
 from sklearn.model_selection import LeaveOneGroupOut
 from sklearn.svm import SVR
 import pandas as pd
@@ -120,7 +120,7 @@ tuning.plot_best_validation_curve(validation_curve_params=validation_curve_param
 tuning.plot_param_importances()
 
 # %% 全引数指定(SVR)　ランダムサーチ
-from svm_tuning import SVMRegressorTuning
+from param_tuning import SVMRegressorTuning
 from sklearn.model_selection import LeaveOneGroupOut
 from sklearn.svm import SVR
 import pandas as pd
@@ -166,7 +166,7 @@ tuning.plot_best_validation_curve(validation_curve_params=validation_curve_param
 tuning.plot_param_importances()
 
 # %% 全引数指定(SVR) BayesianOptimization
-from svm_tuning import SVMRegressorTuning
+from param_tuning import SVMRegressorTuning
 from sklearn.model_selection import LeaveOneGroupOut
 from sklearn.svm import SVR
 import pandas as pd
@@ -212,7 +212,7 @@ tuning.plot_best_validation_curve(validation_curve_params=validation_curve_param
                                   plot_stats='median', axes=axes)
 
 # %% 全引数指定(SVR) Optuna
-from svm_tuning import SVMRegressorTuning
+from param_tuning import SVMRegressorTuning
 from sklearn.model_selection import LeaveOneGroupOut
 from sklearn.svm import SVR
 import pandas as pd
@@ -261,7 +261,7 @@ tuning.plot_best_validation_curve(validation_curve_params=validation_curve_param
 tuning.plot_param_importances()
 
 # %% デフォルトパラメータ(XGBoost)　グリッドサーチ
-from xgb_tuning import XGBRegressorTuning
+from param_tuning import XGBRegressorTuning
 import pandas as pd
 df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
@@ -279,7 +279,7 @@ tuning.plot_param_importances()
 tuning.plot_feature_importances()
 
 # %% デフォルトパラメータ(XGBoost)　Optuna
-from xgb_tuning import XGBRegressorTuning
+from param_tuning import XGBRegressorTuning
 import pandas as pd
 df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
@@ -296,7 +296,7 @@ tuning.plot_param_importances()
 tuning.plot_feature_importances()
 
 # %% 全引数指定(XGBoost)　グリッドサーチ
-from xgb_tuning import XGBRegressorTuning
+from param_tuning import XGBRegressorTuning
 from xgboost import XGBRegressor
 import pandas as pd
 from sklearn.model_selection import KFold
@@ -358,7 +358,7 @@ fig, ax = plt.subplots(1, 1, figsize=(4, 3))
 tuning.plot_feature_importances(ax=ax)
 
 # %% 全引数指定(XGBoost)　ランダムサーチ
-from xgb_tuning import XGBRegressorTuning
+from param_tuning import XGBRegressorTuning
 from xgboost import XGBRegressor
 import pandas as pd
 from sklearn.model_selection import KFold
@@ -421,7 +421,7 @@ fig, ax = plt.subplots(1, 1, figsize=(4, 3))
 tuning.plot_feature_importances(ax=ax)
 
 # %% 全引数指定(XGBoost)　BayesianOptimization
-from xgb_tuning import XGBRegressorTuning
+from param_tuning import XGBRegressorTuning
 from xgboost import XGBRegressor
 import pandas as pd
 from sklearn.model_selection import KFold
@@ -486,7 +486,7 @@ fig, ax = plt.subplots(1, 1, figsize=(4, 3))
 tuning.plot_feature_importances(ax=ax)
 
 # %% 5次元パラメータ指定(XGB)　Optuna
-from xgb_tuning import XGBRegressorTuning
+from param_tuning import XGBRegressorTuning
 from xgboost import XGBRegressor
 import pandas as pd
 from sklearn.model_selection import KFold
@@ -553,7 +553,7 @@ fig, ax = plt.subplots(1, 1, figsize=(4, 3))
 tuning.plot_feature_importances(ax=ax)
 
 # %% デフォルトパラメータ(LightGBM)　グリッドサーチ
-from lgbm_tuning import LGBMRegressorTuning
+from param_tuning import LGBMRegressorTuning
 import pandas as pd
 df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
@@ -571,7 +571,7 @@ tuning.plot_param_importances()
 tuning.plot_feature_importances()
 
 # %% デフォルトパラメータ(LightGBM)　ランダムサーチ
-from lgbm_tuning import LGBMRegressorTuning
+from param_tuning import LGBMRegressorTuning
 import pandas as pd
 df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
@@ -588,7 +588,7 @@ tuning.plot_param_importances()
 tuning.plot_feature_importances()
 
 # %% デフォルトパラメータ(LightGBM)　ベイズ最適化
-from lgbm_tuning import LGBMRegressorTuning
+from param_tuning import LGBMRegressorTuning
 import pandas as pd
 df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
@@ -605,7 +605,7 @@ tuning.plot_param_importances()
 tuning.plot_feature_importances()
 
 # %% デフォルトパラメータ(LightGBM)　Optuna
-from lgbm_tuning import LGBMRegressorTuning
+from param_tuning import LGBMRegressorTuning
 import pandas as pd
 df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
@@ -622,7 +622,7 @@ tuning.plot_param_importances()
 tuning.plot_feature_importances()
 
 # %% MLFlow実装　グリッドサーチ
-from svm_tuning import SVMRegressorTuning
+from param_tuning import SVMRegressorTuning
 import pandas as pd
 df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
@@ -643,7 +643,7 @@ tuning = SVMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIA
 tuning.grid_search_tuning(mlflow_logging='with', estimator=xgbr, tuning_params=tuning_params, **fit_params)
 
 # %% MLFlow実装　ランダムサーチ
-from svm_tuning import SVMRegressorTuning
+from param_tuning import SVMRegressorTuning
 import pandas as pd
 df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
@@ -654,7 +654,7 @@ tuning = SVMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIA
 tuning.random_search_tuning(mlflow_logging='with')
 
 # %% MLFlow実装　BayesianOptimization
-from svm_tuning import SVMRegressorTuning
+from param_tuning import SVMRegressorTuning
 import pandas as pd
 df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
@@ -665,7 +665,7 @@ tuning = SVMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIA
 tuning.bayes_opt_tuning(mlflow_logging='with')
 
 # %% MLFlow実装　Optuna
-from svm_tuning import SVMRegressorTuning
+from param_tuning import SVMRegressorTuning
 import pandas as pd
 df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
@@ -676,7 +676,7 @@ tuning = SVMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIA
 tuning.optuna_tuning(mlflow_logging='with')
 
 # %% MLFlow実装　グリッドサーチautolog
-from svm_tuning import SVMRegressorTuning
+from param_tuning import SVMRegressorTuning
 import pandas as pd
 import mlflow
 df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
@@ -690,7 +690,7 @@ with mlflow.start_run() as run:
     tuning.grid_search_tuning()
 
 # %% MLFlow実装　ランダムサーチautolog
-from svm_tuning import SVMRegressorTuning
+from param_tuning import SVMRegressorTuning
 import pandas as pd
 import mlflow
 df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
