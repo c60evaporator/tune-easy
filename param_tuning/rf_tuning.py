@@ -1,8 +1,7 @@
-from param_tuning import ParamTuning
-from sklearn.model_selection import cross_val_score
-import copy
 import numpy as np
 from sklearn.ensemble import RandomForestRegressor
+
+from .param_tuning import ParamTuning
 
 class RFRegressorTuning(ParamTuning):
     """

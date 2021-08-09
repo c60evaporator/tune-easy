@@ -1,8 +1,8 @@
-from param_tuning import ParamTuning
 from sklearn.model_selection import cross_val_score
-from sklearn.metrics import check_scoring
 import time
 import xgboost as xgb
+
+from .param_tuning import ParamTuning
 
 class XGBRegressorTuning(ParamTuning):
     """

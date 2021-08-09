@@ -1,7 +1,8 @@
-from param_tuning import ParamTuning
 from sklearn.svm import SVC, SVR
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
+
+from .param_tuning import ParamTuning
 
 class SVMRegressorTuning(ParamTuning):
     """

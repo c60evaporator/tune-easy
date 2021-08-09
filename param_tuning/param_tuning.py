@@ -18,7 +18,8 @@ import mlflow
 import mlflow.sklearn
 from mlflow.models.signature import infer_signature
 import os
-import util_methods
+
+from .util_methods import round_digits
 
 class ParamTuning():
     """
@@ -1149,7 +1150,7 @@ class ParamTuning():
         # 入力データからチューニング用パラメータの生成
         validation_curve_params = self._tuning_param_generation(validation_curve_params)
         # パイプライン処理のとき、最後の要素から学習器名を取得
-        self._get_learner_name(estimator)
+        self._get_final_estimator_name(estimator)
         # パイプライン処理のとき、パラメータに学習器名を追加
         validation_curve_params = self._add_learner_name(estimator, validation_curve_params)
         param_scales = self._add_learner_name(estimator, param_scales)
@@ -1310,7 +1311,7 @@ class ParamTuning():
             if self.cv_group is None:
                 raise Exception('"GroupKFold" and "LeaveOneGroupOut" cross validations need "cv_group" argument at the initialization')
         # パイプライン処理のとき、最後の要素から学習器名を取得
-        self._get_learner_name(estimator)
+        self._get_final_estimator_name(estimator)
         # パイプライン処理のとき、パラメータに学習器名を追加
         params = self._add_learner_name(estimator, params)
         fit_params = self._add_learner_name(estimator, fit_params)
@@ -1658,14 +1659,14 @@ class ParamTuning():
                         ax.set_ylabel(order[1])  # Y軸ラベル
                         # グラフタイトルとして、第3、第4パラメータの名称と範囲を記載
                         if n_params == 3:
-                            ax.set_title(f'{order[2]}={util_methods.round_digits(pair_min3, rounddigit=rounddigits_title, method="sig")} - {util_methods.round_digits(pair_max3, rounddigit=rounddigits_title, method="sig")}')
+                            ax.set_title(f'{order[2]}={round_digits(pair_min3, rounddigit=rounddigits_title, method="sig")} - {round_digits(pair_max3, rounddigit=rounddigits_title, method="sig")}')
                         if n_params >= 4:
-                            ax.set_title(f'{order[2]}={util_methods.round_digits(pair_min3, rounddigit=rounddigits_title, method="sig")} - {util_methods.round_digits(pair_max3, rounddigit=rounddigits_title, method="sig")}\n{order[3]}={util_methods.round_digits(pair_min4, rounddigit=rounddigits_title, method="sig")} - {util_methods.round_digits(pair_max4, rounddigit=rounddigits_title, method="sig")}')
+                            ax.set_title(f'{order[2]}={round_digits(pair_min3, rounddigit=rounddigits_title, method="sig")} - {round_digits(pair_max3, rounddigit=rounddigits_title, method="sig")}\n{order[3]}={round_digits(pair_min4, rounddigit=rounddigits_title, method="sig")} - {round_digits(pair_max4, rounddigit=rounddigits_title, method="sig")}')
 
                     # 誤差上位を文字表示
                     df_rank = df_pair[df_pair.index.isin(rank_dict.keys())]
                     for index, row in df_rank.iterrows():
-                        rank_text = f'-<-no{rank_dict[index]+1} score={util_methods.round_digits(row["test_score"], rounddigit=rounddigits_score, method="sig")}'
+                        rank_text = f'-<-no{rank_dict[index]+1} score={round_digits(row["test_score"], rounddigit=rounddigits_score, method="sig")}'
                         # グリッドサーチのとき
                         if self.algo_name == 'grid':
                             ax.text(df_pivot.columns.get_loc(row[order[0]]) + 0.5, df_pivot.index.get_loc(row[order[1]]) + 0.5, rank_text, verticalalignment='center', horizontalalignment='left')
