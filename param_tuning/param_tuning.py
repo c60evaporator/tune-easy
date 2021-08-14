@@ -1445,6 +1445,9 @@ class ParamTuning():
         params_cols = list(self.tuning_params.keys()) + ['test_score']
         df_history = pd.DataFrame(self.search_history)[params_cols]
 
+        # パイプライン処理のとき、引数'order'に学習器名を追加
+        order = self._add_learner_name(self.estimator, order)
+
         # ランダムフォレストでパラメータとスコアのfeature_importancesを求める
         rf = RandomForestRegressor()
         params_array = df_history.drop('test_score', axis=1).values
