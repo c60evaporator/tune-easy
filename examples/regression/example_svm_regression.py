@@ -1,6 +1,6 @@
 # %% SVR, GridSearch, no argument
 import parent_import
-from param_tuning.svm_tuning import SVMRegressorTuning
+from param_tuning import SVMRegressorTuning
 from sklearn.model_selection import LeaveOneGroupOut
 import pandas as pd
 df_reg = pd.read_csv('../sample_data/osaka_metropolis_english.csv')
