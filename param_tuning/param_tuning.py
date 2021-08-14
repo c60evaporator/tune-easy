@@ -285,7 +285,7 @@ class ParamTuning():
         Parameters
         ----------
         estimator : Dict
-            最適化対象の学習器インスタンス
+            最適化対象の学習器インスタンス。not_opt_paransで指定したパラメータは上書きされるので注意
         tuning_params : Dict[str, List[float]]
             最適化対象のパラメータ一覧
             Pipelineのときは{学習器名__パラメータ名:[パラメータの値候補],‥}で指定する必要あり
@@ -412,7 +412,7 @@ class ParamTuning():
         Parameters
         ----------
         estimator : Dict
-            最適化対象の学習器インスタンス
+            最適化対象の学習器インスタンス。not_opt_paransで指定したパラメータは上書きされるので注意
         tuning_params : Dict[str, List[float]]
             最適化対象のパラメータ一覧
             Pipelineのときは{学習器名__パラメータ名:[パラメータの値候補],‥}で指定する必要あり
@@ -591,7 +591,7 @@ class ParamTuning():
         Parameters
         ----------
         estimator : Dict
-            最適化対象の学習器インスタンス
+            最適化対象の学習器インスタンス。not_opt_paransで指定したパラメータは上書きされるので注意
         tuning_params : Dict[str, Tuple(float, float)]
             最適化対象のパラメータ範囲　{パラメータ名:(パラメータの探索下限,上限),‥}で指定
         cv : int or KFold
@@ -703,6 +703,9 @@ class ParamTuning():
         best_params = self._add_learner_name(estimator, best_params)
         self.best_params = best_params
 
+        # self.estimatorはチューニング時の最終パラメータが入力されているので、estimatorで初期化
+        self.estimator = estimator
+
         # 学習履歴の保持
         params_history_log = bo.space.params  # 対数スケールのままパラメータ履歴が格納されたndarray
         scale_array = np.array([np.full(bo.space.params.shape[0], param_scales[k]) for k in bo.space.keys]).T  # スケール変換用ndarray
@@ -770,7 +773,7 @@ class ParamTuning():
         Parameters
         ----------
         estimator : Dict
-            最適化対象の学習器インスタンス
+            最適化対象の学習器インスタンス。not_opt_paransで指定したパラメータは上書きされるので注意
         tuning_params : Dict[str, Tuple(float, float)]
             最適化対象のパラメータ範囲　{パラメータ名:(パラメータの探索下限,上限),‥}で指定
         cv : int or KFold
@@ -877,6 +880,9 @@ class ParamTuning():
         # パイプライン処理のとき、学習器名を追加
         best_params = self._add_learner_name(estimator, best_params)
         self.best_params = best_params
+
+        # self.estimatorはチューニング時の最終パラメータが入力されているので、estimatorで初期化
+        self.estimator = estimator
 
         # 学習履歴の保持
         self.search_history = pd.DataFrame([trial.params for trial in study.trials]).to_dict(orient='list')  # パラメータ履歴をDict化
