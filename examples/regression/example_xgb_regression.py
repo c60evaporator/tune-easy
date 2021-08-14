@@ -1,7 +1,8 @@
 # %% XGBRegressor, GridSearch, no argument
+import parent_import
 from param_tuning import XGBRegressorTuning
 import pandas as pd
-df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
 USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
 y = df_reg[OBJECTIVE_VARIALBLE_REG].values
@@ -17,9 +18,10 @@ tuning.plot_param_importances()
 tuning.plot_feature_importances()
 
 # %% XGBRegressor, Optuna, no argument
+import parent_import
 from param_tuning import XGBRegressorTuning
 import pandas as pd
-df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
 USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
 y = df_reg[OBJECTIVE_VARIALBLE_REG].values
@@ -34,12 +36,13 @@ tuning.plot_param_importances()
 tuning.plot_feature_importances()
 
 # %% XGBRegressor, GridSearch, all arguments
+import parent_import
 from param_tuning import XGBRegressorTuning
 from xgboost import XGBRegressor
 import pandas as pd
 from sklearn.model_selection import KFold
 import matplotlib.pyplot as plt
-df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
 USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
 y = df_reg[OBJECTIVE_VARIALBLE_REG].values
@@ -96,12 +99,13 @@ fig, ax = plt.subplots(1, 1, figsize=(4, 3))
 tuning.plot_feature_importances(ax=ax)
 
 # %% XGBRegressor, RandomSearch, all arguments
+import parent_import
 from param_tuning import XGBRegressorTuning
 from xgboost import XGBRegressor
 import pandas as pd
 from sklearn.model_selection import KFold
 import matplotlib.pyplot as plt
-df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
 USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
 y = df_reg[OBJECTIVE_VARIALBLE_REG].values
@@ -159,12 +163,13 @@ fig, ax = plt.subplots(1, 1, figsize=(4, 3))
 tuning.plot_feature_importances(ax=ax)
 
 # %% XGBRegressor, BayesianOptimization, all arguments
+import parent_import
 from param_tuning import XGBRegressorTuning
 from xgboost import XGBRegressor
 import pandas as pd
 from sklearn.model_selection import KFold
 import matplotlib.pyplot as plt
-df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
 USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
 y = df_reg[OBJECTIVE_VARIALBLE_REG].values
@@ -224,13 +229,14 @@ fig, ax = plt.subplots(1, 1, figsize=(4, 3))
 tuning.plot_feature_importances(ax=ax)
 
 # %% XGBRegressor, Optuna, all arguments
+import parent_import
 from param_tuning import XGBRegressorTuning
 from xgboost import XGBRegressor
 import pandas as pd
 from sklearn.model_selection import KFold
 import matplotlib.pyplot as plt
 import optuna
-df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
 USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
 y = df_reg[OBJECTIVE_VARIALBLE_REG].values
@@ -289,3 +295,4 @@ tuning.plot_best_validation_curve(validation_curve_params=validation_curve_param
 tuning.plot_param_importances()
 fig, ax = plt.subplots(1, 1, figsize=(4, 3))
 tuning.plot_feature_importances(ax=ax)
+# %%

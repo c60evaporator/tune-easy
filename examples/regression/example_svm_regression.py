@@ -1,8 +1,9 @@
 # %% SVR, GridSearch, no argument
-from param_tuning import SVMRegressorTuning
+import parent_import
+from param_tuning.svm_tuning import SVMRegressorTuning
 from sklearn.model_selection import LeaveOneGroupOut
 import pandas as pd
-df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
+df_reg = pd.read_csv('../sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
 USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
 y = df_reg[OBJECTIVE_VARIALBLE_REG].values
@@ -17,10 +18,11 @@ tuning.plot_best_learning_curve()
 tuning.plot_param_importances()
 
 # %% SVR, RandomSearch, no argument
+import parent_import
 from param_tuning import SVMRegressorTuning
 from sklearn.model_selection import LeaveOneGroupOut
 import pandas as pd
-df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
 USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
 y = df_reg[OBJECTIVE_VARIALBLE_REG].values
@@ -34,10 +36,11 @@ tuning.plot_best_validation_curve()
 tuning.plot_param_importances()
 
 # %% SVR, BayesianOptimization, no argument
+import parent_import
 from param_tuning import SVMRegressorTuning
 import pandas as pd
 from sklearn.model_selection import LeaveOneGroupOut
-df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
 USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
 y = df_reg[OBJECTIVE_VARIALBLE_REG].values
@@ -51,10 +54,11 @@ tuning.plot_best_validation_curve()
 tuning.plot_param_importances()
 
 # %% SVR, Optuna, no argument
+import parent_import
 from param_tuning import SVMRegressorTuning
 import pandas as pd
 from sklearn.model_selection import LeaveOneGroupOut
-df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
 USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
 y = df_reg[OBJECTIVE_VARIALBLE_REG].values
@@ -68,12 +72,13 @@ tuning.plot_best_validation_curve()
 tuning.plot_param_importances()
 
 # %% SVR, GridSearch, all arguments
+import parent_import
 from param_tuning import SVMRegressorTuning
 from sklearn.model_selection import LeaveOneGroupOut
 from sklearn.svm import SVR
 import pandas as pd
 import matplotlib.pyplot as plt
-df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
 USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
 y = df_reg[OBJECTIVE_VARIALBLE_REG].values
@@ -120,12 +125,13 @@ tuning.plot_best_validation_curve(validation_curve_params=validation_curve_param
 tuning.plot_param_importances()
 
 # %% SVR, RandomSearch, all arguments
+import parent_import
 from param_tuning import SVMRegressorTuning
 from sklearn.model_selection import LeaveOneGroupOut
 from sklearn.svm import SVR
 import pandas as pd
 import matplotlib.pyplot as plt
-df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
 USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
 y = df_reg[OBJECTIVE_VARIALBLE_REG].values
@@ -166,12 +172,13 @@ tuning.plot_best_validation_curve(validation_curve_params=validation_curve_param
 tuning.plot_param_importances()
 
 # %% SVR, BayesianOptimization, all arguments
+import parent_import
 from param_tuning import SVMRegressorTuning
 from sklearn.model_selection import LeaveOneGroupOut
 from sklearn.svm import SVR
 import pandas as pd
 import matplotlib.pyplot as plt
-df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
 USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
 y = df_reg[OBJECTIVE_VARIALBLE_REG].values
@@ -212,13 +219,14 @@ tuning.plot_best_validation_curve(validation_curve_params=validation_curve_param
                                   plot_stats='median', axes=axes)
 
 # %% SVR, Optuna, all arguments
+import parent_import
 from param_tuning import SVMRegressorTuning
 from sklearn.model_selection import LeaveOneGroupOut
 from sklearn.svm import SVR
 import pandas as pd
 import matplotlib.pyplot as plt
 import optuna
-df_reg = pd.read_csv(f'./sample_data/osaka_metropolis_english.csv')
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
 USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
 y = df_reg[OBJECTIVE_VARIALBLE_REG].values
