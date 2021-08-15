@@ -25,7 +25,7 @@ class RFRegressorTuning(ParamTuning):
                       }
 
     # グリッドサーチ用パラメータ
-    CV_PARAMS_GRID = {'n_estimators': [20, 80, 320],  # 木の数。デフォルト値100
+    CV_PARAMS_GRID = {'n_estimators': [20, 80, 160],  # 木の数。デフォルト値100
                       'max_features': ['auto', 'sqrt', 'log2'],  # 使用する特徴量の最大数。デフォルト値auto
                       'max_depth': [2, 8, 32],  # 木の深さの最大値。デフォルト値None（∞）
                       'min_samples_split': [2, 8, 32],  # 各ノードに含まれる最小サンプル数。この条件を満たさなくなるか、max_depthに達するまで分割する。デフォルト値2
@@ -33,8 +33,8 @@ class RFRegressorTuning(ParamTuning):
                       }
 
     # ランダムサーチ用パラメータ
-    N_ITER_RANDOM = 20  # ランダムサーチの試行数
-    CV_PARAMS_RANDOM = {'n_estimators': [20, 30, 40, 60, 80, 120, 160, 240, 320],
+    N_ITER_RANDOM = 200  # ランダムサーチの試行数
+    CV_PARAMS_RANDOM = {'n_estimators': [20, 30, 40, 60, 80, 120, 160],
                         'max_features': ['auto', 'sqrt', 'log2'],
                         'max_depth': [2, 3, 4, 6, 8, 12, 16, 24, 32],
                         'min_samples_split': [2, 3, 4, 6, 8, 12, 16, 24, 32],
@@ -43,10 +43,10 @@ class RFRegressorTuning(ParamTuning):
 
     # ベイズ最適化用パラメータ
     N_ITER_BAYES = 10  # BayesianOptimizationの試行数
-    INIT_POINTS = 10  # BayesianOptimizationの初期観測点の個数(ランダムな探索を何回行うか)
+    INIT_POINTS = 100  # BayesianOptimizationの初期観測点の個数(ランダムな探索を何回行うか)
     ACQ = 'ei'  # BayesianOptimizationの獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
-    N_ITER_OPTUNA = 15  # Optunaの試行数
-    BAYES_PARAMS = {'n_estimators': (20, 320),
+    N_ITER_OPTUNA = 150  # Optunaの試行数
+    BAYES_PARAMS = {'n_estimators': (20, 160),
                     'max_features': (1, 64),  # 最大値は自動でデータの特徴量数に変更されるので注意
                     'max_depth': (2, 32),
                     'min_samples_split': (2, 32),
@@ -55,12 +55,12 @@ class RFRegressorTuning(ParamTuning):
     INT_PARAMS = ['n_estimators', 'max_features', 'max_depth', 'min_samples_split', 'min_samples_leaf']  # 整数型のパラメータのリスト(ベイズ最適化時は都度int型変換する)
 
     # 範囲選択検証曲線用パラメータ範囲
-    VALIDATION_CURVE_PARAMS = {'n_estimators': [10, 20, 30, 40, 60, 80, 120, 160, 240, 320, 480, 640],
-                        'max_features': [1, 2, 'auto', 'sqrt', 'log2'],
-                        'max_depth': [1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48, 64],
-                        'min_samples_split': [2, 4, 6, 8, 12, 16, 24, 32, 48, 64],
-                        'min_samples_leaf': [1, 2, 4, 6, 8, 12, 16, 24, 32]
-                        }
+    VALIDATION_CURVE_PARAMS = {'n_estimators': [10, 20, 30, 40, 60, 80, 120, 160, 240, 320],
+                               'max_features': [1, 2, 'auto', 'sqrt', 'log2'],
+                               'max_depth': [1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48, 64],
+                               'min_samples_split': [2, 4, 6, 8, 12, 16, 24, 32, 48, 64],
+                               'min_samples_leaf': [1, 2, 4, 6, 8, 12, 16, 24, 32]
+                               }
     # 検証曲線表示時のスケール('linear', 'log')
     PARAM_SCALES = {'n_estimators': 'linear',
                     'max_features': 'linear',
