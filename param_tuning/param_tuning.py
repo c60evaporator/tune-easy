@@ -139,6 +139,26 @@ class ParamTuning():
         """
         return src_params
     
+    def _not_opt_param_generation(self, src_not_opt_params, seed, scoring):
+        """
+        チューニング対象外パラメータの生成(例: seed追加、評価指標の不整合チェック、loglossかつSVRのときのprobablity設定など)
+        通常はrandom_state追加のみだが、必要であれば継承先でオーバーライド
+
+        Parameters
+        ----------
+        src_not_opt_params : Dict
+            処理前のチューニング対象外パラメータ
+        seed : int
+            乱数シード
+        scoring : str
+            最適化で最大化する評価指標
+        
+        """
+        # 乱数シードをnot_opt_paramsのrandom_state引数に追加
+        if 'random_state' in src_not_opt_params:
+            src_not_opt_params['random_state'] = seed
+        return src_not_opt_params
+    
     def _set_argument_to_property(self, estimator, tuning_params, cv, seed, scoring, fit_params, not_opt_params, param_scales):
         """
         引数をプロパティ(インスタンス変数)に反映
@@ -309,13 +329,12 @@ class ParamTuning():
         if fit_params == {}:
             fit_params = self.FIT_PARAMS
 
-        # 乱数シードをnot_opt_paramsに追加
-        if 'random_state' in not_opt_params:
-            not_opt_params['random_state'] = seed
         # 入力データからチューニング用パラメータの生成
         tuning_params = self._tuning_param_generation(tuning_params)
         # 学習データから生成されたパラメータの追加
         fit_params = self._train_param_generation(fit_params)
+        # チューニング対象外パラメータの生成
+        not_opt_params = self._not_opt_param_generation(not_opt_params, seed, scoring)
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
         if isinstance(cv, numbers.Integral):
             cv = KFold(n_splits=cv, shuffle=True, random_state=seed)
@@ -442,13 +461,12 @@ class ParamTuning():
             if 'verbose' in fit_params.keys():
                 fit_params['verbose'] = 0
         
-        # 乱数シードをnot_opt_paramsに追加
-        if 'random_state' in not_opt_params:
-            not_opt_params['random_state'] = seed
         # 入力データからチューニング用パラメータの生成
         tuning_params = self._tuning_param_generation(tuning_params)
         # 学習データから生成されたパラメータの追加
         fit_params = self._train_param_generation(fit_params)
+        # チューニング対象外パラメータの生成
+        not_opt_params = self._not_opt_param_generation(not_opt_params, seed, scoring)
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
         if isinstance(cv, numbers.Integral):
             cv = KFold(n_splits=cv, shuffle=True, random_state=seed)
@@ -627,13 +645,12 @@ class ParamTuning():
         if fit_params == {}:
             fit_params = self.FIT_PARAMS
 
-        # 乱数シードをnot_opt_paramsに追加
-        if 'random_state' in not_opt_params:
-            not_opt_params['random_state'] = seed
         # 入力データからチューニング用パラメータの生成
         tuning_params = self._tuning_param_generation(tuning_params)
         # 学習データから生成されたパラメータの追加
         fit_params = self._train_param_generation(fit_params)
+        # チューニング対象外パラメータの生成
+        not_opt_params = self._not_opt_param_generation(not_opt_params, seed, scoring)
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
         if isinstance(cv, numbers.Integral):
             cv = KFold(n_splits=cv, shuffle=True, random_state=seed)
@@ -809,13 +826,12 @@ class ParamTuning():
         if fit_params == {}:
             fit_params = self.FIT_PARAMS
 
-        # 乱数シードをnot_opt_paramsに追加
-        if 'random_state' in not_opt_params:
-            not_opt_params['random_state'] = seed
         # 入力データからチューニング用パラメータの生成
         tuning_params = self._tuning_param_generation(tuning_params)
         # 学習データから生成されたパラメータの追加
         fit_params = self._train_param_generation(fit_params)
+        # チューニング対象外パラメータの生成
+        not_opt_params = self._not_opt_param_generation(not_opt_params, seed, scoring)
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
         if isinstance(cv, numbers.Integral):
             cv = KFold(n_splits=cv, shuffle=True, random_state=seed)
@@ -1051,13 +1067,12 @@ class ParamTuning():
         if fit_params == {}:
             fit_params = self.FIT_PARAMS
         
-        # 乱数シードをnot_opt_params_validに追加
-        if 'random_state' in not_opt_params_valid:
-            not_opt_params_valid['random_state'] = seed
         # 入力データからチューニング用パラメータの生成
         validation_curve_params = self._tuning_param_generation(validation_curve_params)
         # 学習データから生成されたパラメータの追加
         fit_params = self._train_param_generation(fit_params)
+        # チューニング対象外パラメータの生成
+        not_opt_params_valid = self._not_opt_param_generation(not_opt_params, seed, scoring)
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
         if isinstance(cv, numbers.Integral):
             cv = KFold(n_splits=cv, shuffle=True, random_state=seed)
@@ -1097,7 +1112,7 @@ class ParamTuning():
                                         }
         return validation_curve_result
 
-    def plot_first_validation_curve(self, estimator=None,  validation_curve_params=None, cv=None, seed=None, scoring=None,
+    def plot_first_validation_curve(self, estimator=None, validation_curve_params=None, cv=None, seed=None, scoring=None,
                                     not_opt_params=None, param_scales=None, plot_stats='mean', axes=None,
                                     **fit_params):
         """
@@ -1130,15 +1145,20 @@ class ParamTuning():
         # 引数非指定時、クラス変数から取得(学習器名追加のため、estimatorも取得)
         if validation_curve_params == None:
             validation_curve_params = self.VALIDATION_CURVE_PARAMS
+        if not_opt_params == None:
+            not_opt_params = self.NOT_OPT_PARAMS
         if param_scales == None:
             param_scales = self.PARAM_SCALES
         if estimator == None:
             estimator = copy.deepcopy(self.ESTIMATOR)
         # 入力データからチューニング用パラメータの生成
         validation_curve_params = self._tuning_param_generation(validation_curve_params)
+        # チューニング対象外パラメータの生成
+        not_opt_params = self._not_opt_param_generation(not_opt_params, seed, scoring)
         # パイプライン処理のとき、最後の要素から学習器名を取得
         self._get_final_estimator_name(estimator)
         # パイプライン処理のとき、パラメータに学習器名を追加
+        not_opt_params = self._add_learner_name(estimator, not_opt_params)
         validation_curve_params = self._add_learner_name(estimator, validation_curve_params)
         param_scales = self._add_learner_name(estimator, param_scales)
 
@@ -1372,9 +1392,13 @@ class ParamTuning():
         if self.best_estimator is None:
             raise Exception('please tune parameters before plotting feature importances')
 
+        # パラメータに最適パラメータとチューニング対象外パラメータ追加
+        params = copy.deepcopy(self.best_params)
+        params.update(self.not_opt_params)
+
         # 学習曲線をプロット
         self.plot_learning_curve(estimator=self.estimator,
-                                 params=self.best_params,
+                                 params=params,
                                  cv=self.cv,
                                  seed=self.seed,
                                  scoring=self.scoring, 
