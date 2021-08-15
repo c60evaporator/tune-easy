@@ -175,28 +175,6 @@ class ParamTuning():
         if isinstance(estimator, Pipeline):
             steps = estimator.steps
             self.learner_name = steps[len(steps)-1][0]
-    
-    def _round_digits(self, src: float, rounddigit: int = None, method='decimal'):
-        """
-        指定桁数で小数を丸める
-
-        Parameters
-        ----------
-        srcdict : Dict[str, float]
-            丸め対象のDict
-        rounddigit : int
-            フィッティング線の表示範囲（標準偏差の何倍まで表示するか指定）
-        method : int
-            桁数決定手法（'decimal':小数点以下, 'sig':有効数字(Decimal指定), 'format':formatで有効桁数指定）
-        """
-        if method == 'decimal':
-            return round(src, rounddigit)
-        elif method == 'sig':
-            with decimal.localcontext() as ctx:
-                ctx.prec = rounddigit
-                return ctx.create_decimal(src)
-        elif method == 'format':
-            return '{:.{width}g}'.format(src, width=rounddigit)
 
     def _scratch_cross_val(self, estimator, eval_data_source):
         scores = []
@@ -1013,8 +991,8 @@ class ParamTuning():
             best_index = np.where(np.array(param_values)==vline)
             best_score = valid_center[best_index][0]
             # 指定桁数で丸める(https://qiita.com/SUZUKI_Masaya/items/7aa26fb242b6cf237fa4)
-            vlinetxt = self._round_digits(vline, rounddigit=rounddigit, method='format')
-            scoretxt = self._round_digits(best_score, rounddigit=rounddigit, method='format')
+            vlinetxt = round_digits(vline, rounddigit=rounddigit, method='format')
+            scoretxt = round_digits(best_score, rounddigit=rounddigit, method='format')
             ax.text(vline, np.amax(valid_center), f'best_{param_name}={vlinetxt}\nbest_score={scoretxt}',
                     color='black', verticalalignment='bottom', horizontalalignment='left')
 
@@ -1368,7 +1346,7 @@ class ParamTuning():
 
         # 最高スコアの表示
         best_score = valid_center[len(valid_center) - 1]
-        scoretxt = self._round_digits(best_score, rounddigit=rounddigit, method='format')  # 指定桁数で丸める
+        scoretxt = round_digits(best_score, rounddigit=rounddigit, method='format')  # 指定桁数で丸める
         ax.text(np.amax(train_sizes), valid_low[len(valid_low) - 1], f'best_score={scoretxt}',
                 color='black', verticalalignment='top', horizontalalignment='right')
 

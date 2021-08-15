@@ -60,17 +60,6 @@ class SVMRegressorTuning(ParamTuning):
                     'epsilon': 'linear'
                     }
 
-    def _train_param_generation(self, src_fit_params):
-        """
-        入力データから学習時パラメータの生成 (eval_set)
-        
-        Parameters
-        ----------
-        src_fit_params : Dict
-            処理前の学習時パラメータ
-        """
-        return src_fit_params
-
 class SVMClassifierTuning(ParamTuning):
     """
     サポートベクター回帰チューニング用クラス
@@ -82,7 +71,7 @@ class SVMClassifierTuning(ParamTuning):
     CV_NUM = 5  # 最適化時のクロスバリデーションのデフォルト分割数
     
     # 学習器のインスタンス (標準化+SVRのパイプライン)
-    ESTIMATOR = Pipeline([("scaler", StandardScaler()), ("svc", SVC())])
+    ESTIMATOR = Pipeline([("scaler", StandardScaler()), ("svc", SVC(probability=True))])
     # 学習時のパラメータのデフォルト値
     FIT_PARAMS = {}
     # 最適化で最大化するデフォルト評価指標('neg_log_loss', 'roc_auc', 'PR-AUC', 'F1-score', 'F1_macro')
@@ -121,14 +110,3 @@ class SVMClassifierTuning(ParamTuning):
     PARAM_SCALES = {'gamma': 'log',
                     'C': 'log'
                     }
-
-    def _train_param_generation(self, src_fit_params):
-        """
-        入力データから学習時パラメータの生成 (eval_set)
-        
-        Parameters
-        ----------
-        src_fit_params : Dict
-            処理前の学習時パラメータ
-        """
-        return src_fit_params
