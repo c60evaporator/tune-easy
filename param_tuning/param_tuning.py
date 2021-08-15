@@ -554,7 +554,7 @@ class ParamTuning():
 
         # cross_val_scoreでクロスバリデーション
         scores = cross_val_score(estimator, self.X, self.y, cv=self.cv, groups=self.cv_group,
-                                 scoring=self.scoring, fit_params=self.fit_params, n_jobs=-1)
+                                 scoring=self.scoring, fit_params=self.fit_params, n_jobs=None)
         val = scores.mean()
         # 所要時間測定
         self.elapsed_times.append(time.time() - self.start_time)
@@ -759,7 +759,7 @@ class ParamTuning():
         estimator.set_params(**params)
         # cross_val_scoreでクロスバリデーション
         scores = cross_val_score(estimator, self.X, self.y, cv=self.cv, groups=self.cv_group,
-                                 scoring=self.scoring, fit_params=self.fit_params, n_jobs=-1)
+                                 scoring=self.scoring, fit_params=self.fit_params, n_jobs=None)
         val = scores.mean()
         
         return val
@@ -1066,14 +1066,16 @@ class ParamTuning():
             seed = self.SEED
         if scoring == None:
             scoring = self.SCORING
-        if not_opt_params == None:
-            not_opt_params = self.NOT_OPT_PARAMS
+        if not_opt_params == None:  # stable_paramsでself.NOT_OPT_PARAMSおよびself.not_opt_paramsが更新されないようDeepCopy
+            not_opt_params_valid = copy.deepcopy(self.NOT_OPT_PARAMS)
+        else:
+            not_opt_params_valid = copy.deepcopy(not_opt_params)
         if fit_params == {}:
             fit_params = self.FIT_PARAMS
         
-        # 乱数シードをnot_opt_paramsに追加
-        if 'random_state' in not_opt_params:
-            not_opt_params['random_state'] = seed
+        # 乱数シードをnot_opt_params_validに追加
+        if 'random_state' in not_opt_params_valid:
+            not_opt_params_valid['random_state'] = seed
         # 入力データからチューニング用パラメータの生成
         validation_curve_params = self._tuning_param_generation(validation_curve_params)
         # 学習データから生成されたパラメータの追加
@@ -1090,25 +1092,26 @@ class ParamTuning():
         # パイプライン処理のとき、パラメータに学習器名を追加
         validation_curve_params = self._add_learner_name(estimator, validation_curve_params)
         fit_params = self._add_learner_name(estimator, fit_params)
-        not_opt_params = self._add_learner_name(estimator, not_opt_params)
+        not_opt_params_valid = self._add_learner_name(estimator, not_opt_params_valid)
 
-        # stable_paramsが指定されているとき、not_opt_paramsに追加
+        # stable_paramsが指定されているとき、not_opt_params_validに追加
         if stable_params is not None:
             stable_params = self._add_learner_name(estimator, stable_params)
-            not_opt_params.update(stable_params)
-        # not_opt_paramsを学習器にセット
-        estimator.set_params(**not_opt_params)
+            not_opt_params_valid.update(stable_params)
+        # not_opt_params_validを学習器にセット
+        estimator.set_params(**not_opt_params_valid)
 
         # 検証曲線の取得
         validation_curve_result = {}
         for k, v in validation_curve_params.items():
             train_scores, valid_scores = validation_curve(estimator=estimator,
-                                    X=self.X, y=self.y,
-                                    param_name=k,
-                                    param_range=v,
-                                    fit_params=fit_params,
-                                    groups=self.cv_group,
-                                    cv=cv, scoring=scoring, n_jobs=-1)
+                                                          X=self.X, y=self.y,
+                                                          param_name=k,
+                                                          param_range=v,
+                                                          fit_params=fit_params,
+                                                          groups=self.cv_group,
+                                                          cv=cv, scoring=scoring,
+                                                          n_jobs=None)
             # 結果をDictに格納
             validation_curve_result[k] = {'param_values': v,
                                         'train_scores': train_scores,
@@ -1330,7 +1333,7 @@ class ParamTuning():
                                                                  train_sizes=np.linspace(0.1, 1.0, 10),
                                                                  fit_params=fit_params,
                                                                  groups=self.cv_group,
-                                                                 cv=cv, scoring=scoring, n_jobs=-1)
+                                                                 cv=cv, scoring=scoring, n_jobs=None)
         
         # 描画用axがNoneのとき、matplotlib.pyplotを使用
         if ax == None:

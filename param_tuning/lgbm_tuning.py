@@ -132,7 +132,7 @@ class LGBMRegressorTuning(ParamTuning):
         # eval_data_sourceに全データ指定時(cross_val_scoreでクロスバリデーション)
         if self.eval_data_source == 'all':
             scores = cross_val_score(estimator, self.X, self.y, cv=self.cv,
-                                     scoring=self.scoring, fit_params=self.fit_params, n_jobs=-1)
+                                     scoring=self.scoring, fit_params=self.fit_params, n_jobs=None)
             val = scores.mean()
         # eval_data_sourceに学習orテストデータ指定時(スクラッチでクロスバリデーション)
         else:
@@ -163,7 +163,7 @@ class LGBMRegressorTuning(ParamTuning):
         # eval_data_sourceに全データ指定時(cross_val_scoreでクロスバリデーション)
         if self.eval_data_source == 'all':
             scores = cross_val_score(estimator, self.X, self.y, cv=self.cv,
-                                    scoring=self.scoring, fit_params=self.fit_params, n_jobs=-1)
+                                    scoring=self.scoring, fit_params=self.fit_params, n_jobs=None)
             val = scores.mean()
 
         # eval_data_sourceに学習orテストデータ指定時(スクラッチでクロスバリデーション)
