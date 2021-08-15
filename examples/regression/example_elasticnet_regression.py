@@ -81,7 +81,7 @@ OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
 USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
 y = df_reg[OBJECTIVE_VARIALBLE_REG].values
 X = df_reg[USE_EXPLANATORY_REG].values
-tuning = ElasticNetTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG, cv_group=df_reg['ward_after'].values)
+tuning = ElasticNetTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG)
 validation_curve_params = {'alpha': [0, 0.00001, 0.0001, 0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1, 3, 10, 100],
                            'l1_ratio': [0, 0.00001, 0.0001, 0.001, 0.01, 0.03, 0.1, 0.3, 0.5, 0.9, 0.97, 0.99, 1]
                            }
@@ -133,7 +133,7 @@ OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
 USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
 y = df_reg[OBJECTIVE_VARIALBLE_REG].values
 X = df_reg[USE_EXPLANATORY_REG].values
-tuning = ElasticNetTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG, cv_group=df_reg['ward_after'].values)
+tuning = ElasticNetTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG)
 tuning_params = {'alpha':(0.0001, 1),
                  'l1_ratio': (0, 1)
                  }
