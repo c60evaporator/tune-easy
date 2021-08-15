@@ -1,7 +1,6 @@
 # %% ElasticNet, GridSearch, no argument
 import parent_import
 from param_tuning import ElasticNetTuning
-from sklearn.model_selection import LeaveOneGroupOut
 import pandas as pd
 df_reg = pd.read_csv('../sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
@@ -20,7 +19,6 @@ tuning.plot_param_importances()
 # %% ElasticNet, RandomSearch, no argument
 import parent_import
 from param_tuning import ElasticNetTuning
-from sklearn.model_selection import LeaveOneGroupOut
 import pandas as pd
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
@@ -39,7 +37,6 @@ tuning.plot_param_importances()
 import parent_import
 from param_tuning import ElasticNetTuning
 import pandas as pd
-from sklearn.model_selection import LeaveOneGroupOut
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
 USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
@@ -57,7 +54,6 @@ tuning.plot_param_importances()
 import parent_import
 from param_tuning import ElasticNetTuning
 import pandas as pd
-from sklearn.model_selection import LeaveOneGroupOut
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
 USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
@@ -74,7 +70,6 @@ tuning.plot_param_importances()
 # %% ElasticNet, GridSearch, all arguments
 import parent_import
 from param_tuning import ElasticNetTuning
-from sklearn.model_selection import LeaveOneGroupOut
 from sklearn.linear_model import ElasticNet
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
@@ -126,7 +121,6 @@ tuning.plot_param_importances()
 # %% ElasticNet, Optuna, all arguments
 import parent_import
 from param_tuning import ElasticNetTuning
-from sklearn.model_selection import LeaveOneGroupOut
 from sklearn.linear_model import ElasticNet
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
