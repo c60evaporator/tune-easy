@@ -35,7 +35,7 @@ class SVMRegressorTuning(ParamTuning):
     N_ITER_RANDOM = 250  # ランダムサーチの試行数
     CV_PARAMS_RANDOM = {'gamma': [0.001, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10],
                         'C': [0.01, 0.1, 0.2, 0.5, 1, 2, 5, 10],
-                        'epsilon': [0, 0.01, 0.02, 0.03, 0.05, 0.1, 0.15, 0.2, 0.3]
+                        'epsilon': [0, 0.01, 0.02, 0.03, 0.05, 0.1, 0.15, 0.2]
                         }
 
     # ベイズ最適化用パラメータ
@@ -43,15 +43,15 @@ class SVMRegressorTuning(ParamTuning):
     INIT_POINTS = 20  # BayesianOptimizationの初期観測点の個数(ランダムな探索を何回行うか)
     ACQ = 'ei'  # BayesianOptimizationの獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
     N_ITER_OPTUNA = 300  # Optunaの試行数
-    BAYES_PARAMS = {'gamma': (0.01, 10),
-                    'C': (0.1, 10),
+    BAYES_PARAMS = {'gamma': (0.001, 10),
+                    'C': (0.01, 10),
                     'epsilon': (0, 0.2)
                     }
     INT_PARAMS = []
 
     # 範囲選択検証曲線用パラメータ範囲
-    VALIDATION_CURVE_PARAMS = {'gamma': [0.0001, 0.001, 0.01, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 50, 100, 1000],
-                               'C': [0.001, 0.01, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 50, 100, 1000],
+    VALIDATION_CURVE_PARAMS = {'gamma': [0.0001, 0.0003, 0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30, 100, 300, 1000],
+                               'C': [0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30, 100, 300, 1000],
                                'epsilon': [0, 0.01, 0.02, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5]
                                }
     # 検証曲線表示等で使用するパラメータのスケール('linear', 'log')
@@ -71,7 +71,7 @@ class SVMClassifierTuning(ParamTuning):
     CV_NUM = 5  # 最適化時のクロスバリデーションのデフォルト分割数
     
     # 学習器のインスタンス (標準化+SVRのパイプライン)
-    ESTIMATOR = Pipeline([("scaler", StandardScaler()), ("svc", SVC(probability=True))])
+    ESTIMATOR = Pipeline([("scaler", StandardScaler()), ("svc", SVC())])
     # 学習時のパラメータのデフォルト値
     FIT_PARAMS = {}
     # 最適化で最大化するデフォルト評価指標('neg_log_loss', 'roc_auc', 'PR-AUC', 'F1-score', 'F1_macro')
@@ -82,31 +82,55 @@ class SVMClassifierTuning(ParamTuning):
                       }
 
     # グリッドサーチ用パラメータ
-    CV_PARAMS_GRID = {'gamma': [0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30, 100],  # RBFカーネルのgamma (小さいと曲率小、大きいと曲率大)
-                      'C': [0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30, 100]  # 正則化項C (小さいと未学習寄り、大きいと過学習寄り)
+    CV_PARAMS_GRID = {'gamma': [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100],  # RBFカーネルのgamma (小さいと曲率小、大きいと曲率大)
+                      'C': [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100]  # 正則化項C (小さいと未学習寄り、大きいと過学習寄り)
                       }
 
     # ランダムサーチ用パラメータ
-    N_ITER_RANDOM = 200  # ランダムサーチの試行数
-    CV_PARAMS_RANDOM = {'gamma': [0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100],
-                        'C': [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100]
+    N_ITER_RANDOM = 160  # ランダムサーチの試行数
+    CV_PARAMS_RANDOM = {'gamma': [0.01, 0.02, 0.04, 0.07, 0.1, 0.2, 0.4, 0.7, 1, 2, 4, 7, 10, 20, 40, 70, 100],
+                        'C': [0.01, 0.02, 0.04, 0.07, 0.1, 0.2, 0.4, 0.7, 1, 2, 4, 7, 10, 20, 40, 70, 100]
                         }
 
     # ベイズ最適化用パラメータ
-    N_ITER_BAYES = 100  # BayesianOptimizationの試行数
-    INIT_POINTS = 20  # BayesianOptimizationの初期観測点の個数(ランダムな探索を何回行うか)
+    N_ITER_BAYES = 80  # BayesianOptimizationの試行数
+    INIT_POINTS = 10  # BayesianOptimizationの初期観測点の個数(ランダムな探索を何回行うか)
     ACQ = 'ei'  # BayesianOptimizationの獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
-    N_ITER_OPTUNA = 300  # Optunaの試行数
-    BAYES_PARAMS = {'gamma': (0.01, 10),
-                    'C': (0.1, 10)
+    N_ITER_OPTUNA = 120  # Optunaの試行数
+    BAYES_PARAMS = {'gamma': (0.01, 100),
+                    'C': (0.01, 100)
                     }
     INT_PARAMS = []
 
     # 範囲選択検証曲線用パラメータ範囲
-    VALIDATION_CURVE_PARAMS = {'gamma': (0.01, 10),
-                               'C': (0.1, 10)
+    VALIDATION_CURVE_PARAMS = {'gamma': [0.0001, 0.0003, 0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30, 100, 300, 1000],
+                               'C': [0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30, 100, 300, 1000]
                                }
     # 検証曲線表示等で使用するパラメータのスケール('linear', 'log')
     PARAM_SCALES = {'gamma': 'log',
                     'C': 'log'
                     }
+    
+    def _not_opt_param_generation(self, src_not_opt_params, seed, scoring):
+        """
+        チューニング対象外パラメータの生成(例: seed追加、評価指標の不整合チェック、loglossかつSVRのときのprobablity設定など)
+        通常はrandom_state追加のみだが、必要であれば継承先でオーバーライド
+
+        Parameters
+        ----------
+        src_not_opt_params : Dict
+            処理前のチューニング対象外パラメータ
+        seed : int
+            乱数シード
+        scoring : str
+            最適化で最大化する評価指標
+        
+        """
+        # 評価指標がloglossのとき、probabilityとrandom_stateを設定
+        if scoring == 'neg_log_loss':
+            src_not_opt_params['probability'] = True
+            src_not_opt_params['random_state'] = seed
+        # 乱数シードをnot_opt_paramsのrandom_state引数に追加
+        elif 'random_state' in src_not_opt_params:
+            src_not_opt_params['random_state'] = seed
+        return src_not_opt_params
