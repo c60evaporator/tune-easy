@@ -1,6 +1,6 @@
 from sklearn.model_selection import cross_val_score
 import time
-import xgboost as xgb
+from xgboost import XGBRegressor, XGBClassifier
 
 from .param_tuning import ParamTuning
 
@@ -15,7 +15,7 @@ class XGBRegressorTuning(ParamTuning):
     CV_NUM = 5  # 最適化時のクロスバリデーションのデフォルト分割数
     
     # 学習器のインスタンス (XGBoost)
-    ESTIMATOR = xgb.XGBRegressor()
+    ESTIMATOR = XGBRegressor()
     # 学習時のパラメータのデフォルト値
     FIT_PARAMS = {'verbose': 0,  # 学習中のコマンドライン出力
                   'early_stopping_rounds': 10,  # 学習時、評価指標がこの回数連続で改善しなくなった時点でストップ

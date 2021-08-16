@@ -62,7 +62,7 @@ class SVMRegressorTuning(ParamTuning):
 
 class SVMClassifierTuning(ParamTuning):
     """
-    サポートベクター回帰チューニング用クラス
+    サポートベクター分類チューニング用クラス
     """
 
     # 共通定数
@@ -70,7 +70,7 @@ class SVMClassifierTuning(ParamTuning):
     SEEDS = [42, 43, 44, 45, 46, 47, 48, 49, 50, 51]  # デフォルト複数乱数シード
     CV_NUM = 5  # 最適化時のクロスバリデーションのデフォルト分割数
     
-    # 学習器のインスタンス (標準化+SVRのパイプライン)
+    # 学習器のインスタンス (標準化+SVCのパイプライン)
     ESTIMATOR = Pipeline([("scaler", StandardScaler()), ("svc", SVC())])
     # 学習時のパラメータのデフォルト値
     FIT_PARAMS = {}
