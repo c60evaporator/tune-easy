@@ -7,7 +7,6 @@ from bayes_opt import BayesianOptimization
 import optuna
 import time
 import numbers
-import decimal
 import copy
 import pandas as pd
 import numpy as np
