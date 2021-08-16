@@ -1071,7 +1071,7 @@ class ParamTuning():
         # 学習データから生成されたパラメータの追加
         fit_params = self._train_param_generation(fit_params)
         # チューニング対象外パラメータの生成
-        not_opt_params_valid = self._not_opt_param_generation(not_opt_params, seed, scoring)
+        not_opt_params_valid = self._not_opt_param_generation(not_opt_params_valid, seed, scoring)
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
         if isinstance(cv, numbers.Integral):
             cv = KFold(n_splits=cv, shuffle=True, random_state=seed)

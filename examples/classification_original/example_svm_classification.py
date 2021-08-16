@@ -60,7 +60,7 @@ USE_EXPLANATORY = ['height', 'weight']  # 説明変数
 y = df_clf[OBJECTIVE_VARIALBLE].values
 X = df_clf[USE_EXPLANATORY].values
 tuning = SVMClassifierTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE)
-tuning.optuna()
+best, not_opt, best_score, elapsed = tuning.optuna_tuning()
 tuning.plot_search_history()
 tuning.plot_search_map()
 tuning.plot_best_learning_curve()
