@@ -67,7 +67,7 @@ class ParamTuning():
         """
         pass
 
-    def __init__(self, X, y, X_colnames, y_colname=None, cv_group=None, **kwargs):
+    def __init__(self, X, y, x_colnames, y_colname=None, cv_group=None, **kwargs):
         """
         初期化
 
@@ -77,18 +77,18 @@ class ParamTuning():
             説明変数データ(pandasではなく2次元ndarray)
         y : ndarray
             目的変数データ(ndarray、2次元でも1次元でも可)
-        X_colnames : list(str)
+        x_colnames : list(str)
             説明変数のフィールド名
         y_colname : str, optional
             目的変数のフィールド名
         cv_group: str, optional
             GroupKFold、LeaveOneGroupOutのグルーピング対象データ
         """
-        if X.shape[1] != len(X_colnames):
-            raise Exception('width of X must be equal to length of X_colnames')
+        if X.shape[1] != len(x_colnames):
+            raise Exception('width of X must be equal to length of x_colnames')
         self.X = X
         self.y = y.ravel() # 2次元ndarrayのとき、ravel()で1次元に変換
-        self.X_colnames = X_colnames
+        self.x_colnames = x_colnames
         self.y_colname = y_colname
         self.cv_group = cv_group  # GroupKFold, LeaveOneGroupOut用のグルーピング対象データ 
         self.tuning_params = None  # チューニング対象のパラメータとその範囲
@@ -240,7 +240,7 @@ class ParamTuning():
         # パラメータを記載
         mlflow.log_param('X_head', self.X[:5, :])  # 説明変数の最初5レコード
         mlflow.log_param('y_head', self.y[:5])  # 目的変数の最初5レコード
-        mlflow.log_param('X_colnames', self.X_colnames)  # 説明変数のカラム名
+        mlflow.log_param('x_colnames', self.x_colnames)  # 説明変数のカラム名
         mlflow.log_param('y_colname', self.y_colname)  # 目的変数のカラム名
         mlflow.log_param('cv_group_head', self.cv_group[:5] if self.cv_group is not None else None)  # GroupKFold, LeaveOneGroupOut用のグルーピング対象データ 
         mlflow.log_param('tuning_params', self.tuning_params)  # チューニング対象のパラメータとその範囲
@@ -265,7 +265,7 @@ class ParamTuning():
         # 最適モデルをMLFlow Modelsで保存(https://mlflow.org/docs/latest/models.html#how-to-log-models-with-signatures)
         estimator_output = self.best_estimator.predict(self.X)  # モデル出力
         estimator_output = pd.Series(estimator_output) if self.y_colname is None else pd.DataFrame(estimator_output, columns=[self.y_colname])
-        signature = infer_signature(pd.DataFrame(self.X, columns=self.X_colnames),  # モデル入出力の型を自動判定
+        signature = infer_signature(pd.DataFrame(self.X, columns=self.x_colnames),  # モデル入出力の型を自動判定
                                     estimator_output)
         mlflow.sklearn.log_model(self.best_estimator, f'best_estimator_{self.algo_name}', signature=signature)  # 最適化された学習モデル
         # パラメータと得点の履歴をCSV化してArtifactとして保存
@@ -929,7 +929,7 @@ class ParamTuning():
         """
         if self.best_estimator is not None:
             # 特徴量重要度の表示
-            features = list(reversed(self.X_colnames))
+            features = list(reversed(self.x_colnames))
             importances = list(
             reversed(self.best_estimator.feature_importances_.tolist()))
             # 描画用axがNoneのとき、matplotlib.pyplot.gca()を使用
