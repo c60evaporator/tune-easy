@@ -3,3 +3,8 @@ Pipfile.lock
 .vscode/settings.json
 __pycache__
 mlruns
+build/
+dist/
+param_tuning_utility.egg-info/
+docs/_build/
+docs/_templates/
