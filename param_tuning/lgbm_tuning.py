@@ -36,14 +36,14 @@ class LGBMRegressorTuning(ParamTuning):
     CV_PARAMS_GRID = {'reg_alpha': [0.0001, 0.003, 0.1],
                       'reg_lambda': [0.0001, 0.1],
                       'num_leaves': [2, 10, 50],
-                      'colsample_bytree': [0.4, 0.7, 1.0],
+                      'colsample_bytree': [0.4, 1.0],
                       'subsample': [0.4, 1.0],
                       'subsample_freq': [0, 7],
                       'min_child_samples': [2, 10, 50]
                       }
 
     # ランダムサーチ用パラメータ
-    N_ITER_RANDOM = 600  # ランダムサーチの試行数
+    N_ITER_RANDOM = 400  # ランダムサーチの試行数
     CV_PARAMS_RANDOM = {'reg_alpha': [0.0001, 0.0003, 0.001, 0.003, 0.01, 0.03, 0.1],
                         'reg_lambda': [0.0001, 0.0003, 0.001, 0.003, 0.01, 0.03, 0.1],
                         'num_leaves': [2, 8, 14, 20, 26, 32, 38, 44, 50],
@@ -54,10 +54,10 @@ class LGBMRegressorTuning(ParamTuning):
                         }
 
     # ベイズ最適化用パラメータ
-    N_ITER_BAYES = 80  # ベイズ最適化の試行数
+    N_ITER_BAYES = 60  # ベイズ最適化の試行数
     INIT_POINTS = 10  # 初期観測点の個数(ランダムな探索を何回行うか)
     ACQ = 'ei'  # 獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
-    N_ITER_OPTUNA = 300  # Optunaの試行数
+    N_ITER_OPTUNA = 200  # Optunaの試行数
     BAYES_PARAMS = {'reg_alpha': (0.0001, 0.1),
                     'reg_lambda': (0.0001, 0.1),
                     'num_leaves': (2, 50),
@@ -69,13 +69,13 @@ class LGBMRegressorTuning(ParamTuning):
     INT_PARAMS = ['num_leaves', 'subsample_freq', 'min_child_samples']  # 整数型のパラメータのリスト(ベイズ最適化時は都度int型変換する)
 
     # 範囲選択検証曲線用パラメータ範囲
-    VALIDATION_CURVE_PARAMS = {'reg_alpha': [0, 0.0001, 0.0003, 0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1, 3, 10],
-                               'reg_lambda': [0, 0.0001, 0.0003, 0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1, 3, 10],
-                               'num_leaves': [2, 4, 8, 16, 32, 64, 96, 128, 160, 192, 224, 256],
+    VALIDATION_CURVE_PARAMS = {'reg_alpha': [0, 0.0001, 0.001, 0.003, 0.01, 0.03, 0.1, 1, 10],
+                               'reg_lambda': [0, 0.0001, 0.001, 0.003, 0.01, 0.03, 0.1, 1, 10],
+                               'num_leaves': [2, 4, 8, 16, 32, 64, 96, 128, 192, 256],
                                'colsample_bytree': [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
                                'subsample': [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
                                'subsample_freq': [0, 1, 2, 3, 4, 5, 6, 7],
-                               'min_child_samples': [0, 2, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+                               'min_child_samples': [0, 2, 5, 10, 20, 30, 50, 70, 100]
                                }
     # 検証曲線表示等で使用するパラメータのスケール('linear', 'log')
     PARAM_SCALES = {'reg_alpha': 'log',
@@ -205,14 +205,14 @@ class LGBMClassifierTuning(ParamTuning):
     CV_PARAMS_GRID = {'reg_alpha': [0.0001, 0.003, 0.1],
                       'reg_lambda': [0.0001, 0.1],
                       'num_leaves': [2, 10, 50],
-                      'colsample_bytree': [0.4, 0.7, 1.0],
+                      'colsample_bytree': [0.4, 1.0],
                       'subsample': [0.4, 1.0],
                       'subsample_freq': [0, 7],
                       'min_child_samples': [2, 10, 50]
                       }
 
     # ランダムサーチ用パラメータ
-    N_ITER_RANDOM = 600  # ランダムサーチの試行数
+    N_ITER_RANDOM = 400  # ランダムサーチの試行数
     CV_PARAMS_RANDOM = {'reg_alpha': [0.0001, 0.0003, 0.001, 0.003, 0.01, 0.03, 0.1],
                         'reg_lambda': [0.0001, 0.0003, 0.001, 0.003, 0.01, 0.03, 0.1],
                         'num_leaves': [2, 8, 14, 20, 26, 32, 38, 44, 50],
@@ -223,10 +223,10 @@ class LGBMClassifierTuning(ParamTuning):
                         }
 
     # ベイズ最適化用パラメータ
-    N_ITER_BAYES = 80  # ベイズ最適化の試行数
+    N_ITER_BAYES = 60  # ベイズ最適化の試行数
     INIT_POINTS = 10  # 初期観測点の個数(ランダムな探索を何回行うか)
     ACQ = 'ei'  # 獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
-    N_ITER_OPTUNA = 300  # Optunaの試行数
+    N_ITER_OPTUNA = 200  # Optunaの試行数
     BAYES_PARAMS = {'reg_alpha': (0.0001, 0.1),
                     'reg_lambda': (0.0001, 0.1),
                     'num_leaves': (2, 50),
@@ -238,13 +238,13 @@ class LGBMClassifierTuning(ParamTuning):
     INT_PARAMS = ['num_leaves', 'subsample_freq', 'min_child_samples']  # 整数型のパラメータのリスト(ベイズ最適化時は都度int型変換する)
 
     # 範囲選択検証曲線用パラメータ範囲
-    VALIDATION_CURVE_PARAMS = {'reg_alpha': [0, 0.0001, 0.0003, 0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1, 3, 10],
-                               'reg_lambda': [0, 0.0001, 0.0003, 0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1, 3, 10],
-                               'num_leaves': [2, 4, 8, 16, 32, 64, 96, 128, 160, 192, 224, 256],
+    VALIDATION_CURVE_PARAMS = {'reg_alpha': [0, 0.0001, 0.001, 0.003, 0.01, 0.03, 0.1, 1, 10],
+                               'reg_lambda': [0, 0.0001, 0.001, 0.003, 0.01, 0.03, 0.1, 1, 10],
+                               'num_leaves': [2, 4, 8, 16, 32, 64, 96, 128, 192, 256],
                                'colsample_bytree': [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
                                'subsample': [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
                                'subsample_freq': [0, 1, 2, 3, 4, 5, 6, 7],
-                               'min_child_samples': [0, 2, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+                               'min_child_samples': [0, 2, 5, 10, 20, 30, 50, 70, 100]
                                }
     # 検証曲線表示等で使用するパラメータのスケール('linear', 'log')
     PARAM_SCALES = {'reg_alpha': 'log',
