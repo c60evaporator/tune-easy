@@ -55,10 +55,10 @@ class RFRegressorTuning(ParamTuning):
     INT_PARAMS = ['n_estimators', 'max_features', 'max_depth', 'min_samples_split', 'min_samples_leaf']  # 整数型のパラメータのリスト(ベイズ最適化時は都度int型変換する)
 
     # 範囲選択検証曲線用パラメータ範囲
-    VALIDATION_CURVE_PARAMS = {'n_estimators': [10, 20, 30, 40, 60, 80, 120, 160, 240, 320],
+    VALIDATION_CURVE_PARAMS = {'n_estimators': [10, 20, 30, 40, 60, 80, 120, 160, 240],
                                'max_features': [1, 2, 'auto', 'sqrt', 'log2'],
-                               'max_depth': [1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48, 64],
-                               'min_samples_split': [2, 4, 6, 8, 12, 16, 24, 32, 48, 64],
+                               'max_depth': [1, 2, 4, 6, 8, 12, 16, 24, 32, 48],
+                               'min_samples_split': [2, 4, 6, 8, 12, 16, 24, 32, 48],
                                'min_samples_leaf': [1, 2, 4, 6, 8, 12, 16, 24, 32]
                                }
     # 検証曲線表示時のスケール('linear', 'log')
@@ -158,10 +158,10 @@ class RFClassifierTuning(ParamTuning):
     INT_PARAMS = ['n_estimators', 'max_features', 'max_depth', 'min_samples_split', 'min_samples_leaf']  # 整数型のパラメータのリスト(ベイズ最適化時は都度int型変換する)
 
     # 範囲選択検証曲線用パラメータ範囲
-    VALIDATION_CURVE_PARAMS = {'n_estimators': [10, 20, 30, 40, 60, 80, 120, 160, 240, 320],
+    VALIDATION_CURVE_PARAMS = {'n_estimators': [10, 20, 30, 40, 60, 80, 120, 160, 240],
                                'max_features': [1, 2, 'auto', 'sqrt', 'log2'],
-                               'max_depth': [1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48, 64],
-                               'min_samples_split': [2, 4, 6, 8, 12, 16, 24, 32, 48, 64],
+                               'max_depth': [1, 2, 4, 6, 8, 12, 16, 24, 32, 48],
+                               'min_samples_split': [2, 4, 6, 8, 12, 16, 24, 32, 48],
                                'min_samples_leaf': [1, 2, 4, 6, 8, 12, 16, 24, 32]
                                }
     # 検証曲線表示時のスケール('linear', 'log')
