@@ -113,6 +113,7 @@ class LGBMRegressorTuning(ParamTuning):
 
         # src_fit_paramsにeval_setが存在しないとき、入力データをそのまま追加
         if 'eval_set' not in src_fit_params:
+            print('There is no "eval_set" in fit_params, so "eval_set" is set to (self.X, self.y)')
             src_fit_params['eval_set'] =[(self.X, self.y)]
 
         return src_fit_params
@@ -191,7 +192,7 @@ class LGBMClassifierTuning(ParamTuning):
                   'early_stopping_rounds': 10,  # 学習時、評価指標がこの回数連続で改善しなくなった時点でストップ
                   'eval_metric': 'binary_logloss'  # early_stopping_roundsの評価指標
                   }
-    # 最適化で最大化するデフォルト評価指標('r2', 'neg_mean_squared_error', 'neg_mean_squared_log_error')
+    # 最適化で最大化するデフォルト評価指標('neg_log_loss', 'roc_auc', 'roc_auc_ovr'など)
     SCORING = 'neg_log_loss'
 
     # 最適化対象外パラメータ

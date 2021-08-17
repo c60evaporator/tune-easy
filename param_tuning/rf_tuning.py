@@ -120,7 +120,7 @@ class RFClassifierTuning(ParamTuning):
     ESTIMATOR = RandomForestClassifier()
     # 学習時のパラメータのデフォルト値
     FIT_PARAMS = {}
-    # 最適化で最大化するデフォルト評価指標('r2', 'neg_mean_squared_error', 'neg_mean_squared_log_error')
+    # 最適化で最大化するデフォルト評価指標('neg_log_loss', 'roc_auc', 'roc_auc_ovr'など)
     SCORING = 'neg_log_loss'
 
     # 最適化対象外パラメータ
@@ -178,10 +178,10 @@ class RFClassifierTuning(ParamTuning):
         
         Parameters
         ----------
-        src_fit_params : Dict
+        src_params : Dict
             処理前の学習時パラメータ
         """
-        # src_fit_paramsにmax_featuresが存在するとき、入力データの数に合わせてパラメータ候補を追加
+        # src_paramsにmax_featuresが存在するとき、入力データの数に合わせてパラメータ候補を追加
         if 'max_features' in src_params:
             x_num = self.X.shape[1]# 特徴量数
             src_max_features = src_params['max_features']

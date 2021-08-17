@@ -74,7 +74,7 @@ class SVMClassifierTuning(ParamTuning):
     ESTIMATOR = Pipeline([("scaler", StandardScaler()), ("svc", SVC())])
     # 学習時のパラメータのデフォルト値
     FIT_PARAMS = {}
-    # 最適化で最大化するデフォルト評価指標('neg_log_loss', 'roc_auc', 'PR-AUC', 'F1-score', 'F1_macro')
+    # 最適化で最大化するデフォルト評価指標('neg_log_loss', 'roc_auc', 'roc_auc_ovr'など)
     SCORING = 'neg_log_loss'
 
     # 最適化対象外パラメータ
@@ -113,8 +113,7 @@ class SVMClassifierTuning(ParamTuning):
     
     def _not_opt_param_generation(self, src_not_opt_params, seed, scoring):
         """
-        チューニング対象外パラメータの生成(例: seed追加、評価指標の不整合チェック、loglossかつSVRのときのprobablity設定など)
-        通常はrandom_state追加のみだが、必要であれば継承先でオーバーライド
+        チューニング対象外パラメータの生成(seed追加、loglossかつSVRのときのprobablity設定など)
 
         Parameters
         ----------
