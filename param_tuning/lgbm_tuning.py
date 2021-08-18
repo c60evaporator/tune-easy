@@ -94,7 +94,7 @@ class LGBMRegressorTuning(ParamTuning):
         Parameters
         ----------
         eval_data_source : str
-            XGBoostのfit_paramsに渡すeval_setのデータ
+            fit_paramsに渡すeval_setのデータ
             'all'なら全データ、'valid'ならテストデータ、'train'なら学習データ
         """
         # eval_dataをテストデータから取得
@@ -264,7 +264,7 @@ class LGBMClassifierTuning(ParamTuning):
         Parameters
         ----------
         eval_data_source : str
-            XGBoostのfit_paramsに渡すeval_setのデータ
+            fit_paramsに渡すeval_setのデータ
             'all'なら全データ、'valid'ならテストデータ、'train'なら学習データ
         """
         # eval_dataをテストデータから取得

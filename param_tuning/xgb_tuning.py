@@ -34,7 +34,7 @@ class XGBRegressorTuning(ParamTuning):
 
     # グリッドサーチ用パラメータ
     CV_PARAMS_GRID = {'learning_rate': [0.01, 0.3],  # 過学習のバランス(高いほど過学習寄り、低いほど汎化寄り）別名eta
-                      'min_child_weight': [2, 5, 10],  # 葉に割り当てるスコアwiの合計の最小値。これを下回った場合、それ以上の分割を行わない
+                      'min_child_weight': [1, 4, 10],  # 葉に割り当てるスコアwiの合計の最小値。これを下回った場合、それ以上の分割を行わない
                       'max_depth': [2, 9],  # 木の深さの最大値
                       'colsample_bytree': [0.2, 0.5, 1.0],  # 列のサブサンプリングを行う比率
                       'subsample': [0.2, 0.5, 0.8],  # 木を構築する前にデータのサブサンプリングを行う比率。1なら全データ使用、0.5なら半分のデータ使用
@@ -44,7 +44,7 @@ class XGBRegressorTuning(ParamTuning):
     # ランダムサーチ用パラメータ
     N_ITER_RANDOM = 200  # ランダムサーチの試行数
     CV_PARAMS_RANDOM = {'learning_rate': [0.01, 0.02, 0.05, 0.1, 0.2, 0.3],
-                        'min_child_weight': [2, 3, 4, 5, 6, 7, 8, 9, 10],
+                        'min_child_weight': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
                         'max_depth': [2, 3, 4, 5, 6, 7, 8, 9],
                         'colsample_bytree': [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
                         'subsample': [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
@@ -54,12 +54,12 @@ class XGBRegressorTuning(ParamTuning):
                         }
 
     # ベイズ最適化用パラメータ
-    N_ITER_BAYES = 50  # BayesianOptimizationの試行数
+    N_ITER_BAYES = 60  # BayesianOptimizationの試行数
     INIT_POINTS = 10  # BayesianOptimizationの初期観測点の個数(ランダムな探索を何回行うか)
     ACQ = 'ei'  # BayesianOptimizationの獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
     N_ITER_OPTUNA = 120  # Optunaの試行数
     BAYES_PARAMS = {'learning_rate': (0.01, 0.3),
-                    'min_child_weight': (2, 10),
+                    'min_child_weight': (1, 10),
                     'max_depth': (2, 9),
                     'colsample_bytree': (0.2, 1.0),
                     'subsample': (0.2, 1.0),
@@ -92,7 +92,7 @@ class XGBRegressorTuning(ParamTuning):
     
     def _additional_init(self, eval_data_source = 'all', **kwargs):
         """
-        初期化時の追加処理
+        初期化時の追加処理（eval_dataの指定）
         
         Parameters
         ----------
@@ -202,12 +202,13 @@ class XGBClassifierTuning(ParamTuning):
     NOT_OPT_PARAMS = {'objective': 'binary:logistic',  # 最小化させるべき損失関数
                       'random_state': SEED,  # 乱数シード
                       'booster': 'gbtree',  # ブースター
-                      'n_estimators': 10000  # 最大学習サイクル数（評価指標がearly_stopping_rounds連続で改善しなければ打ち切り）
+                      'n_estimators': 10000,  # 最大学習サイクル数（評価指標がearly_stopping_rounds連続で改善しなければ打ち切り）
+                      'use_label_encoder': False  # UserWarning防止（The use of label encoder in XGBClassifier is deprecated）
                       }
 
     # グリッドサーチ用パラメータ
     CV_PARAMS_GRID = {'learning_rate': [0.01, 0.3],  # 過学習のバランス(高いほど過学習寄り、低いほど汎化寄り）別名eta
-                      'min_child_weight': [2, 5, 10],  # 葉に割り当てるスコアwiの合計の最小値。これを下回った場合、それ以上の分割を行わない
+                      'min_child_weight': [1, 4, 10],  # 葉に割り当てるスコアwiの合計の最小値。これを下回った場合、それ以上の分割を行わない
                       'max_depth': [2, 9],  # 木の深さの最大値
                       'colsample_bytree': [0.2, 0.5, 1.0],  # 列のサブサンプリングを行う比率
                       'subsample': [0.2, 0.5, 0.8],  # 木を構築する前にデータのサブサンプリングを行う比率。1なら全データ使用、0.5なら半分のデータ使用
@@ -217,7 +218,7 @@ class XGBClassifierTuning(ParamTuning):
     # ランダムサーチ用パラメータ
     N_ITER_RANDOM = 200  # ランダムサーチの試行数
     CV_PARAMS_RANDOM = {'learning_rate': [0.01, 0.02, 0.05, 0.1, 0.2, 0.3],
-                        'min_child_weight': [2, 3, 4, 5, 6, 7, 8, 9, 10],
+                        'min_child_weight': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
                         'max_depth': [2, 3, 4, 5, 6, 7, 8, 9],
                         'colsample_bytree': [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
                         'subsample': [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
@@ -227,12 +228,12 @@ class XGBClassifierTuning(ParamTuning):
                         }
 
     # ベイズ最適化用パラメータ
-    N_ITER_BAYES = 50  # BayesianOptimizationの試行数
+    N_ITER_BAYES = 60  # BayesianOptimizationの試行数
     INIT_POINTS = 10  # BayesianOptimizationの初期観測点の個数(ランダムな探索を何回行うか)
     ACQ = 'ei'  # BayesianOptimizationの獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
     N_ITER_OPTUNA = 120  # Optunaの試行数
     BAYES_PARAMS = {'learning_rate': (0.01, 0.3),
-                    'min_child_weight': (2, 10),
+                    'min_child_weight': (1, 10),
                     'max_depth': (2, 9),
                     'colsample_bytree': (0.2, 1.0),
                     'subsample': (0.2, 1.0),
@@ -265,7 +266,7 @@ class XGBClassifierTuning(ParamTuning):
     
     def _additional_init(self, eval_data_source = 'all', **kwargs):
         """
-        初期化時の追加処理
+        初期化時の追加処理（eval_dataの指定＆ラベルをint化）
         
         Parameters
         ----------
@@ -275,6 +276,13 @@ class XGBClassifierTuning(ParamTuning):
         """
         # eval_dataをテストデータから取得
         self.eval_data_source = eval_data_source
+        
+        # ラベルがstr型ならint化する（str型だとXGBClassifierのuse_label_encoderのWarningが出るため）
+        if isinstance(self.y.dtype, np.object):
+            print('Your labels (y) are strings (np.object), so encode your labels (y) as integers')
+            unique_labels = np.unique(self.y)
+            label_dict = dict(zip(unique_labels, range(len(unique_labels))))
+            self.y = np.vectorize(lambda x: label_dict[x])(self.y)
         return
 
     def _train_param_generation(self, src_fit_params):
