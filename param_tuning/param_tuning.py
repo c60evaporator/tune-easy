@@ -73,9 +73,9 @@ class ParamTuning():
 
         Parameters
         ----------
-        X : ndarray
+        X : np.ndarray
             説明変数データ(pandasではなく2次元ndarray)
-        y : ndarray
+        y : np.ndarray
             目的変数データ(ndarray、2次元でも1次元でも可)
         x_colnames : list(str)
             説明変数のフィールド名
@@ -83,6 +83,8 @@ class ParamTuning():
             目的変数のフィールド名
         cv_group: str, optional
             GroupKFold、LeaveOneGroupOutのグルーピング対象データ
+        eval_data_source: {'all', 'valid', 'train'}
+            self.eval_dataの指定方法 (XGBoost、LightGBMのみ有効)
         """
         if X.shape[1] != len(x_colnames):
             raise Exception('width of X must be equal to length of x_colnames')
@@ -1023,7 +1025,7 @@ class ParamTuning():
             ax.ylabel(scoring)  # スコア名を縦軸ラベルに
         ax.legend(loc='lower right')  # 凡例
 
-    def get_validation_curve(self, estimator=None,  validation_curve_params=None, cv=None, seed=None, scoring=None,
+    def _get_validation_curve(self, estimator=None,  validation_curve_params=None, cv=None, seed=None, scoring=None,
                              not_opt_params=None, stable_params=None, **fit_params):
         """
         検証曲線の取得
@@ -1162,7 +1164,7 @@ class ParamTuning():
         param_scales = self._add_learner_name(estimator, param_scales)
 
         # 検証曲線を取得
-        validation_curve_result = self.get_validation_curve(estimator=estimator,
+        validation_curve_result = self._get_validation_curve(estimator=estimator,
                             validation_curve_params=validation_curve_params,
                             cv=cv,
                             seed=seed,
@@ -1232,7 +1234,7 @@ class ParamTuning():
                 v.append(self.best_params[k])
                 v.sort()
         # 検証曲線を取得
-        validation_curve_result = self.get_validation_curve(estimator=self.estimator,
+        validation_curve_result = self._get_validation_curve(estimator=self.estimator,
                                                             validation_curve_params=validation_curve_params,
                                                             cv=self.cv,
                                                             seed=self.seed,
@@ -1263,7 +1265,7 @@ class ParamTuning():
         if axes is not None:
             plt.show()
 
-    def plot_learning_curve(self, estimator=None,  params=None, cv=None, seed=None, scoring=None,
+    def _plot_learning_curve(self, estimator=None,  params=None, cv=None, seed=None, scoring=None,
                             plot_stats='mean', rounddigit=3, ax=None, **fit_params):
         """
         学習曲線の取得
@@ -1396,7 +1398,7 @@ class ParamTuning():
         params.update(self.not_opt_params)
 
         # 学習曲線をプロット
-        self.plot_learning_curve(estimator=self.estimator,
+        self._plot_learning_curve(estimator=self.estimator,
                                  params=params,
                                  cv=self.cv,
                                  seed=self.seed,
