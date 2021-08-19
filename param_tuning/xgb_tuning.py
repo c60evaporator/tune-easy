@@ -33,7 +33,7 @@ class XGBRegressorTuning(ParamTuning):
                       }
 
     # グリッドサーチ用パラメータ
-    CV_PARAMS_GRID = {'learning_rate': [0.01, 0.3],  # 過学習のバランス(高いほど過学習寄り、低いほど汎化寄り）別名eta
+    CV_PARAMS_GRID = {'learning_rate': [0.05, 0.3],  # 過学習のバランス(高いほど過学習寄り、低いほど汎化寄り）別名eta
                       'min_child_weight': [1, 4, 10],  # 葉に割り当てるスコアwiの合計の最小値。これを下回った場合、それ以上の分割を行わない
                       'max_depth': [2, 9],  # 木の深さの最大値
                       'colsample_bytree': [0.2, 0.5, 1.0],  # 列のサブサンプリングを行う比率
@@ -43,7 +43,7 @@ class XGBRegressorTuning(ParamTuning):
 
     # ランダムサーチ用パラメータ
     N_ITER_RANDOM = 200  # ランダムサーチの試行数
-    CV_PARAMS_RANDOM = {'learning_rate': [0.01, 0.02, 0.05, 0.1, 0.2, 0.3],
+    CV_PARAMS_RANDOM = {'learning_rate': [0.05, 0.1, 0.2, 0.3],
                         'min_child_weight': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
                         'max_depth': [2, 3, 4, 5, 6, 7, 8, 9],
                         'colsample_bytree': [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
@@ -58,7 +58,7 @@ class XGBRegressorTuning(ParamTuning):
     INIT_POINTS = 10  # BayesianOptimizationの初期観測点の個数(ランダムな探索を何回行うか)
     ACQ = 'ei'  # BayesianOptimizationの獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
     N_ITER_OPTUNA = 120  # Optunaの試行数
-    BAYES_PARAMS = {'learning_rate': (0.01, 0.3),
+    BAYES_PARAMS = {'learning_rate': (0.05, 0.3),
                     'min_child_weight': (1, 10),
                     'max_depth': (2, 9),
                     'colsample_bytree': (0.2, 1.0),
@@ -70,11 +70,11 @@ class XGBRegressorTuning(ParamTuning):
     INT_PARAMS = ['min_child_weight', 'max_depth']  # 整数型のパラメータのリスト(ベイズ最適化時は都度int型変換する)
 
     # 範囲選択検証曲線用パラメータ範囲
-    VALIDATION_CURVE_PARAMS = {'subsample': [0, 0.2, 0.4, 0.6, 0.8, 1.0],  # デフォルト
+    VALIDATION_CURVE_PARAMS = {'subsample': [0.1, 0.2, 0.4, 0.6, 0.8, 1.0],  # デフォルト
                                'colsample_bytree': [0, 0.2, 0.4, 0.6, 0.8, 1.0],
                                'reg_alpha': [0, 0.0001, 0.001, 0.01, 0.03, 0.1, 0.3, 1.0],
                                'reg_lambda': [0, 0.0001, 0.001, 0.01, 0.03, 0.1, 0.3, 1.0],
-                               'learning_rate': [0, 0.001, 0.01, 0.03, 0.1, 0.3, 1.0],
+                               'learning_rate': [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1.0],
                                'min_child_weight': [1, 3, 5, 7, 9, 11, 15],
                                'max_depth': [1, 2, 3, 4, 6, 8, 10],
                                'gamma': [0, 0.0001, 0.001, 0.01, 0.03, 0.1, 0.3, 1.0]
@@ -207,7 +207,7 @@ class XGBClassifierTuning(ParamTuning):
                       }
 
     # グリッドサーチ用パラメータ
-    CV_PARAMS_GRID = {'learning_rate': [0.01, 0.3],  # 過学習のバランス(高いほど過学習寄り、低いほど汎化寄り）別名eta
+    CV_PARAMS_GRID = {'learning_rate': [0.05, 0.3],  # 過学習のバランス(高いほど過学習寄り、低いほど汎化寄り）別名eta
                       'min_child_weight': [1, 4, 10],  # 葉に割り当てるスコアwiの合計の最小値。これを下回った場合、それ以上の分割を行わない
                       'max_depth': [2, 9],  # 木の深さの最大値
                       'colsample_bytree': [0.2, 0.5, 1.0],  # 列のサブサンプリングを行う比率
@@ -217,7 +217,7 @@ class XGBClassifierTuning(ParamTuning):
 
     # ランダムサーチ用パラメータ
     N_ITER_RANDOM = 200  # ランダムサーチの試行数
-    CV_PARAMS_RANDOM = {'learning_rate': [0.01, 0.02, 0.05, 0.1, 0.2, 0.3],
+    CV_PARAMS_RANDOM = {'learning_rate': [0.05, 0.1, 0.2, 0.3],
                         'min_child_weight': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
                         'max_depth': [2, 3, 4, 5, 6, 7, 8, 9],
                         'colsample_bytree': [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
@@ -232,7 +232,7 @@ class XGBClassifierTuning(ParamTuning):
     INIT_POINTS = 10  # BayesianOptimizationの初期観測点の個数(ランダムな探索を何回行うか)
     ACQ = 'ei'  # BayesianOptimizationの獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
     N_ITER_OPTUNA = 120  # Optunaの試行数
-    BAYES_PARAMS = {'learning_rate': (0.01, 0.3),
+    BAYES_PARAMS = {'learning_rate': (0.05, 0.3),
                     'min_child_weight': (1, 10),
                     'max_depth': (2, 9),
                     'colsample_bytree': (0.2, 1.0),
@@ -244,11 +244,11 @@ class XGBClassifierTuning(ParamTuning):
     INT_PARAMS = ['min_child_weight', 'max_depth']  # 整数型のパラメータのリスト(ベイズ最適化時は都度int型変換する)
 
     # 範囲選択検証曲線用パラメータ範囲
-    VALIDATION_CURVE_PARAMS = {'subsample': [0, 0.2, 0.4, 0.6, 0.8, 1.0],  # デフォルト
+    VALIDATION_CURVE_PARAMS = {'subsample': [0.1, 0.2, 0.4, 0.6, 0.8, 1.0],  # デフォルト
                                'colsample_bytree': [0, 0.2, 0.4, 0.6, 0.8, 1.0],
                                'reg_alpha': [0, 0.0001, 0.001, 0.01, 0.03, 0.1, 0.3, 1.0],
                                'reg_lambda': [0, 0.0001, 0.001, 0.01, 0.03, 0.1, 0.3, 1.0],
-                               'learning_rate': [0, 0.001, 0.01, 0.03, 0.1, 0.3, 1.0],
+                               'learning_rate': [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1.0],
                                'min_child_weight': [1, 3, 5, 7, 9, 11, 15],
                                'max_depth': [1, 2, 3, 4, 6, 8, 10],
                                'gamma': [0, 0.0001, 0.001, 0.01, 0.03, 0.1, 0.3, 1.0]
