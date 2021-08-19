@@ -89,7 +89,7 @@ Scikit-LearnのAPIに対応した学習器が対象となります。
 |cv_group|オプション|str|None|GroupKFold、LeaveOneGroupOutのグルーピング対象データ|
 |eval_data_source|オプション|{'all', 'valid', 'train'}|'all'|eval_setの指定方法, 'all'ならeval_set =[(self.X, self.y)] (XGBoost、LightGBMのみ有効)|            
 
-**メソッド一覧**
+## メソッド一覧
 |メソッド名|機能|
 |---|---|
 |plot_first_validation_curve|範囲を定めて検証曲線をプロットし、パラメータ調整範囲の参考とします|
