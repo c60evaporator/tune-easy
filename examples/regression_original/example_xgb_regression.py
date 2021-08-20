@@ -3,11 +3,11 @@ import parent_import
 from param_tuning import XGBRegressorTuning
 import pandas as pd
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
-USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIALBLE_REG].values
-X = df_reg[USE_EXPLANATORY_REG].values
-tuning = XGBRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG)
+OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLATATORY].values
+tuning = XGBRegressorTuning(X, y, USE_EXPLATATORY, y_colname=OBJECTIVE_VARIABLE)
 tuning.plot_first_validation_curve()
 tuning.grid_search_tuning()
 tuning.plot_search_history()
@@ -22,11 +22,11 @@ import parent_import
 from param_tuning import XGBRegressorTuning
 import pandas as pd
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
-USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIALBLE_REG].values
-X = df_reg[USE_EXPLANATORY_REG].values
-tuning = XGBRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG)
+OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLATATORY].values
+tuning = XGBRegressorTuning(X, y, USE_EXPLATATORY, y_colname=OBJECTIVE_VARIABLE)
 tuning.optuna_tuning()
 tuning.plot_search_history()
 tuning.plot_search_map()
@@ -43,11 +43,11 @@ import pandas as pd
 from sklearn.model_selection import KFold
 import matplotlib.pyplot as plt
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
-USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIALBLE_REG].values
-X = df_reg[USE_EXPLANATORY_REG].values
-tuning = XGBRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG)
+OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLATATORY].values
+tuning = XGBRegressorTuning(X, y, USE_EXPLATATORY, y_colname=OBJECTIVE_VARIABLE)
 tuning_params = {'learning_rate': [0.01, 0.1, 0.3],  # 過学習のバランス(高いほど過学習寄り、低いほど汎化寄り）別名eta
                  'min_child_weight': [2, 4, 8],  # 葉に割り当てるスコアwiの合計の最小値。これを下回った場合、それ以上の分割を行わない
                  'max_depth': [2, 5],  # 木の深さの最大値
@@ -106,11 +106,11 @@ import pandas as pd
 from sklearn.model_selection import KFold
 import matplotlib.pyplot as plt
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
-USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIALBLE_REG].values
-X = df_reg[USE_EXPLANATORY_REG].values
-tuning = XGBRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG)
+OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLATATORY].values
+tuning = XGBRegressorTuning(X, y, USE_EXPLATATORY, y_colname=OBJECTIVE_VARIABLE)
 tuning_params = {'learning_rate': [0.01, 0.02, 0.05, 0.1, 0.2, 0.3],
                  'min_child_weight': [2, 3, 4, 5],
                  'max_depth': [2, 3, 4, 5],
@@ -170,11 +170,11 @@ import pandas as pd
 from sklearn.model_selection import KFold
 import matplotlib.pyplot as plt
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
-USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIALBLE_REG].values
-X = df_reg[USE_EXPLANATORY_REG].values
-tuning = XGBRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG)
+OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLATATORY].values
+tuning = XGBRegressorTuning(X, y, USE_EXPLATATORY, y_colname=OBJECTIVE_VARIABLE)
 tuning_params = {'learning_rate': (0.01, 0.3),  # 過学習のバランス(高いほど過学習寄り、低いほど汎化寄り）別名eta
                  'min_child_weight': (2, 5),  # 葉に割り当てるスコアwiの合計の最小値。これを下回った場合、それ以上の分割を行わない
                  'max_depth': (2, 5),  # 木の深さの最大値
@@ -237,11 +237,11 @@ from sklearn.model_selection import KFold
 import matplotlib.pyplot as plt
 import optuna
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
-USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIALBLE_REG].values
-X = df_reg[USE_EXPLANATORY_REG].values
-tuning = XGBRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG)
+OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLATATORY].values
+tuning = XGBRegressorTuning(X, y, USE_EXPLATATORY, y_colname=OBJECTIVE_VARIABLE)
 tuning_params = {'learning_rate': (0.01, 0.3),  # 過学習のバランス(高いほど過学習寄り、低いほど汎化寄り）別名eta
                  'min_child_weight': (2, 5),  # 葉に割り当てるスコアwiの合計の最小値。これを下回った場合、それ以上の分割を行わない
                  'max_depth': (2, 5),  # 木の深さの最大値

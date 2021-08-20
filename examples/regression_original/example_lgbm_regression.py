@@ -3,11 +3,11 @@ import parent_import
 from param_tuning import LGBMRegressorTuning
 import pandas as pd
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
-USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIALBLE_REG].values
-X = df_reg[USE_EXPLANATORY_REG].values
-tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG)
+OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLATATORY].values
+tuning = LGBMRegressorTuning(X, y, USE_EXPLATATORY, y_colname=OBJECTIVE_VARIABLE)
 tuning.plot_first_validation_curve()
 tuning.grid_search_tuning()
 tuning.plot_search_history()
@@ -22,11 +22,11 @@ import parent_import
 from param_tuning import LGBMRegressorTuning
 import pandas as pd
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
-USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIALBLE_REG].values
-X = df_reg[USE_EXPLANATORY_REG].values
-tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG)
+OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLATATORY].values
+tuning = LGBMRegressorTuning(X, y, USE_EXPLATATORY, y_colname=OBJECTIVE_VARIABLE)
 tuning.random_search_tuning()
 tuning.plot_search_history()
 tuning.plot_search_map()
@@ -40,11 +40,11 @@ import parent_import
 from param_tuning import LGBMRegressorTuning
 import pandas as pd
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
-USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIALBLE_REG].values
-X = df_reg[USE_EXPLANATORY_REG].values
-tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG)
+OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLATATORY].values
+tuning = LGBMRegressorTuning(X, y, USE_EXPLATATORY, y_colname=OBJECTIVE_VARIABLE)
 tuning.bayes_opt_tuning()
 tuning.plot_search_history()
 tuning.plot_search_map()
@@ -58,11 +58,11 @@ import parent_import
 from param_tuning import LGBMRegressorTuning
 import pandas as pd
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
-USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIALBLE_REG].values
-X = df_reg[USE_EXPLANATORY_REG].values
-tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG)
+OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLATATORY].values
+tuning = LGBMRegressorTuning(X, y, USE_EXPLATATORY, y_colname=OBJECTIVE_VARIABLE)
 tuning.optuna_tuning()
 tuning.plot_search_history()
 tuning.plot_search_map()
@@ -79,11 +79,11 @@ import pandas as pd
 from sklearn.model_selection import KFold
 import matplotlib.pyplot as plt
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
-USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIALBLE_REG].values
-X = df_reg[USE_EXPLANATORY_REG].values
-tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG)
+OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLATATORY].values
+tuning = LGBMRegressorTuning(X, y, USE_EXPLATATORY, y_colname=OBJECTIVE_VARIABLE)
 tuning_params = {'reg_alpha': [0.0001, 0.003, 0.1],
                  'reg_lambda': [0.0001, 0.1],
                  'num_leaves': [2, 3, 4, 6],
@@ -149,11 +149,11 @@ from sklearn.model_selection import KFold
 import matplotlib.pyplot as plt
 import optuna
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
-USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIALBLE_REG].values
-X = df_reg[USE_EXPLANATORY_REG].values
-tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG)
+OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLATATORY].values
+tuning = LGBMRegressorTuning(X, y, USE_EXPLATATORY, y_colname=OBJECTIVE_VARIABLE)
 tuning_params = {'reg_alpha': (0.0001, 0.1),
                  'reg_lambda': (0.0001, 0.1),
                  'num_leaves': (2, 6),
