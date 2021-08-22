@@ -10,14 +10,15 @@ This documentation is Japanese language version.
 
 # 使用法
 LightGBM回帰のOptunaによるチューニング実行例
+
 ```python
 from param_tuning import LGBMRegressorTuning
 from sklearn.datasets import load_boston
 import pandas as pd
 # データセット読込
 USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']  # 説明変数
-boston = pd.DataFrame(load_boston().data, columns = load_boston().feature_names)
-X = boston[USE_EXPLANATORY].values
+df_boston = pd.DataFrame(load_boston().data, columns = load_boston().feature_names)
+X = df_boston[USE_EXPLANATORY].values
 y = load_boston().target  # 目的変数
 ###### チューニング実行と評価 ######
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス
@@ -28,7 +29,7 @@ tuning.plot_search_map()  # 探索点と評価指標を可視化
 tuning.plot_best_learning_curve()  # 学習曲線の可視化
 tuning.plot_best_validation_curve()  # 検証曲線の可視化
 ```
-※その他のクラスの使用法は[構成]()の項を参照ください
+※詳細は[チューニング手順]()の項を参照ください
 
 <br>
 
@@ -57,9 +58,112 @@ $ pip install param-tuning-utility
 
 <br>
 
-# 概要
+# チューニング手順
 [こちらの記事の方法]()をベースとして、パラメータチューニングを実施します。
 Scikit-LearnのAPIに対応した学習器が対象となります。
+
+## 0.1 データの読込＆前処理
+使用するデータを読み込み、特徴量選択等の前処理を実行します。
+詳細は
+
+### 実行例
+ボストン住宅価格データセットを読み込み、特徴量 (説明変数)を選択します
+```python
+from sklearn.datasets import load_boston
+import pandas as pd
+
+USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']  # 選択した5つの説明変数
+df_boston = pd.DataFrame(load_boston().data, columns = load_boston().feature_names)
+X = df_boston[USE_EXPLANATORY].values
+y = load_boston().target  # 目的変数
+```
+
+※選択した5特徴量は、ランダムフォレストのRFE (再帰的特徴量削減)により選定
+```python
+from sklearn.datasets import load_boston
+from sklearn.feature_selection import RFE
+from sklearn.ensemble import RandomForestRegressor
+
+X = load_boston().data
+y = load_boston().target
+selector = RFE(RandomForestRegressor(random_state=42), n_features_to_select=5)
+selector.fit(X, y)
+print(load_boston().feature_names)
+print(selector.get_support())
+```
+
+```
+['CRIM' 'ZN' 'INDUS' 'CHAS' 'NOX' 'RM' 'AGE' 'DIS' 'RAD' 'TAX' 'PTRATIO'
+ 'B' 'LSTAT']
+[ True False False False  True  True False  True False False False False
+  True]
+```
+特徴量選択については、[Scikit-Learn公式](https://scikit-learn.org/stable/modules/feature_selection.html#feature-selection)を参照ください
+
+## 0.3 チューニング用クラスの初期化
+以下を参考に使用したい学習器に合わせてチューニング用クラスを選択し、インスタンスを作成します
+
+|学習器の種類|クラス名|
+|---|---|
+|LightGBM回帰||LGBMRegressorTuning|
+|XGBRegressorTuning|XGBRegressorTuning|
+|サポートベクター回帰|SVMRegressorTuning|
+|ランダムフォレスト回帰|RFRegressorTuning|
+|ElasticNet回帰|ElasticNetTuning|
+|LightGBM分類|LGBMClassifierTuning|
+|XGBoost分類|XGBClassifierTuning|
+|サポートベクターマシン分類|SVMClassifierTuning|
+|ランダムフォレスト分類|RFClassifierTuning|
+
+### 実行例
+LightGBM回帰のチューニング用クラス初期化
+```python
+from param_tuning import LGBMRegressorTuning
+tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)
+```
+
+## 1. 評価指標の選択
+[こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#21-%E8%A9%95%E4%BE%A1%E6%8C%87%E6%A8%99%E3%81%AE%E5%AE%9A%E7%BE%A9)チューニングの評価指標を選択します。
+
+デフォルト(各メソッドのscoring引数を指定しないとき)では、以下の指標を使用します
+|手法|デフォルトで使用する手法|
+|---|---|
+|回帰|RMSE ('neg_mean_squared_error')|
+|2クラス分類|LogLoss ('neg_log_loss')|
+|多クラス分類|LogLoss ('neg_log_loss')|
+
+### 実行例
+RMSEを指標に使用するとき
+```
+SCORING = 'neg_mean_squared_error'
+```
+
+## 2. パラメータ探索範囲の選択
+plot_first_validation_curve()メソッドで検証曲線をプロットし、[こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#22-%E3%83%91%E3%83%A9%E3%83%A1%E3%83%BC%E3%82%BF%E7%A8%AE%E9%A1%9E%E3%81%A8%E6%8E%A2%E7%B4%A2%E7%AF%84%E5%9B%B2%E3%81%AE%E9%81%B8%E6%8A%9E)パラメータ探索範囲を選択します
+
+### 実行例
+
+```python
+VALIDATION_CURVE_PARAMS = {'reg_alpha': [0, 0.0001, 0.001, 0.003, 0.01, 0.03, 0.1, 1, 10],
+                               'reg_lambda': [0, 0.0001, 0.001, 0.003, 0.01, 0.03, 0.1, 1, 10],
+                               'num_leaves': [2, 4, 8, 16, 32, 64, 96, 128, 192, 256],
+                               'colsample_bytree': [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+                               'subsample': [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+                               'subsample_freq': [0, 1, 2, 3, 4, 5, 6, 7],
+                               'min_child_samples': [0, 2, 5, 10, 20, 30, 50, 70, 100]
+                               }
+tuning.plot_first_validation_curve(validation_curve_params=VALIDATION_CURVE_PARAMS,
+                                   scoring=SCORING)
+```
+画像
+
+### 3. 探索法を選択
+
+
+### 4.1 クロスバリデーションを選択
+
+
+### 4.2 チューニング実行
 
 # クラス一覧
 以下のクラスからなります
@@ -75,12 +179,22 @@ Scikit-LearnのAPIに対応した学習器が対象となります。
 |SVMClassifierTuning|svm_tuning.py|サポートベクターマシン分類のパラメータチューニング用クラス|[リンク]()|
 |RFClassifierTuning|rf_tuning.py|ランダムフォレスト分類のパラメータチューニング用クラス|[リンク]()|
 
-<br>
-
-## クラス初期化引数一覧
+## クラス初期化
 上記クラスは、以下のように初期化(__init__()メソッド)します
 
+### 引数
+初期化の引数は以下のようになります
+|引数名|必須引数orオプション|型|デフォルト値|内容|
+|---|---|---|---|---|
+|X|必須|np.ndarray|-|説明変数データ (2次元のndarray)|
+|y|必須|np.ndarray|-|目的変数データ (1次元or2次元のndarray)|
+|x_colnames|必須|list[str]|-|説明変数のフィールド名のリスト|
+|y_colname|オプション|str|None|目的変数のフィールド名|
+|cv_group|オプション|str|None|GroupKFold、LeaveOneGroupOutのグルーピング対象データ|
+|eval_data_source|オプション|{'all', 'valid', 'train'}|'all'|eval_setの指定方法, 'all'ならeval_set =[(self.X, self.y)] (XGBoost, LightGBMのみ有効)|
+
 ### 実行例
+#### 引数指定なし
 LightGBM回帰におけるクラス初期化実行例
 ```python
 from param_tuning import LGBMRegressorTuning
@@ -95,18 +209,8 @@ y = load_boston().target
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)
 ```
 
-### 引数
-初期化の引数は以下のようになります
-|引数名|必須引数orオプション|型|デフォルト値|内容|
-|---|---|---|---|---|
-|X|必須|np.ndarray|-|説明変数データ (2次元のndarray)|
-|y|必須|np.ndarray|-|目的変数データ (1次元or2次元のndarray)|
-|x_colnames|必須|list[str]|-|説明変数のフィールド名のリスト|
-|y_colname|オプション|str|None|目的変数のフィールド名|
-|cv_group|オプション|str|None|GroupKFold、LeaveOneGroupOutのグルーピング対象データ|
-|eval_data_source|オプション|{'all', 'valid', 'train'}|'all'|eval_setの指定方法, 'all'ならeval_set =[(self.X, self.y)] (XGBoost, LightGBMのみ有効)|
-
-XGBoostにおける引数指定例
+#### LeaveOneGroupOutでクロスバリデーションしたいとき
+SVRにおける引数指定例
 ```python
 from param_tuning import XGBRegressorTuning
 from sklearn.model_selection import LeaveOneGroupOut
@@ -118,11 +222,28 @@ USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'la
 y = df_reg[OBJECTIVE_VARIABLE].values
 X = df_reg[USE_EXPLATATORY].values
 ###### クラス初期化 ######
-tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY,  # 必須引数
-                             y_colname=OBJECTIVE_VARIABLE,  # 目的変数のフィールド名 (大阪都構想の賛成率)
-                             cv_group=df_reg['ward_after'].values,  # グルーピング対象データ (大阪都構想の区)
+tuning = XGBRegressorTuning(X, y, USE_EXPLANATORY,  # 必須引数
+                             cv_group=df_reg['ward_after'].values)  # グルーピング対象データ (大阪都構想の区)
+```
+
+#### 検証データをfit_paramsのeval_setに使用したいとき
+デフォルトではeval_set (early_stopping_roundの判定に使用するデータ)は全てのデータ (self.X, self.y)を使用しますが、eval_data_source='valid'を指定するとクロスバリデーションの検証用データのみを使用します
+```python
+from param_tuning import LGBMRegressorTuning
+from sklearn.datasets import load_boston
+import pandas as pd
+# データセット読込
+USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
+df_boston = pd.DataFrame(load_boston().data, columns = load_boston().feature_names)
+X = boston[USE_EXPLANATORY].values
+y = load_boston().target
+###### クラス初期化 ######
+tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY,
                              eval_data_source='valid')  # eval_setの指定方法 (検証用データを渡す)
 ```
+
+<br>
+
 # メソッド一覧
 上記クラスは、以下のようなメソッドを持ちます
 
@@ -145,28 +266,10 @@ tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY,  # 必須引数
 ※大半のメソッドは全てのクラスに対応していますが、
 get_feature_importancesおよびplot_feature_importancesメソッドは、XGBoostおよびLightGBMのみ対応しています。
 
-<br>
-
-### plot_first_validation_curveメソッド
+## plot_first_validation_curveメソッド
 範囲を定めて検証曲線をプロットし、パラメータ調整範囲の参考とします
 
-#### 実行例
-LightGBM回帰における実行例 (引数指定なし)
-```python
-from param_tuning import LGBMRegressorTuning
-from sklearn.datasets import load_boston
-import pandas as pd
-USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns = load_boston().feature_names)
-X = boston[USE_EXPLANATORY].values
-y = load_boston().target
-tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
-###### 範囲を定めて検証曲線プロット ######
-tuning.plot_first_validation_curve()
-```
-![image](https://user-images.githubusercontent.com/59557625/115889860-4e8bde80-a48f-11eb-826a-cd3c79556a42.png)
-
-#### 引数一覧
+### 引数一覧
 |引数名|必須引数orオプション|型|デフォルト値|内容|
 |---|---|---|---|---|
 |estimator|必須|pd.DataFrame|-|入力データ|
@@ -182,7 +285,22 @@ tuning.plot_first_validation_curve()
 |lower_kws|オプション|dict|{}|[seaborn.PairGrid.map_lowerの引数](https://seaborn.pydata.org/generated/seaborn.PairGrid.html?highlight=pairgrid#seaborn.PairGrid)|
 |diag_kws|オプション|dict|{}|[seaborn.PairGrid.map_diag引数](https://seaborn.pydata.org/generated/seaborn.PairGrid.html?highlight=pairgrid#seaborn.PairGrid)|
 |grid_kws|オプション|dict|{}|[seaborn.PairGridの上記以外の引数](https://seaborn.pydata.org/generated/seaborn.PairGrid.html?highlight=pairgrid#seaborn.PairGrid)|
-<br>
+
+### 実行例
+LightGBM回帰における実行例 (引数指定なし)
+```python
+from param_tuning import LGBMRegressorTuning
+from sklearn.datasets import load_boston
+import pandas as pd
+USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
+df_boston = pd.DataFrame(load_boston().data, columns = load_boston().feature_names)
+X = boston[USE_EXPLANATORY].values
+y = load_boston().target
+tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
+###### 範囲を定めて検証曲線プロット ######
+tuning.plot_first_validation_curve()
+```
+![image](https://user-images.githubusercontent.com/59557625/115889860-4e8bde80-a48f-11eb-826a-cd3c79556a42.png)
 
 LightGBM回帰における引数指定例
 ```python
@@ -197,3 +315,7 @@ y = load_boston().target
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE)  # チューニング用クラス
 tuning.plot_first_validation_curve()  # 範囲を定めて検証曲線をプロット
 ```
+
+<br>
+
+# プロパティ一覧
