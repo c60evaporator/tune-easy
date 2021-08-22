@@ -84,10 +84,10 @@ from sklearn.datasets import load_boston
 from sklearn.feature_selection import RFE
 from sklearn.ensemble import RandomForestRegressor
 
-X = load_boston().data
+X_all = load_boston().data
 y = load_boston().target
 selector = RFE(RandomForestRegressor(random_state=42), n_features_to_select=5)
-selector.fit(X, y)
+selector.fit(X_all, y)
 print(load_boston().feature_names)
 print(selector.get_support())
 ```
@@ -141,7 +141,7 @@ SCORING = 'neg_mean_squared_error'
 ## 2. パラメータ探索範囲の選択
 [plot_first_validation_curve()メソッド]()で検証曲線をプロットし、[こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#22-%E3%83%91%E3%83%A9%E3%83%A1%E3%83%BC%E3%82%BF%E7%A8%AE%E9%A1%9E%E3%81%A8%E6%8E%A2%E7%B4%A2%E7%AF%84%E5%9B%B2%E3%81%AE%E9%81%B8%E6%8A%9E)パラメータ探索範囲を選択します
 
-事前に[4.クロスバリデーション手法の選択]()を実施し、cv引数に指定する事が望ましいです
+事前に[4.1. クロスバリデーション手法の選択]()を実施し、cv引数に指定する事が望ましいです
 
 ### 実行例
 範囲を指定して検証曲線を描画
@@ -182,7 +182,63 @@ tuning.plot_first_validation_curve(validation_curve_params=VALIDATION_CURVE_PARA
 CV = KFold(n_splits=5, shuffle=True, random_state=42)
 ```
 
-## 4.2 チューニング実行
+## 4.2. チューニング前のスコアを確認
+チューニング前のスコアを確認します。
+このとき
+
+・学習器のfit()メソッドに渡す引数（LightGBMのearly_stopping_rounds等）
+・チューニング対象外パラメータを学習器インスタンスに渡す事
+
+を忘れないようにご注意ください
+
+### 実行例
+LightGBM回帰において、fit()メソッドに渡す引数(FIT_PARAMS)およびチューニング対象外パラメータ(NOT_OPT_PARAMS)を指定してスコア算出
+```python
+from lightgbm import LGBMRegressor
+from sklearn.model_selection import cross_val_score
+import numpy as np
+# 学習器のfit()メソッドに渡す引数
+FIT_PARAMS = {'verbose': 0,
+              'early_stopping_rounds': 10,
+              'eval_metric': 'rmse',
+              'eval_set': [(X, y)]
+              }
+# チューニング対象外パラメータ
+NOT_OPT_PARAMS = {'objective': 'regression',
+                  'random_state': 42,
+                  'boosting_type': 'gbdt',
+                  'n_estimators': 10000
+                  }
+# 学習器のインスタンス作成
+lgbmr = LGBMRegressor(**NOT_OPT_PARAMS)
+# クロスバリデーションでスコア算出
+scores = cross_val_score(lgbmr, X, y,
+                         scoring=SCORING,  # 評価指標 (1で選択)
+                         cv=CV,  # クロスバリデーション手法 (4.1で選択)
+                         fit_params=FIT_PARAMS  # 学習器のfit()メソッド引数
+                         )
+print(np.mean(scores))
+```
+実行結果
+```
+-11.979161807916636
+```
+
+[seaborn-analyzer](https://github.com/c60evaporator/seaborn-analyzer/blob/master/README.md)を活用して、学習器の判定結果を可視化すると、挙動がわかりやすくなります
+```python
+from seaborn_analyzer import regplot
+df_boston['price'] = y
+regplot.regression_pred_true(lgbmr,
+                             x=tuning.x_colnames,
+                             y='price',
+                             data=df_boston,
+                             scores='mse',
+                             cv=CV,
+                             fit_params=FIT_PARAMS
+                             )
+```
+
+## 4.3 チューニング実行
 [3.で選択したチューニング用メソッド]()に対し、
 
 ・[1.で選択した評価指標]()をscoring引数に
@@ -286,6 +342,8 @@ Optunaでのチューニング実行後の検証曲線を表示
 ```python
 tuning.plot_best_validation_curve()
 ```
+
+## 6. チューニング後のスコアを確認
 
 # クラス一覧
 以下のクラスからなります
