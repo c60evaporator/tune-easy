@@ -1453,7 +1453,7 @@ class ParamTuning():
         order = self._add_learner_name(self.estimator, order)
 
         # ランダムフォレストでパラメータとスコアのfeature_importancesを求める
-        rf = RandomForestRegressor()
+        rf = RandomForestRegressor(random_state=self.seed)
         params_array = df_history.drop('test_score', axis=1).values
         score_array = df_history['test_score'].values
         rf.fit(params_array, score_array)
