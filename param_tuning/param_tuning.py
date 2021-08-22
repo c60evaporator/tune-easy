@@ -398,8 +398,8 @@ class ParamTuning():
         elif mlflow_logging is not None:
             raise Exception('the "mlflow_logging" argument must be "log", "with" or None')
 
-        # グリッドサーチで探索した最適パラメータ、チューニング対象外パラメータ、最適スコア、所要時間を返す
-        return gridcv.best_params_, not_opt_params, gridcv.best_score_, self.elapsed_time
+        # グリッドサーチで探索した最適パラメータ、最適スコアを返す
+        return gridcv.best_params_, gridcv.best_score_
 
     def random_search_tuning(self, estimator=None, tuning_params=None, cv=None, seed=None, scoring=None,
                              n_iter=None,
@@ -532,8 +532,8 @@ class ParamTuning():
         elif mlflow_logging is not None:
             raise Exception('the "mlflow_logging" argument must be "log", "with" or None')
 
-        # ランダムサーチで探索した最適パラメータ、チューニング対象外パラメータ、最適スコア、所要時間を返す
-        return randcv.best_params_, not_opt_params, randcv.best_score_, self.elapsed_time
+        # ランダムサーチで探索した最適パラメータ、最適スコアを返す
+        return randcv.best_params_, randcv.best_score_
 
     @abstractmethod
     def _bayes_evaluate(self, **kwargs):
@@ -733,8 +733,8 @@ class ParamTuning():
         elif mlflow_logging is not None:
             raise Exception('the "mlflow_logging" argument must be "log", "with" or None')
 
-        # ベイズ最適化で探索した最適パラメータ、チューニング対象外パラメータ、評価指標最大値、所要時間を返す
-        return self.best_params, not_opt_params, self.best_score, self.elapsed_time
+        # ベイズ最適化で探索した最適パラメータ、評価指標最大値を返す
+        return self.best_params, self.best_score
 
 
     def _optuna_evaluate(self, trial):
@@ -907,8 +907,8 @@ class ParamTuning():
         elif mlflow_logging is not None:
             raise Exception('the "mlflow_logging" argument must be "log", "with" or None')
         
-        # Optunaで探索した最適パラメータ、チューニング対象外パラメータ、評価指標最大値、所要時間を返す
-        return self.best_params, not_opt_params, self.best_score, self.elapsed_time
+        # Optunaで探索した最適パラメータ、チューニング対象外パラメータ、評価指標最大値を返す
+        return self.best_params, self.best_score
 
 
     def get_feature_importances(self):
