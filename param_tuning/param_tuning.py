@@ -277,7 +277,7 @@ class ParamTuning():
         os.remove('search_history.csv')
 
     def grid_search_tuning(self, estimator=None, tuning_params=None, cv=None, seed=None, scoring=None,
-                           not_opt_params=None, param_scales=None, mlflow_logging=None, grid_kws=None, **fit_params):
+                           not_opt_params=None, param_scales=None, mlflow_logging=None, grid_kws=None, fit_params=None):
         """
         グリッドサーチ＋クロスバリデーション
 
@@ -311,23 +311,23 @@ class ParamTuning():
         self.start_time = start
 
         # 引数非指定時、クラス変数から取得
-        if estimator == None:
+        if estimator is None:
             estimator = copy.deepcopy(self.ESTIMATOR)
-        if tuning_params == None:
+        if tuning_params is None:
             tuning_params = self.CV_PARAMS_GRID
-        if cv == None:
+        if cv is None:
             cv = self.CV_NUM
-        if seed == None:
+        if seed is None:
             seed = self.SEED
-        if scoring == None:
+        if scoring is None:
             scoring = self.SCORING
-        if not_opt_params == None:
+        if not_opt_params is None:
             not_opt_params = self.NOT_OPT_PARAMS
-        if param_scales == None:
+        if param_scales is None:
             param_scales = self.PARAM_SCALES
-        if grid_kws == None:
+        if grid_kws is None:
             grid_kws = {}
-        if fit_params == {}:
+        if fit_params is None:
             fit_params = self.FIT_PARAMS
 
         # 入力データからチューニング用パラメータの生成
@@ -403,7 +403,7 @@ class ParamTuning():
 
     def random_search_tuning(self, estimator=None, tuning_params=None, cv=None, seed=None, scoring=None,
                              n_iter=None,
-                             not_opt_params=None, param_scales=None, mlflow_logging=None, rand_kws=None, **fit_params):
+                             not_opt_params=None, param_scales=None, mlflow_logging=None, rand_kws=None, fit_params=None):
         """
         ランダムサーチ＋クロスバリデーション
 
@@ -439,28 +439,26 @@ class ParamTuning():
         self.start_time = start
 
         # 引数非指定時、クラス変数から取得
-        if estimator == None:
+        if estimator is None:
             estimator = copy.deepcopy(self.ESTIMATOR)
-        if tuning_params == None:
+        if tuning_params is None:
             tuning_params = self.CV_PARAMS_RANDOM
-        if cv == None:
+        if cv is None:
             cv = self.CV_NUM
-        if seed == None:
+        if seed is None:
             seed = self.SEED
-        if scoring == None:
+        if scoring is None:
             scoring = self.SCORING
-        if n_iter == None:
+        if n_iter is None:
             n_iter = self.N_ITER_RANDOM
-        if not_opt_params == None:
+        if not_opt_params is None:
             not_opt_params = self.NOT_OPT_PARAMS
-        if param_scales == None:
+        if param_scales is None:
             param_scales = self.PARAM_SCALES
-        if rand_kws == None:
+        if rand_kws is None:
             rand_kws = {}
-        if fit_params == {}:
+        if fit_params is None:
             fit_params = self.FIT_PARAMS
-            if 'verbose' in fit_params.keys():
-                fit_params['verbose'] = 0
         
         # 入力データからチューニング用パラメータの生成
         tuning_params = self._tuning_param_generation(tuning_params)
@@ -581,7 +579,7 @@ class ParamTuning():
 
     def bayes_opt_tuning(self, estimator=None, tuning_params=None, cv=None, seed=None, scoring=None,
                          n_iter=None, init_points=None, acq=None,
-                         not_opt_params=None, int_params=None, param_scales=None, mlflow_logging=None, **fit_params):
+                         not_opt_params=None, int_params=None, param_scales=None, mlflow_logging=None, fit_params=None):
         """
         ベイズ最適化(BayesianOptimization)
 
@@ -621,29 +619,29 @@ class ParamTuning():
         self.start_time = start
 
         # 引数非指定時、クラス変数から取得
-        if estimator == None:
+        if estimator is None:
             estimator = copy.deepcopy(self.ESTIMATOR)
-        if tuning_params == None:
+        if tuning_params is None:
             tuning_params = self.BAYES_PARAMS
-        if cv == None:
+        if cv is None:
             cv = self.CV_NUM
-        if seed == None:
+        if seed is None:
             seed = self.SEED
-        if scoring == None:
+        if scoring is None:
             scoring = self.SCORING
-        if n_iter == None:
+        if n_iter is None:
             n_iter = self.N_ITER_BAYES
-        if init_points == None:
+        if init_points is None:
             init_points = self.INIT_POINTS
-        if acq == None:
+        if acq is None:
             acq = self.ACQ
-        if not_opt_params == None:
+        if not_opt_params is None:
             not_opt_params = self.NOT_OPT_PARAMS
-        if int_params == None:
+        if int_params is None:
             int_params = self.INT_PARAMS
-        if param_scales == None:
+        if param_scales is None:
             param_scales = self.PARAM_SCALES
-        if fit_params == {}:
+        if fit_params is None:
             fit_params = self.FIT_PARAMS
 
         # 入力データからチューニング用パラメータの生成
@@ -762,7 +760,7 @@ class ParamTuning():
 
     def optuna_tuning(self, estimator=None, tuning_params=None, cv=None, seed=None, scoring=None,
                       n_trials=None, study_kws=None, optimize_kws=None,
-                      not_opt_params=None, int_params=None, param_scales=None, mlflow_logging=None, **fit_params):
+                      not_opt_params=None, int_params=None, param_scales=None, mlflow_logging=None, fit_params=None):
         """
         ベイズ最適化(optuna)
 
@@ -802,29 +800,29 @@ class ParamTuning():
         self.start_time = start
 
         # 引数非指定時、クラス変数から取得
-        if estimator == None:
+        if estimator is None:
             estimator = copy.deepcopy(self.ESTIMATOR)
-        if tuning_params == None:
+        if tuning_params is None:
             tuning_params = self.BAYES_PARAMS
-        if cv == None:
+        if cv is None:
             cv = self.CV_NUM
-        if seed == None:
+        if seed is None:
             seed = self.SEED
-        if scoring == None:
+        if scoring is None:
             scoring = self.SCORING
-        if n_trials == None:
+        if n_trials is None:
             n_trials = self.N_ITER_OPTUNA
-        if study_kws == None:
+        if study_kws is None:
             study_kws = {}
-        if optimize_kws == None:
+        if optimize_kws is None:
             optimize_kws = {}
-        if not_opt_params == None:
+        if not_opt_params is None:
             not_opt_params = self.NOT_OPT_PARAMS
-        if int_params == None:
+        if int_params is None:
             int_params = self.INT_PARAMS
-        if param_scales == None:
+        if param_scales is None:
             param_scales = self.PARAM_SCALES
-        if fit_params == {}:
+        if fit_params is None:
             fit_params = self.FIT_PARAMS
 
         # 入力データからチューニング用パラメータの生成
@@ -971,7 +969,7 @@ class ParamTuning():
         ax : matplotlib.axes._subplots.Axes
             表示対象のax（Noneならplt.plotで1枚ごとにプロット）
         """
-        if ax == None:
+        if ax is None:
             ax=plt
         # plot_stats == 'mean'のとき、スコアの平均±標準偏差を表示
         if plot_stats == 'mean':
@@ -1026,7 +1024,7 @@ class ParamTuning():
         ax.legend(loc='lower right')  # 凡例
 
     def _get_validation_curve(self, estimator=None,  validation_curve_params=None, cv=None, seed=None, scoring=None,
-                             not_opt_params=None, stable_params=None, **fit_params):
+                             not_opt_params=None, stable_params=None, fit_params=None):
         """
         検証曲線の取得
 
@@ -1051,21 +1049,21 @@ class ParamTuning():
             Pipelineのときは{学習器名__パラメータ名:パラメータの値,‥}で指定する必要あり
         """
         # 引数非指定時、クラス変数から取得
-        if estimator == None:
+        if estimator is None:
             estimator = copy.deepcopy(self.ESTIMATOR)
-        if validation_curve_params == None:
+        if validation_curve_params is None:
             validation_curve_params = self.VALIDATION_CURVE_PARAMS
-        if cv == None:
+        if cv is None:
             cv = self.CV_NUM
-        if seed == None:
+        if seed is None:
             seed = self.SEED
-        if scoring == None:
+        if scoring is None:
             scoring = self.SCORING
-        if not_opt_params == None:  # stable_paramsでself.NOT_OPT_PARAMSおよびself.not_opt_paramsが更新されないようDeepCopy
+        if not_opt_params is None:  # stable_paramsでself.NOT_OPT_PARAMSおよびself.not_opt_paramsが更新されないようDeepCopy
             not_opt_params_valid = copy.deepcopy(self.NOT_OPT_PARAMS)
         else:
             not_opt_params_valid = copy.deepcopy(not_opt_params)
-        if fit_params == {}:
+        if fit_params is None:
             fit_params = self.FIT_PARAMS
         
         # 入力データからチューニング用パラメータの生成
@@ -1115,7 +1113,7 @@ class ParamTuning():
 
     def plot_first_validation_curve(self, estimator=None, validation_curve_params=None, cv=None, seed=None, scoring=None,
                                     not_opt_params=None, param_scales=None, plot_stats='mean', axes=None,
-                                    **fit_params):
+                                    fit_params=None):
         """
         初期検討用の検証曲線プロット
 
@@ -1144,13 +1142,13 @@ class ParamTuning():
             Pipelineのときは{学習器名__パラメータ名:パラメータの値,‥}で指定する必要あり
         """
         # 引数非指定時、クラス変数から取得(学習器名追加のため、estimatorも取得)
-        if validation_curve_params == None:
+        if validation_curve_params is None:
             validation_curve_params = self.VALIDATION_CURVE_PARAMS
-        if not_opt_params == None:
+        if not_opt_params is None:
             not_opt_params = self.NOT_OPT_PARAMS
-        if param_scales == None:
+        if param_scales is None:
             param_scales = self.PARAM_SCALES
-        if estimator == None:
+        if estimator is None:
             estimator = copy.deepcopy(self.ESTIMATOR)
         # 入力データからチューニング用パラメータの生成
         validation_curve_params = self._tuning_param_generation(validation_curve_params)
@@ -1171,7 +1169,7 @@ class ParamTuning():
                             scoring=scoring,
                             not_opt_params=not_opt_params,
                             stable_params=None,
-                            **fit_params)
+                            fit_params=fit_params)
         
         # 検証曲線をプロット
         for i, (k, v) in enumerate(validation_curve_result.items()):
@@ -1212,9 +1210,9 @@ class ParamTuning():
             使用するaxes (Noneなら1枚ずつ別個にプロット)
         """
         # 引数非指定時、クラス変数から取得
-        if validation_curve_params == None:
+        if validation_curve_params is None:
             validation_curve_params = self.VALIDATION_CURVE_PARAMS
-        if param_scales == None:
+        if param_scales is None:
             param_scales = self.PARAM_SCALES
         # 入力データからチューニング用パラメータの生成
         validation_curve_params = self._tuning_param_generation(validation_curve_params)
@@ -1241,7 +1239,7 @@ class ParamTuning():
                                                             scoring=self.scoring, 
                                                             not_opt_params=self.not_opt_params,
                                                             stable_params=self.best_params, 
-                                                            **self.fit_params)
+                                                            fit_params=self.fit_params)
         
         # 検証曲線をプロット
         for i, (k, v) in enumerate(validation_curve_result.items()):
@@ -1266,7 +1264,7 @@ class ParamTuning():
             plt.show()
 
     def _plot_learning_curve(self, estimator=None,  params=None, cv=None, seed=None, scoring=None,
-                            plot_stats='mean', rounddigit=3, ax=None, **fit_params):
+                            plot_stats='mean', rounddigit=3, ax=None, fit_params=None):
         """
         学習曲線の取得
 
@@ -1293,17 +1291,17 @@ class ParamTuning():
             Pipelineのときは{学習器名__パラメータ名:パラメータの値,‥}で指定する必要あり
         """
         # 引数非指定時、クラス変数から取得
-        if estimator == None:
+        if estimator is None:
             estimator = copy.deepcopy(self.ESTIMATOR)
-        if params == None:
+        if params is None:
             params = {}
-        if cv == None:
+        if cv is None:
             cv = self.CV_NUM
-        if seed == None:
+        if seed is None:
             seed = self.SEED
-        if scoring == None:
+        if scoring is None:
             scoring = self.SCORING
-        if fit_params == {}:
+        if fit_params is None:
             fit_params = self.FIT_PARAMS
         
         # 乱数シードをparamsに追加
@@ -1335,7 +1333,7 @@ class ParamTuning():
                                                                  cv=cv, scoring=scoring, n_jobs=None)
         
         # 描画用axがNoneのとき、matplotlib.pyplotを使用
-        if ax == None:
+        if ax is None:
             ax=plt.gca()
         # plot_stats == 'mean'のとき、スコアの平均±標準偏差を表示
         if plot_stats == 'mean':
@@ -1405,7 +1403,7 @@ class ParamTuning():
                                  scoring=self.scoring, 
                                  plot_stats=plot_stats,
                                  ax=ax,
-                                 **self.fit_params)
+                                 fit_params=self.fit_params)
         plt.show()
 
     def plot_search_map(self, order=None, pair_n=4, rounddigits_title=3, rank_number=None, rounddigits_score=3,
