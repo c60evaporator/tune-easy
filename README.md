@@ -59,8 +59,11 @@ $ pip install param-tuning-utility
 <br>
 
 # チューニング手順
-[こちらの記事の方法]()をベースとして、パラメータチューニングを実施します。
+**下図の手順**([こちらの記事に詳細](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#2-%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E3%81%AE%E6%89%8B%E9%A0%86%E3%81%A8%E3%82%A2%E3%83%AB%E3%82%B4%E3%83%AA%E3%82%BA%E3%83%A0%E4%B8%80%E8%A6%A7))に従い、パラメータチューニングを実施します。
+
 Scikit-LearnのAPIに対応した学習器が対象となります。
+
+![image](https://user-images.githubusercontent.com/59557625/130362754-a85fc7fc-38f7-4d5a-9e8f-c24321a2ed98.png)
 
 ## 0.1. データの読込＆前処理
 使用するデータを読み込み、特徴量選択等の前処理を実行します。
@@ -224,7 +227,7 @@ print(np.mean(scores))
 -11.979161807916636
 ```
 
-[seaborn-analyzer](https://github.com/c60evaporator/seaborn-analyzer/blob/master/README.md)を活用して、学習器の判定結果を可視化すると、挙動がわかりやすくなります
+[seaborn-analyzer](https://github.com/c60evaporator/seaborn-analyzer/blob/master/README.md)を活用して予測値と実測値の関係を可視化すると、挙動がわかりやすくなるのでお勧めです
 ```python
 from seaborn_analyzer import regplot
 df_boston['price'] = y
@@ -237,6 +240,7 @@ regplot.regression_pred_true(lgbmr,
                              fit_params=FIT_PARAMS
                              )
 ```
+![image](https://user-images.githubusercontent.com/59557625/130362867-0984bc27-6d6a-41b3-9a5f-c1e6f13e01d2.png)
 
 ## 4.3 チューニング実行
 [3.で選択したチューニング用メソッド]()に対し、
