@@ -100,7 +100,7 @@ print(selector.get_support())
 ```
 特徴量選択については、[Scikit-Learn公式](https://scikit-learn.org/stable/modules/feature_selection.html#feature-selection)を参照ください
 
-## 0.3 チューニング用クラスの初期化
+## 0.2 チューニング用クラスの初期化
 以下を参考に使用したい学習器に合わせてチューニング用クラスを選択し、インスタンスを作成します
 
 |学習器の種類|クラス名|
@@ -155,7 +155,7 @@ VALIDATION_CURVE_PARAMS = {'reg_alpha': [0, 0.0001, 0.001, 0.003, 0.01, 0.03, 0.
 tuning.plot_first_validation_curve(validation_curve_params=VALIDATION_CURVE_PARAMS,
                                    scoring=SCORING)
 ```
-画像
+![image](https://user-images.githubusercontent.com/59557625/130344662-f059ca05-f44d-4003-b995-1530f205b302.png)
 
 ### 3. 探索法を選択
 
