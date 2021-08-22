@@ -62,7 +62,7 @@ $ pip install param-tuning-utility
 [こちらの記事の方法]()をベースとして、パラメータチューニングを実施します。
 Scikit-LearnのAPIに対応した学習器が対象となります。
 
-## 0.1 データの読込＆前処理
+## 0.1. データの読込＆前処理
 使用するデータを読み込み、特徴量選択等の前処理を実行します。
 詳細は
 
@@ -100,7 +100,7 @@ print(selector.get_support())
 ```
 特徴量選択については、[Scikit-Learn公式](https://scikit-learn.org/stable/modules/feature_selection.html#feature-selection)を参照ください
 
-## 0.2 チューニング用クラスの初期化
+## 0.2. チューニング用クラスの初期化
 以下を参考に使用したい学習器に合わせてチューニング用クラスを選択し、インスタンスを作成します
 
 |学習器の種類|クラス名|
@@ -139,31 +139,75 @@ SCORING = 'neg_mean_squared_error'
 ```
 
 ## 2. パラメータ探索範囲の選択
-plot_first_validation_curve()メソッドで検証曲線をプロットし、[こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#22-%E3%83%91%E3%83%A9%E3%83%A1%E3%83%BC%E3%82%BF%E7%A8%AE%E9%A1%9E%E3%81%A8%E6%8E%A2%E7%B4%A2%E7%AF%84%E5%9B%B2%E3%81%AE%E9%81%B8%E6%8A%9E)パラメータ探索範囲を選択します
+[plot_first_validation_curve()メソッド]()で検証曲線をプロットし、[こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#22-%E3%83%91%E3%83%A9%E3%83%A1%E3%83%BC%E3%82%BF%E7%A8%AE%E9%A1%9E%E3%81%A8%E6%8E%A2%E7%B4%A2%E7%AF%84%E5%9B%B2%E3%81%AE%E9%81%B8%E6%8A%9E)パラメータ探索範囲を選択します
+
+事前に[4.クロスバリデーション手法の選択]()を実施し、cv引数に指定する事が望ましいです
 
 ### 実行例
-
+範囲を指定して検証曲線を描画
 ```python
 VALIDATION_CURVE_PARAMS = {'reg_alpha': [0, 0.0001, 0.001, 0.003, 0.01, 0.03, 0.1, 1, 10],
-                               'reg_lambda': [0, 0.0001, 0.001, 0.003, 0.01, 0.03, 0.1, 1, 10],
-                               'num_leaves': [2, 4, 8, 16, 32, 64, 96, 128, 192, 256],
-                               'colsample_bytree': [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
-                               'subsample': [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
-                               'subsample_freq': [0, 1, 2, 3, 4, 5, 6, 7],
-                               'min_child_samples': [0, 2, 5, 10, 20, 30, 50, 70, 100]
-                               }
+                           'reg_lambda': [0, 0.0001, 0.001, 0.003, 0.01, 0.03, 0.1, 1, 10],
+                           'num_leaves': [2, 4, 8, 16, 32, 64, 96, 128, 192, 256],
+                           'colsample_bytree': [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+                           'subsample': [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+                           'subsample_freq': [0, 1, 2, 3, 4, 5, 6, 7],
+                           'min_child_samples': [0, 2, 5, 10, 20, 30, 50, 70, 100]
+                           }
 tuning.plot_first_validation_curve(validation_curve_params=VALIDATION_CURVE_PARAMS,
-                                   scoring=SCORING)
+                                   scoring=SCORING,
+                                   cv=KFold(n_splits=5, shuffle=True, random_state=42))
 ```
 ![image](https://user-images.githubusercontent.com/59557625/130344662-f059ca05-f44d-4003-b995-1530f205b302.png)
+下図のように検証曲線から過学習にも未学習にもなりすぎていない範囲を抽出し、探索範囲とすることが望ましいです
 
 ### 3. 探索法を選択
+[こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#%E6%89%8B%E9%A0%8634-%E3%83%91%E3%83%A9%E3%83%A1%E3%83%BC%E3%82%BF%E9%81%B8%E6%8A%9E%E3%82%AF%E3%83%AD%E3%82%B9%E3%83%90%E3%83%AA%E3%83%87%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3)パラメータの探索法を選択します。
+以下の4種類の探索法から使用したい手法を選び、対応したメソッドを選択します
 
+|探索法|使用するメソッド|
+|---|---|
+|グリッドサーチ|[grid_search_tuning()]()|
+|ランダムサーチ|[random_search_tuning()]()|
+|ベイズ最適化 (BayesianOptimization)|[bayes_opt_tuning()]()|
+|ベイズ最適化 (Optuna)|[optuna_tuning()]()|
 
-### 4.1 クロスバリデーションを選択
+### 4.1. クロスバリデーション手法を選択
+[こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#24-%E3%82%AF%E3%83%AD%E3%82%B9%E3%83%90%E3%83%AA%E3%83%87%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3)クロスバリデーションの手法を選択します。
 
+### 実行例
+クロスバリデーションに5分割KFoldを指定
+```python
+CV = KFold(n_splits=5, shuffle=True, random_state=42)
+```
 
 ### 4.2 チューニング実行
+[3.で選択したチューニング用メソッド]()に対し、
+
+・[1.で選択した評価指標]()をscoring引数に
+・[2.で選択したチューニング範囲]()をtuning_params引数に
+・[4.1で選択したクロスバリデーション手法]()をcv引数に
+
+指定し、実行します
+
+### 実行例
+Optunaでチューニング
+```python
+# 2.で選択したチューニング範囲を指定
+TUNING_PARAMS = {'reg_alpha': (0.0001, 0.1),
+                 'reg_lambda': (0.0001, 0.1),
+                 'num_leaves': (2, 50),
+                 'colsample_bytree': (0.4, 1.0),
+                 'subsample': (0.4, 1.0),
+                 'subsample_freq': (0, 7),
+                 'min_child_samples': (0, 50)
+                 }
+
+tuning.optuna_tuning(scoring=SCORING,
+                     tuning_params=TUNING_PARAMS)
+
+```
+
 
 # クラス一覧
 以下のクラスからなります
