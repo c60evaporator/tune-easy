@@ -161,7 +161,7 @@ tuning.plot_first_validation_curve(validation_curve_params=VALIDATION_CURVE_PARA
 ![image](https://user-images.githubusercontent.com/59557625/130344662-f059ca05-f44d-4003-b995-1530f205b302.png)
 下図のように検証曲線から過学習にも未学習にもなりすぎていない範囲を抽出し、探索範囲とすることが望ましいです
 
-### 3. 探索法を選択
+## 3. 探索法を選択
 [こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#%E6%89%8B%E9%A0%8634-%E3%83%91%E3%83%A9%E3%83%A1%E3%83%BC%E3%82%BF%E9%81%B8%E6%8A%9E%E3%82%AF%E3%83%AD%E3%82%B9%E3%83%90%E3%83%AA%E3%83%87%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3)パラメータの探索法を選択します。
 以下の4種類の探索法から使用したい手法を選び、対応したメソッドを選択します
 
@@ -172,7 +172,7 @@ tuning.plot_first_validation_curve(validation_curve_params=VALIDATION_CURVE_PARA
 |ベイズ最適化 (BayesianOptimization)|[bayes_opt_tuning()]()|
 |ベイズ最適化 (Optuna)|[optuna_tuning()]()|
 
-### 4.1. クロスバリデーション手法を選択
+## 4.1. クロスバリデーション手法を選択
 [こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#24-%E3%82%AF%E3%83%AD%E3%82%B9%E3%83%90%E3%83%AA%E3%83%87%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3)クロスバリデーションの手法を選択します。
 
 ### 実行例
@@ -181,7 +181,7 @@ tuning.plot_first_validation_curve(validation_curve_params=VALIDATION_CURVE_PARA
 CV = KFold(n_splits=5, shuffle=True, random_state=42)
 ```
 
-### 4.2 チューニング実行
+## 4.2 チューニング実行
 [3.で選択したチューニング用メソッド]()に対し、
 
 ・[1.で選択した評価指標]()をscoring引数に
@@ -191,7 +191,7 @@ CV = KFold(n_splits=5, shuffle=True, random_state=42)
 指定し、実行します
 
 ### 実行例
-Optunaでチューニング
+Optunaでのチューニング実行例
 ```python
 # 2.で選択したチューニング範囲を指定
 TUNING_PARAMS = {'reg_alpha': (0.0001, 0.1),
@@ -202,12 +202,89 @@ TUNING_PARAMS = {'reg_alpha': (0.0001, 0.1),
                  'subsample_freq': (0, 7),
                  'min_child_samples': (0, 50)
                  }
-
-tuning.optuna_tuning(scoring=SCORING,
-                     tuning_params=TUNING_PARAMS)
-
+# チューニング実行
+best_params, best_score = tuning.optuna_tuning(scoring=SCORING,
+                                               tuning_params=TUNING_PARAMS,
+                                               cv=CV
+                                               )
+print(f'Best parameters\n{best_params}')  # 最適化されたパラメータ
+print(f'Not tuned parameters\n{tuning.not_opt_params}')  # 最適化対象外パラメータ
+print(f'Best score\n{best_score}')  # 最適パラメータでのスコア
+print(f'Elapsed time\n{tuning.elapsed_time}')  # チューニング所要時間
 ```
 
+```実行結果
+Best parameters
+{'reg_alpha': 0.003109527801280432, 'reg_lambda': 0.0035808676982557147, 'num_leaves': 41, 'colsample_bytree': 0.9453510369496361, 'subsample': 0.5947574986660598, 'subsample_freq': 1, 'min_child_samples': 0}
+
+Not tuned parameters
+{'objective': 'regression', 'random_state': 42, 'boosting_type': 'gbdt', 'n_estimators': 10000}
+
+Best score
+-9.616609903204923
+
+Elapsed time
+278.3654930591583
+```
+
+上記以外にも、チューニングの試行数や乱数シード、チューニング対象外のパラメータ等を引数として渡せます。
+詳しくは以下のリンクを参照ください
+
+|探索法|メソッドの引数リンク|
+|---|---|
+|グリッドサーチ|[grid_search_tuning()]()|
+|ランダムサーチ|[random_search_tuning()]()|
+|ベイズ最適化 (BayesianOptimization)|[bayes_opt_tuning()]()|
+|ベイズ最適化 (Optuna)|[optuna_tuning()]()|
+
+## 5.1. チューニング履歴の確認
+[plot_search_history()メソッド]()でチューニング進行に伴うスコアの上昇履歴をグラフ表示し、スコアの上昇具合を確認します。
+
+通常は進行とともに傾きが小さくなりますが、終了時点でもグラフの傾きが大きい場合、試行数を増やせばスコアが向上する可能性が高いです。
+
+### 実行例
+Optunaでのチューニング実行後のチューニング履歴表示例
+```python
+tuning.plot_search_history()
+```
+
+横軸は試行数以外に時間も指定できます(x_axis引数='time')
+
+```python
+tuning.plot_search_history(x_axis='time')
+```
+
+## 5.2. パラメータと評価指標の関係を確認
+[plot_search_history()メソッド]()でパラメータと評価指標の関係をプロットし、評価指標のピークを捉えられているか確認します。
+4.2で使用した手法がグリッドサーチならヒートマップで、それ以外なら散布図でプロットします。
+
+パラメータが5次元以上のとき、以下の方法で表示軸を選択します。
+・グリッドサーチ：パラメータの要素数()上位4パラメータを軸として表示します。表示軸以外のパラメータは最適値を使用します。
+・グリッドサーチ以外：[後述のparam_importances]()の上位4パラメータを軸として表示します。
+
+### 実行例
+Optunaでのチューニング実行後のパラメータと評価指標の関係表示
+```python
+tuning.plot_search_map()
+```
+
+## 5.3. 学習曲線を確認
+[plot_best_learning_curve()メソッド]()で学習曲線をプロットし、[こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#%E5%AD%A6%E7%BF%92%E6%9B%B2%E7%B7%9A-1)「目的の性能を達成しているか」「過学習していないか」を確認します
+
+### 実行例
+Optunaでのチューニング実行後の学習曲線を表示
+```python
+tuning.plot_best_learning_curve()
+```
+
+## 5.4. 検証曲線を確認
+[plot_best_validation_curve()メソッド]()で検証曲線をプロットし、[こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#%E6%A4%9C%E8%A8%BC%E6%9B%B2%E7%B7%9A-2)「性能の最大値を捉えられているか」「過学習していないか」を確認します
+
+### 実行例
+Optunaでのチューニング実行後の検証曲線を表示
+```python
+tuning.plot_best_validation_curve()
+```
 
 # クラス一覧
 以下のクラスからなります
@@ -238,7 +315,7 @@ tuning.optuna_tuning(scoring=SCORING,
 |eval_data_source|オプション|{'all', 'valid', 'train'}|'all'|eval_setの指定方法, 'all'ならeval_set =[(self.X, self.y)] (XGBoost, LightGBMのみ有効)|
 
 ### 実行例
-#### 引数指定なし
+#### オプション引数指定なしで初期化
 LightGBM回帰におけるクラス初期化実行例
 ```python
 from param_tuning import LGBMRegressorTuning
