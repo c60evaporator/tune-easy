@@ -160,6 +160,7 @@ tuning.plot_first_validation_curve(validation_curve_params=VALIDATION_CURVE_PARA
 ```
 ![image](https://user-images.githubusercontent.com/59557625/130344662-f059ca05-f44d-4003-b995-1530f205b302.png)
 下図のように検証曲線から過学習にも未学習にもなりすぎていない範囲を抽出し、探索範囲とすることが望ましいです
+![image](https://user-images.githubusercontent.com/59557625/130347854-29dc97fa-7402-4953-87dd-2ba56bae746b.png)
 
 ## 3. 探索法を選択
 [こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#%E6%89%8B%E9%A0%8634-%E3%83%91%E3%83%A9%E3%83%A1%E3%83%BC%E3%82%BF%E9%81%B8%E6%8A%9E%E3%82%AF%E3%83%AD%E3%82%B9%E3%83%90%E3%83%AA%E3%83%87%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3)パラメータの探索法を選択します。
