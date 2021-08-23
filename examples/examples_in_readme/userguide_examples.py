@@ -122,13 +122,13 @@ tuning.plot_best_learning_curve()
 # %% 5.4 Plot validation curve
 tuning.plot_best_validation_curve()
 
-# %% 6.1 Calculate validation score after tuning
+# %% 6.1 Retain optimized estimator
 params_after = {}
 params_after.update(tuning.best_params)
 params_after.update(tuning.not_opt_params)
-lgbmr = LGBMRegressor(**params_after)
+best_estimator = LGBMRegressor(**params_after)
 # Calculate validation score
-scores = cross_val_score(lgbmr, X, y,
+scores = cross_val_score(best_estimator, X, y,
                          scoring=tuning.scoring,  # Validation score selected in section 1
                          cv=tuning.cv,  # Cross validation instance selected in section 4.2
                          fit_params=tuning.fit_params  # Fit parameters passed to estimator.fit()
@@ -137,7 +137,6 @@ print(np.mean(scores))
 
 # %% 6.2 Visualize estimator after tuning
 from seaborn_analyzer import regplot
-df_boston['price'] = y
 regplot.regression_pred_true(lgbmr,
                              x=tuning.x_colnames,
                              y='price',
