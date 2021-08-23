@@ -127,7 +127,7 @@ tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)
 ## 1. 評価指標の選択
 [こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#21-%E8%A9%95%E4%BE%A1%E6%8C%87%E6%A8%99%E3%81%AE%E5%AE%9A%E7%BE%A9)チューニングの評価指標を選択します。
 
-デフォルト(各メソッドのscoring引数を指定しないとき)では、以下の指標を使用します
+デフォルト(各メソッドの`scoring`引数を指定しないとき)では、以下の指標を使用します
 |手法|デフォルトで使用する手法|
 |---|---|
 |回帰|RMSE ('neg_mean_squared_error')|
@@ -141,9 +141,9 @@ SCORING = 'neg_mean_squared_error'
 ```
 
 ## 2. パラメータ探索範囲の選択
-[plot_first_validation_curve()メソッド]()で検証曲線をプロットし、[こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#22-%E3%83%91%E3%83%A9%E3%83%A1%E3%83%BC%E3%82%BF%E7%A8%AE%E9%A1%9E%E3%81%A8%E6%8E%A2%E7%B4%A2%E7%AF%84%E5%9B%B2%E3%81%AE%E9%81%B8%E6%8A%9E)パラメータ探索範囲を選択します
+[`plot_first_validation_curve()`メソッド]()で検証曲線をプロットし、[こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#22-%E3%83%91%E3%83%A9%E3%83%A1%E3%83%BC%E3%82%BF%E7%A8%AE%E9%A1%9E%E3%81%A8%E6%8E%A2%E7%B4%A2%E7%AF%84%E5%9B%B2%E3%81%AE%E9%81%B8%E6%8A%9E)パラメータ探索範囲を選択します
 
-事前に[4.1. クロスバリデーション手法の選択]()を実施し、cv引数に指定する事が望ましいです
+事前に[4.1. クロスバリデーション手法の選択]()を実施し、`cv`引数に指定する事が望ましいです
 
 ### 実行例
 範囲を指定して検証曲線を描画
@@ -161,7 +161,9 @@ tuning.plot_first_validation_curve(validation_curve_params=VALIDATION_CURVE_PARA
                                    cv=KFold(n_splits=5, shuffle=True, random_state=42))
 ```
 ![image](https://user-images.githubusercontent.com/59557625/130344662-f059ca05-f44d-4003-b995-1530f205b302.png)
+
 下図のように検証曲線から過学習にも未学習にもなりすぎていない範囲を抽出し、探索範囲とすることが望ましいです
+
 ![image](https://user-images.githubusercontent.com/59557625/130347923-c3ed17a2-8ad6-4f30-8ff7-fc91cf8f97ee.png)
 
 ## 3. 探索法を選択
@@ -185,17 +187,19 @@ CV = KFold(n_splits=5, shuffle=True, random_state=42)
 ```
 
 ## 4.2. チューニング前のスコアを確認
+`※チューニング前スコアは4.3実行時にも表示されるので、本工程は飛ばしても構いません`
+
 チューニング前のスコアを確認します。
 このとき
 
-・学習器のfit()メソッドに渡す引数（LightGBMのearly_stopping_rounds等）
+・学習器の`fit()`メソッドに渡す引数（LightGBMの`early_stopping_rounds`等）
 
 ・チューニング対象外パラメータを学習器インスタンスに渡す事
 
 を忘れないようにご注意ください
 
 ### 実行例
-LightGBM回帰において、fit()メソッドに渡す引数(FIT_PARAMS)およびチューニング対象外パラメータ(NOT_OPT_PARAMS)を指定してスコア算出
+LightGBM回帰において、`fit()`メソッドに渡す引数`fit_params`およびチューニング対象外パラメータ`not_opt_params`を指定してスコア算出
 ```python
 from lightgbm import LGBMRegressor
 from sklearn.model_selection import cross_val_score
@@ -227,7 +231,7 @@ print(np.mean(scores))
 -11.979161807916636
 ```
 
-[seaborn-analyzer](https://github.com/c60evaporator/seaborn-analyzer/blob/master/README.md)を活用して予測値と実測値の関係を可視化すると、挙動がわかりやすくなるのでお勧めです
+[seaborn-analyzer](https://github.com/c60evaporator/seaborn-analyzer/blob/master/README.md)ライブラリを活用して予測値と実測値の関係を可視化すると、挙動がわかりやすくなるのでお勧めです
 ```python
 from seaborn_analyzer import regplot
 df_boston['price'] = y
@@ -245,13 +249,15 @@ regplot.regression_pred_true(lgbmr,
 ## 4.3. チューニング実行
 [3.で選択したチューニング用メソッド]()に対し、
 
-・[1.で選択した評価指標]()をscoring引数に
+・[1.で選択した評価指標]()を`scoring`引数に
 
-・[2.で選択したチューニング範囲]()をtuning_params引数に
+・[2.で選択したチューニング範囲]()を`tuning_params`引数に
 
-・[4.1で選択したクロスバリデーション手法]()をcv引数に
+・[4.1で選択したクロスバリデーション手法]()を`cv`引数に
 
 指定し、実行します
+
+（必要に応じて、4.2で選択した`fit_params`および`not_opt_params`引数も指定してください）
 
 ### 実行例
 Optunaでのチューニング実行例
@@ -268,7 +274,9 @@ TUNING_PARAMS = {'reg_alpha': (0.0001, 0.1),
 # チューニング実行
 best_params, best_score = tuning.optuna_tuning(scoring=SCORING,
                                                tuning_params=TUNING_PARAMS,
-                                               cv=CV
+                                               cv=CV,
+                                               not_opt_params=NOT_OPT_PARAMS,
+                                               fit_params=FIT_PARAMS
                                                )
 print(f'Best parameters\n{best_params}')  # 最適化されたパラメータ
 print(f'Not tuned parameters\n{tuning.not_opt_params}')  # 最適化対象外パラメータ
@@ -276,7 +284,8 @@ print(f'Best score\n{best_score}')  # 最適パラメータでのスコア
 print(f'Elapsed time\n{tuning.elapsed_time}')  # チューニング所要時間
 ```
 
-```実行結果
+実行結果
+```
 Best parameters
 {'reg_alpha': 0.003109527801280432, 'reg_lambda': 0.0035808676982557147, 'num_leaves': 41, 'colsample_bytree': 0.9453510369496361, 'subsample': 0.5947574986660598, 'subsample_freq': 1, 'min_child_samples': 0}
 
@@ -311,21 +320,21 @@ Optunaでのチューニング実行後のチューニング履歴表示例
 tuning.plot_search_history()
 ```
 
-横軸は試行数以外に時間も指定できます(x_axis引数='time')
+横軸は試行数以外に時間も指定できます(`x_axis`引数='time')
 
 ```python
 tuning.plot_search_history(x_axis='time')
 ```
 
 ## 5.2. パラメータと評価指標の関係を確認
-[plot_search_history()メソッド]()でパラメータと評価指標の関係をプロットし、評価指標のピークを捉えられているか確認します。
+[`plot_search_history()`メソッド]()でパラメータと評価指標の関係をプロットし、評価指標のピークを捉えられているか確認します。
 4.2で使用した手法がグリッドサーチならヒートマップで、それ以外なら散布図でプロットします。
 
 パラメータが5次元以上のとき、以下の方法で表示軸を選択します。
 
 ・グリッドサーチ：パラメータの要素数()上位4パラメータを軸として表示します。表示軸以外のパラメータは最適値を使用します。
 
-・グリッドサーチ以外：[後述のparam_importances]()の上位4パラメータを軸として表示します。
+・グリッドサーチ以外：[後述の`param_importances`]()の上位4パラメータを軸として表示します。
 
 ### 実行例
 Optunaでのチューニング実行後のパラメータと評価指標の関係表示
@@ -334,7 +343,7 @@ tuning.plot_search_map()
 ```
 
 ## 5.3. 学習曲線を確認
-[plot_best_learning_curve()メソッド]()で学習曲線をプロットし、[こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#%E5%AD%A6%E7%BF%92%E6%9B%B2%E7%B7%9A-1)「目的の性能を達成しているか」「過学習していないか」を確認します
+[`plot_best_learning_curve()`メソッド]()で学習曲線をプロットし、[こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#%E5%AD%A6%E7%BF%92%E6%9B%B2%E7%B7%9A-1)「目的の性能を達成しているか」「過学習していないか」を確認します
 
 ### 実行例
 Optunaでのチューニング実行後の学習曲線を表示
@@ -343,7 +352,7 @@ tuning.plot_best_learning_curve()
 ```
 
 ## 5.4. 検証曲線を確認
-[plot_best_validation_curve()メソッド]()で検証曲線をプロットし、[こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#%E6%A4%9C%E8%A8%BC%E6%9B%B2%E7%B7%9A-2)「性能の最大値を捉えられているか」「過学習していないか」を確認します
+[`plot_best_validation_curve()`]()メソッドで検証曲線をプロットし、[こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#%E6%A4%9C%E8%A8%BC%E6%9B%B2%E7%B7%9A-2)「性能の最大値を捉えられているか」「過学習していないか」を確認します
 
 ### 実行例
 Optunaでのチューニング実行後の検証曲線を表示
@@ -351,8 +360,40 @@ Optunaでのチューニング実行後の検証曲線を表示
 tuning.plot_best_validation_curve()
 ```
 
-## 6. チューニング後のスコアを確認
+## 6. チューニング後の学習器を使用する
+チューニング後の学習器は`best_estimator`プロパティから取得できます。
 
+また、学習器に`best_params`および`not_opt_params`プロパティの値を渡す事でも、チューニング後の学習器を再現することができます
+
+後者の方法での実行例を下記します
+
+### 実行例
+チューニング後の学習器から評価指標を求める (`best_score`プロパティと同じ値が求まります)
+```python
+params_after = {}
+params_after.update(tuning.best_params)
+params_after.update(tuning.not_opt_params)
+best_estimator = LGBMRegressor(**params_after)
+# 評価指標算出
+scores = cross_val_score(best_estimator, X, y,
+                         scoring=tuning.scoring,
+                         cv=tuning.cv,
+                         fit_params=tuning.fit_params
+                         )
+print(np.mean(scores))
+```
+チューニング前と同様、[seaborn-analyzer](https://github.com/c60evaporator/seaborn-analyzer/blob/master/README.md)ライブラリを使用して予測値と実測値の関係を可視化すると、挙動がわかりやすくなるのでお勧めです
+```python
+from seaborn_analyzer import regplot
+regplot.regression_pred_true(lgbmr,
+                             x=tuning.x_colnames,
+                             y='price',
+                             data=df_boston,
+                             scores='mse',
+                             cv=tuning.cv,
+                             fit_params=tuning.fit_params
+                             )
+```
 <br>
 <br>
 
@@ -371,7 +412,7 @@ tuning.plot_best_validation_curve()
 |RFClassifierTuning|rf_tuning.py|ランダムフォレスト分類のパラメータチューニング用クラス|[リンク]()|
 
 ## クラス初期化
-上記クラスは、以下のように初期化(__init__()メソッド)します
+上記クラスは、以下のように初期化(`__init__()`メソッド)します
 
 ### 引数
 初期化の引数は以下のようになります
