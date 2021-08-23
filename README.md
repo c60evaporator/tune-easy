@@ -361,6 +361,9 @@ Optunaでのチューニング実行後の学習曲線を表示
 ```python
 tuning.plot_best_learning_curve()
 ```
+実行結果
+
+![image](https://user-images.githubusercontent.com/59557625/130488483-387b6fdb-8ca3-47d6-ad25-d142463683b0.png)
 
 ## 5.4. 検証曲線を確認
 [`plot_best_validation_curve()`]()メソッドで検証曲線をプロットし、[こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#%E6%A4%9C%E8%A8%BC%E6%9B%B2%E7%B7%9A-2)「性能の最大値を捉えられているか」「過学習していないか」を確認します
@@ -370,6 +373,9 @@ Optunaでのチューニング実行後の検証曲線を表示
 ```python
 tuning.plot_best_validation_curve()
 ```
+実行結果
+
+![image](https://user-images.githubusercontent.com/59557625/130488573-6c422424-a27f-4a4a-91fe-08250c44356e.png)
 
 ## 6. チューニング後の学習器を使用する
 チューニング後の学習器は`best_estimator`プロパティから取得できます。
@@ -405,6 +411,8 @@ regplot.regression_pred_true(lgbmr,
                              fit_params=tuning.fit_params
                              )
 ```
+![image](https://user-images.githubusercontent.com/59557625/130488697-ab6f83f9-3895-4ec6-a761-770f5396bd0e.png)
+
 <br>
 <br>
 
