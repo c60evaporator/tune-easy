@@ -399,6 +399,11 @@ scores = cross_val_score(best_estimator, X, y,
                          )
 print(np.mean(scores))
 ```
+実行結果
+```
+-9.616609903204923
+```
+
 チューニング前と同様、[seaborn-analyzer](https://github.com/c60evaporator/seaborn-analyzer/blob/master/README.md)ライブラリを使用して予測値と実測値の関係を可視化すると、挙動がわかりやすくなるのでお勧めです
 ```python
 from seaborn_analyzer import regplot
