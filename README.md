@@ -234,6 +234,7 @@ print(np.mean(scores))
 ```
 -11.979161807916636
 ```
+<br>
 
 [seaborn-analyzer](https://github.com/c60evaporator/seaborn-analyzer/blob/master/README.md)ライブラリを活用して予測値と実測値の関係を可視化すると、挙動がわかりやすくなるのでお勧めです
 ```python
@@ -403,6 +404,7 @@ print(np.mean(scores))
 ```
 -9.616609903204923
 ```
+<br>
 
 チューニング前と同様、[seaborn-analyzer](https://github.com/c60evaporator/seaborn-analyzer/blob/master/README.md)ライブラリを使用して予測値と実測値の関係を可視化すると、挙動がわかりやすくなるのでお勧めです
 ```python
