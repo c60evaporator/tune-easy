@@ -162,6 +162,8 @@ tuning.plot_first_validation_curve(validation_curve_params=VALIDATION_CURVE_PARA
                                    scoring=SCORING,
                                    cv=KFold(n_splits=5, shuffle=True, random_state=42))
 ```
+実行結果
+
 ![image](https://user-images.githubusercontent.com/59557625/130344662-f059ca05-f44d-4003-b995-1530f205b302.png)
 
 下図のように検証曲線から過学習にも未学習にもなりすぎていない範囲を抽出し、探索範囲とすることが望ましいです
@@ -246,7 +248,7 @@ regplot.regression_pred_true(lgbmr,
                              fit_params=FIT_PARAMS
                              )
 ```
-![image](https://user-images.githubusercontent.com/59557625/130362867-0984bc27-6d6a-41b3-9a5f-c1e6f13e01d2.png)
+![image](https://user-images.githubusercontent.com/59557625/130487845-2c9db099-f137-489a-9b09-9f01a8d55f1e.png)
 
 ## 4.3. チューニング実行
 [3.で選択したチューニング用メソッド]()に対し、
@@ -322,6 +324,10 @@ Optunaでのチューニング実行後のチューニング履歴表示例
 tuning.plot_search_history()
 ```
 
+実行結果
+
+![image](https://user-images.githubusercontent.com/59557625/130488044-75d316ba-f251-4ecd-9729-65d33e402b5b.png)
+
 横軸は試行数以外に時間も指定できます(`x_axis`引数='time')
 
 ```python
@@ -343,6 +349,9 @@ Optunaでのチューニング実行後のパラメータと評価指標の関�
 ```python
 tuning.plot_search_map()
 ```
+実行結果
+
+![image](https://user-images.githubusercontent.com/59557625/130488301-da358b25-5ba9-4306-8e76-5e28153b89d2.png)
 
 ## 5.3. 学習曲線を確認
 [`plot_best_learning_curve()`]()メソッドで学習曲線をプロットし、[こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#%E5%AD%A6%E7%BF%92%E6%9B%B2%E7%B7%9A-1)「目的の性能を達成しているか」「過学習していないか」を確認します
