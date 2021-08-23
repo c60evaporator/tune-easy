@@ -103,6 +103,7 @@ class ParamTuning():
         self.estimator = None  # 最適化対象の学習器インスタンス
         self.learner_name = None  # パイプライン処理時の学習器名称
         self.fit_params = None  # 学習時のパラメータ
+        self.score_before = None
         self.algo_name = None  # 最適化に使用したアルゴリズム名('grid', 'random', 'bayes-opt', 'optuna')
         self.best_params = None  # 最適パラメータ
         self.best_score = None  # 最高スコア
@@ -160,6 +161,20 @@ class ParamTuning():
             src_not_opt_params['random_state'] = seed
         return src_not_opt_params
     
+    def _calc_score_before_tuning(self):
+        """
+        チューニング前の評価指標を算出
+        """
+        estimator_before = copy.deepcopy(self.estimator)
+        estimator_before.set_params(**self.not_opt_params)
+        scores = cross_val_score(estimator_before, self.X, self.y,
+                                 scoring=self.scoring,
+                                 cv=self.cv,
+                                 fit_params=self.fit_params
+                                 )
+        self.score_before = np.mean(scores)
+        print(f'score before tuning = {self.score_before}')
+
     def _set_argument_to_property(self, estimator, tuning_params, cv, seed, scoring, fit_params, not_opt_params, param_scales):
         """
         引数をプロパティ(インスタンス変数)に反映
@@ -172,6 +187,8 @@ class ParamTuning():
         self.fit_params = fit_params
         self.not_opt_params = not_opt_params
         self.param_scales = param_scales
+        # チューニング前の評価指標を算出
+        self._calc_score_before_tuning()
 
     def _add_learner_name(self, estimator, params):
         """
@@ -261,6 +278,7 @@ class ParamTuning():
         mlflow.log_params(best_params_float)  # 最適パラメータ(数値型)
         best_params_str = {f'best__{k}':v for k, v in self.best_params.items() if not isinstance(v, float) and not isinstance(v, int)}
         mlflow.log_params(best_params_str)  # 最適パラメータ(数値型以外)
+        mlflow.log_metric('score_before', self.score_before)  # チューニング前のスコア
         mlflow.log_metric('best_score', self.best_score)  # 最高スコア
         mlflow.log_metric('elapsed_time', self.elapsed_time)  # 所要時間
         mlflow.log_metric('preprocess_time', self.preprocess_time)  # 前処理(最適化スタート前)時間
