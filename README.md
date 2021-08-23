@@ -164,9 +164,9 @@ tuning.plot_first_validation_curve(validation_curve_params=VALIDATION_CURVE_PARA
 ```
 実行結果
 
-![image](https://user-images.githubusercontent.com/59557625/130344662-f059ca05-f44d-4003-b995-1530f205b302.png)
+![image](https://user-images.githubusercontent.com/59557625/130490027-5ff1b717-7e45-4e02-8e50-79fd6e49b19f.png)
 
-下図のように検証曲線から過学習にも未学習にもなりすぎていない範囲を抽出し、探索範囲とすることが望ましいです
+下図のように検証曲線から過学習にも未学習にもなりすぎていない範囲を抽出し、探索範囲とすることが望ましいです (数はSVMでの実行例)
 
 ![image](https://user-images.githubusercontent.com/59557625/130347923-c3ed17a2-8ad6-4f30-8ff7-fc91cf8f97ee.png)
 
@@ -376,7 +376,7 @@ tuning.plot_best_validation_curve()
 ```
 実行結果
 
-![image](https://user-images.githubusercontent.com/59557625/130488573-6c422424-a27f-4a4a-91fe-08250c44356e.png)
+![image](https://user-images.githubusercontent.com/59557625/130490273-345dbc31-2201-4752-be79-0749058c2b00.png)
 
 ## 6. チューニング後の学習器を使用する
 チューニング後の学習器は`best_estimator`プロパティから取得できます。
