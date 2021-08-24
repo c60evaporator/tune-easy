@@ -449,9 +449,10 @@ regplot.regression_pred_true(lgbmr,
 |x_colnames|必須|list[str]|-|説明変数のフィールド名のリスト|
 |y_colname|オプション|str|None|目的変数のフィールド名|
 |cv_group|オプション|str|None|GroupKFold、LeaveOneGroupOutのグルーピング対象データ|
-|eval_data_source|オプション|{'all', 'valid', 'train'}|'all'|eval_setの指定方法, 'all'ならeval_set =[(self.X, self.y)] (XGBoost, LightGBMのみ有効)|
+|eval_data_source|オプション|{'all', 'valid', 'train'}|'all'|XGBoost, LightGBMにおける`fit_params`の`eval_set`の指定方法, 'all'ならeval_set =[(self.X, self.y)]|
 
 ### 実行例
+コードは[こちらにもアップロードしています]()
 #### オプション引数指定なしで初期化
 LightGBM回帰におけるクラス初期化実行例
 ```python
@@ -539,40 +540,54 @@ get_feature_importancesおよびplot_feature_importancesメソッドは、XGBoos
 |markers|オプション|str or list[str]|None|hueで色分けしたデータの散布図プロット形状|
 |height|オプション|float|2.5|グラフ1個の高さ|
 |aspect|オプション|float|1|グラフ1個の縦横比|
-|dropna|オプション|bool|True|[seaborn.PairGridのdropna引数](https://seaborn.pydata.org/generated/seaborn.PairGrid.html?highlight=pairgrid#seaborn.PairGrid)|
-|lower_kws|オプション|dict|{}|[seaborn.PairGrid.map_lowerの引数](https://seaborn.pydata.org/generated/seaborn.PairGrid.html?highlight=pairgrid#seaborn.PairGrid)|
-|diag_kws|オプション|dict|{}|[seaborn.PairGrid.map_diag引数](https://seaborn.pydata.org/generated/seaborn.PairGrid.html?highlight=pairgrid#seaborn.PairGrid)|
-|grid_kws|オプション|dict|{}|[seaborn.PairGridの上記以外の引数](https://seaborn.pydata.org/generated/seaborn.PairGrid.html?highlight=pairgrid#seaborn.PairGrid)|
+|dropna|オプション|bool|True|[`seaborn.PairGrid`の`dropna`引数](https://seaborn.pydata.org/generated/seaborn.PairGrid.html?highlight=pairgrid#seaborn.PairGrid)|
+|lower_kws|オプション|dict|{}|[`seaborn.PairGrid.map_lower`の引数](https://seaborn.pydata.org/generated/seaborn.PairGrid.html?highlight=pairgrid#seaborn.PairGrid)|
+|diag_kws|オプション|dict|{}|[`seaborn.PairGrid.map_diag`引数](https://seaborn.pydata.org/generated/seaborn.PairGrid.html?highlight=pairgrid#seaborn.PairGrid)|
+|grid_kws|オプション|dict|{}|[`seaborn.PairGrid`の上記以外の引数](https://seaborn.pydata.org/generated/seaborn.PairGrid.html?highlight=pairgrid#seaborn.PairGrid)|
 
 ### 実行例
-LightGBM回帰における実行例 (引数指定なし)
+コードは[こちらにもアップロードしています]()
+#### オプション引数指定なしで検証曲線プロット
+オプション引数を指定しないとき、[デフォルトの引数]()を使用してプロットします
 ```python
 from param_tuning import LGBMRegressorTuning
 from sklearn.datasets import load_boston
 import pandas as pd
+# データセット読込
 USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
 df_boston = pd.DataFrame(load_boston().data, columns = load_boston().feature_names)
-X = boston[USE_EXPLANATORY].values
+X = df_boston[USE_EXPLANATORY].values
 y = load_boston().target
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
-###### 範囲を定めて検証曲線プロット ######
+###### デフォルト引数で検証曲線プロット ######
 tuning.plot_first_validation_curve()
 ```
-![image](https://user-images.githubusercontent.com/59557625/115889860-4e8bde80-a48f-11eb-826a-cd3c79556a42.png)
+![image](https://user-images.githubusercontent.com/59557625/130490027-5ff1b717-7e45-4e02-8e50-79fd6e49b19f.png)
 
-LightGBM回帰における引数指定例
+#### 範囲を指定して検証曲線プロット
+`validation_curve_params`引数で、検証曲線のプロット範囲を指定する事ができます
 ```python
 from param_tuning import LGBMRegressorTuning
 from sklearn.datasets import load_boston
 import pandas as pd
-USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']  # 説明変数
+# データセット読込
+USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
 df_boston = pd.DataFrame(load_boston().data, columns = load_boston().feature_names)
-X = boston[USE_EXPLANATORY].values
+X = df_boston[USE_EXPLANATORY].values
 y = load_boston().target
-# チューニング実行
-tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE)  # チューニング用クラス
-tuning.plot_first_validation_curve()  # 範囲を定めて検証曲線をプロット
+tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
+# パラメータ
+VALIDATION_CURVE_PARAMS = {'reg_lambda': [0.0001, 0.001, 0.01, 0.1, 1, 10],
+                           'num_leaves': [2, 4, 8, 16, 32, 64],
+                           'colsample_bytree': [0.2, 0.4, 0.6, 0.8, 1.0],
+                           'subsample': [0.2, 0.4, 0.6, 0.8, 1.0],
+                           'min_child_samples': [0, 5, 10, 20, 30, 50]
+                           }
+###### デフォルト引数で検証曲線プロット ######
+tuning.plot_first_validation_curve(validation_curve_params=VALIDATION_CURVE_PARAMS)
 ```
+
+その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L123)をご参照ください
 
 <br>
 
