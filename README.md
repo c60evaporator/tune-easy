@@ -565,7 +565,7 @@ tuning.plot_first_validation_curve()
 ![image](https://user-images.githubusercontent.com/59557625/130490027-5ff1b717-7e45-4e02-8e50-79fd6e49b19f.png)
 
 #### 範囲を指定して検証曲線プロット
-`validation_curve_params`引数で、検証曲線のプロット範囲を指定する事ができます
+`validation_curve_params`引数で、検証曲線のパラメータ範囲を指定する事ができます
 ```python
 from param_tuning import LGBMRegressorTuning
 from sklearn.datasets import load_boston
@@ -583,9 +583,10 @@ VALIDATION_CURVE_PARAMS = {'reg_lambda': [0.0001, 0.001, 0.01, 0.1, 1, 10],
                            'subsample': [0.2, 0.4, 0.6, 0.8, 1.0],
                            'min_child_samples': [0, 5, 10, 20, 30, 50]
                            }
-###### デフォルト引数で検証曲線プロット ######
+###### パラメータ範囲を指定して検証曲線プロット ######
 tuning.plot_first_validation_curve(validation_curve_params=VALIDATION_CURVE_PARAMS)
 ```
+![image](https://user-images.githubusercontent.com/59557625/130651966-5c78f390-6bb0-474e-b64b-1b3c34eb0943.png)
 
 その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L123)をご参照ください
 
