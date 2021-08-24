@@ -119,6 +119,12 @@ validation_curve_params = {'reg_alpha': [0, 0.0001, 0.0003, 0.001, 0.003, 0.01, 
                            'subsample_freq': [0, 1, 2, 3, 4, 5, 6, 7],
                            'min_child_samples': [0, 2, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
                            }
+fig, axes = plt.subplots(1, 3, figsize=(12, 3))
+tuning.plot_first_validation_curve(estimator=lgbmr, validation_curve_params=validation_curve_params,
+                                   cv=KFold(n_splits=3, shuffle=True, random_state=42), seed=43, scoring='neg_mean_absolute_error',
+                                   not_opt_params=not_opt_params, param_scales=param_scales,
+                                   plot_stats='median', axes=axes, fit_params=fit_params
+                                   )
 tuning.grid_search_tuning(estimator=lgbmr, tuning_params=tuning_params,
                           cv=KFold(n_splits=3, shuffle=True, random_state=42), seed=42,
                           scoring='neg_mean_squared_error',
