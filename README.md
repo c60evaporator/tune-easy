@@ -67,24 +67,26 @@ Scikit-LearnのAPIに対応した学習器が対象となります。
 
 ![image](https://user-images.githubusercontent.com/59557625/130362754-a85fc7fc-38f7-4d5a-9e8f-c24321a2ed98.png)
 
-0. チューニングの準備
+## 手順一覧
+**0. チューニングの準備**
 
     [0.1. データの読込＆前処理](https://github.com/c60evaporator/param-tuning-utility/blob/master/README.md#01-%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E8%AA%AD%E8%BE%BC%E5%89%8D%E5%87%A6%E7%90%86)
 
     [0.2. チューニング用クラスの初期化](https://github.com/c60evaporator/param-tuning-utility/blob/master/README.md#02-%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E7%94%A8%E3%82%AF%E3%83%A9%E3%82%B9%E3%81%AE%E5%88%9D%E6%9C%9F%E5%8C%96)
-1. 評価指標の選択
+
+**1. 評価指標の選択**
 
     [1.1. 評価指標の選択](https://github.com/c60evaporator/param-tuning-utility/blob/master/README.md#1-%E8%A9%95%E4%BE%A1%E6%8C%87%E6%A8%99%E3%81%AE%E9%81%B8%E6%8A%9E)
 
-2. パラメータ探索範囲の選択
+**2. パラメータ探索範囲の選択**
 
     [2.1. パラメータ探索範囲の選択](https://github.com/c60evaporator/param-tuning-utility/blob/master/README.md#2-%E3%83%91%E3%83%A9%E3%83%A1%E3%83%BC%E3%82%BF%E6%8E%A2%E7%B4%A2%E7%AF%84%E5%9B%B2%E3%81%AE%E9%81%B8%E6%8A%9E)
 
-3. 探索法を選択
+**3. 探索法を選択**
 
     [3.1. 探索手法を選択](https://github.com/c60evaporator/param-tuning-utility/blob/master/README.md#3-%E6%8E%A2%E7%B4%A2%E6%B3%95%E3%82%92%E9%81%B8%E6%8A%9E)
 
-4. クロスバリデーションでチューニングを実行
+**4. クロスバリデーションでチューニングを実行**
 
     [4.1. クロスバリデーション手法を選択](https://github.com/c60evaporator/param-tuning-utility/blob/master/README.md#41-%E3%82%AF%E3%83%AD%E3%82%B9%E3%83%90%E3%83%AA%E3%83%87%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E6%89%8B%E6%B3%95%E3%82%92%E9%81%B8%E6%8A%9E)
 
@@ -92,7 +94,7 @@ Scikit-LearnのAPIに対応した学習器が対象となります。
 
     [4.3. チューニング実行](https://github.com/c60evaporator/param-tuning-utility/blob/master/README.md#43-%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E5%AE%9F%E8%A1%8C)
 
-5. 学習曲線・検証曲線等でチューニング結果を確認
+**5. 学習曲線・検証曲線等でチューニング結果を確認**
 
     [5.1. チューニング履歴の確認](https://github.com/c60evaporator/param-tuning-utility/blob/master/README.md#01-%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E8%AA%AD%E8%BE%BC%E5%89%8D%E5%87%A6%E7%90%86)
 
@@ -102,7 +104,7 @@ Scikit-LearnのAPIに対応した学習器が対象となります。
 
     [5.4. 検証曲線を確認](https://github.com/c60evaporator/param-tuning-utility/blob/master/README.md#54-%E6%A4%9C%E8%A8%BC%E6%9B%B2%E7%B7%9A%E3%82%92%E7%A2%BA%E8%AA%8D)
 
-6. チューニング結果の活用
+**6. チューニング結果の活用**
 
     [6.1. チューニング後の学習器を使用する](https://github.com/c60evaporator/param-tuning-utility/blob/master/README.md#6-%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E5%BE%8C%E3%81%AE%E5%AD%A6%E7%BF%92%E5%99%A8%E3%82%92%E4%BD%BF%E7%94%A8%E3%81%99%E3%82%8B)
 
