@@ -5,7 +5,7 @@ from sklearn.datasets import load_boston
 import pandas as pd
 # Load dataset
 USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']  # Feature names used as explanatory variables
-df_boston = pd.DataFrame(load_boston().data, columns = load_boston().feature_names)
+df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
 X = df_boston[USE_EXPLANATORY].values  # Explanatory variables
 y = load_boston().target  # Objective variable
 ###### __init() ######
@@ -33,7 +33,7 @@ from sklearn.datasets import load_boston
 import pandas as pd
 # Load dataset
 USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns = load_boston().feature_names)
+df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
 X = df_boston[USE_EXPLANATORY].values  # Explanatory variables
 y = load_boston().target  # Objective variable
 ###### __init() ######

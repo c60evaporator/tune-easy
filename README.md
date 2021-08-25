@@ -17,7 +17,7 @@ from sklearn.datasets import load_boston
 import pandas as pd
 # データセット読込
 USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']  # 説明変数
-df_boston = pd.DataFrame(load_boston().data, columns = load_boston().feature_names)
+df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
 X = df_boston[USE_EXPLANATORY].values
 y = load_boston().target  # 目的変数
 ###### チューニング実行と評価 ######
@@ -120,7 +120,7 @@ from sklearn.datasets import load_boston
 import pandas as pd
 
 USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']  # 選択した5つの説明変数
-df_boston = pd.DataFrame(load_boston().data, columns = load_boston().feature_names)
+df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
 X = df_boston[USE_EXPLANATORY].values
 y = load_boston().target  # 目的変数
 ```
@@ -279,7 +279,7 @@ print(np.mean(scores))
 ```
 <br>
 
-[seaborn-analyzer](https://github.com/c60evaporator/seaborn-analyzer/blob/master/README.md)ライブラリを活用して予測値と実測値の関係を可視化すると、挙動がわかりやすくなるのでお勧めです
+[seaborn-analyzer](https://pypi.org/project/seaborn-analyzer/)ライブラリを活用して予測値と実測値の関係を可視化すると、挙動がわかりやすくなるのでお勧めです
 ```python
 from seaborn_analyzer import regplot
 df_boston['price'] = y
@@ -449,7 +449,7 @@ print(np.mean(scores))
 ```
 <br>
 
-チューニング前と同様、[seaborn-analyzer](https://github.com/c60evaporator/seaborn-analyzer/blob/master/README.md)ライブラリを使用して予測値と実測値の関係を可視化すると、挙動がわかりやすくなるのでお勧めです
+チューニング前と同様、[seaborn-analyzer](https://pypi.org/project/seaborn-analyzer/)ライブラリを使用して予測値と実測値の関係を可視化すると、挙動がわかりやすくなるのでお勧めです
 ```python
 from seaborn_analyzer import regplot
 regplot.regression_pred_true(lgbmr,
@@ -504,7 +504,7 @@ from sklearn.datasets import load_boston
 import pandas as pd
 # データセット読込
 USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns = load_boston().feature_names)
+df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
 X = boston[USE_EXPLANATORY].values
 y = load_boston().target
 ###### クラス初期化 ######
@@ -536,7 +536,7 @@ from sklearn.datasets import load_boston
 import pandas as pd
 # データセット読込
 USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns = load_boston().feature_names)
+df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
 X = boston[USE_EXPLANATORY].values
 y = load_boston().target
 ###### クラス初期化 ######
@@ -595,7 +595,7 @@ from sklearn.datasets import load_boston
 import pandas as pd
 # データセット読込
 USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns = load_boston().feature_names)
+df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
 X = df_boston[USE_EXPLANATORY].values
 y = load_boston().target
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
@@ -614,7 +614,7 @@ from sklearn.datasets import load_boston
 import pandas as pd
 # データセット読込
 USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns = load_boston().feature_names)
+df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
 X = df_boston[USE_EXPLANATORY].values
 y = load_boston().target
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
@@ -646,11 +646,11 @@ tuning.plot_first_validation_curve(validation_curve_params=VALIDATION_CURVE_PARA
 |tuning_params|オプション|dict[str, list[float]]|[クラスごとに異なる]()|チューニング対象のパラメータ範囲|
 |cv|オプション|int, cross-validation generator, or an iterable|5|クロスバリデーション分割法 (int入力時はKFoldで分割)|
 |seed|オプション|int|42|乱数シード (学習器の`random_state`に適用、`cv`引数がint型のときKFoldの乱数シードにも指定)|
-|scoring|オプション|str|'neg_mean_squared_error'|最適化で最大化する評価指標 ('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)|
+|scoring|オプション|str|'neg_mean_squared_error' in regression.'neg_log_loss' in clasification|最適化で最大化する評価指標 ('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)|
 |not_opt_params|オプション|dict|[クラスごとに異なる]()|`tuning_params`以外のチューニング対象外パラメータを指定|
 |param_scales|オプション|dict[str, str]|[クラスごとに異なる]()|`tuning_params`のパラメータごとのスケール('linear', 'log')|
 |mlflow_logging|オプション|str|None|MLFlowでの結果記録有無('log':通常の記録, 'with':with構文で記録, None:記録なし)。詳細は[こちら]()|
-|grid_kws|オプション|dict|None|sklearn.model_selection.GridSearchCVに渡す引数 (estimator, param_grid, cv, scoring以外)|
+|grid_kws|オプション|dict|None|sklearn.model_selection.GridSearchCVに渡す引数 (estimator, tuning_params, cv, scoring以外)|
 |fit_params|オプション|dict|[クラスごとに異なる]()|学習器の`fit()`メソッドに渡すパラメータ|
 
 ### 実行例
@@ -663,7 +663,7 @@ from sklearn.datasets import load_boston
 import pandas as pd
 # データセット読込
 USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns = load_boston().feature_names)
+df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
 X = df_boston[USE_EXPLANATORY].values
 y = load_boston().target
 tuning = RFRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
@@ -685,7 +685,7 @@ from sklearn.datasets import load_boston
 import pandas as pd
 # データセット読込
 USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns = load_boston().feature_names)
+df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
 X = df_boston[USE_EXPLANATORY].values
 y = load_boston().target
 tuning = RFRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
@@ -695,7 +695,7 @@ CV_PARAMS_GRID = {'n_estimators': [20, 80, 160],
                   'min_samples_split': [2, 8, 32],
                   'min_samples_leaf': [1, 4, 16]
                   }
-###### パラメータ範囲を指定して検証曲線プロット ######
+###### パラメータ範囲を指定してグリッドサーチ ######
 best_params, best_score = tuning.grid_search_tuning(tuning_params=CV_PARAMS_GRID)
 ```
 実行結果
@@ -716,7 +716,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestRegressor
 # データセット読込
 USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns = load_boston().feature_names)
+df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
 X = df_boston[USE_EXPLANATORY].values
 y = load_boston().target
 tuning = RFRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
@@ -729,7 +729,7 @@ CV_PARAMS_GRID = {'n_estimators': [20, 80, 160],
                   'min_samples_split': [2, 8, 32],
                   'min_samples_leaf': [1, 4, 16]
                   }
-###### パラメータ範囲を指定して検証曲線プロット ######
+###### 学習器とパラメータ範囲を指定してグリッドサーチ ######
 best_params, best_score = tuning.grid_search_tuning(estimator=ESTIMATOR,
                                                     tuning_params=CV_PARAMS_GRID)
 ```
@@ -757,15 +757,16 @@ score after tuning = -10.477565908068511
 |cv|オプション|int, cross-validation generator, or an iterable|5|クロスバリデーション分割法 (int入力時はKFoldで分割)|
 |seed|オプション|int|42|乱数シード (学習器の`random_state`に適用、`cv`引数がint型のときKFoldの乱数シードにも指定)|
 |scoring|オプション|str|'neg_mean_squared_error'|最適化で最大化する評価指標 ('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)|
+|n_iter|オプション|int|[クラスごとに異なる]()|ランダムサーチの試行数|
 |not_opt_params|オプション|dict|[クラスごとに異なる]()|`tuning_params`以外のチューニング対象外パラメータを指定|
 |param_scales|オプション|dict[str, str]|[クラスごとに異なる]()|`tuning_params`のパラメータごとのスケール('linear', 'log')|
 |mlflow_logging|オプション|str|None|MLFlowでの結果記録有無('log':通常の記録, 'with':with構文で記録, None:記録なし)。詳細は[こちら]()|
-|grid_kws|オプション|dict|None|sklearn.model_selection.GridSearchCVに渡す引数 (estimator, param_grid, cv, scoring以外)|
+|rand_kws|オプション|dict|None|sklearn.model_selection.RondomizedSearchCVに渡す引数 (estimator, tuning_params, cv, scoring, n_iter以外)|
 |fit_params|オプション|dict|[クラスごとに異なる]()|学習器の`fit()`メソッドに渡すパラメータ|
 
 ### 実行例
 コードは[こちらにもアップロードしています]()
-#### オプション引数指定なしでグリッドサーチ
+#### オプション引数指定なしでランダムサーチ
 オプション引数を指定しないとき、[デフォルトの引数]()を使用してプロットします
 ```python
 from param_tuning import RFRegressorTuning
@@ -773,18 +774,18 @@ from sklearn.datasets import load_boston
 import pandas as pd
 # データセット読込
 USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns = load_boston().feature_names)
+df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
 X = df_boston[USE_EXPLANATORY].values
 y = load_boston().target
 tuning = RFRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
-###### デフォルト引数でグリッドサーチ ######
-best_params, best_score = tuning.grid_search_tuning()
+###### デフォルト引数でランダムサーチ ######
+best_params, best_score = tuning.random_search_tuning()
 ```
 実行結果
 ```
 score before tuning = -11.719820569093374
-best_params = {'max_depth': 32, 'max_features': 2, 'min_samples_leaf': 1, 'min_samples_split': 2, 'n_estimators': 160}
-score after tuning = -10.497362132823111
+best_params = {'n_estimators': 160, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 2, 'max_depth': 8}
+score after tuning = -10.832494601564617
 ```
 
 #### パラメータ範囲と試行数を指定してランダムサーチ
@@ -795,27 +796,29 @@ from sklearn.datasets import load_boston
 import pandas as pd
 # データセット読込
 USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns = load_boston().feature_names)
+df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
 X = df_boston[USE_EXPLANATORY].values
 y = load_boston().target
 tuning = RFRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 # パラメータ
-CV_PARAMS_GRID = {'n_estimators': [20, 80, 160],
-                  'max_depth': [2, 8, 32],
-                  'min_samples_split': [2, 8, 32],
-                  'min_samples_leaf': [1, 4, 16]
-                  }
-###### パラメータ範囲を指定して検証曲線プロット ######
-best_params, best_score = tuning.grid_search_tuning(tuning_params=CV_PARAMS_GRID)
+CV_PARAMS_RANDOM = {'n_estimators': [20, 30, 40, 60, 80, 120, 160],
+                    'max_features': [2, 3, 4, 5],
+                    'max_depth': [2, 3, 4, 6, 8, 12, 16, 24, 32],
+                    'min_samples_split': [2, 3, 4, 6, 8, 12, 16, 24, 32],
+                    'min_samples_leaf': [1, 2, 3, 4, 6, 8, 12, 16]
+                    }
+###### パラメータ範囲と試行数を指定してランダムサーチ ######
+best_params, best_score = tuning.random_search_tuning(tuning_params=CV_PARAMS_RANDOM,
+                                                      n_iter=160)
 ```
 実行結果
 ```
 score before tuning = -11.719820569093374
-best_params = {'max_depth': 32, 'min_samples_leaf': 1, 'min_samples_split': 8, 'n_estimators': 80}
-score after tuning = -11.621063650183345
+best_params = {'n_estimators': 30, 'min_samples_split': 8, 'min_samples_leaf': 1, 'max_features': 2, 'max_depth': 32}
+score after tuning = -10.890781333521025
 ```
 
-#### 学習器を指定してグリッドサーチ
+#### 学習器を指定してランダムサーチ
 `estimator`引数で、学習器を指定する事ができます。パイプラインも指定可能です
 ```python
 from param_tuning import RFRegressorTuning
@@ -826,28 +829,29 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestRegressor
 # データセット読込
 USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns = load_boston().feature_names)
+df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
 X = df_boston[USE_EXPLANATORY].values
 y = load_boston().target
 tuning = RFRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 # 学習器を指定
 ESTIMATOR = Pipeline([("scaler", StandardScaler()), ("rf", RandomForestRegressor())])
 # パラメータ
-CV_PARAMS_GRID = {'n_estimators': [20, 80, 160],
-                  'max_features': [2, 5],
-                  'max_depth': [2, 8, 32],
-                  'min_samples_split': [2, 8, 32],
-                  'min_samples_leaf': [1, 4, 16]
-                  }
-###### パラメータ範囲を指定して検証曲線プロット ######
-best_params, best_score = tuning.grid_search_tuning(estimator=ESTIMATOR,
-                                                    tuning_params=CV_PARAMS_GRID)
+CV_PARAMS_RANDOM = {'n_estimators': [20, 30, 40, 60, 80, 120, 160],
+                    'max_features': [2, 3, 4, 5],
+                    'max_depth': [2, 3, 4, 6, 8, 12, 16, 24, 32],
+                    'min_samples_split': [2, 3, 4, 6, 8, 12, 16, 24, 32],
+                    'min_samples_leaf': [1, 2, 3, 4, 6, 8, 12, 16]
+                    }
+###### 学習器を指定してランダムサーチ ######
+best_params, best_score = tuning.random_search_tuning(estimator=ESTIMATOR,
+                                                      tuning_params=CV_PARAMS_RANDOM,
+                                                      n_iter=160)
 ```
 実行結果
 ```
 score before tuning = -11.724246256998635
-best_params = {'rf__max_depth': 32, 'rf__max_features': 2, 'rf__min_samples_leaf': 1, 'rf__min_samples_split': 2, 'rf__n_estimators': 160}
-score after tuning = -10.477565908068511
+best_params = {'rf__n_estimators': 30, 'rf__min_samples_split': 8, 'rf__min_samples_leaf': 1, 'rf__max_features': 2, 'rf__max_depth': 32}
+score after tuning = -10.84662079640907
 ```
 ※本来パイプラインのパラメータ名は`学習器名__パラメータ名`と指定する必要がありますが、本ツールの`tuning_params`には自動で学習器名を付加する機能を追加しているので、`パラメータ名`のみでも指定可能です (`fit_params`指定時も同様)
 

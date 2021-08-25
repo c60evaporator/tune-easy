@@ -5,7 +5,7 @@ from sklearn.datasets import load_boston
 import pandas as pd
 # Load dataset
 USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns = load_boston().feature_names)
+df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
 X = df_boston[USE_EXPLANATORY].values
 y = load_boston().target
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)
@@ -19,7 +19,7 @@ from sklearn.datasets import load_boston
 import pandas as pd
 # Load dataset
 USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns = load_boston().feature_names)
+df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
 X = df_boston[USE_EXPLANATORY].values
 y = load_boston().target
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)
