@@ -1,4 +1,4 @@
-# %% Plot_first_validation_curve(), no argument
+# %% plot_first_validation_curve(), no argument
 import parent_import
 from param_tuning import LGBMRegressorTuning
 from sklearn.datasets import load_boston
@@ -23,7 +23,7 @@ df_boston = pd.DataFrame(load_boston().data, columns = load_boston().feature_nam
 X = df_boston[USE_EXPLANATORY].values
 y = load_boston().target
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)
-# Give 'validation_curve_params' argument
+# Set 'validation_curve_params' argument
 VALIDATION_CURVE_PARAMS = {'reg_lambda': [0.0001, 0.001, 0.01, 0.1, 1, 10],
                            'num_leaves': [2, 4, 8, 16, 32, 64],
                            'colsample_bytree': [0.2, 0.4, 0.6, 0.8, 1.0],

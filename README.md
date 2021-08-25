@@ -574,24 +574,21 @@ get_feature_importancesおよびplot_feature_importancesメソッドは、XGBoos
 ### 引数一覧
 |引数名|必須引数orオプション|型|デフォルト値|内容|
 |---|---|---|---|---|
-|estimator|必須|pd.DataFrame|-|入力データ|
-|validation_curve_params|オプション|dict[str, float]|※後述|色分けに指定するカラム名 (Noneなら色分けなし)|
-|palette|オプション|str|None|hueによる色分け用の[カラーパレット](https://matplotlib.org/stable/tutorials/colors/colormaps.html)|
-|vars|オプション|list[str]|None|グラフ化するカラム名 (Noneなら全ての数値型＆Boolean型の列を使用)|
-|lowerkind|オプション|str|'boxscatter'|左下に表示するグラフ種類 ('boxscatter', 'scatter', or 'reg')|
-|diag_kind|オプション|str|'kde'|対角に表示するグラフ種類 ('kde' or 'hist')|
-|markers|オプション|str or list[str]|None|hueで色分けしたデータの散布図プロット形状|
-|height|オプション|float|2.5|グラフ1個の高さ|
-|aspect|オプション|float|1|グラフ1個の縦横比|
-|dropna|オプション|bool|True|[`seaborn.PairGrid`の`dropna`引数](https://seaborn.pydata.org/generated/seaborn.PairGrid.html?highlight=pairgrid#seaborn.PairGrid)|
-|lower_kws|オプション|dict|{}|[`seaborn.PairGrid.map_lower`の引数](https://seaborn.pydata.org/generated/seaborn.PairGrid.html?highlight=pairgrid#seaborn.PairGrid)|
-|diag_kws|オプション|dict|{}|[`seaborn.PairGrid.map_diag`引数](https://seaborn.pydata.org/generated/seaborn.PairGrid.html?highlight=pairgrid#seaborn.PairGrid)|
-|grid_kws|オプション|dict|{}|[`seaborn.PairGrid`の上記以外の引数](https://seaborn.pydata.org/generated/seaborn.PairGrid.html?highlight=pairgrid#seaborn.PairGrid)|
+|estimator|オプション|estimator object implementing 'fit'|[クラスごとに異なる]()|最適化対象の学習器インスタンス。`not_opt_parans`で指定したパラメータは上書きされるので注意|
+|validation_curve_params|オプション|dict[str, list[float]]|[クラスごとに異なる]()|検証曲線プロット対象のパラメータ範囲|
+|cv|オプション|int, cross-validation generator, or an iterable|5|クロスバリデーション分割法 (int入力時はKFoldで分割)|
+|seed|オプション|int|42|乱数シード (学習器の`random_state`に適用、`cv`引数がint型のときKFoldの乱数シードにも指定)|
+|scoring|オプション|str|'neg_mean_squared_error'|最適化で最大化する評価指標 ('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)|
+|not_opt_params|オプション|dict|[クラスごとに異なる]()|`validation_curve_params`以外のチューニング対象外パラメータを指定|
+|param_scales|オプション|dict[str, str]|[クラスごとに異なる]()|`validation_curve_params`のパラメータごとのスケール('linear', 'log')|
+|plot_stats|オプション|str|'mean'|検証曲線グラフにプロットする統計値 ('mean'(平均±標準偏差), 'median'(中央値&最大最小値))|
+|axes|オプション|list[matplotlib.axes.Axes]|None|グラフ描画に使用するaxes (Noneならmatplotlib.pyplot.plotで1枚ごとにプロット)|
+|fit_params|オプション|dict|[クラスごとに異なる]()|学習器の`fit()`メソッドに渡すパラメータ|
 
 ### 実行例
 コードは[こちらにもアップロードしています]()
 #### オプション引数指定なしで検証曲線プロット
-オプション引数を指定しないとき、[デフォルトの引数]()を使用してプロットします
+オプション引数を指定しないとき、[前述のデフォルト値]()を使用してプロットします
 ```python
 from param_tuning import LGBMRegressorTuning
 from sklearn.datasets import load_boston
@@ -605,9 +602,11 @@ tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用ク�
 ###### デフォルト引数で検証曲線プロット ######
 tuning.plot_first_validation_curve()
 ```
+実行結果
+
 ![image](https://user-images.githubusercontent.com/59557625/130490027-5ff1b717-7e45-4e02-8e50-79fd6e49b19f.png)
 
-#### 範囲を指定して検証曲線プロット
+#### パラメータ範囲を指定して検証曲線プロット
 `validation_curve_params`引数で、検証曲線のパラメータ範囲を指定する事ができます
 ```python
 from param_tuning import LGBMRegressorTuning
@@ -629,10 +628,235 @@ VALIDATION_CURVE_PARAMS = {'reg_lambda': [0.0001, 0.001, 0.01, 0.1, 1, 10],
 ###### パラメータ範囲を指定して検証曲線プロット ######
 tuning.plot_first_validation_curve(validation_curve_params=VALIDATION_CURVE_PARAMS)
 ```
+実行結果
+
 ![image](https://user-images.githubusercontent.com/59557625/130651966-5c78f390-6bb0-474e-b64b-1b3c34eb0943.png)
 
 その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L123)をご参照ください
 
 <br>
 
+## grid_search_tuningメソッド
+グリッドサーチを実行します
+
+### 引数一覧
+|引数名|必須引数orオプション|型|デフォルト値|内容|
+|---|---|---|---|---|
+|estimator|オプション|estimator object implementing 'fit'|[クラスごとに異なる]()|最適化対象の学習器インスタンス。`not_opt_parans`で指定したパラメータは上書きされるので注意|
+|tuning_params|オプション|dict[str, list[float]]|[クラスごとに異なる]()|チューニング対象のパラメータ範囲|
+|cv|オプション|int, cross-validation generator, or an iterable|5|クロスバリデーション分割法 (int入力時はKFoldで分割)|
+|seed|オプション|int|42|乱数シード (学習器の`random_state`に適用、`cv`引数がint型のときKFoldの乱数シードにも指定)|
+|scoring|オプション|str|'neg_mean_squared_error'|最適化で最大化する評価指標 ('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)|
+|not_opt_params|オプション|dict|[クラスごとに異なる]()|`tuning_params`以外のチューニング対象外パラメータを指定|
+|param_scales|オプション|dict[str, str]|[クラスごとに異なる]()|`tuning_params`のパラメータごとのスケール('linear', 'log')|
+|mlflow_logging|オプション|str|None|MLFlowでの結果記録有無('log':通常の記録, 'with':with構文で記録, None:記録なし)。詳細は[こちら]()|
+|grid_kws|オプション|dict|None|sklearn.model_selection.GridSearchCVに渡す引数 (estimator, param_grid, cv, scoring以外)|
+|fit_params|オプション|dict|[クラスごとに異なる]()|学習器の`fit()`メソッドに渡すパラメータ|
+
+### 実行例
+コードは[こちらにもアップロードしています]()
+#### オプション引数指定なしでグリッドサーチ
+オプション引数を指定しないとき、[デフォルトの引数]()を使用してプロットします
+```python
+from param_tuning import RFRegressorTuning
+from sklearn.datasets import load_boston
+import pandas as pd
+# データセット読込
+USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
+df_boston = pd.DataFrame(load_boston().data, columns = load_boston().feature_names)
+X = df_boston[USE_EXPLANATORY].values
+y = load_boston().target
+tuning = RFRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
+###### デフォルト引数でグリッドサーチ ######
+best_params, best_score = tuning.grid_search_tuning()
+```
+実行結果
+```
+score before tuning = -11.719820569093374
+best_params = {'max_depth': 32, 'max_features': 2, 'min_samples_leaf': 1, 'min_samples_split': 2, 'n_estimators': 160}
+score after tuning = -10.497362132823111
+```
+
+#### パラメータ範囲を指定してグリッドサーチ
+`validation_curve_params`引数で、検証曲線のパラメータ範囲を指定する事ができます
+```python
+from param_tuning import RFRegressorTuning
+from sklearn.datasets import load_boston
+import pandas as pd
+# データセット読込
+USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
+df_boston = pd.DataFrame(load_boston().data, columns = load_boston().feature_names)
+X = df_boston[USE_EXPLANATORY].values
+y = load_boston().target
+tuning = RFRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
+# パラメータ
+CV_PARAMS_GRID = {'n_estimators': [20, 80, 160],
+                  'max_depth': [2, 8, 32],
+                  'min_samples_split': [2, 8, 32],
+                  'min_samples_leaf': [1, 4, 16]
+                  }
+###### パラメータ範囲を指定して検証曲線プロット ######
+best_params, best_score = tuning.grid_search_tuning(tuning_params=CV_PARAMS_GRID)
+```
+実行結果
+```
+score before tuning = -11.719820569093374
+best_params = {'max_depth': 32, 'min_samples_leaf': 1, 'min_samples_split': 8, 'n_estimators': 80}
+score after tuning = -11.621063650183345
+```
+
+#### 学習器を指定してグリッドサーチ
+`estimator`引数で、学習器を指定する事ができます。パイプラインも指定可能です
+```python
+from param_tuning import RFRegressorTuning
+from sklearn.datasets import load_boston
+import pandas as pd
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestRegressor
+# データセット読込
+USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
+df_boston = pd.DataFrame(load_boston().data, columns = load_boston().feature_names)
+X = df_boston[USE_EXPLANATORY].values
+y = load_boston().target
+tuning = RFRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
+# 学習器を指定
+ESTIMATOR = Pipeline([("scaler", StandardScaler()), ("rf", RandomForestRegressor())])
+# パラメータ
+CV_PARAMS_GRID = {'n_estimators': [20, 80, 160],
+                  'max_features': [2, 5],
+                  'max_depth': [2, 8, 32],
+                  'min_samples_split': [2, 8, 32],
+                  'min_samples_leaf': [1, 4, 16]
+                  }
+###### パラメータ範囲を指定して検証曲線プロット ######
+best_params, best_score = tuning.grid_search_tuning(estimator=ESTIMATOR,
+                                                    tuning_params=CV_PARAMS_GRID)
+```
+実行結果
+```
+score before tuning = -11.724246256998635
+best_params = {'rf__max_depth': 32, 'rf__max_features': 2, 'rf__min_samples_leaf': 1, 'rf__min_samples_split': 2, 'rf__n_estimators': 160}
+score after tuning = -10.477565908068511
+```
+※本来パイプラインのパラメータ名は`学習器名__パラメータ名`と指定する必要がありますが、本ツールの`tuning_params`には自動で学習器名を付加する機能を追加しているので、`パラメータ名`のみでも指定可能です (`fit_params`指定時も同様)
+
+<br>
+その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L128)をご参照ください
+
+<br>
+
+## random_search_tuningメソッド
+ランダムサーチを実行します
+
+### 引数一覧
+|引数名|必須引数orオプション|型|デフォルト値|内容|
+|---|---|---|---|---|
+|estimator|オプション|estimator object implementing 'fit'|[クラスごとに異なる]()|最適化対象の学習器インスタンス。`not_opt_parans`で指定したパラメータは上書きされるので注意|
+|tuning_params|オプション|dict[str, list[float]]|[クラスごとに異なる]()|チューニング対象のパラメータ範囲|
+|cv|オプション|int, cross-validation generator, or an iterable|5|クロスバリデーション分割法 (int入力時はKFoldで分割)|
+|seed|オプション|int|42|乱数シード (学習器の`random_state`に適用、`cv`引数がint型のときKFoldの乱数シードにも指定)|
+|scoring|オプション|str|'neg_mean_squared_error'|最適化で最大化する評価指標 ('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)|
+|not_opt_params|オプション|dict|[クラスごとに異なる]()|`tuning_params`以外のチューニング対象外パラメータを指定|
+|param_scales|オプション|dict[str, str]|[クラスごとに異なる]()|`tuning_params`のパラメータごとのスケール('linear', 'log')|
+|mlflow_logging|オプション|str|None|MLFlowでの結果記録有無('log':通常の記録, 'with':with構文で記録, None:記録なし)。詳細は[こちら]()|
+|grid_kws|オプション|dict|None|sklearn.model_selection.GridSearchCVに渡す引数 (estimator, param_grid, cv, scoring以外)|
+|fit_params|オプション|dict|[クラスごとに異なる]()|学習器の`fit()`メソッドに渡すパラメータ|
+
+### 実行例
+コードは[こちらにもアップロードしています]()
+#### オプション引数指定なしでグリッドサーチ
+オプション引数を指定しないとき、[デフォルトの引数]()を使用してプロットします
+```python
+from param_tuning import RFRegressorTuning
+from sklearn.datasets import load_boston
+import pandas as pd
+# データセット読込
+USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
+df_boston = pd.DataFrame(load_boston().data, columns = load_boston().feature_names)
+X = df_boston[USE_EXPLANATORY].values
+y = load_boston().target
+tuning = RFRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
+###### デフォルト引数でグリッドサーチ ######
+best_params, best_score = tuning.grid_search_tuning()
+```
+実行結果
+```
+score before tuning = -11.719820569093374
+best_params = {'max_depth': 32, 'max_features': 2, 'min_samples_leaf': 1, 'min_samples_split': 2, 'n_estimators': 160}
+score after tuning = -10.497362132823111
+```
+
+#### パラメータ範囲と試行数を指定してランダムサーチ
+`validation_curve_params`引数で、検証曲線のパラメータ範囲を指定する事ができます
+```python
+from param_tuning import RFRegressorTuning
+from sklearn.datasets import load_boston
+import pandas as pd
+# データセット読込
+USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
+df_boston = pd.DataFrame(load_boston().data, columns = load_boston().feature_names)
+X = df_boston[USE_EXPLANATORY].values
+y = load_boston().target
+tuning = RFRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
+# パラメータ
+CV_PARAMS_GRID = {'n_estimators': [20, 80, 160],
+                  'max_depth': [2, 8, 32],
+                  'min_samples_split': [2, 8, 32],
+                  'min_samples_leaf': [1, 4, 16]
+                  }
+###### パラメータ範囲を指定して検証曲線プロット ######
+best_params, best_score = tuning.grid_search_tuning(tuning_params=CV_PARAMS_GRID)
+```
+実行結果
+```
+score before tuning = -11.719820569093374
+best_params = {'max_depth': 32, 'min_samples_leaf': 1, 'min_samples_split': 8, 'n_estimators': 80}
+score after tuning = -11.621063650183345
+```
+
+#### 学習器を指定してグリッドサーチ
+`estimator`引数で、学習器を指定する事ができます。パイプラインも指定可能です
+```python
+from param_tuning import RFRegressorTuning
+from sklearn.datasets import load_boston
+import pandas as pd
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestRegressor
+# データセット読込
+USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
+df_boston = pd.DataFrame(load_boston().data, columns = load_boston().feature_names)
+X = df_boston[USE_EXPLANATORY].values
+y = load_boston().target
+tuning = RFRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
+# 学習器を指定
+ESTIMATOR = Pipeline([("scaler", StandardScaler()), ("rf", RandomForestRegressor())])
+# パラメータ
+CV_PARAMS_GRID = {'n_estimators': [20, 80, 160],
+                  'max_features': [2, 5],
+                  'max_depth': [2, 8, 32],
+                  'min_samples_split': [2, 8, 32],
+                  'min_samples_leaf': [1, 4, 16]
+                  }
+###### パラメータ範囲を指定して検証曲線プロット ######
+best_params, best_score = tuning.grid_search_tuning(estimator=ESTIMATOR,
+                                                    tuning_params=CV_PARAMS_GRID)
+```
+実行結果
+```
+score before tuning = -11.724246256998635
+best_params = {'rf__max_depth': 32, 'rf__max_features': 2, 'rf__min_samples_leaf': 1, 'rf__min_samples_split': 2, 'rf__n_estimators': 160}
+score after tuning = -10.477565908068511
+```
+※本来パイプラインのパラメータ名は`学習器名__パラメータ名`と指定する必要がありますが、本ツールの`tuning_params`には自動で学習器名を付加する機能を追加しているので、`パラメータ名`のみでも指定可能です (`fit_params`指定時も同様)
+
+<br>
+その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L128)をご参照ください
+
+<br>
+
 # プロパティ一覧
+
+
+# MLFlowの活用
