@@ -392,8 +392,9 @@ class ParamTuning():
         self.elapsed_time = time.time() - start
         self.algo_name = 'grid'
         
-        # 最適パラメータの表示と保持
-        print('最適パラメータ ' + str(gridcv.best_params_))
+        # 最適パラメータ, スコアの表示と保持
+        print(f'best_params = {gridcv.best_params_}')
+        print(f'score after tuning = {gridcv.best_score_}')
         self.best_params = gridcv.best_params_
         self.best_score = gridcv.best_score_
         # 最適モデルの保持
@@ -525,7 +526,8 @@ class ParamTuning():
         self.algo_name = 'random'
         
         # 最適パラメータの表示と保持
-        print('最適パラメータ ' + str(randcv.best_params_))
+        print(f'best_params = {randcv.best_params_}')
+        print(f'score after tuning = {randcv.best_score_}')
         self.best_params = randcv.best_params_
         self.best_score = randcv.best_score_
         # 最適モデルの保持
@@ -714,6 +716,9 @@ class ParamTuning():
         # パイプライン処理のとき、学習器名を追加
         best_params = self._add_learner_name(estimator, best_params)
         self.best_params = best_params
+        # 最適パラメータの表示と保持
+        print(f'best_params = {self.best_params}')
+        print(f'score after tuning = {self.best_score}')
 
         # self.estimatorはチューニング時の最終パラメータが入力されているので、estimatorで初期化
         self.estimator = estimator
@@ -739,7 +744,7 @@ class ParamTuning():
                   **fit_params
                   )
         self.best_estimator = best_estimator
-        
+
         # MLFlowで記録
         if mlflow_logging == 'log':
             self._mlflow_logging()
@@ -891,6 +896,9 @@ class ParamTuning():
         # パイプライン処理のとき、学習器名を追加
         best_params = self._add_learner_name(estimator, best_params)
         self.best_params = best_params
+        # 最適パラメータの表示と保持
+        print(f'best_params = {self.best_params}')
+        print(f'score after tuning = {self.best_score}')
 
         # self.estimatorはチューニング時の最終パラメータが入力されているので、estimatorで初期化
         self.estimator = estimator
