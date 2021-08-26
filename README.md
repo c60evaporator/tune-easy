@@ -632,8 +632,11 @@ tuning.plot_first_validation_curve(validation_curve_params=VALIDATION_CURVE_PARA
 
 ![image](https://user-images.githubusercontent.com/59557625/130651966-5c78f390-6bb0-474e-b64b-1b3c34eb0943.png)
 
+<br>
+
 その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L123)をご参照ください
 
+<br>
 <br>
 
 ## grid_search_tuningメソッド
@@ -677,8 +680,8 @@ best_params = {'max_depth': 32, 'max_features': 2, 'min_samples_leaf': 1, 'min_s
 score after tuning = -10.497362132823111
 ```
 
-#### パラメータ範囲を指定してグリッドサーチ
-`validation_curve_params`引数で、検証曲線のパラメータ範囲を指定する事ができます
+#### パラメータ探索範囲を指定してグリッドサーチ
+`tuning_params`引数で、グリッドサーチのパラメータ探索範囲を指定する事ができます
 ```python
 from param_tuning import RFRegressorTuning
 from sklearn.datasets import load_boston
@@ -742,8 +745,10 @@ score after tuning = -10.477565908068511
 ※本来パイプラインのパラメータ名は`学習器名__パラメータ名`と指定する必要がありますが、本ツールの`tuning_params`には自動で学習器名を付加する機能を追加しているので、`パラメータ名`のみでも指定可能です (`fit_params`指定時も同様)
 
 <br>
+
 その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L128)をご参照ください
 
+<br>
 <br>
 
 ## random_search_tuningメソッド
@@ -788,8 +793,10 @@ best_params = {'n_estimators': 160, 'min_samples_split': 2, 'min_samples_leaf': 
 score after tuning = -10.832494601564617
 ```
 
-#### パラメータ範囲と試行数を指定してランダムサーチ
-`validation_curve_params`引数で、検証曲線のパラメータ範囲を指定する事ができます
+#### パラメータ探索範囲と試行数を指定してランダムサーチ
+`tuning_params`引数で、ランダムサーチのパラメータ探索範囲を指定する事ができます。
+
+また、`n_iter`引数で探索の試行数を指定できます
 ```python
 from param_tuning import RFRegressorTuning
 from sklearn.datasets import load_boston
@@ -856,9 +863,165 @@ score after tuning = -10.84662079640907
 ※本来パイプラインのパラメータ名は`学習器名__パラメータ名`と指定する必要がありますが、本ツールの`tuning_params`には自動で学習器名を付加する機能を追加しているので、`パラメータ名`のみでも指定可能です (`fit_params`指定時も同様)
 
 <br>
+
 その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L128)をご参照ください
 
 <br>
+<br>
+
+## bayes_opt_tuningメソッド
+[BayesianOptimizationライブラリ]()によるベイズ最適化を実行します
+
+### 引数一覧
+|引数名|必須引数orオプション|型|デフォルト値|内容|
+|---|---|---|---|---|
+|estimator|オプション|estimator object implementing 'fit'|[クラスごとに異なる]()|最適化対象の学習器インスタンス。`not_opt_parans`で指定したパラメータは上書きされるので注意|
+|tuning_params|オプション|dict[str, list[float]]|[クラスごとに異なる]()|チューニング対象のパラメータ範囲|
+|cv|オプション|int, cross-validation generator, or an iterable|5|クロスバリデーション分割法 (int入力時はKFoldで分割)|
+|seed|オプション|int|42|乱数シード (BayesianOptimization初期化時の`random_state`引数、および学習器の`random_state`に適用、`cv`引数がint型のときKFoldの乱数シードにも指定)|
+|scoring|オプション|str|'neg_mean_squared_error'|最適化で最大化する評価指標 ('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)|
+|n_iter|オプション|int|[クラスごとに異なる]()|ランダムサーチの試行数|
+|init_points|オプション|int|[クラスごとに異なる]()|ランダムな初期探索点の個数|
+|acq|オプション|{'ei', 'pi', 'ucb'}||獲得関数 ('ei': EI戦略, 'pi': PI戦略, 'ucb': UCB戦略)|
+|not_opt_params|オプション|dict|[クラスごとに異なる]()|`tuning_params`以外のチューニング対象外パラメータを指定|
+|param_scales|オプション|dict[str, str]|[クラスごとに異なる]()|`tuning_params`のパラメータごとのスケール('linear', 'log')|
+|mlflow_logging|オプション|str|None|MLFlowでの結果記録有無('log':通常の記録, 'with':with構文で記録, None:記録なし)。詳細は[こちら]()|
+|fit_params|オプション|dict|[クラスごとに異なる]()|学習器の`fit()`メソッドに渡すパラメータ|
+
+### 実行例
+コードは[こちらにもアップロードしています]()
+#### オプション引数指定なしでBayesianOptimization
+オプション引数を指定しないとき、[デフォルトの引数]()を使用してプロットします
+```python
+from param_tuning import LGBMRegressorTuning
+from sklearn.datasets import load_boston
+import pandas as pd
+# データセット読込
+USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
+df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
+X = df_boston[USE_EXPLANATORY].values
+y = load_boston().target
+tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
+###### デフォルト引数でBayesianOptimization ######
+best_params, best_score = tuning.bayes_opt_tuning()
+```
+実行結果
+```
+score before tuning = -11.979161807916636
+
+|   iter    |  target   | colsam... | min_ch... | num_le... | reg_alpha | reg_la... | subsample | subsam... |
+-------------------------------------------------------------------------------------------------------------
+|  1        | -14.19    |  0.6247   |  47.54    |  37.14    | -2.204    | -3.532    |  0.4936   |  0.4066   |
+|  2        | -12.78    |  0.9197   |  30.06    |  35.99    | -3.938    | -1.09     |  0.8995   |  1.486    |
+  :
+  :
+|  70       | -13.24    |  0.9837   |  33.73    |  20.4     | -3.098    | -2.831    |  0.4122   |  0.0941   |
+=============================================================================================================
+best_params = {'colsample_bytree': 0.9479943197172334, 'min_child_samples': 14, 'num_leaves': 8, 'reg_alpha': 0.011998136674904547, 'reg_lambda': 0.03204706412377387, 'subsample': 0.595559561303092, 'subsample_freq': 6}
+score after tuning = -11.488951692728644
+```
+
+#### パラメータ範囲と試行数を指定してBayesianOptimization
+`tuning_params`引数で、ランダムサーチのパラメータ探索範囲を指定する事ができます。
+
+また、`n_iter`引数でベイズ探索の試行数を指定できます
+
+探索の合計試行数は、`init_points`で指定したランダム初期点数 + `n_iter`となります
+```python
+from param_tuning import LGBMRegressorTuning
+from sklearn.datasets import load_boston
+import pandas as pd
+# データセット読込
+USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
+df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
+X = df_boston[USE_EXPLANATORY].values
+y = load_boston().target
+tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
+# パラメータ
+BAYES_PARAMS = {'reg_alpha': (0.001, 0.1),
+                'reg_lambda': (0.001, 0.1),
+                'num_leaves': (2, 50),
+                'colsample_bytree': (0.4, 1.0),
+                'subsample': (0.4, 0.8),
+                'subsample_freq': (0, 5),
+                'min_child_samples': (0, 20)
+                }
+###### パラメータ範囲と試行数を指定してBayesianOptimization ######
+best_params, best_score = tuning.bayes_opt_tuning(tuning_params=CV_PARAMS_RANDOM,
+                                                  n_iter=160,
+                                                  init_points=10)
+```
+実行結果
+```
+score before tuning = -11.979161807916636
+
+|   iter    |  target   | colsam... | min_ch... | num_le... | reg_alpha | reg_la... | subsample | subsam... |
+-------------------------------------------------------------------------------------------------------------
+|  1        | -12.14    |  0.6247   |  19.01    |  37.14    | -1.803    | -2.688    |  0.4624   |  0.2904   |
+|  2        | -11.58    |  0.9197   |  12.02    |  35.99    | -2.959    | -1.06     |  0.733    |  1.062    |
+  :
+  :
+|  85       | -10.5     |  1.0      |  2.584    |  16.71    | -1.364    | -1.615    |  0.8      |  3.498    |
+=============================================================================================================
+best_params = {'colsample_bytree': 1.0, 'min_child_samples': 3, 'num_leaves': 17, 'reg_alpha': 0.04321535571671176, 'reg_lambda': 0.024267598888301777, 'subsample': 0.8, 'subsample_freq': 3}
+score after tuning = -10.497077015105946
+```
+
+#### 学習器を指定してBayesianOptimization
+`estimator`引数で、学習器を指定する事ができます。パイプラインも指定可能です
+```python
+from param_tuning import LGBMRegressorTuning
+from sklearn.datasets import load_boston
+import pandas as pd
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from lightgbm import LGBMRegressor
+# データセット読込
+USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
+df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
+X = df_boston[USE_EXPLANATORY].values
+y = load_boston().target
+tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
+# 学習器を指定
+ESTIMATOR = Pipeline([("scaler", StandardScaler()), ("rf", LGBMRegressor())])
+# パラメータ
+BAYES_PARAMS = {'reg_alpha': (0.001, 0.1),
+                'reg_lambda': (0.001, 0.1),
+                'num_leaves': (2, 50),
+                'colsample_bytree': (0.4, 1.0),
+                'subsample': (0.4, 0.8),
+                'subsample_freq': (0, 5),
+                'min_child_samples': (0, 20)
+                }
+###### 学習器を指定してランダムサーチ ######
+best_params, best_score = tuning.bayes_opt_tuning(estimator=ESTIMATOR,
+                                                  tuning_params=BAYES_PARAMS,
+                                                  n_iter=75,
+                                                  init_points=10)
+```
+実行結果
+```
+score before tuning = -12.255823372962741
+|   iter    |  target   | lgbmr_... | lgbmr_... | lgbmr_... | lgbmr_... | lgbmr_... | lgbmr_... | lgbmr_... |
+-------------------------------------------------------------------------------------------------------------
+|  1        | -11.99    |  0.6247   |  19.01    |  37.14    | -1.803    | -2.688    |  0.4624   |  0.2904   |
+|  2        | -11.53    |  0.9197   |  12.02    |  35.99    | -2.959    | -1.06     |  0.733    |  1.062    |
+  :
+  :
+|  85       | -12.36    |  0.8191   |  0.9298   |  31.81    | -2.811    | -1.314    |  0.4321   |  4.011    |
+=============================================================================================================
+best_params = {'lgbmr__colsample_bytree': 0.9248812273481077, 'lgbmr__min_child_samples': 4, 'lgbmr__num_leaves': 8, 'lgbmr__reg_alpha': 0.00329559380608668, 'lgbmr__reg_lambda': 0.012905694418620333, 'lgbmr__subsample': 0.5099088770971258, 'lgbmr__subsample_freq': 1}
+score after tuning = -10.937025098477642
+```
+※本来パイプラインのパラメータ名は`学習器名__パラメータ名`と指定する必要がありますが、本ツールの`tuning_params`には自動で学習器名を付加する機能を追加しているので、`パラメータ名`のみでも指定可能です (`fit_params`指定時も同様)
+
+<br>
+
+その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L128)をご参照ください
+
+<br>
+<br>
+
 
 # プロパティ一覧
 
