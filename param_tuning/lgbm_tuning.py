@@ -2,6 +2,7 @@ from sklearn.model_selection import cross_val_score
 import time
 import numpy as np
 from lightgbm import LGBMRegressor, LGBMClassifier
+from sklearn.pipeline import Pipeline
 
 from .param_tuning import ParamTuning
 
@@ -101,12 +102,14 @@ class LGBMRegressorTuning(ParamTuning):
         self.eval_data_source = eval_data_source
         return
 
-    def _train_param_generation(self, src_fit_params):
+    def _train_param_generation(self, estimator, src_fit_params):
         """
         入力データから学習時パラメータの生成 (eval_set)
         
         Parameters
         ----------
+        estimator : Dict
+            学習器
         src_fit_params : Dict
             処理前の学習時パラメータ
         """
@@ -114,7 +117,15 @@ class LGBMRegressorTuning(ParamTuning):
         # src_fit_paramsにeval_setが存在しないとき、入力データをそのまま追加
         if 'eval_set' not in src_fit_params:
             print('There is no "eval_set" in fit_params, so "eval_set" is set to (self.X, self.y)')
-            src_fit_params['eval_set'] =[(self.X, self.y)]
+            # estimatorがパイプラインのとき、eval_setに最終学習器以外のtransformを適用
+            if isinstance(estimator, Pipeline):
+                print('The estimator is Pipeline, so X data of "eval_set" is transformed using pipeline')
+                X_src = self.X
+                transformer = Pipeline([step for i, step in enumerate(estimator.steps) if i < len(estimator) - 1])
+                X_dst = transformer.fit_transform(X_src)
+            else:
+                X_dst = self.X
+            src_fit_params['eval_set'] =[(X_dst, self.y)]
 
         return src_fit_params
 
@@ -271,7 +282,7 @@ class LGBMClassifierTuning(ParamTuning):
         self.eval_data_source = eval_data_source
         return
 
-    def _train_param_generation(self, src_fit_params):
+    def _train_param_generation(self, estimator, src_fit_params):
         """
         入力データから学習時パラメータの生成 (eval_setおよびクラス数に応じたeval_metricの修正)
         
@@ -284,7 +295,15 @@ class LGBMClassifierTuning(ParamTuning):
         # src_fit_paramsにeval_setが存在しないとき、入力データをそのまま追加
         if 'eval_set' not in src_fit_params:
             print('There is no "eval_set" in fit_params, so "eval_set" is set to (self.X, self.y)')
-            src_fit_params['eval_set'] =[(self.X, self.y)]
+            # estimatorがパイプラインのとき、eval_setに最終学習器以外のtransformを適用
+            if isinstance(estimator, Pipeline):
+                print('The estimator is Pipeline, so X data of "eval_set" is transformed using pipeline')
+                X_src = self.X
+                transformer = Pipeline([step for i, step in enumerate(estimator.steps) if i < len(estimator) - 1])
+                X_dst = transformer.fit_transform(X_src)
+            else:
+                X_dst = self.X
+            src_fit_params['eval_set'] =[(X_dst, self.y)]
 
         # 2クラス分類のときeval_metricはbinary_logloss or binary_errorを、多クラス分類のときmulti_logloss or multi_errorを入力
         unique_labels = np.unique(self.y)

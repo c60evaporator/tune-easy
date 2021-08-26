@@ -117,7 +117,7 @@ class ParamTuning():
         # 追加処理
         self._additional_init(**kwargs)
     
-    def _train_param_generation(self, src_fit_params):
+    def _train_param_generation(self, estimator, src_fit_params):
         """
         入力データから学習時パラメータの生成 (例: XGBoostのeval_list)
         通常はデフォルトのままだが、必要であれば継承先でオーバーライド
@@ -351,7 +351,7 @@ class ParamTuning():
         # 入力データからチューニング用パラメータの生成
         tuning_params = self._tuning_param_generation(tuning_params)
         # 学習データから生成されたパラメータの追加
-        fit_params = self._train_param_generation(fit_params)
+        fit_params = self._train_param_generation(estimator, fit_params)
         # チューニング対象外パラメータの生成
         not_opt_params = self._not_opt_param_generation(not_opt_params, seed, scoring)
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
@@ -482,7 +482,7 @@ class ParamTuning():
         # 入力データからチューニング用パラメータの生成
         tuning_params = self._tuning_param_generation(tuning_params)
         # 学習データから生成されたパラメータの追加
-        fit_params = self._train_param_generation(fit_params)
+        fit_params = self._train_param_generation(estimator, fit_params)
         # チューニング対象外パラメータの生成
         not_opt_params = self._not_opt_param_generation(not_opt_params, seed, scoring)
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
@@ -667,7 +667,7 @@ class ParamTuning():
         # 入力データからチューニング用パラメータの生成
         tuning_params = self._tuning_param_generation(tuning_params)
         # 学習データから生成されたパラメータの追加
-        fit_params = self._train_param_generation(fit_params)
+        fit_params = self._train_param_generation(estimator, fit_params)
         # チューニング対象外パラメータの生成
         not_opt_params = self._not_opt_param_generation(not_opt_params, seed, scoring)
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
@@ -851,7 +851,7 @@ class ParamTuning():
         # 入力データからチューニング用パラメータの生成
         tuning_params = self._tuning_param_generation(tuning_params)
         # 学習データから生成されたパラメータの追加
-        fit_params = self._train_param_generation(fit_params)
+        fit_params = self._train_param_generation(estimator, fit_params)
         # チューニング対象外パラメータの生成
         not_opt_params = self._not_opt_param_generation(not_opt_params, seed, scoring)
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
@@ -1095,7 +1095,7 @@ class ParamTuning():
         # 入力データからチューニング用パラメータの生成
         validation_curve_params = self._tuning_param_generation(validation_curve_params)
         # 学習データから生成されたパラメータの追加
-        fit_params = self._train_param_generation(fit_params)
+        fit_params = self._train_param_generation(estimator, fit_params)
         # チューニング対象外パラメータの生成
         not_opt_params_valid = self._not_opt_param_generation(not_opt_params_valid, seed, scoring)
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
@@ -1334,7 +1334,7 @@ class ParamTuning():
         if 'random_state' in params:
             params['random_state'] = seed
         # 学習データから生成されたパラメータの追加
-        fit_params = self._train_param_generation(fit_params)
+        fit_params = self._train_param_generation(estimator, fit_params)
         # 分割法未指定時、cv_numとseedに基づきランダムに分割
         if isinstance(cv, numbers.Integral):
             cv = KFold(n_splits=cv, shuffle=True, random_state=seed)
