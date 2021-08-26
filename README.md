@@ -880,9 +880,9 @@ score after tuning = -10.84662079640907
 |cv|オプション|int, cross-validation generator, or an iterable|5|クロスバリデーション分割法 (int入力時はKFoldで分割)|
 |seed|オプション|int|42|乱数シード (BayesianOptimization初期化時の`random_state`引数、および学習器の`random_state`に適用、`cv`引数がint型のときKFoldの乱数シードにも指定)|
 |scoring|オプション|str|'neg_mean_squared_error'|最適化で最大化する評価指標 ('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)|
-|n_iter|オプション|int|[クラスごとに異なる]()|ランダムサーチの試行数|
+|n_iter|オプション|int|[クラスごとに異なる]()|ベイズ最適化の試行数|
 |init_points|オプション|int|[クラスごとに異なる]()|ランダムな初期探索点の個数|
-|acq|オプション|{'ei', 'pi', 'ucb'}||獲得関数 ('ei': EI戦略, 'pi': PI戦略, 'ucb': UCB戦略)|
+|acq|オプション|{'ei', 'pi', 'ucb'}|'ei'|獲得関数 ('ei': EI戦略, 'pi': PI戦略, 'ucb': UCB戦略)|
 |not_opt_params|オプション|dict|[クラスごとに異なる]()|`tuning_params`以外のチューニング対象外パラメータを指定|
 |param_scales|オプション|dict[str, str]|[クラスごとに異なる]()|`tuning_params`のパラメータごとのスケール('linear', 'log')|
 |mlflow_logging|オプション|str|None|MLFlowでの結果記録有無('log':通常の記録, 'with':with構文で記録, None:記録なし)。詳細は[こちら]()|
@@ -891,7 +891,7 @@ score after tuning = -10.84662079640907
 ### 実行例
 コードは[こちらにもアップロードしています]()
 #### オプション引数指定なしでBayesianOptimization
-オプション引数を指定しないとき、[デフォルトの引数]()を使用してプロットします
+オプション引数を指定しないとき、[デフォルトの引数]()を使用してBayesianOptimizationでチューニングします
 ```python
 from param_tuning import LGBMRegressorTuning
 from sklearn.datasets import load_boston
@@ -922,9 +922,9 @@ score after tuning = -11.488951692728644
 ```
 
 #### パラメータ範囲と試行数を指定してBayesianOptimization
-`tuning_params`引数で、ランダムサーチのパラメータ探索範囲を指定する事ができます。
+`tuning_params`引数で、ベイズ最適化のパラメータ探索範囲を指定する事ができます。
 
-また、`n_iter`引数でベイズ探索の試行数を指定できます
+また、`n_iter`引数でベイズ最適化の試行数を指定できます
 
 探索の合計試行数は、`init_points`で指定したランダム初期点数 + `n_iter`となります
 ```python
@@ -993,7 +993,7 @@ BAYES_PARAMS = {'reg_alpha': (0.001, 0.1),
                 'subsample_freq': (0, 5),
                 'min_child_samples': (0, 20)
                 }
-###### 学習器を指定してランダムサーチ ######
+###### 学習器を指定してBayesianOptimization ######
 best_params, best_score = tuning.bayes_opt_tuning(estimator=ESTIMATOR,
                                                   tuning_params=BAYES_PARAMS,
                                                   n_iter=75,
@@ -1012,6 +1012,149 @@ score before tuning = -12.255823372962741
 =============================================================================================================
 best_params = {'lgbmr__colsample_bytree': 0.9248812273481077, 'lgbmr__min_child_samples': 4, 'lgbmr__num_leaves': 8, 'lgbmr__reg_alpha': 0.00329559380608668, 'lgbmr__reg_lambda': 0.012905694418620333, 'lgbmr__subsample': 0.5099088770971258, 'lgbmr__subsample_freq': 1}
 score after tuning = -10.937025098477642
+```
+※本来パイプラインのパラメータ名は`学習器名__パラメータ名`と指定する必要がありますが、本ツールの`tuning_params`には自動で学習器名を付加する機能を追加しているので、`パラメータ名`のみでも指定可能です (`fit_params`指定時も同様)
+
+<br>
+
+その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L128)をご参照ください
+
+<br>
+<br>
+
+## optuna_tuningメソッド
+[Optunaライブラリ]()によるベイズ最適化を実行します
+
+### 引数一覧
+|引数名|必須引数orオプション|型|デフォルト値|内容|
+|---|---|---|---|---|
+|estimator|オプション|estimator object implementing 'fit'|[クラスごとに異なる]()|最適化対象の学習器インスタンス。`not_opt_parans`で指定したパラメータは上書きされるので注意|
+|tuning_params|オプション|dict[str, list[float]]|[クラスごとに異なる]()|チューニング対象のパラメータ範囲|
+|cv|オプション|int, cross-validation generator, or an iterable|5|クロスバリデーション分割法 (int入力時はKFoldで分割)|
+|seed|オプション|int|42|乱数シード (TPESamplerの`seed`引数、および学習器の`random_state`に適用、`cv`引数がint型のときKFoldの乱数シードにも指定)|
+|scoring|オプション|str|'neg_mean_squared_error'|最適化で最大化する評価指標 ('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)|
+|n_trials|オプション|int|[クラスごとに異なる]()|ベイズ最適化の試行数|
+|study_kws|オプション|dict|{'sampler': TPESampler(), 'direction': 'maximize'}|optuna.study.create_study()に渡す引数|
+|optimize_kws|オプション|dict|{}|optuna.study.Study.optimize()に渡す引数 (n_trials以外)|
+|not_opt_params|オプション|dict|[クラスごとに異なる]()|`tuning_params`以外のチューニング対象外パラメータを指定|
+|param_scales|オプション|dict[str, str]|[クラスごとに異なる]()|`tuning_params`のパラメータごとのスケール('linear', 'log')|
+|mlflow_logging|オプション|str|None|MLFlowでの結果記録有無('log':通常の記録, 'with':with構文で記録, None:記録なし)。詳細は[こちら]()|
+|fit_params|オプション|dict|[クラスごとに異なる]()|学習器の`fit()`メソッドに渡すパラメータ|
+
+### 実行例
+コードは[こちらにもアップロードしています]()
+#### オプション引数指定なしでOptunaチューニング
+オプション引数を指定しないとき、[デフォルトの引数]()を使用してOptunaでチューニングします
+```python
+from param_tuning import LGBMRegressorTuning
+from sklearn.datasets import load_boston
+import pandas as pd
+# データセット読込
+USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
+df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
+X = df_boston[USE_EXPLANATORY].values
+y = load_boston().target
+tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
+###### デフォルト引数でOptunaチューニング ######
+best_params, best_score = tuning.optuna_tuning()
+```
+実行結果
+```
+[I 2021-08-27 01:02:55,935] A new study created in memory with name: no-name-bdd17556-7ee0-48bd-a219-c331b5f83de3
+score before tuning = -11.979161807916636
+
+[I 2021-08-27 01:02:57,904] Trial 0 finished with value: -11.452939275675764 and parameters: {'reg_alpha': 0.0013292918943162175, 'reg_lambda': 0.07114476009343425, 'num_leaves': 37, 'colsample_bytree': 0.759195090518222, 'subsample': 0.4936111842654619, 'subsample_freq': 1, 'min_child_samples': 2}. Best is trial 0 with value: -11.452939275675764.
+  :
+  :
+[I 2021-08-27 00:57:48,371] Trial 199 finished with value: -10.511358593135807 and parameters: {'reg_alpha': 0.0010789348786651755, 'reg_lambda': 0.00045050344430450247, 'num_leaves': 42, 'colsample_bytree': 0.9456531771486588, 'subsample': 0.6186892820565172, 'subsample_freq': 1, 'min_child_samples': 1}. Best is trial 188 with value: -9.616609903204923.
+best_params = {'reg_alpha': 0.003109527801280432, 'reg_lambda': 0.0035808676982557147, 'num_leaves': 41, 'colsample_bytree': 0.9453510369496361, 'subsample': 0.5947574986660598, 'subsample_freq': 1, 'min_child_samples': 0}
+score after tuning = -9.616609903204923
+```
+
+#### パラメータ範囲と試行数を指定してOptunaチューニング実行
+`tuning_params`引数で、ベイズ最適化のパラメータ探索範囲を指定する事ができます。
+
+また、`n_trials`引数でベイズ最適化の試行数を指定できます
+
+```python
+from param_tuning import LGBMRegressorTuning
+from sklearn.datasets import load_boston
+import pandas as pd
+# データセット読込
+USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
+df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
+X = df_boston[USE_EXPLANATORY].values
+y = load_boston().target
+tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
+# パラメータ
+BAYES_PARAMS = {'reg_alpha': (0.001, 0.1),
+                'reg_lambda': (0.001, 0.1),
+                'num_leaves': (2, 50),
+                'colsample_bytree': (0.4, 1.0),
+                'subsample': (0.4, 0.8),
+                'subsample_freq': (0, 5),
+                'min_child_samples': (0, 20)
+                }
+###### パラメータ範囲と試行数を指定してOptunaチューニング ######
+best_params, best_score = tuning.optuna_tuning(tuning_params=BAYES_PARAMS,
+                                               n_trials=200,
+                                               )
+```
+実行結果
+```
+[I 2021-08-27 01:15:21,268] A new study created in memory with name: no-name-635ede1b-7985-4548-aba8-c831963b9a8c
+score before tuning = -11.979161807916636
+
+[I 2021-08-27 01:15:23,498] Trial 0 finished with value: -12.110663238032412 and parameters: {'reg_alpha': 0.005611516415334507, 'reg_lambda': 0.07969454818643935, 'num_leaves': 37, 'colsample_bytree': 0.759195090518222, 'subsample': 0.46240745617697465, 'subsample_freq': 0, 'min_child_samples': 1}. Best is trial 0 with value: -12.110663238032412.
+  :
+  :
+[I 2021-08-27 01:12:09,708] Trial 199 finished with value: -10.194230069453065 and parameters: {'reg_alpha': 0.001828306094799145, 'reg_lambda': 0.06571376528457373, 'num_leaves': 11, 'colsample_bytree': 0.9278346121998875, 'subsample': 0.7163240012735217, 'subsample_freq': 1, 'min_child_samples': 1}. Best is trial 173 with value: -9.823907953731936.
+best_params = {'reg_alpha': 0.0027344867053618453, 'reg_lambda': 0.06607544948281772, 'num_leaves': 10, 'colsample_bytree': 0.9598501478819825, 'subsample': 0.6910946770860599, 'subsample_freq': 1, 'min_child_samples': 1}
+score after tuning = -9.823907953731936
+```
+
+#### 学習器を指定してOptunaチューニング実行
+`estimator`引数で、学習器を指定する事ができます。パイプラインも指定可能です
+```python
+from param_tuning import LGBMRegressorTuning
+from sklearn.datasets import load_boston
+import pandas as pd
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from lightgbm import LGBMRegressor
+# データセット読込
+USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
+df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
+X = df_boston[USE_EXPLANATORY].values
+y = load_boston().target
+tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
+# 学習器を指定
+ESTIMATOR = Pipeline([("scaler", StandardScaler()), ("lgbmr", LGBMRegressor())])
+# パラメータ
+BAYES_PARAMS = {'reg_alpha': (0.001, 0.1),
+                'reg_lambda': (0.001, 0.1),
+                'num_leaves': (2, 50),
+                'colsample_bytree': (0.4, 1.0),
+                'subsample': (0.4, 0.8),
+                'subsample_freq': (0, 5),
+                'min_child_samples': (0, 20)
+                }
+###### 学習器を指定してOptunaチューニング ######
+best_params, best_score = tuning.optuna_tuning(estimator=ESTIMATOR,
+                                               tuning_params=BAYES_PARAMS,
+                                               n_trials=200)
+```
+実行結果
+```
+[I 2021-08-27 01:24:57,636] A new study created in memory with name: no-name-2fb193f2-351c-4d4c-baae-b23d16859665
+score before tuning = -12.255823372962741
+
+[I 2021-08-27 01:25:01,806] Trial 0 finished with value: -11.378859002518542 and parameters: {'lgbmr__reg_alpha': 0.005611516415334507, 'lgbmr__reg_lambda': 0.07969454818643935, 'lgbmr__num_leaves': 37, 'lgbmr__colsample_bytree': 0.759195090518222, 'lgbmr__subsample': 0.46240745617697465, 'lgbmr__subsample_freq': 0, 'lgbmr__min_child_samples': 1}. Best is trial 0 with value: -11.378859002518542.
+  :
+  :
+[I 2021-08-27 01:22:03,721] Trial 199 finished with value: -10.096037009116241 and parameters: {'lgbmr__reg_alpha': 0.002327721686775674, 'lgbmr__reg_lambda': 0.0012314391979104883, 'lgbmr__num_leaves': 13, 'lgbmr__colsample_bytree': 0.9920040005884901, 'lgbmr__subsample': 0.6013906896641126, 'lgbmr__subsample_freq': 2, 'lgbmr__min_child_samples': 0}. Best is trial 63 with value: -9.418766279450413.
+best_params = {'lgbmr__reg_alpha': 0.019197753824492524, 'lgbmr__reg_lambda': 0.0012922239440782994, 'lgbmr__num_leaves': 13, 'lgbmr__colsample_bytree': 0.9719197851402581, 'lgbmr__subsample': 0.5944071346631961, 'lgbmr__subsample_freq': 2, 'lgbmr__min_child_samples': 0}
+score after tuning = -9.418766279450413
 ```
 ※本来パイプラインのパラメータ名は`学習器名__パラメータ名`と指定する必要がありますが、本ツールの`tuning_params`には自動で学習器名を付加する機能を追加しているので、`パラメータ名`のみでも指定可能です (`fit_params`指定時も同様)
 
