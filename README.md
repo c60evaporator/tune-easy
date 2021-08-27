@@ -1222,6 +1222,40 @@ tuning.plot_search_history(x_axis='time')
 <br>
 <br>
 
+## get_search_historyメソッド
+チューニング進行に伴うスコアの上昇履歴 (plot_search_historyと同内容)をPandas DataFrameで取得します。
+
+引数はありません
+
+### 実行例
+
+```python
+from param_tuning import LGBMRegressorTuning
+from sklearn.datasets import load_boston
+import pandas as pd
+# データセット読込
+USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
+df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
+X = df_boston[USE_EXPLANATORY].values
+y = load_boston().target
+tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
+best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
+###### デフォルト引数でスコアの上昇履歴を取得 ######
+df_history = tuning.get_search_history()
+
+df_history
+```
+実行結果
+```
+reg_alpha	reg_lambda	num_leaves	colsample_bytree	subsample	subsample_freq	min_child_samples	test_score	raw_trial_time	max_score	raw_total_time	total_time
+0	0.001329	0.071145	37	0.759195	0.493611	1	2	-11.452939	1.599340	-11.452939	1.599340	1.626420
+...	...	...	
+199	0.001079	0.000451	42	0.945653	0.618689	1	1	-10.511359	1.620776	-9.616610	301.749652	306.858965
+```
+
+<br>
+<br>
+
 ## plot_search_mapメソッド
 探索履歴 (グリッドサーチ：ヒートマップ、その他：散布図)をプロットします。
 
