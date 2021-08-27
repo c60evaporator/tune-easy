@@ -1215,6 +1215,7 @@ best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
 tuning.plot_search_history(x_axis='time')
 ```
 実行結果
+![image](https://user-images.githubusercontent.com/59557625/131169898-8876104b-0b66-4491-afdd-e7e3853db71b.png)
 
 その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L135)をご参照ください
 
