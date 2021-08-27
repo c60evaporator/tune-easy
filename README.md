@@ -1277,8 +1277,9 @@ tuning.plot_search_map(pair_n=6,
                        order=['min_child_samples', 'colsample_bytree', 'subsample', 'num_leaves'])
 ```
 実行結果
+![image](https://user-images.githubusercontent.com/59557625/131168816-b297e298-99fd-43c1-96b9-a2673b13aaaa.png)
 
-その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L135)をご参照ください
+その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L211)をご参照ください
 
 <br>
 <br>
