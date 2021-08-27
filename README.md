@@ -1231,7 +1231,10 @@ tuning.plot_search_history(x_axis='time')
 |pair_n|オプション|int|4|図を並べる枚数 (グリッドサーチ以外)|
 |rounddigits_title|オプション|int|3|グラフタイトルのパラメータ値の丸め桁数 (グリッドサーチ以外)|
 |rank_number|オプション|int|None|スコア上位何番目までを文字表示するか。Noneなら表示なし|
-|pair_n|オプション|int|4|図を並べる枚数 (グリッドサーチ以外)|
+|rounddigits_score|オプション|int|3|上位スコア表示の丸め桁数|
+|subplot_kws|オプション|dict|None|プロット用のplt.subplots()に渡す引数 (例：figsize)|
+|heat_kws|オプション|dict|None|ヒートマップ用のsns.heatmap()に渡す引数 (グリッドサーチのみ)|
+|scatter_kws|オプション|dict|None|プロット用のplt.subplots()に渡す引数 (グリッドサーチ以外)|
 
 ### 実行例
 コードは[こちらにもアップロードしています]()
@@ -1252,9 +1255,10 @@ best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
 tuning.plot_search_map()
 ```
 実行結果
-![image](https://user-images.githubusercontent.com/59557625/131160736-4235e9ef-a733-42b0-9e0b-f9ab84542a1d.png)
+![image](https://user-images.githubusercontent.com/59557625/131164885-2ae5288c-0a80-468d-8bb8-641eb52ba03b.png)
 
-#### 横軸に時間を指定してスコアの上昇履歴を表示
+#### 図の枚数と軸のパラメータを指定してスコアの上昇履歴を表示
+`pair_n`引数
 `x_axis`引数='time'と指定する事で、横軸を試行数 → 時間に変更する事ができます。
 
 ```python
@@ -1269,7 +1273,8 @@ y = load_boston().target
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
 ###### 時間を横軸に指定してスコアの上昇履歴を表示 ######
-tuning.plot_search_history(x_axis='time')
+tuning.plot_search_map(pair_n=6, 
+                       order=['min_child_samples', 'colsample_bytree', 'subsample', 'num_leaves'])
 ```
 実行結果
 
