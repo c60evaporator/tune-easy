@@ -1228,7 +1228,7 @@ tuning.plot_search_history(x_axis='time')
 ### 引数一覧
 |引数名|必須引数orオプション|型|デフォルト値|内容|
 |---|---|---|---|---|
-|order|オプション|list[str]|None|グラフ横軸 → グラフ縦軸 → 全体縦軸 → 全体横軸の順番で軸のパラメータ名を指定。Noneならparam_importances順|
+|order|オプション|list[str]|None|軸のパラメータ名を指定。Noneならparam_importances順に自動指定|
 |pair_n|オプション|int|4|図を並べる枚数 (グリッドサーチ以外)|
 |rounddigits_title|オプション|int|3|グラフタイトルのパラメータ値の丸め桁数 (グリッドサーチ以外)|
 |rank_number|オプション|int|None|スコア上位何番目までを文字表示するか。Noneなら表示なし|
@@ -1259,8 +1259,9 @@ tuning.plot_search_map()
 ![image](https://user-images.githubusercontent.com/59557625/131164885-2ae5288c-0a80-468d-8bb8-641eb52ba03b.png)
 
 #### 図の枚数と軸のパラメータを指定してスコアの上昇履歴を表示
-`pair_n`引数
-`x_axis`引数='time'と指定する事で、横軸を試行数 → 時間に変更する事ができます。
+`pair_n`引数で、プロットする図の縦横枚数を指定する事ができます
+
+`order`引数で、軸のパラメータをリストで指定する事ができます。リスト指定順に、グラフ横軸 → グラフ縦軸 → 全体縦軸 → 全体横軸の順番でプロットされます
 
 ```python
 from param_tuning import LGBMRegressorTuning

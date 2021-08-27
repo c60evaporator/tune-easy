@@ -27,3 +27,4 @@ tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)
 best_params, best_score = tuning.optuna_tuning()
 ###### Run plot_search_history() ######
 tuning.plot_search_history(x_axis='time')
+# %%
