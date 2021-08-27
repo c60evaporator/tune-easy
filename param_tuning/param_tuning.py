@@ -1478,7 +1478,7 @@ class ParamTuning():
         # パイプライン処理のとき、引数'order'に学習器名を追加
         order = self._add_learner_name(self.estimator, order)
 
-        # ランダムフォレストでパラメータとスコアのfeature_importancesを求める
+        # param_importances (パラメータとスコアでランダムフォレスト回帰したfeature_importances)を求める
         rf = RandomForestRegressor(random_state=self.seed)
         params_array = df_history.drop('test_score', axis=1).values
         score_array = df_history['test_score'].values

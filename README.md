@@ -864,7 +864,7 @@ score after tuning = -10.84662079640907
 
 <br>
 
-その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L128)をご参照ください
+その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_svr_regression.py#L155)をご参照ください
 
 <br>
 <br>
@@ -1017,7 +1017,7 @@ score after tuning = -10.937025098477642
 
 <br>
 
-その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L128)をご参照ください
+その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_svr_regression.py#L202)をご参照ください
 
 <br>
 <br>
@@ -1160,7 +1160,7 @@ score after tuning = -9.418766279450413
 
 <br>
 
-その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L128)をご参照ください
+その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L199)をご参照ください
 
 <br>
 <br>
@@ -1216,11 +1216,67 @@ tuning.plot_search_history(x_axis='time')
 ```
 実行結果
 
-その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L128)をご参照ください
+その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L135)をご参照ください
 
 <br>
 <br>
 
+## plot_search_mapメソッド
+探索履歴 (グリッドサーチ：ヒートマップ、その他：散布図)をプロットします。
+
+### 引数一覧
+|引数名|必須引数orオプション|型|デフォルト値|内容|
+|---|---|---|---|---|
+|order|オプション|list[str]|None|グラフ横軸 → グラフ縦軸 → 全体縦軸 → 全体横軸の順番で軸のパラメータ名を指定。Noneならparam_importances順|
+|pair_n|オプション|int|4|図を並べる枚数 (グリッドサーチ以外)|
+|rounddigits_title|オプション|int|3|グラフタイトルのパラメータ値の丸め桁数 (グリッドサーチ以外)|
+|rank_number|オプション|int|None|スコア上位何番目までを文字表示するか。Noneなら表示なし|
+|pair_n|オプション|int|4|図を並べる枚数 (グリッドサーチ以外)|
+
+### 実行例
+コードは[こちらにもアップロードしています]()
+#### オプション引数指定なしで探索履歴をプロット
+オプション引数を指定しないとき、[デフォルトの引数]()を使用して探索履歴をプロットします
+```python
+from param_tuning import LGBMRegressorTuning
+from sklearn.datasets import load_boston
+import pandas as pd
+# データセット読込
+USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
+df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
+X = df_boston[USE_EXPLANATORY].values
+y = load_boston().target
+tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
+best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
+###### デフォルト引数でスコアの上昇履歴を表示 ######
+tuning.plot_search_map()
+```
+実行結果
+![image](https://user-images.githubusercontent.com/59557625/131160736-4235e9ef-a733-42b0-9e0b-f9ab84542a1d.png)
+
+#### 横軸に時間を指定してスコアの上昇履歴を表示
+`x_axis`引数='time'と指定する事で、横軸を試行数 → 時間に変更する事ができます。
+
+```python
+from param_tuning import LGBMRegressorTuning
+from sklearn.datasets import load_boston
+import pandas as pd
+# データセット読込
+USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
+df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
+X = df_boston[USE_EXPLANATORY].values
+y = load_boston().target
+tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
+best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
+###### 時間を横軸に指定してスコアの上昇履歴を表示 ######
+tuning.plot_search_history(x_axis='time')
+```
+実行結果
+
+その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L135)をご参照ください
+
+<br>
+<br>
 
 # プロパティ一覧
 
