@@ -1195,8 +1195,7 @@ best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
 tuning.plot_search_history()
 ```
 実行結果
-
-
+![image](https://user-images.githubusercontent.com/59557625/131160736-4235e9ef-a733-42b0-9e0b-f9ab84542a1d.png)
 
 #### 横軸に時間を指定してスコアの上昇履歴を表示
 `x_axis`引数='time'と指定する事で、横軸を試行数 → 時間に変更する事ができます。
