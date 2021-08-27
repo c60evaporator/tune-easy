@@ -575,7 +575,7 @@ get_feature_importancesおよびplot_feature_importancesメソッドは、XGBoos
 |引数名|必須引数orオプション|型|デフォルト値|内容|
 |---|---|---|---|---|
 |estimator|オプション|estimator object implementing 'fit'|[クラスごとに異なる]()|最適化対象の学習器インスタンス。`not_opt_parans`で指定したパラメータは上書きされるので注意|
-|validation_curve_params|オプション|dict[str, list[float]]|[クラスごとに異なる]()|検証曲線プロット対象のパラメータ範囲|
+|validation_<br>curve_params|オプション　　|dict[str, list[float]]|[クラスごとに異なる]()|検証曲線プロット対象のパラメータ範囲|
 |cv|オプション|int, cross-validation generator, or an iterable|5|クロスバリデーション分割法 (int入力時はKFoldで分割)|
 |seed|オプション|int|42|乱数シード (学習器の`random_state`に適用、`cv`引数がint型のときKFoldの乱数シードにも指定)|
 |scoring|オプション|str|'neg_mean_squared_error'|最適化で最大化する評価指標 ('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)|
@@ -650,7 +650,7 @@ tuning.plot_first_validation_curve(validation_curve_params=VALIDATION_CURVE_PARA
 |cv|オプション|int, cross-validation generator, or an iterable|5|クロスバリデーション分割法 (int入力時はKFoldで分割)|
 |seed|オプション|int|42|乱数シード (学習器の`random_state`に適用、`cv`引数がint型のときKFoldの乱数シードにも指定)|
 |scoring|オプション|str|'neg_mean_squared_error' in regression.'neg_log_loss' in clasification|最適化で最大化する評価指標 ('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)|
-|not_opt_params|オプション|dict|[クラスごとに異なる]()|`tuning_params`以外のチューニング対象外パラメータを指定|
+|not_opt_<br>params|オプション　　|dict|[クラスごとに異なる]()|`tuning_params`以外のチューニング対象外パラメータを指定|
 |param_scales|オプション|dict[str, str]|[クラスごとに異なる]()|`tuning_params`のパラメータごとのスケール('linear', 'log')|
 |mlflow_logging|オプション|str|None|MLFlowでの結果記録有無('log':通常の記録, 'with':with構文で記録, None:記録なし)。詳細は[こちら]()|
 |grid_kws|オプション|dict|None|sklearn.model_selection.GridSearchCVに渡す引数 (estimator, tuning_params, cv, scoring以外)|
@@ -763,9 +763,9 @@ score after tuning = -10.477565908068511
 |seed|オプション|int|42|乱数シード (学習器の`random_state`に適用、`cv`引数がint型のときKFoldの乱数シードにも指定)|
 |scoring|オプション|str|'neg_mean_squared_error'|最適化で最大化する評価指標 ('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)|
 |n_iter|オプション|int|[クラスごとに異なる]()|ランダムサーチの試行数|
-|not_opt_params|オプション|dict|[クラスごとに異なる]()|`tuning_params`以外のチューニング対象外パラメータを指定|
+|not_opt_<br>params|オプション　　|dict|[クラスごとに異なる]()|`tuning_params`以外のチューニング対象外パラメータを指定|
 |param_scales|オプション|dict[str, str]|[クラスごとに異なる]()|`tuning_params`のパラメータごとのスケール('linear', 'log')|
-|mlflow_logging|オプション|str|None|MLFlowでの結果記録有無('log':通常の記録, 'with':with構文で記録, None:記録なし)。詳細は[こちら]()|
+|mlflow_<br>logging|オプション|str|None|MLFlowでの結果記録有無('log':通常の記録, 'with':with構文で記録, None:記録なし)。詳細は[こちら]()|
 |rand_kws|オプション|dict|None|sklearn.model_selection.RondomizedSearchCVに渡す引数 (estimator, tuning_params, cv, scoring, n_iter以外)|
 |fit_params|オプション|dict|[クラスごとに異なる]()|学習器の`fit()`メソッドに渡すパラメータ|
 
@@ -883,9 +883,9 @@ score after tuning = -10.84662079640907
 |n_iter|オプション|int|[クラスごとに異なる]()|ベイズ最適化の試行数|
 |init_points|オプション|int|[クラスごとに異なる]()|ランダムな初期探索点の個数|
 |acq|オプション|{'ei', 'pi', 'ucb'}|'ei'|獲得関数 ('ei': EI戦略, 'pi': PI戦略, 'ucb': UCB戦略)|
-|not_opt_params|オプション|dict|[クラスごとに異なる]()|`tuning_params`以外のチューニング対象外パラメータを指定|
+|not_opt_<br>params|オプション　　|dict|[クラスごとに異なる]()|`tuning_params`以外のチューニング対象外パラメータを指定|
 |param_scales|オプション|dict[str, str]|[クラスごとに異なる]()|`tuning_params`のパラメータごとのスケール('linear', 'log')|
-|mlflow_logging|オプション|str|None|MLFlowでの結果記録有無('log':通常の記録, 'with':with構文で記録, None:記録なし)。詳細は[こちら]()|
+|mlflow_<br>logging|オプション|str|None|MLFlowでの結果記録有無('log':通常の記録, 'with':with構文で記録, None:記録なし)。詳細は[こちら]()|
 |fit_params|オプション|dict|[クラスごとに異なる]()|学習器の`fit()`メソッドに渡すパラメータ|
 
 ### 実行例
@@ -1036,9 +1036,9 @@ score after tuning = -10.937025098477642
 |n_trials|オプション|int|[クラスごとに異なる]()|ベイズ最適化の試行数|
 |study_kws|オプション|dict|{'sampler': TPESampler(), 'direction': 'maximize'}|optuna.study.create_study()に渡す引数|
 |optimize_kws|オプション|dict|{}|optuna.study.Study.optimize()に渡す引数 (n_trials以外)|
-|not_opt_params|オプション|dict|[クラスごとに異なる]()|`tuning_params`以外のチューニング対象外パラメータを指定|
+|not_opt_<br>params|オプション　　|dict|[クラスごとに異なる]()|`tuning_params`以外のチューニング対象外パラメータを指定|
 |param_scales|オプション|dict[str, str]|[クラスごとに異なる]()|`tuning_params`のパラメータごとのスケール('linear', 'log')|
-|mlflow_logging|オプション|str|None|MLFlowでの結果記録有無('log':通常の記録, 'with':with構文で記録, None:記録なし)。詳細は[こちら]()|
+|mlflow_<br>logging|オプション|str|None|MLFlowでの結果記録有無('log':通常の記録, 'with':with構文で記録, None:記録なし)。詳細は[こちら]()|
 |fit_params|オプション|dict|[クラスごとに異なる]()|学習器の`fit()`メソッドに渡すパラメータ|
 
 ### 実行例
