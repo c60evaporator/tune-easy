@@ -1166,6 +1166,63 @@ score after tuning = -9.418766279450413
 <br>
 
 
+## plot_search_historyメソッド
+チューニング進行に伴うスコアの上昇履歴をグラフ表示します
+
+### 引数一覧
+|引数名|必須引数orオプション|型|デフォルト値|内容|
+|---|---|---|---|---|
+|ax|オプション|matplotlib.axes.Axes|None|表示対象のax (Noneならmatplotlib.pyplot.plotで1枚ごとにプロット)|
+|x_axis|オプション|{'index', 'time'}|'index'|横軸の種類 ('index':試行回数, 'time':経過時間(合計時間での補正値))|
+|plot_kws|オプション|dist|None|プロット用のmatplotlib.pyplot.plotに渡す引数|
+
+### 実行例
+コードは[こちらにもアップロードしています]()
+#### オプション引数指定なしでスコアの上昇履歴を表示
+オプション引数を指定しないとき、[デフォルトの引数]()を使用してOptunaでチューニングします
+```python
+from param_tuning import LGBMRegressorTuning
+from sklearn.datasets import load_boston
+import pandas as pd
+# データセット読込
+USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
+df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
+X = df_boston[USE_EXPLANATORY].values
+y = load_boston().target
+tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
+best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
+###### デフォルト引数でスコアの上昇履歴を表示 ######
+tuning.plot_search_history()
+```
+実行結果
+
+
+
+#### 横軸に時間を指定してスコアの上昇履歴を表示
+`x_axis`引数='time'と指定する事で、横軸を試行数 → 時間に変更する事ができます。
+
+```python
+from param_tuning import LGBMRegressorTuning
+from sklearn.datasets import load_boston
+import pandas as pd
+# データセット読込
+USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
+df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
+X = df_boston[USE_EXPLANATORY].values
+y = load_boston().target
+tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
+best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
+###### 時間を横軸に指定してスコアの上昇履歴を表示 ######
+tuning.plot_search_history(x_axis='time')
+```
+実行結果
+
+その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L128)をご参照ください
+
+<br>
+<br>
+
+
 # プロパティ一覧
 
 
