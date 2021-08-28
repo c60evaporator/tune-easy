@@ -1197,6 +1197,7 @@ best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
 tuning.plot_search_history()
 ```
 実行結果
+
 ![image](https://user-images.githubusercontent.com/59557625/131160736-4235e9ef-a733-42b0-9e0b-f9ab84542a1d.png)
 
 #### 横軸に時間を指定してスコアの上昇履歴を表示
@@ -1217,6 +1218,7 @@ best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
 tuning.plot_search_history(x_axis='time')
 ```
 実行結果
+
 ![image](https://user-images.githubusercontent.com/59557625/131169898-8876104b-0b66-4491-afdd-e7e3853db71b.png)
 
 その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L135)をご参照ください
@@ -1296,6 +1298,7 @@ best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
 tuning.plot_search_map()
 ```
 実行結果
+
 ![image](https://user-images.githubusercontent.com/59557625/131164885-2ae5288c-0a80-468d-8bb8-641eb52ba03b.png)
 
 #### 図の枚数と軸のパラメータを指定してスコアの上昇履歴を表示
@@ -1319,6 +1322,7 @@ tuning.plot_search_map(pair_n=6,
                        order=['min_child_samples', 'colsample_bytree', 'subsample', 'num_leaves'])
 ```
 実行結果
+
 ![image](https://user-images.githubusercontent.com/59557625/131168816-b297e298-99fd-43c1-96b9-a2673b13aaaa.png)
 
 その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L211)をご参照ください
@@ -1356,12 +1360,54 @@ best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
 tuning.plot_best_learning_curve()
 ```
 実行結果
+
 ![image](https://user-images.githubusercontent.com/59557625/131206591-6ec6b08b-66d2-43a1-a138-519d62ac7a9f.png)
 
 その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L215)をご参照ください
 
 <br>
 <br>
+
+## plot_best_validation_curveメソッド
+チューニング後の学習曲線をプロットします。
+
+事前に、grid_search_tuning(), random_search_tuning(), bayes_opt_tuning(), optuna_tuning()いずれかを実行する必要があります
+
+### 引数一覧
+|引数名|必須引数orオプション|型|デフォルト値|内容|
+|---|---|---|---|---|
+|validation_<br>curve_params|オプション　　|dict[str, list[float]]|[クラスごとに異なる]()|検証曲線プロット対象のパラメータ範囲|
+|param_scales|オプション|dict[str, str]|[クラスごとに異なる]()|`validation_curve_params`のパラメータごとのスケール('linear', 'log')|
+|plot_stats|オプション|{'mean', 'median'}|'mean'|学習曲線としてプロットする統計値 ('mean'(平均±標準偏差), 'median'(中央値&最大最小値))|
+|axes|オプション|list[matplotlib.axes.Axes]|None|グラフ描画に使用するaxes (Noneならmatplotlib.pyplot.plotで1枚ごとにプロット)|
+
+### 実行例
+コードは[こちらにもアップロードしています]()
+#### オプション引数指定なしで学習曲線をプロット
+オプション引数を指定しないとき、[デフォルトの引数]()を使用して検証曲線をプロットします
+```python
+from param_tuning import LGBMRegressorTuning
+from sklearn.datasets import load_boston
+import pandas as pd
+# データセット読込
+USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
+df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
+X = df_boston[USE_EXPLANATORY].values
+y = load_boston().target
+tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
+best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
+###### デフォルト引数で検証曲線を表示 ######
+tuning.plot_best_validation_curve()
+```
+実行結果
+
+![image](https://user-images.githubusercontent.com/59557625/130490273-345dbc31-2201-4752-be79-0749058c2b00.png)
+
+その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L215)をご参照ください
+
+<br>
+<br>
+
 
 # プロパティ一覧
 
