@@ -1248,7 +1248,6 @@ tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用ク�
 best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
 ###### デフォルト引数でスコアの上昇履歴を取得 ######
 df_history = tuning.get_search_history()
-
 df_history
 ```
 実行結果
@@ -1497,14 +1496,55 @@ X = df_boston[USE_EXPLANATORY].values
 y = load_boston().target
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
-###### デフォルト引数で学習曲線を表示 ######
-tuning.plot_best_learning_curve()
+###### デフォルト引数でfeature_importancesを表示 ######
+tuning.plot_feature_importances()
 ```
 実行結果
 
-
+![image](https://user-images.githubusercontent.com/59557625/131211230-e227d761-7528-44c4-8563-fa2a426e711a.png)
 
 その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L221)をご参照ください
+
+<br>
+<br>
+
+## get_feature_importancesメソッド
+チューニング後の学習器のfeature_importances (plot_feature_importancesと同内容)をPandasのDataFrameで取得します
+
+feature_importances_算出に対応した学習器(ランダムフォレスト、LightGBM、XGBooost)のみプロット可能です。
+
+事前に、grid_search_tuning(), random_search_tuning(), bayes_opt_tuning(), optuna_tuning()いずれかを実行する必要があります
+
+引数はありません
+
+### 実行例
+コードは[こちらにもアップロードしています]()
+#### feature_importancesを取得
+オプション引数を指定しないとき、[デフォルトの引数]()を使用して学習曲線をプロットします
+```python
+from param_tuning import LGBMRegressorTuning
+from sklearn.datasets import load_boston
+import pandas as pd
+# データセット読込
+USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
+df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
+X = df_boston[USE_EXPLANATORY].values
+y = load_boston().target
+tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
+best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
+###### チューニング後feature_importancesを取得 ######
+importances = tuning.get_feature_importances()
+importances
+```
+実行結果
+```
+feature_name	importance
+0	LSTAT	17242
+1	DIS	8268
+2	RM	16020
+3	NOX	16304
+4	CRIM	14981
+```
 
 # プロパティ一覧
 
