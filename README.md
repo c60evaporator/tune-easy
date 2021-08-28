@@ -1464,6 +1464,7 @@ tuning.plot_search_map()  # plot_search_map実行
 tuning.plot_param_importances()
 ```
 実行結果
+![image](https://user-images.githubusercontent.com/59557625/131208350-ec5274bd-a964-4e18-a510-5c5e220980a4.png)
 
 
 # プロパティ一覧
