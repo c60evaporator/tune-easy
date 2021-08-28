@@ -1356,6 +1356,7 @@ best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
 tuning.plot_best_learning_curve()
 ```
 実行結果
+![image](https://user-images.githubusercontent.com/59557625/131206591-6ec6b08b-66d2-43a1-a138-519d62ac7a9f.png)
 
 その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L215)をご参照ください
 
