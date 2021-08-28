@@ -940,7 +940,10 @@ class ParamTuning():
         特徴量重要度の取得
         """
         if self.best_estimator is not None:
-            return self.best_estimator.feature_importances_
+            features = pd.Series(list(reversed(self.x_colnames)), name='feature_name')
+            importances = pd.Series(self.best_estimator.feature_importances_, name='importance')
+            df_importance = pd.DataFrame({features.name: features, importances.name: importances})
+            return df_importance
         else:
             return None
     
