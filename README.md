@@ -1424,7 +1424,7 @@ VALIDATION_CURVE_PARAMS = {'reg_lambda': [0.0001, 0.001, 0.01, 0.1, 1, 10],
                            'min_child_samples': [0, 5, 10, 20, 30, 50]
                            }
 ###### パラメータ範囲を指定して検証曲線プロット ######
-tuning.plot_first_validation_curve(validation_curve_params=VALIDATION_CURVE_PARAMS)
+tuning.plot_best_validation_curve(validation_curve_params=VALIDATION_CURVE_PARAMS)
 ```
 実行結果
 
@@ -1432,7 +1432,7 @@ tuning.plot_first_validation_curve(validation_curve_params=VALIDATION_CURVE_PARA
 
 <br>
 
-その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L123)をご参照ください
+その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L217)をご参照ください
 
 <br>
 <br>
@@ -1464,8 +1464,47 @@ tuning.plot_search_map()  # plot_search_map実行
 tuning.plot_param_importances()
 ```
 実行結果
+
 ![image](https://user-images.githubusercontent.com/59557625/131208350-ec5274bd-a964-4e18-a510-5c5e220980a4.png)
 
+<br>
+<br>
+
+## plot_feature_importancesメソッド
+チューニング後の学習器のfeature_importancesをプロットします。
+
+feature_importances_算出に対応した学習器(ランダムフォレスト、LightGBM、XGBooost)のみプロット可能です。
+
+事前に、grid_search_tuning(), random_search_tuning(), bayes_opt_tuning(), optuna_tuning()いずれかを実行する必要があります
+
+### 引数一覧
+|引数名|必須引数orオプション|型|デフォルト値|内容|
+|---|---|---|---|---|
+|ax|オプション|matplotlib.axes.Axes|None|表示対象のax (Noneならmatplotlib.pyplot.plotで1枚ごとにプロット)|
+
+### 実行例
+コードは[こちらにもアップロードしています]()
+#### オプション引数指定なしでfeature_importancesをプロット
+オプション引数を指定しないとき、[デフォルトの引数]()を使用して学習曲線をプロットします
+```python
+from param_tuning import LGBMRegressorTuning
+from sklearn.datasets import load_boston
+import pandas as pd
+# データセット読込
+USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
+df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
+X = df_boston[USE_EXPLANATORY].values
+y = load_boston().target
+tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
+best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
+###### デフォルト引数で学習曲線を表示 ######
+tuning.plot_best_learning_curve()
+```
+実行結果
+
+
+
+その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L221)をご参照ください
 
 # プロパティ一覧
 
