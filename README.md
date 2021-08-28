@@ -1169,6 +1169,8 @@ score after tuning = -9.418766279450413
 ## plot_search_historyメソッド
 チューニング進行に伴うスコアの上昇履歴をグラフ表示します
 
+事前に、grid_search_tuning(), random_search_tuning(), bayes_opt_tuning(), optuna_tuning()いずれかを実行する必要があります
+
 ### 引数一覧
 |引数名|必須引数orオプション|型|デフォルト値|内容|
 |---|---|---|---|---|
@@ -1225,6 +1227,8 @@ tuning.plot_search_history(x_axis='time')
 ## get_search_historyメソッド
 チューニング進行に伴うスコアの上昇履歴 (plot_search_historyと同内容)をPandas DataFrameで取得します。
 
+事前に、grid_search_tuning(), random_search_tuning(), bayes_opt_tuning(), optuna_tuning()いずれかを実行する必要があります
+
 引数はありません
 
 ### 実行例
@@ -1258,6 +1262,8 @@ reg_alpha	reg_lambda	num_leaves	colsample_bytree	subsample	subsample_freq	min_ch
 
 ## plot_search_mapメソッド
 探索履歴 (グリッドサーチ：ヒートマップ、その他：散布図)をプロットします。
+
+事前に、grid_search_tuning(), random_search_tuning(), bayes_opt_tuning(), optuna_tuning()いずれかを実行する必要があります
 
 ### 引数一覧
 |引数名|必須引数orオプション|型|デフォルト値|内容|
@@ -1316,6 +1322,42 @@ tuning.plot_search_map(pair_n=6,
 ![image](https://user-images.githubusercontent.com/59557625/131168816-b297e298-99fd-43c1-96b9-a2673b13aaaa.png)
 
 その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L211)をご参照ください
+
+<br>
+<br>
+
+## plot_best_learning_curveメソッド
+チューニング後の学習曲線をプロットします。
+
+事前に、grid_search_tuning(), random_search_tuning(), bayes_opt_tuning(), optuna_tuning()いずれかを実行する必要があります
+
+### 引数一覧
+|引数名|必須引数orオプション|型|デフォルト値|内容|
+|---|---|---|---|---|
+|plot_stats|オプション|{'mean', 'median'}|'mean'|学習曲線としてプロットする統計値 ('mean'(平均±標準偏差), 'median'(中央値&最大最小値))|
+|ax|オプション|matplotlib.axes.Axes|None|表示対象のax (Noneならmatplotlib.pyplot.plotで1枚ごとにプロット)|
+
+### 実行例
+コードは[こちらにもアップロードしています]()
+#### オプション引数指定なしで学習曲線をプロット
+オプション引数を指定しないとき、[デフォルトの引数]()を使用して学習曲線をプロットします
+```python
+from param_tuning import LGBMRegressorTuning
+from sklearn.datasets import load_boston
+import pandas as pd
+# データセット読込
+USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
+df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
+X = df_boston[USE_EXPLANATORY].values
+y = load_boston().target
+tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
+best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
+###### デフォルト引数で学習曲線を表示 ######
+tuning.plot_best_learning_curve()
+```
+実行結果
+
+その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L215)をご参照ください
 
 <br>
 <br>
