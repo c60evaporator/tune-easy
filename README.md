@@ -1428,7 +1428,7 @@ tuning.plot_first_validation_curve(validation_curve_params=VALIDATION_CURVE_PARA
 ```
 実行結果
 
-
+![image](https://user-images.githubusercontent.com/59557625/131208321-747b8883-68eb-4a67-aa1d-7e03623e2e53.png)
 
 <br>
 
