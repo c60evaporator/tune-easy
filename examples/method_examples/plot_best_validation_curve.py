@@ -24,6 +24,7 @@ df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names
 X = df_boston[USE_EXPLANATORY].values
 y = load_boston().target
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)
+best_params, best_score = tuning.optuna_tuning()
 # Set 'validation_curve_params' argument
 VALIDATION_CURVE_PARAMS = {'reg_lambda': [0.0001, 0.001, 0.01, 0.1, 1, 10],
                            'num_leaves': [2, 4, 8, 16, 32, 64],

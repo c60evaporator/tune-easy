@@ -1304,7 +1304,7 @@ tuning.plot_search_map()
 #### 図の枚数と軸のパラメータを指定してスコアの上昇履歴を表示
 `pair_n`引数で、プロットする図の縦横枚数を指定する事ができます
 
-`order`引数で、軸のパラメータをリストで指定する事ができます。リスト指定順に、グラフ横軸 → グラフ縦軸 → 全体縦軸 → 全体横軸の順番でプロットされます
+`order`引数で、軸のパラメータをリストで指定する事ができます。リスト指定順に、グラフ横軸 → グラフ縦軸 → 全体縦軸 → 全体横軸の順番でプロットされます。`order`=Noneなら[param_importances]()順にプロットされます。
 
 ```python
 from param_tuning import LGBMRegressorTuning
@@ -1403,10 +1403,67 @@ tuning.plot_best_validation_curve()
 
 ![image](https://user-images.githubusercontent.com/59557625/130490273-345dbc31-2201-4752-be79-0749058c2b00.png)
 
-その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L215)をご参照ください
+#### パラメータ範囲を指定して検証曲線プロット
+`validation_curve_params`引数で、検証曲線のパラメータ範囲を指定する事ができます
+```python
+from param_tuning import LGBMRegressorTuning
+from sklearn.datasets import load_boston
+import pandas as pd
+# データセット読込
+USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
+df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
+X = df_boston[USE_EXPLANATORY].values
+y = load_boston().target
+tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
+best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
+# パラメータ
+VALIDATION_CURVE_PARAMS = {'reg_lambda': [0.0001, 0.001, 0.01, 0.1, 1, 10],
+                           'num_leaves': [2, 4, 8, 16, 32, 64],
+                           'colsample_bytree': [0.2, 0.4, 0.6, 0.8, 1.0],
+                           'subsample': [0.2, 0.4, 0.6, 0.8, 1.0],
+                           'min_child_samples': [0, 5, 10, 20, 30, 50]
+                           }
+###### パラメータ範囲を指定して検証曲線プロット ######
+tuning.plot_first_validation_curve(validation_curve_params=VALIDATION_CURVE_PARAMS)
+```
+実行結果
+
+
+
+<br>
+
+その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L123)をご参照ください
 
 <br>
 <br>
+
+## plot_param_importancesメソッド
+パラメータを説明変数、評価指標を目的変数としてランダムフォレスト回帰を行い、求めたfeature_importancesを**param_importances**としてプロットします。
+
+**評価指標向上に寄与したパラメータ**の判断に使用することができます（チューニングしたパラメータ範囲に大きく依存するので、あくまで目安として使用してください）
+
+事前に、grid_search_tuning(), random_search_tuning(), bayes_opt_tuning(), optuna_tuning()いずれか、およびplot_search_map()を実行する必要があります
+
+引数はありません
+
+### 実行例
+
+```python
+from param_tuning import LGBMRegressorTuning
+from sklearn.datasets import load_boston
+import pandas as pd
+# データセット読込
+USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
+df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
+X = df_boston[USE_EXPLANATORY].values
+y = load_boston().target
+tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
+best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
+tuning.plot_search_map()  # plot_search_map実行
+###### param_importancesを表示 ######
+tuning.plot_param_importances()
+```
+実行結果
 
 
 # プロパティ一覧
