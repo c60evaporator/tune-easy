@@ -1580,8 +1580,9 @@ class ParamTuning():
         # 第1＆第2パラメータの設定最大値と最小値を抽出（グラフの軸範囲指定用）
         param1_min = min(self.tuning_params[order[0]])
         param1_max = max(self.tuning_params[order[0]])
-        param2_min = min(self.tuning_params[order[1]])
-        param2_max = max(self.tuning_params[order[1]])
+        if n_params >= 2:
+            param2_min = min(self.tuning_params[order[1]])
+            param2_max = max(self.tuning_params[order[1]])
         # グラフの軸範囲を指定（散布図グラフのみ）
         if self.param_scales[order[0]] == 'linear':
             param1_axis_min = param1_min - 0.1*(param1_max-param1_min)
@@ -1589,17 +1590,18 @@ class ParamTuning():
         elif self.param_scales[order[0]] == 'log':
             param1_axis_min = param1_min / np.power(10, 0.1*np.log10(param1_max/param1_min))
             param1_axis_max = param1_max * np.power(10, 0.1*np.log10(param1_max/param1_min))
-        if self.param_scales[order[1]] == 'linear':
-            param2_axis_min = param2_min - 0.1*(param2_max-param2_min)
-            param2_axis_max = param2_max + 0.1*(param2_max-param2_min)
-        elif self.param_scales[order[1]] == 'log':
-            param2_axis_min = param2_min / np.power(10, 0.1*np.log10(param2_max/param2_min))
-            param2_axis_max = param2_max * np.power(10, 0.1*np.log10(param2_max/param2_min))
+        if n_params >= 2:
+            if self.param_scales[order[1]] == 'linear':
+                param2_axis_min = param2_min - 0.1*(param2_max-param2_min)
+                param2_axis_max = param2_max + 0.1*(param2_max-param2_min)
+            elif self.param_scales[order[1]] == 'log':
+                param2_axis_min = param2_min / np.power(10, 0.1*np.log10(param2_max/param2_min))
+                param2_axis_max = param2_max * np.power(10, 0.1*np.log10(param2_max/param2_min))
 
         ###### 図ごとにプロット ######
         # パラメータが1個のとき(1次元折れ線グラフ表示)
         if n_params == 1:
-            df_history = df_history.sort_values[order[0]]
+            df_history = df_history.sort_values(order[0])
             axes.plot(df_history[order[0]], df_history['test_score'])
             axes.set_xscale(self.param_scales[order[0]])  # 対数軸 or 通常軸を指定
             axes.set_xlabel(order[0])  # パラメータ名を横軸ラベルに
