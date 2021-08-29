@@ -104,7 +104,7 @@ class ParamTuning():
         self.learner_name = None  # パイプライン処理時の学習器名称
         self.fit_params = None  # 学習時のパラメータ
         self.score_before = None
-        self.algo_name = None  # 最適化に使用したアルゴリズム名('grid', 'random', 'bayes-opt', 'optuna')
+        self.tuning_algo = None  # 最適化に使用したアルゴリズム名('grid', 'random', 'bayes-opt', 'optuna')
         self.best_params = None  # 最適パラメータ
         self.best_score = None  # 最高スコア
         self.elapsed_time = None  # 所要時間
@@ -272,7 +272,7 @@ class ParamTuning():
         mlflow.log_param('estimator', str(self.estimator))  # 最適化対象の学習器インスタンス
         mlflow.log_param('learner_name', self.learner_name)  # パイプライン処理時の学習器名称
         mlflow.log_param('fit_params', self.fit_params)  # 学習時のパラメータ
-        mlflow.log_param('algo_name', self.algo_name)  # 最適化に使用したアルゴリズム名('grid', 'random', 'bayes-opt', 'optuna')
+        mlflow.log_param('tuning_algo', self.tuning_algo)  # 最適化に使用したアルゴリズム名('grid', 'random', 'bayes-opt', 'optuna')
         # チューニング結果を記載
         best_params_float = {f'best__{k}':v for k, v in self.best_params.items() if isinstance(v, float) or isinstance(v, int)}
         mlflow.log_params(best_params_float)  # 最適パラメータ(数値型)
@@ -287,7 +287,7 @@ class ParamTuning():
         estimator_output = pd.Series(estimator_output) if self.y_colname is None else pd.DataFrame(estimator_output, columns=[self.y_colname])
         signature = infer_signature(pd.DataFrame(self.X, columns=self.x_colnames),  # モデル入出力の型を自動判定
                                     estimator_output)
-        mlflow.sklearn.log_model(self.best_estimator, f'best_estimator_{self.algo_name}', signature=signature)  # 最適化された学習モデル
+        mlflow.sklearn.log_model(self.best_estimator, f'best_estimator_{self.tuning_algo}', signature=signature)  # 最適化された学習モデル
         # パラメータと得点の履歴をCSV化してArtifactとして保存
         df_history = self.get_search_history()
         df_history.to_csv('search_history.csv')
@@ -390,7 +390,7 @@ class ParamTuning():
                **fit_params
                )
         self.elapsed_time = time.time() - start
-        self.algo_name = 'grid'
+        self.tuning_algo = 'grid'
         
         # 最適パラメータ, スコアの表示と保持
         print(f'best_params = {gridcv.best_params_}')
@@ -523,7 +523,7 @@ class ParamTuning():
                **fit_params
                )
         self.elapsed_time = time.time() - start
-        self.algo_name = 'random'
+        self.tuning_algo = 'random'
         
         # 最適パラメータの表示と保持
         print(f'best_params = {randcv.best_params_}')
@@ -704,7 +704,7 @@ class ParamTuning():
         # ベイズ最適化を実行
         bo.maximize(init_points=init_points, n_iter=n_iter, acq=acq)
         self.elapsed_time = time.time() - start
-        self.algo_name = 'bayes-opt'
+        self.tuning_algo = 'bayes-opt'
 
         # 最適パラメータとスコアを取得
         best_params = bo.max['params']
@@ -888,7 +888,7 @@ class ParamTuning():
         study.optimize(self._optuna_evaluate, n_trials=n_trials,
                        **optimize_kws)
         self.elapsed_time = time.time() - start
-        self.algo_name = 'optuna'
+        self.tuning_algo = 'optuna'
 
         # 最適パラメータとスコアを取得
         best_params = study.best_trial.params
@@ -1502,7 +1502,7 @@ class ParamTuning():
                 if param not in df_history.columns:
                     raise Exception(f'parameter "{param}" is not included in tuning parameters{list(self.tuning_params.keys())}')
             # グリッドサーチのとき、指定したパラメータ以外は最適パラメータのときのスコアを使用（スコア順位もこのフィルタ後のデータから取得するので注意）
-            if self.algo_name == 'grid':
+            if self.tuning_algo == 'grid':
                 not_order_params = [param for param in df_history.columns if param not in new_columns]
                 for param in not_order_params:
                     df_history = df_history[df_history[param] == self.best_params[param]]
@@ -1521,7 +1521,7 @@ class ParamTuning():
         else:
             n_params = len(df_history.columns) - 1
             # グリッドサーチのとき、要素数→feature_importanceの順でソート
-            if self.algo_name == 'grid':
+            if self.tuning_algo == 'grid':
                 nuniques = df_history.drop('test_score', axis=1).nunique().rename('nuniques')
                 df_order = pd.concat([nuniques, importances], axis=1)
                 df_order = df_order.sort_values(['nuniques', 'importances'], ascending=[False, False])
@@ -1535,7 +1535,7 @@ class ParamTuning():
                 order = importances.sort_values(ascending=False).index.tolist()
             
         # グリッドサーチ以外でパラメータ数が3以上のとき、図の数と各図の軸範囲を指定
-        if self.algo_name != 'grid':
+        if self.tuning_algo != 'grid':
             if n_params >= 3:  # パラメータ数3以上のとき
                 pair_h = pair_n
                 pair_w = 1
@@ -1570,7 +1570,7 @@ class ParamTuning():
         rank_dict = dict(zip(df_history.iloc[rank_index.tolist(), :].index.tolist(), range(rank_number)))
 
         # グリッドサーチのとき、第5パラメータ以降は最適パラメータを指定して算出
-        if self.algo_name == 'grid' and n_params >= 5:
+        if self.tuning_algo == 'grid' and n_params >= 5:
             for i in range(n_params - 4):
                 df_history = df_history[df_history[order[i + 4]] == self.best_params[order[i + 4]]]
 
@@ -1618,7 +1618,7 @@ class ParamTuning():
                     elif n_params == 3:
                         ax = axes[i]
                         # グリッドサーチのとき、第3パラメータのユニーク値でデータ分割
-                        if self.algo_name == 'grid':
+                        if self.tuning_algo == 'grid':
                             param3_value = sorted(df_history[order[2]].unique())[i]
                             df_pair = df_history[df_history[order[2]] == param3_value].copy()
                         # グリッドサーチ以外のとき、第3パラメータの値とseparation_param3に基づきデータ分割
@@ -1636,7 +1636,7 @@ class ParamTuning():
                     elif n_params >= 4:
                         ax = axes[i, j]
                         # グリッドサーチのとき、第3, 第4パラメータのユニーク値でデータ分割
-                        if self.algo_name == 'grid':
+                        if self.tuning_algo == 'grid':
                             param3_value = sorted(df_history[order[2]].unique())[i]
                             param4_value = sorted(df_history[order[3]].unique())[j]
                             df_pair = df_history[(df_history[order[2]] == param3_value) & (
@@ -1661,7 +1661,7 @@ class ParamTuning():
                                 df_pair = df_pair[df_pair[order[3]] >= pair_min4].copy()
 
                     # グリッドサーチのとき、ヒートマップをプロット
-                    if self.algo_name == 'grid':
+                    if self.tuning_algo == 'grid':
                         # グリッドデータをピボット化
                         df_pivot = pd.pivot_table(data=df_pair, values='test_score', 
                                                   columns=order[0], index=order[1], aggfunc=np.mean)
@@ -1710,7 +1710,7 @@ class ParamTuning():
                     for index, row in df_rank.iterrows():
                         rank_text = f'-<-no{rank_dict[index]+1} score={round_digits(row["test_score"], rounddigit=rounddigits_score, method="sig")}'
                         # グリッドサーチのとき
-                        if self.algo_name == 'grid':
+                        if self.tuning_algo == 'grid':
                             ax.text(df_pivot.columns.get_loc(row[order[0]]) + 0.5, df_pivot.index.get_loc(row[order[1]]) + 0.5, rank_text, verticalalignment='center', horizontalalignment='left')
                         # グリッドサーチ以外の時
                         else:
