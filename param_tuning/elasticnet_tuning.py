@@ -54,7 +54,7 @@ class ElasticNetTuning(ParamTuning):
                     'l1_ratio': 'linear'
                     }
 
-    def _train_param_generation(self, src_fit_params):
+    def _train_param_generation(self, estimator, src_fit_params):
         """
         入力データから学習時パラメータの生成 (eval_set)
         
