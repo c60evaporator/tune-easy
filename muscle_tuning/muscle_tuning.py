@@ -120,7 +120,7 @@ class MuscleTuning():
         self.tuning_params = None  # チューニング対象のパラメータとその範囲のdict
         self.tuning_kws = None  # チューニング用メソッドに渡す引数
         # チューニング後に取得するプロパティ
-        self.best_scores = {}  # 最高スコア
+        self.best_scores = {}  # スコア
         self.tuners = {}  # チューニング後のParamTuning継承クラス保持用
     
     def _select_objective(self, objective):
@@ -317,7 +317,23 @@ class MuscleTuning():
         elif learner_name == 'svr':
             tuning = SVMRegressorTuning(self.X, self.y, self.x_colnames, cv_group=self.cv_group)
             self._run_tuning(tuning, estimator, tuning_params, n_trials, tuning_kws)
-
+        # ランダムフォレスト回帰
+        elif learner_name == 'randomforest':
+            tuning = RFRegressorTuning(self.X, self.y, self.x_colnames, cv_group=self.cv_group)
+            self._run_tuning(tuning, estimator, tuning_params, n_trials, tuning_kws)
+        # LightGBM回帰
+        elif learner_name == 'lightgbm':
+            tuning = LGBMRegressorTuning(self.X, self.y, self.x_colnames, cv_group=self.cv_group)
+            self._run_tuning(tuning, estimator, tuning_params, n_trials, tuning_kws)
+        # XGBoost回帰
+        elif learner_name == 'xgboost':
+            tuning = XGBRegressorTuning(self.X, self.y, self.x_colnames, cv_group=self.cv_group)
+            self._run_tuning(tuning, estimator, tuning_params, n_trials, tuning_kws)
+        
+        # スコアの保持
+        self.best_scores[learner_name] = tuning.best_score
+        # チューニング用インスタンスの保持
+        self.tuners[learner_name] = tuning
 
     def muscle_brain_tuning(self, x, y, data=None, x_colnames=None, cv_group=None,
                             objective=None, 
@@ -385,3 +401,4 @@ class MuscleTuning():
             # 回帰のとき
             if self.objective == 'regression':
                 self._regression_tuning(learner_name)
+            # 分類のとき
