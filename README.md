@@ -1,5 +1,5 @@
-# param-tuning-utility
-**A hyperparameter tuning tool with gorgeous UI for scikit-learn API.**
+# muscle-brain-tuning
+**A hyperparameter tuning tool easy to use even if your brain is made of muscle**
 
 This documentation is Japanese language version.
 **[English version is here]()**
