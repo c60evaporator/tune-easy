@@ -1,4 +1,4 @@
-# muscle-brain-tuning
+# muscle-tuning
 **A hyperparameter tuning tool, easy to use even if your brain is made of muscle**
 
 This documentation is Japanese language version.

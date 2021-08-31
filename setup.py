@@ -3,16 +3,16 @@
 # License: BSD 3 clause
 
 from setuptools import setup
-import param_tuning
+import muscle_tuning
 
-DESCRIPTION = "param-tuning-utility: data visualization of regression, classification and distribution"
-NAME = 'param-tuning-utility'
+DESCRIPTION = "muscle-tuning: A hyperparameter tuning tool, easy to use even if your brain is made of muscle"
+NAME = 'muscle-tuning'
 AUTHOR = 'Kenta Nakamura'
 AUTHOR_EMAIL = 'c60evaporator@gmail.com'
-URL = 'https://github.com/c60evaporator/param-tuning-utility'
+URL = 'https://github.com/c60evaporator/muscle-tuning'
 LICENSE = 'BSD 3-Clause'
-DOWNLOAD_URL = 'https://github.com/c60evaporator/param-tuning-utility'
-VERSION = param_tuning.__version__
+DOWNLOAD_URL = 'https://github.com/c60evaporator/muscle-tuning'
+VERSION = muscle_tuning.__version__
 PYTHON_REQUIRES = ">=3.6"
 
 INSTALL_REQUIRES = [
@@ -27,6 +27,7 @@ INSTALL_REQUIRES = [
     'mlflow>=1.17.0',
     'lightgbm>=3.2.1',
     'xgboost>=1.4.2',
+    'seaborn-analyzer>=0.1.6'
 ]
 
 EXTRAS_REQUIRE = {
