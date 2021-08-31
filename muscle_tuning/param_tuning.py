@@ -377,7 +377,7 @@ class ParamTuning():
         # グリッドサーチのインスタンス作成
         # n_jobs=-1にするとCPU100%で全コア並列計算。とても速い。
         if 'n_jobs' not in grid_kws.keys():
-            grid_kws['n_jobs'] = -1
+            grid_kws['n_jobs'] = None
         gridcv = GridSearchCV(estimator, tuning_params, cv=cv,
                               scoring=scoring, **grid_kws)
 
@@ -508,7 +508,7 @@ class ParamTuning():
         # ランダムサーチのインスタンス作成
         # n_jobs=-1にするとCPU100%で全コア並列計算。とても速い。
         if 'n_jobs' not in rand_kws.keys():
-            rand_kws['n_jobs'] = -1
+            rand_kws['n_jobs'] = None
         if 'random_state' not in rand_kws.keys():
             rand_kws['random_state'] = seed
         randcv = RandomizedSearchCV(estimator, tuning_params, cv=cv, scoring=scoring,
