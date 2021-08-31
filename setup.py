@@ -34,7 +34,7 @@ EXTRAS_REQUIRE = {
 }
 
 PACKAGES = [
-    'param_tuning'
+    'muscle_tuning'
 ]
 
 CLASSIFIERS = [

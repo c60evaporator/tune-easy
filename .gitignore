@@ -5,6 +5,6 @@ __pycache__
 mlruns
 build/
 dist/
-param_tuning_utility.egg-info/
+muscle_tuning.egg-info/
 docs/_build/
 docs/_templates/
