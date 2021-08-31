@@ -1,9 +1,11 @@
+from muscle_tuning.linearregression_tuning import LinearRegressionTuning
 from sklearn.model_selection import KFold, GroupKFold, LeaveOneGroupOut
 from sklearn.model_selection import cross_validate, cross_val_score
-from sklearn.linear_model import LinearRegression
 from sklearn.gaussian_process import GaussianProcessRegressor
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+from seaborn_analyzer import regplot, classplot
 import numbers
 import gc
 import copy
@@ -25,25 +27,26 @@ class MuscleTuning():
                     'multiclass': ['accuracy', 'precision', 'recall', 'f1_macro', 'logloss', 'auc_ovr'],
                     'regression': ['rmse', 'mae', 'rmsle', 'mape', 'r2']
                     }
-    LEARNING_ALGOS = {'regression': ['linear_regression', 'elasticnet', 'svr', 'randomforest', 'lightgbm'],
+    LEARNING_ALGOS = {#'regression': ['linear_regression', 'elasticnet', 'svr', 'randomforest', 'lightgbm'],
+                      'regression': ['linear_regression', 'elasticnet', 'svr'],
                       'binary': ['svm', 'logistic', 'randomforest', 'lightgbm'],
                       'multiclass': ['svm', 'logistic', 'randomforest', 'lightgbm']
                       }
     N_TRIALS = {'regression': {'svr': 500,
                                'elasticnet': 500,
-                               'randomforest': 500, 
+                               'randomforest': 300, 
                                'lightgbm': 200,
                                'xgboost': 100
                                },
                 'binary': {'svm': 500,
                            'logistic': 500,
-                           'randomforest': 500, 
+                           'randomforest': 300, 
                            'lightgbm': 200,
                            'xgboost': 100
                            },
                 'multiclass': {'svm': 500,
                                'logistic': 500,
-                               'randomforest': 500, 
+                               'randomforest': 300, 
                                'lightgbm': 200,
                                'xgboost': 100
                                }
@@ -58,7 +61,7 @@ class MuscleTuning():
                          'mape': 'neg_mean_absolute_percentage_error',
                          }
 
-    def _reshape_input_data(self, x, y, data, x_colnames):
+    def _reshape_input_data(self, x, y, data, x_colnames, cv_group):
         """
         入力ファイルの形式統一(pd.DataFrame or np.ndarray)
         """
@@ -72,8 +75,15 @@ class MuscleTuning():
                 raise Exception('`x_colnames` argument should be None if `data` is pd.DataFrame')
             self.X = data[x].values
             self.y = data[y].values
-            self.data = data[x + [y]]
             self.x_colnames = x
+            self.y_colname = y
+            self.group_name = cv_group
+            if cv_group is not None:  # cv_group指定時
+                self.cv_group = data[cv_group].values
+                self.data = data[x + [y] + [cv_group]]
+            else:
+                self.data = data[x + [y]]
+            
         # dataがNoneのとき(x, yがnp.ndarray)
         elif data is None:
             if not isinstance(x, np.ndarray):
@@ -89,8 +99,15 @@ class MuscleTuning():
                 raise Exception('width of X must be equal to length of x_colnames')
             else:
                 self.x_colnames = x_colnames
-            self.data = pd.DataFrame(np.column_stack((self.X, self.y)),
-                                     columns=self.x_colnames + ['objective_variable'])
+            self.y_colname = 'objective_variable'
+            self.cv_group = cv_group
+            if cv_group is not None:  # cv_group指定時
+                self.group_name = 'group'
+                self.data = pd.DataFrame(np.column_stack((self.X, self.y, self.cv_group)),
+                                     columns=self.x_colnames + [self.y_colname] + [self.group_name])
+            else:
+                self.data = pd.DataFrame(np.column_stack((self.X, self.y)),
+                                     columns=self.x_colnames + [self.y_colname])
         else:
             raise Exception('`data` argument should be pd.DataFrame or None')
 
@@ -103,8 +120,10 @@ class MuscleTuning():
         self.y = None
         self.data = None
         self.x_colnames = None
-        self._reshape_input_data(x, y, data, x_colnames)
-        self.cv_group = cv_group  # GroupKFold, LeaveOneGroupOut用のグルーピング対象データ
+        self.y_colname = None
+        self.cv_group = None  # GroupKFold, LeaveOneGroupOut用のグルーピング対象データ
+        self.group_name = None
+        self._reshape_input_data(x, y, data, x_colnames, cv_group)
         # データから判定するプロパティ
         self.objective = None  # タスク ('regression', 'binary', 'multiclass')
         # 定数から読み込むプロパティ
@@ -122,6 +141,8 @@ class MuscleTuning():
         # チューニング後に取得するプロパティ
         self.best_scores = {}  # スコア
         self.tuners = {}  # チューニング後のParamTuning継承クラス保持用
+        self.estimators_before = {}  # チューニング前の学習器
+        self.estimators_after = {}  # チューニング後の学習器
     
     def _select_objective(self, objective):
         """
@@ -272,23 +293,43 @@ class MuscleTuning():
         else:
             raise Exception('`tuning_algo` should be "grid", "random", "bayes-opt", "optuna"')
     
-    def _score_correction(self, score_values, score_name):
+    def _score_correction(self, score_src, score_name):
         """
         評価指標をチューニング用 → 本来の定義の値に補正
         """
         if score_name == 'logloss':
-            scores_fixed = np.vectorize(lambda x: -x)(score_values)
+            scores_fixed = -score_src
         elif score_name == 'rmse':
-            scores_fixed = np.vectorize(lambda x: -x)(score_values)
+            scores_fixed = -score_src
         elif score_name == 'mae':
-            scores_fixed = np.vectorize(lambda x: -x)(score_values)
+            scores_fixed = -score_src
         elif score_name == 'rmsle':
-            scores_fixed = np.vectorize(lambda x: np.sqrt(-x))(score_values)
+            scores_fixed = np.sqrt(-score_src)
         elif score_name == 'mape':
-            scores_fixed = np.vectorize(lambda x: -x)(score_values)
+            scores_fixed = -score_src
         else:
-            scores_fixed = score_values
+            scores_fixed = score_src
         return scores_fixed
+
+    def _plot_regression_pred_true(self, learner_name, ax, after_tuning):
+        """
+        回帰モデルの予測値vs実測値プロット
+        """
+        tuner = self.tuners[learner_name]
+        estimator = copy.deepcopy(tuner.estimator)
+        params = {}
+        params.update(tuner.not_opt_params)
+        if after_tuning:  # チューニング後のモデルを表示したいとき
+            params.update(tuner.best_params)
+        estimator.set_params(**params)
+        regplot.regression_pred_true(estimator, self.x_colnames, self.y_colname, self.data,
+                                     scores=self.scoring,
+                                     cv=self.cv, ax=ax,
+                                     fit_params=tuner.fit_params,
+                                     legend_kws={'loc':'upper left'})
+        # 一番上の行に学習器名を追加
+        title_before = ax[0].title._text
+        ax[0].set_title(f'{learner_name.upper()}\n\n{title_before}')
 
     def _regression_tuning(self, learner_name):
         """
@@ -302,13 +343,8 @@ class MuscleTuning():
         n_trials = self.n_trials[learner_name] if learner_name in self.n_trials.keys() else None
         # 線形回帰 (チューニングなし)
         if learner_name == 'linear_regression':
-            best_estimator = LinearRegression()
-            best_estimator.fit(self.X, self.y)
-            best_scores = cross_val_score(copy.deepcopy(best_estimator), self.X, self.y,
-                                        groups=self.cv_group, scoring=self.SCORE_RENAME_DICT[self.scoring],
-                                        cv=self.cv)
-            print(f'Best {self.scoring} of {learner_name} = {np.mean(self._score_correction(best_scores, self.scoring))}')
-            
+            tuning = LinearRegressionTuning(self.X, self.y, self.x_colnames, cv_group=self.cv_group)
+            self._run_tuning(tuning, estimator, tuning_params, n_trials, tuning_kws)  
         # ElasticNet
         elif learner_name == 'elasticnet':
             tuning = ElasticNetTuning(self.X, self.y, self.x_colnames, cv_group=self.cv_group)
@@ -330,10 +366,9 @@ class MuscleTuning():
             tuning = XGBRegressorTuning(self.X, self.y, self.x_colnames, cv_group=self.cv_group)
             self._run_tuning(tuning, estimator, tuning_params, n_trials, tuning_kws)
         
-        # スコアの保持
-        self.best_scores[learner_name] = tuning.best_score
-        # チューニング用インスタンスの保持
-        self.tuners[learner_name] = tuning
+        # チューニング結果を保持
+        self.best_scores[learner_name] = self._score_correction(tuning.best_score, self.scoring)  # スコアの保持
+        self.tuners[learner_name] = tuning  # チューニング用インスタンスの保持
 
     def muscle_brain_tuning(self, x, y, data=None, x_colnames=None, cv_group=None,
                             objective=None, 
@@ -395,10 +430,39 @@ class MuscleTuning():
         self._set_property_from_arguments(cv, tuning_algo, seed)
         # チューニング用クラスのデフォルト値から読み込むプロパティ
         self._set_property_from_algo(estimators, tuning_params, tuning_kws)
-        
+        # 学習器の数
+        n_learners = len(self.learning_algos)
+
+        # クロスバリデーション分割数を取得
+        if isinstance(self.cv, LeaveOneGroupOut):
+            cv_num = len(set(self.data[self.group_name].values))
+        else:
+            cv_num = self.cv.n_splits
+
         # チューニング実行
-        for learner_name in self.learning_algos:
+        for i, learner_name in enumerate(self.learning_algos):
             # 回帰のとき
             if self.objective == 'regression':
                 self._regression_tuning(learner_name)
             # 分類のとき
+
+        # 回帰のとき、チューニング前後の予測値vs実測値プロット
+        if self.objective == 'regression':
+            # チューニング前
+            fig, axes = plt.subplots(cv_num + 1, n_learners, figsize=(n_learners*4, (cv_num+1)*4))
+            fig.suptitle(f'Estimators BEFORE tuning', fontsize=18)
+            ax_pred = [[row[i] for row in axes] for i in range(n_learners)]
+            for i, learner_name in enumerate(self.learning_algos):
+                self._plot_regression_pred_true(learner_name, ax_pred[i],
+                                                after_tuning=False)
+            fig.tight_layout(rect=[0, 0, 1, 0.98])  # https://tm23forest.com/contents/matplotlib-tightlayout-with-figure-suptitle
+            plt.show()
+            # チューニング後
+            fig, axes = plt.subplots(cv_num + 1, n_learners, figsize=(n_learners*4, (cv_num+1)*4))
+            fig.suptitle(f'Estimators AFTER tuning', fontsize=18)
+            ax_pred = [[row[i] for row in axes] for i in range(n_learners)]
+            for i, learner_name in enumerate(self.learning_algos):
+                self._plot_regression_pred_true(learner_name, ax_pred[i],
+                                                after_tuning=True)
+            fig.tight_layout(rect=[0, 0, 1, 0.98])
+            plt.show()
