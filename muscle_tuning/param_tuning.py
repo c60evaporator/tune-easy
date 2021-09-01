@@ -1786,7 +1786,7 @@ class ParamTuning():
             y = [np.min(y)] + y
 
         # グラフをプロット
-        ax.plot(x, y, label='training score', **plot_kws)
+        ax.plot(x, y, **plot_kws)
         ax.set_ylabel('max_test_score')  # Y軸ラベル
         if x_axis == 'index':  # X軸ラベル(試行回数のとき)
             ax.set_xlabel('trials')
