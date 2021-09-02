@@ -1,10 +1,13 @@
 from muscle_tuning.linearregression_tuning import LinearRegressionTuning
 from sklearn.model_selection import KFold, GroupKFold, LeaveOneGroupOut
-from sklearn.model_selection import cross_validate, cross_val_score
+from sklearn.model_selection import cross_validate
+from sklearn.metrics import make_scorer, precision_score, recall_score
+from sklearn.preprocessing import LabelEncoder
 from sklearn.gaussian_process import GaussianProcessRegressor
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib import colors
 from seaborn_analyzer import regplot, classplot
 import numbers
 import gc
@@ -24,13 +27,15 @@ class MuscleTuning():
                'multiclass': 'logloss'
                }
     OTHER_SCORES = {'binary': ['accuracy', 'precision', 'recall', 'f1', 'logloss', 'auc'],
-                    'multiclass': ['accuracy', 'precision', 'recall', 'f1_macro', 'logloss', 'auc_ovr'],
+                    'multiclass': ['accuracy', 'precision_macro', 'recall_macro', 'f1_macro', 'logloss', 'auc_ovr'],  # 多クラスではprecision, recallは文字列指定不可https://stackoverflow.com/questions/46598301/how-to-compute-precision-recall-and-f1-score-of-an-imbalanced-dataset-for-k-fold
                     'regression': ['rmse', 'mae', 'rmsle', 'mape', 'r2']
                     }
-    LEARNING_ALGOS = {#'regression': ['linear_regression', 'elasticnet', 'svr', 'randomforest', 'lightgbm'],
-                      'regression': ['linear_regression', 'elasticnet', 'svr'],
+    LEARNING_ALGOS = {'regression': ['linear_regression', 'elasticnet', 'svr', 'randomforest', 'lightgbm'],
+                      #'regression': ['linear_regression', 'elasticnet', 'svr'],
                       'binary': ['svm', 'logistic', 'randomforest', 'lightgbm'],
+                      #'binary': ['svm'],
                       'multiclass': ['svm', 'logistic', 'randomforest', 'lightgbm']
+                      #'multiclass': ['svm', 'logistic']
                       }
     N_TRIALS = {'regression': {'svr': 500,
                                'elasticnet': 500,
@@ -52,14 +57,26 @@ class MuscleTuning():
                                }
                 }
     
-    SCORE_RENAME_DICT = {'logloss': 'neg_log_loss',
-                         'auc': 'roc_auc',
-                         'auc_ovr': 'roc_auc_ovr',
-                         'rmse': 'neg_root_mean_squared_error',
-                         'mae': 'neg_mean_absolute_error',
-                         'rmsle': 'neg_mean_squared_log_error',
-                         'mape': 'neg_mean_absolute_percentage_error',
-                         }
+    _SCORE_RENAME_DICT = {'logloss': 'neg_log_loss',
+                          'auc': 'roc_auc',
+                          'auc_ovr': 'roc_auc_ovr',
+                          'rmse': 'neg_root_mean_squared_error',
+                          'mae': 'neg_mean_absolute_error',
+                          'rmsle': 'neg_mean_squared_log_error',
+                          'mape': 'neg_mean_absolute_percentage_error',
+                          'accuracy': 'accuracy',
+                          'precision': 'precision',
+                          'recall': 'recall',
+                          'precision_macro': make_scorer(precision_score, average='macro'),
+                          'recall_macro': make_scorer(recall_score, average='macro'),
+                          'f1': 'f1',
+                          'f1_micro': 'f1_micro',
+                          'f1_macro': 'f1_macro',
+                          'f1_weighted': 'f1_weighted',
+                          'average_precision': 'average_precision',
+                          'r2': 'r2'
+                          }
+    _COLOR_LIST = list(colors.TABLEAU_COLORS.values())
 
     def _reshape_input_data(self, x, y, data, x_colnames, cv_group):
         """
@@ -143,6 +160,8 @@ class MuscleTuning():
         self.tuners = {}  # チューニング後のParamTuning継承クラス保持用
         self.estimators_before = {}  # チューニング前の学習器
         self.estimators_after = {}  # チューニング後の学習器
+        self.df_scores = None  # 算出したスコアを保持するDataFrame
+        self.df_scores_cv = None  # 算出したスコアをクロスバリデーション全て保持するDataFrame
     
     def _select_objective(self, objective):
         """
@@ -247,46 +266,46 @@ class MuscleTuning():
         else:
             self.tuning_kws = tuning_kws
 
-    def _run_tuning(self, tuning, estimator, tuning_params, n_trials, tuning_kws):
+    def _run_tuning(self, tuner, estimator, tuning_params, n_trials, tuning_kws):
         """
         チューニング用メソッド実行
         """
         # グリッドサーチ
         if self.tuning_algo == 'grid':
-            tuning.grid_search_tuning(estimator=estimator,
+            tuner.grid_search_tuning(estimator=estimator,
                                     tuning_params=tuning_params,
                                     cv=self.cv,
                                     seed=self.seed,
-                                    scoring=self.SCORE_RENAME_DICT[self.scoring],
+                                    scoring=self._SCORE_RENAME_DICT[self.scoring],
                                     **tuning_kws
                                     )
         # ランダムサーチ
         elif self.tuning_algo == 'random':
-            tuning.grid_search_tuning(estimator=estimator,
+            tuner.grid_search_tuning(estimator=estimator,
                                     tuning_params=tuning_params,
                                     cv=self.cv,
                                     seed=self.seed,
-                                    scoring=self.SCORE_RENAME_DICT[self.scoring],
+                                    scoring=self._SCORE_RENAME_DICT[self.scoring],
                                     n_iter=n_trials,
                                     **tuning_kws
                                     )
         # BayesianOptimization
         elif self.tuning_algo == 'bayes-opt':
-            tuning.bayes_opt_tuning(estimator=estimator,
+            tuner.bayes_opt_tuning(estimator=estimator,
                                     tuning_params=tuning_params,
                                     cv=self.cv,
                                     seed=self.seed,
-                                    scoring=self.SCORE_RENAME_DICT[self.scoring],
+                                    scoring=self._SCORE_RENAME_DICT[self.scoring],
                                     n_iter=n_trials,
                                     **tuning_kws
                                     )
         # Optuna
         elif self.tuning_algo == 'optuna':
-            tuning.optuna_tuning(estimator=estimator,
+            tuner.optuna_tuning(estimator=estimator,
                                 tuning_params=tuning_params,
                                 cv=self.cv,
                                 seed=self.seed,
-                                scoring=self.SCORE_RENAME_DICT[self.scoring],
+                                scoring=self._SCORE_RENAME_DICT[self.scoring],
                                 n_trials=n_trials,
                                 **tuning_kws
                                 )
@@ -311,6 +330,100 @@ class MuscleTuning():
             scores_fixed = score_src
         return scores_fixed
 
+    def _retain_tuning_result(self, tuner, learner_name):
+        """
+        チューニング結果の保持
+        """
+        # チューニング結果を保持
+        self.best_scores[learner_name] = self._score_correction(tuner.best_score, self.scoring)  # スコアの保持
+        self.tuners[learner_name] = tuner  # チューニング用インスタンスの保持
+        # チューニング前の学習器を保持
+        self.estimators_before[learner_name] = copy.deepcopy(tuner.estimator)
+        params_before = {}
+        params_before.update(tuner.not_opt_params)
+        self.estimators_before[learner_name].set_params(**params_before)
+        self.estimators_before[learner_name].fit(self.X, self.y, **tuner.fit_params)
+        # チューニング後の学習器を保持
+        self.estimators_after[learner_name] = copy.deepcopy(tuner.estimator)
+        params_after = {}
+        params_after.update(tuner.not_opt_params)
+        params_after.update(tuner.best_params)
+        self.estimators_after[learner_name].set_params(**params_after)
+        self.estimators_after[learner_name].fit(self.X, self.y, **tuner.fit_params)
+
+    def _regression_tuning(self, learner_name):
+        """
+        回帰のチューニング実行
+        """
+        print(f'Start {learner_name} tuning')
+        # チューニングに使用する引数をプロパティから取得
+        estimator = self.estimators[learner_name]
+        tuning_params = self.tuning_params[learner_name]
+        tuning_kws = self.tuning_kws[learner_name]
+        n_trials = self.n_trials[learner_name] if learner_name in self.n_trials.keys() else None
+        # 線形回帰 (チューニングなし)
+        if learner_name == 'linear_regression':
+            tuner = LinearRegressionTuning(self.X, self.y, self.x_colnames, cv_group=self.cv_group)
+            self._run_tuning(tuner, estimator, tuning_params, n_trials, tuning_kws)  
+        # ElasticNet
+        elif learner_name == 'elasticnet':
+            tuner = ElasticNetTuning(self.X, self.y, self.x_colnames, cv_group=self.cv_group)
+            self._run_tuning(tuner, estimator, tuning_params, n_trials, tuning_kws)
+        # サポートベクター回帰
+        elif learner_name == 'svr':
+            tuner = SVMRegressorTuning(self.X, self.y, self.x_colnames, cv_group=self.cv_group)
+            self._run_tuning(tuner, estimator, tuning_params, n_trials, tuning_kws)
+        # ランダムフォレスト回帰
+        elif learner_name == 'randomforest':
+            tuner = RFRegressorTuning(self.X, self.y, self.x_colnames, cv_group=self.cv_group)
+            self._run_tuning(tuner, estimator, tuning_params, n_trials, tuning_kws)
+        # LightGBM回帰
+        elif learner_name == 'lightgbm':
+            tuner = LGBMRegressorTuning(self.X, self.y, self.x_colnames, cv_group=self.cv_group)
+            self._run_tuning(tuner, estimator, tuning_params, n_trials, tuning_kws)
+        # XGBoost回帰
+        elif learner_name == 'xgboost':
+            tuner = XGBRegressorTuning(self.X, self.y, self.x_colnames, cv_group=self.cv_group)
+            self._run_tuning(tuner, estimator, tuning_params, n_trials, tuning_kws)
+        
+        # チューニング結果の保持
+        self._retain_tuning_result(tuner, learner_name)
+
+    def _classification_tuning(self, learner_name):
+        """
+        分類のチューニング実行
+        """
+        print(f'Start {learner_name} tuning')
+        # チューニングに使用する引数をプロパティから取得
+        estimator = self.estimators[learner_name]
+        tuning_params = self.tuning_params[learner_name]
+        tuning_kws = self.tuning_kws[learner_name]
+        n_trials = self.n_trials[learner_name] if learner_name in self.n_trials.keys() else None
+
+        # サポートベクターマシン
+        if learner_name == 'svm':
+            tuner = SVMClassifierTuning(self.X, self.y, self.x_colnames, cv_group=self.cv_group)
+            self._run_tuning(tuner, estimator, tuning_params, n_trials, tuning_kws)  
+        # ロジスティック回帰
+        elif learner_name == 'logistic':
+            tuner = LogisticRegressionTuning(self.X, self.y, self.x_colnames, cv_group=self.cv_group)
+            self._run_tuning(tuner, estimator, tuning_params, n_trials, tuning_kws)
+        # ランダムフォレスト
+        elif learner_name == 'randomforest':
+            tuner = RFClassifierTuning(self.X, self.y, self.x_colnames, cv_group=self.cv_group)
+            self._run_tuning(tuner, estimator, tuning_params, n_trials, tuning_kws)
+        # LightGBM分類
+        elif learner_name == 'lightgbm':
+            tuner = LGBMClassifierTuning(self.X, self.y, self.x_colnames, cv_group=self.cv_group)
+            self._run_tuning(tuner, estimator, tuning_params, n_trials, tuning_kws)
+        # XGBoost分類
+        elif learner_name == 'xgboost':
+            tuner = XGBClassifierTuning(self.X, self.y, self.x_colnames, cv_group=self.cv_group)
+            self._run_tuning(tuner, estimator, tuning_params, n_trials, tuning_kws)
+
+        # チューニング結果の保持
+        self._retain_tuning_result(tuner, learner_name)
+
     def _plot_regression_pred_true(self, learner_name, ax, after_tuning):
         """
         回帰モデルの予測値vs実測値プロット
@@ -331,44 +444,46 @@ class MuscleTuning():
         title_before = ax[0].title._text
         ax[0].set_title(f'{learner_name.upper()}\n\n{title_before}')
 
-    def _regression_tuning(self, learner_name):
+    def _calc_all_scores(self, learner_name, after_tuning):
         """
-        回帰のチューニング実行
+        チューニング対象以外のスコアを算出
         """
-        print(f'Start {learner_name} tuning')
-        # チューニングに使用する引数をプロパティから取得
-        estimator = self.estimators[learner_name]
-        tuning_params = self.tuning_params[learner_name]
-        tuning_kws = self.tuning_kws[learner_name]
-        n_trials = self.n_trials[learner_name] if learner_name in self.n_trials.keys() else None
-        # 線形回帰 (チューニングなし)
-        if learner_name == 'linear_regression':
-            tuning = LinearRegressionTuning(self.X, self.y, self.x_colnames, cv_group=self.cv_group)
-            self._run_tuning(tuning, estimator, tuning_params, n_trials, tuning_kws)  
-        # ElasticNet
-        elif learner_name == 'elasticnet':
-            tuning = ElasticNetTuning(self.X, self.y, self.x_colnames, cv_group=self.cv_group)
-            self._run_tuning(tuning, estimator, tuning_params, n_trials, tuning_kws)
-        # サポートベクター回帰
-        elif learner_name == 'svr':
-            tuning = SVMRegressorTuning(self.X, self.y, self.x_colnames, cv_group=self.cv_group)
-            self._run_tuning(tuning, estimator, tuning_params, n_trials, tuning_kws)
-        # ランダムフォレスト回帰
-        elif learner_name == 'randomforest':
-            tuning = RFRegressorTuning(self.X, self.y, self.x_colnames, cv_group=self.cv_group)
-            self._run_tuning(tuning, estimator, tuning_params, n_trials, tuning_kws)
-        # LightGBM回帰
-        elif learner_name == 'lightgbm':
-            tuning = LGBMRegressorTuning(self.X, self.y, self.x_colnames, cv_group=self.cv_group)
-            self._run_tuning(tuning, estimator, tuning_params, n_trials, tuning_kws)
-        # XGBoost回帰
-        elif learner_name == 'xgboost':
-            tuning = XGBRegressorTuning(self.X, self.y, self.x_colnames, cv_group=self.cv_group)
-            self._run_tuning(tuning, estimator, tuning_params, n_trials, tuning_kws)
-        
-        # チューニング結果を保持
-        self.best_scores[learner_name] = self._score_correction(tuning.best_score, self.scoring)  # スコアの保持
-        self.tuners[learner_name] = tuning  # チューニング用インスタンスの保持
+        tuner = self.tuners[learner_name]
+        estimator = copy.deepcopy(tuner.estimator)
+        # パラメータをセット
+        params = {}
+        params.update(tuner.not_opt_params)
+        if after_tuning:  # チューニング後のモデルから取得したいとき
+            params.update(tuner.best_params)
+        estimator.set_params(**params)
+        # 分類タスクのとき、ラベルをint型に変換 (strだとprecision, recall, f1が算出できない)
+        if self.objective in ['binary', 'multiclass']:
+            le = LabelEncoder()
+            le.fit(self.y)
+            y_trans = le.transform(self.y)
+        else:
+            y_trans = self.y
+        # スコア算出
+        scores = cross_validate(estimator, self.X, y_trans,
+                                groups=self.cv_group,
+                                scoring={k: self._SCORE_RENAME_DICT[k] for k in self.other_scores},
+                                cv = self.cv,
+                                fit_params=tuner.fit_params
+                                )
+        # スコア名の'test_'文字列を除外
+        scores = {k.replace('test_', ''): v for k, v in scores.items() if k not in ['fit_time', 'score_time']}
+        # スコアを定義通りに補正
+        scores = {k: np.vectorize(lambda x: self._score_correction(x, k))(v) for k, v in scores.items()}
+        # 平均値算出
+        scores_mean = {k: np.nanmean(v) for k, v in scores.items()}
+        # 学習器名とチューニング前後を記載
+        scores['learning_algo'] = learner_name
+        scores['run_tuning'] = after_tuning
+        scores_mean['learning_algo'] = learner_name
+        scores_mean['run_tuning'] = after_tuning
+
+        return scores, scores_mean
+
 
     def muscle_brain_tuning(self, x, y, data=None, x_colnames=None, cv_group=None,
                             objective=None, 
@@ -445,6 +560,19 @@ class MuscleTuning():
             if self.objective == 'regression':
                 self._regression_tuning(learner_name)
             # 分類のとき
+            elif self.objective in ['binary', 'multiclass']:
+                self._classification_tuning(learner_name)
+
+        # スコア上昇履歴プロット
+        fig, ax = plt.subplots(1, 1, figsize=(6, 4))
+        fig.suptitle(f'{self.scoring} increase history')
+        for i, learner_name in enumerate(self.learning_algos):
+            self.tuners[learner_name].plot_search_history(ax=ax, x_axis='time',
+                                            plot_kws={'color':self._COLOR_LIST[i],
+                                                      'label':learner_name
+                                                      })
+        plt.legend()
+        plt.show()
 
         # 回帰のとき、チューニング前後の予測値vs実測値プロット
         if self.objective == 'regression':
@@ -466,3 +594,26 @@ class MuscleTuning():
                                                 after_tuning=True)
             fig.tight_layout(rect=[0, 0, 1, 0.98])
             plt.show()
+
+        # 分類のとき、ROC曲線をプロット
+
+
+        # チューニング対象以外のスコアを算出
+        scores_list = []
+        scores_cv_list = []
+        # チューニング前のスコア
+        for learner_name in self.learning_algos:
+            scores_cv, scores_mean = self._calc_all_scores(learner_name, False)
+            scores_cv_list.append(scores_cv)
+            scores_list.append(scores_mean)
+        # チューニング後のスコア
+        for learner_name in self.learning_algos:
+            scores_cv, scores_mean = self._calc_all_scores(learner_name, True)
+            scores_cv_list.append(scores_cv)
+            scores_list.append(scores_mean)
+        df_scores = pd.DataFrame(scores_list)
+        df_scores_cv = pd.DataFrame(scores_cv_list)
+        self.df_scores = df_scores
+        self.df_scores_cv = df_scores_cv
+
+        return df_scores
