@@ -9,4 +9,4 @@ from .logisticregression_tuning import *
 from .linearregression_tuning import *
 from .muscle_tuning import *
 
-__version__ = '0.1.1'
+__version__ = '0.1.2'
