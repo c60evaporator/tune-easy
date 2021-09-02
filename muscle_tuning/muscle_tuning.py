@@ -3,6 +3,7 @@ from sklearn.model_selection import KFold, GroupKFold, LeaveOneGroupOut
 from sklearn.model_selection import cross_validate
 from sklearn.metrics import make_scorer, precision_score, recall_score
 from sklearn.preprocessing import LabelEncoder
+from sklearn.pipeline import Pipeline
 from sklearn.gaussian_process import GaussianProcessRegressor
 import pandas as pd
 import numpy as np
@@ -34,8 +35,8 @@ class MuscleTuning():
                       #'regression': ['linear_regression', 'elasticnet', 'svr'],
                       'binary': ['svm', 'logistic', 'randomforest', 'lightgbm'],
                       #'binary': ['svm'],
-                      'multiclass': ['svm', 'logistic', 'randomforest', 'lightgbm']
-                      #'multiclass': ['svm', 'logistic']
+                      #'multiclass': ['svm', 'logistic', 'randomforest', 'lightgbm']
+                      'multiclass': ['svm', 'logistic']
                       }
     N_TRIALS = {'regression': {'svr': 500,
                                'elasticnet': 500,
@@ -57,13 +58,15 @@ class MuscleTuning():
                                }
                 }
     
-    _SCORE_RENAME_DICT = {'logloss': 'neg_log_loss',
-                          'auc': 'roc_auc',
-                          'auc_ovr': 'roc_auc_ovr',
-                          'rmse': 'neg_root_mean_squared_error',
+    _SCORE_RENAME_DICT = {'rmse': 'neg_root_mean_squared_error',
                           'mae': 'neg_mean_absolute_error',
                           'rmsle': 'neg_mean_squared_log_error',
                           'mape': 'neg_mean_absolute_percentage_error',
+                          'r2': 'r2',
+                          'logloss': 'neg_log_loss',
+                          'auc': 'roc_auc',
+                          'auc_ovr': 'roc_auc_ovr',
+                          'pr_auc': 'average_precision',
                           'accuracy': 'accuracy',
                           'precision': 'precision',
                           'recall': 'recall',
@@ -73,9 +76,26 @@ class MuscleTuning():
                           'f1_micro': 'f1_micro',
                           'f1_macro': 'f1_macro',
                           'f1_weighted': 'f1_weighted',
-                          'average_precision': 'average_precision',
-                          'r2': 'r2'
                           }
+    _SCORE_NEGATIVE = {'rmse': True,
+                       'mae': True,
+                       'rmsle': True,
+                       'mape': True,
+                       'r2': False,
+                       'logloss': True,
+                       'auc': False,
+                       'auc_ovr': False,
+                       'pr_auc': False,
+                       'accuracy': False,
+                       'precision': False,
+                       'recall': False,
+                       'precision_macro': False,
+                       'recall_macro': False,
+                       'f1': False,
+                       'f1_micro': False,
+                       'f1_macro': False,
+                       'f1_weighted': False,
+                       }
     _COLOR_LIST = list(colors.TABLEAU_COLORS.values())
 
     def _reshape_input_data(self, x, y, data, x_colnames, cv_group):
@@ -162,6 +182,7 @@ class MuscleTuning():
         self.estimators_after = {}  # チューニング後の学習器
         self.df_scores = None  # 算出したスコアを保持するDataFrame
         self.df_scores_cv = None  # 算出したスコアをクロスバリデーション全て保持するDataFrame
+        self.best_learner = None  # 最もスコアの良かった学習器名
     
     def _select_objective(self, objective):
         """
@@ -457,10 +478,13 @@ class MuscleTuning():
             params.update(tuner.best_params)
         estimator.set_params(**params)
         # 分類タスクのとき、ラベルをint型に変換 (strだとprecision, recall, f1が算出できない)
+        fit_params = copy.deepcopy(tuner.fit_params)
         if self.objective in ['binary', 'multiclass']:
             le = LabelEncoder()
             le.fit(self.y)
             y_trans = le.transform(self.y)
+            if 'eval_set' in tuner.fit_params:
+                fit_params['eval_set'] = [(fit_params['eval_set'][0][0], le.transform(fit_params['eval_set'][0][1]))]
         else:
             y_trans = self.y
         # スコア算出
@@ -468,7 +492,7 @@ class MuscleTuning():
                                 groups=self.cv_group,
                                 scoring={k: self._SCORE_RENAME_DICT[k] for k in self.other_scores},
                                 cv = self.cv,
-                                fit_params=tuner.fit_params
+                                fit_params=fit_params
                                 )
         # スコア名の'test_'文字列を除外
         scores = {k.replace('test_', ''): v for k, v in scores.items() if k not in ['fit_time', 'score_time']}
@@ -478,12 +502,68 @@ class MuscleTuning():
         scores_mean = {k: np.nanmean(v) for k, v in scores.items()}
         # 学習器名とチューニング前後を記載
         scores['learning_algo'] = learner_name
-        scores['run_tuning'] = after_tuning
+        scores['after_tuning'] = after_tuning
         scores_mean['learning_algo'] = learner_name
-        scores_mean['run_tuning'] = after_tuning
+        scores_mean['after_tuning'] = after_tuning
 
         return scores, scores_mean
 
+    def print_estimator(self, learner_name):
+        """
+        Print estimator after tuning
+
+        Parameters
+        ----------
+        learner_name : {'linear_regression', 'elasticnet', 'svr', 'randomforest', 'lightgbm', 'xgboost', 'svm', 'logistic'}, or np.ndarray
+            Printed learning algorithm name
+        """
+
+        print('-----------------The following is how to use best estimator-------------------\n')
+        tuner = self.tuners[learner_name]
+
+        # importの表示
+        if self.objective == 'regression':
+            if learner_name == 'linear_regression':
+                print('from sklearn.linear_model import LinearRegression')
+            elif learner_name == 'elasticnet':
+                print('from sklearn.linear_model import ElasticNet')
+            elif learner_name == 'svr':
+                print('from sklearn.svm import SVR')
+            elif learner_name == 'randomforest':
+                print('from sklearn.ensemble import RandomForestRegressor')
+            elif learner_name == 'lightgbm':
+                print('from lightgbm import LGBMRegressor')
+            elif learner_name == 'xgboost':
+                print('from xgboost import XGBRegressor')
+        else:
+            if learner_name == 'svm':
+                print('from sklearn.svm import SVC')
+            elif learner_name == 'logistic':
+                print('from sklearn.linear_model import LogisticRegression')
+            elif learner_name == 'randomforest':
+                print('from sklearn.ensemble import RandomForestClassifier')
+            elif learner_name == 'lightgbm':
+                print('from lightgbm import LGBMClassifier')
+            elif learner_name == 'xgboost':
+                print('from xgboost import XGBClassifier')
+        # パイプラインならimport追加
+        if isinstance(tuner.estimator, Pipeline):
+            print('from sklearn.pipeline import Pipeline')
+            print('from sklearn.preprocessing import StandardScaler')
+
+        # 学習器情報の表示
+        print(f'NOT_OPT_PARAMS = {str(tuner.not_opt_params)}')  # チューニング対象外パラメータ
+        print(f'BEST_PARAMS = {str(tuner.best_params)}')  # チューニング対象パラメータ
+        print('params = {}')
+        print('params.update(NOT_OPT_PARAMS)')
+        print('params.update(BEST_PARAMS)')
+        print(f'estimator = {str(tuner.estimator)}')  # 学習器
+        print('estimator.set_params(**params)')  # 学習器にパラメータをセット
+        if tuner.fit_params == {}:  # fit_paramsがないとき
+            print('estimator.fit(X, y)')
+        else:  # fit_paramsがあるとき
+            print(f'FIT_PARAMS = {str(tuner.fit_params)}')
+            print('estimator.fit(X, y, FIT_PARAMS)')
 
     def muscle_brain_tuning(self, x, y, data=None, x_colnames=None, cv_group=None,
                             objective=None, 
@@ -615,5 +695,14 @@ class MuscleTuning():
         df_scores_cv = pd.DataFrame(scores_cv_list)
         self.df_scores = df_scores
         self.df_scores_cv = df_scores_cv
+
+        # 最も性能の良い学習器の保持
+        if self._SCORE_NEGATIVE[self.scoring]:  # 小さい方がGoodなスコアのとき
+            best_idx = df_scores[df_scores['after_tuning']][self.scoring].idxmin()
+        else:  # 大きい方がGoodなスコアのとき
+            best_idx = df_scores[df_scores['after_tuning']][self.scoring].idxmax()
+        self.best_learner = df_scores.loc[best_idx]['learning_algo']
+        # print_estimator
+        self.print_estimator(self.best_learner)
 
         return df_scores
