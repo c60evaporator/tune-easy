@@ -103,7 +103,7 @@ class ParamTuning():
         self.estimator = None  # 最適化対象の学習器インスタンス
         self.learner_name = None  # パイプライン処理時の学習器名称
         self.fit_params = None  # 学習時のパラメータ
-        self.score_before = None
+        self.score_before = None  # 最適化前のスコア
         self.tuning_algo = None  # 最適化に使用したアルゴリズム名('grid', 'random', 'bayes-opt', 'optuna')
         self.best_params = None  # 最適パラメータ
         self.best_score = None  # 最高スコア
