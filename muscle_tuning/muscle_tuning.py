@@ -11,7 +11,6 @@ import matplotlib.pyplot as plt
 from matplotlib import colors
 from seaborn_analyzer import regplot, classplot
 import numbers
-import gc
 import copy
 
 from .elasticnet_tuning import ElasticNetTuning
@@ -32,11 +31,11 @@ class MuscleTuning():
                     'regression': ['rmse', 'mae', 'rmsle', 'mape', 'r2']
                     }
     LEARNING_ALGOS = {'regression': ['linear_regression', 'elasticnet', 'svr', 'randomforest', 'lightgbm'],
-                      #'regression': ['linear_regression', 'elasticnet', 'svr'],
+                      #'regression': ['linear_regression', 'lightgbm'],
                       'binary': ['svm', 'logistic', 'randomforest', 'lightgbm'],
                       #'binary': ['svm'],
-                      #'multiclass': ['svm', 'logistic', 'randomforest', 'lightgbm']
-                      'multiclass': ['svm', 'logistic']
+                      'multiclass': ['svm', 'logistic', 'randomforest', 'lightgbm']
+                      #'multiclass': ['svm', 'logistic']
                       }
     N_TRIALS = {'regression': {'svr': 500,
                                'elasticnet': 500,
@@ -100,7 +99,7 @@ class MuscleTuning():
 
     def _reshape_input_data(self, x, y, data, x_colnames, cv_group):
         """
-        入力ファイルの形式統一(pd.DataFrame or np.ndarray)
+        入力データの形式統一(pd.DataFrame or np.ndarray)
         """
         # dataがpd.DataFrameのとき
         if isinstance(data, pd.DataFrame):
@@ -127,12 +126,12 @@ class MuscleTuning():
                 raise Exception('`x` argument should be list[str] if `data` is None')
             if not isinstance(y, np.ndarray):
                 raise Exception('`y` argument should be np.ndarray if `data` is None')
-            self.X = x
+            self.X = x if len(x.shape) == 2 else x.reshape([x.shape[0], 1])
             self.y = y.ravel()
             # x_colnameとXの整合性確認
             if x_colnames is None:
-                self.x_colnames = range(x.shape(1))
-            elif x.shape[1] != len(x_colnames):
+                self.x_colnames = list(range(self.X.shape[1]))
+            elif self.X.shape[1] != len(x_colnames):
                 raise Exception('width of X must be equal to length of x_colnames')
             else:
                 self.x_colnames = x_colnames
@@ -562,7 +561,14 @@ class MuscleTuning():
         if tuner.fit_params == {}:  # fit_paramsがないとき
             print('estimator.fit(X, y)')
         else:  # fit_paramsがあるとき
-            print(f'FIT_PARAMS = {str(tuner.fit_params)}')
+            if 'eval_set' in tuner.fit_params.keys():  # fit_paramsにeval_setが含まれるとき、[(X, y)]に置換
+                fit_params = copy.deepcopy(tuner.fit_params)
+                fit_params['eval_set'] = 'dummy'
+                str_fit_params = str(fit_params)
+                str_fit_params = str_fit_params.replace("'dummy'", "[(X, y)]")
+            else:
+                str_fit_params = str(tuner.fit_params)
+            print(f'FIT_PARAMS = {str_fit_params}')
             print('estimator.fit(X, y, FIT_PARAMS)')
 
     def muscle_brain_tuning(self, x, y, data=None, x_colnames=None, cv_group=None,
@@ -577,9 +583,9 @@ class MuscleTuning():
         Parameters
         ----------
         x : list[str], or np.ndarray
-            Explanatory variables. Should be list[str] if ``data`` is pd.DataFrame.
+            Explanatory variables. Should be list[str] if ``data`` is pd.DataFrame. Should be np.ndarray if ``data`` is None
         y : str or np.ndarray
-            Objective variable. Should be str if ``data`` is pd.DataFrame.
+            Objective variable. Should be str if ``data`` is pd.DataFrame. Should be np.ndarray if ``data`` is None
         data : pd.DataFrame, optional
             Input data structure.
         x_colnames : list[str]
@@ -628,13 +634,13 @@ class MuscleTuning():
         # 学習器の数
         n_learners = len(self.learning_algos)
 
-        # クロスバリデーション分割数を取得
+        ###### クロスバリデーション分割数を取得 ######
         if isinstance(self.cv, LeaveOneGroupOut):
             cv_num = len(set(self.data[self.group_name].values))
         else:
             cv_num = self.cv.n_splits
 
-        # チューニング実行
+        ###### チューニング実行 ######
         for i, learner_name in enumerate(self.learning_algos):
             # 回帰のとき
             if self.objective == 'regression':
@@ -643,7 +649,7 @@ class MuscleTuning():
             elif self.objective in ['binary', 'multiclass']:
                 self._classification_tuning(learner_name)
 
-        # スコア上昇履歴プロット
+        ###### スコア上昇履歴プロット ######
         fig, ax = plt.subplots(1, 1, figsize=(6, 4))
         fig.suptitle(f'{self.scoring} increase history')
         for i, learner_name in enumerate(self.learning_algos):
@@ -654,7 +660,7 @@ class MuscleTuning():
         plt.legend()
         plt.show()
 
-        # 回帰のとき、チューニング前後の予測値vs実測値プロット
+        ###### 回帰のとき、チューニング前後の予測値vs実測値プロット ######
         if self.objective == 'regression':
             # チューニング前
             fig, axes = plt.subplots(cv_num + 1, n_learners, figsize=(n_learners*4, (cv_num+1)*4))
@@ -675,10 +681,10 @@ class MuscleTuning():
             fig.tight_layout(rect=[0, 0, 1, 0.98])
             plt.show()
 
-        # 分類のとき、ROC曲線をプロット
+        ###### 分類のとき、ROC曲線をプロット ######
 
 
-        # チューニング対象以外のスコアを算出
+        ###### チューニング対象以外のスコアを算出 ######
         scores_list = []
         scores_cv_list = []
         # チューニング前のスコア
@@ -696,7 +702,7 @@ class MuscleTuning():
         self.df_scores = df_scores
         self.df_scores_cv = df_scores_cv
 
-        # 最も性能の良い学習器の保持
+        ###### 最も性能の良い学習器の保持と表示 ######
         if self._SCORE_NEGATIVE[self.scoring]:  # 小さい方がGoodなスコアのとき
             best_idx = df_scores[df_scores['after_tuning']][self.scoring].idxmin()
         else:  # 大きい方がGoodなスコアのとき
