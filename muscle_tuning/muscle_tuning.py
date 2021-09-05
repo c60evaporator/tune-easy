@@ -196,12 +196,12 @@ class MuscleTuning():
                 raise Exception('Objective variable should be int or float if `objective` is "regression"')
         # 分類指定時
         elif objective == 'classification':
-            y_distinct = len(np.unique(self.y))  # 目的変数の固有メンバー数
-            if y_distinct <= 1:  # 固有メンバー数の下限は2
+            n_classes = len(np.unique(self.y))  # 目的変数の固有メンバー数
+            if n_classes <= 1:  # 固有メンバー数の下限は2
                 raise Exception('Number of unique members of objective variable should be bigger than 1')
-            elif y_distinct == 2:  # 2クラス分類
+            elif n_classes == 2:  # 2クラス分類
                 self.objective = 'binary'
-            elif y_distinct <= 20:  # 多クラス分類
+            elif n_classes <= 20:  # 多クラス分類
                 self.objective = 'multiclass'
             else:  # 固有メンバーは20が上限
                 raise Exception('Number of unique members of objective variable should be less than 20')
@@ -212,12 +212,12 @@ class MuscleTuning():
                 self.objective = 'regression'
             # str型 or bool型のとき、分類タスクとみなす
             elif objective_dtype in [np.object, np.bool]:
-                y_distinct = len(np.unique(self.y))  # 目的変数の固有メンバー数
-                if y_distinct <= 1:  # 固有メンバー数の下限は2
+                n_classes = len(np.unique(self.y))  # 目的変数の固有メンバー数
+                if n_classes <= 1:  # 固有メンバー数の下限は2
                     raise Exception('Number of unique members of objective variable should be bigger than 1')
-                elif y_distinct == 2:  # 2クラス分類
+                elif n_classes == 2:  # 2クラス分類
                     self.objective = 'binary'
-                elif y_distinct <= 20:  # 多クラス分類
+                elif n_classes <= 20:  # 多クラス分類
                     self.objective = 'multiclass'
                 else:  # 固有メンバーは20が上限
                     raise Exception('Number of unique members of objective variable should be less than 20')
