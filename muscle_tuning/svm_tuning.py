@@ -125,8 +125,8 @@ class SVMClassifierTuning(ParamTuning):
             最適化で最大化する評価指標
         
         """
-        # 評価指標がloglossのとき、probabilityとrandom_stateを設定
-        if scoring == 'neg_log_loss':
+        # 評価指標がlogloss等クラス確率を必要とするスコアのとき、probabilityとrandom_stateを設定
+        if scoring in ['neg_log_loss', 'roc_auc', 'roc_auc_ovr', 'roc_auc_ovo', 'roc_auc_ovr_weighted', 'roc_auc_ovo_weighted', 'average_precision']:
             src_not_opt_params['probability'] = True
             src_not_opt_params['random_state'] = seed
         # 乱数シードをnot_opt_paramsのrandom_state引数に追加
