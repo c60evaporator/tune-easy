@@ -33,9 +33,9 @@ class MuscleTuning():
     LEARNING_ALGOS = {'regression': ['linear_regression', 'elasticnet', 'svr', 'randomforest', 'lightgbm'],
                       #'regression': ['linear_regression', 'lightgbm'],
                       'binary': ['svm', 'logistic', 'randomforest', 'lightgbm'],
-                      #'binary': ['svm'],
-                      'multiclass': ['svm', 'logistic', 'randomforest', 'lightgbm']
-                      #'multiclass': ['svm', 'logistic']
+                      #'binary': ['svm', 'logistic'],
+                      #'multiclass': ['svm', 'logistic', 'randomforest', 'lightgbm']
+                      'multiclass': ['xgboost']
                       }
     N_TRIALS = {'regression': {'svr': 500,
                                'elasticnet': 500,
@@ -49,15 +49,16 @@ class MuscleTuning():
                            'lightgbm': 200,
                            'xgboost': 100
                            },
-                'multiclass': {'svm': 500,
+                'multiclass': {'svm': 50,
                                'logistic': 500,
                                'randomforest': 300, 
-                               'lightgbm': 200,
+                               'lightgbm': 20,
                                'xgboost': 100
                                }
                 }
     
     _SCORE_RENAME_DICT = {'rmse': 'neg_root_mean_squared_error',
+                          'mse': 'neg_mean_squared_error',
                           'mae': 'neg_mean_absolute_error',
                           'rmsle': 'neg_mean_squared_log_error',
                           'mape': 'neg_mean_absolute_percentage_error',
@@ -65,6 +66,9 @@ class MuscleTuning():
                           'logloss': 'neg_log_loss',
                           'auc': 'roc_auc',
                           'auc_ovr': 'roc_auc_ovr',
+                          'auc_ovo': 'roc_auc_ovo',
+                          'auc_ovr_weighted': 'roc_auc_ovr_weighted',
+                          'auc_ovo_weighted': 'roc_auc_ovo_weighted',
                           'pr_auc': 'average_precision',
                           'accuracy': 'accuracy',
                           'precision': 'precision',
@@ -77,6 +81,7 @@ class MuscleTuning():
                           'f1_weighted': 'f1_weighted',
                           }
     _SCORE_NEGATIVE = {'rmse': True,
+                       'mse': True,
                        'mae': True,
                        'rmsle': True,
                        'mape': True,
@@ -84,6 +89,9 @@ class MuscleTuning():
                        'logloss': True,
                        'auc': False,
                        'auc_ovr': False,
+                       'auc_ovo': False,
+                       'auc_ovr_weighted': False,
+                       'auc_ovo_weighted': False,
                        'pr_auc': False,
                        'accuracy': False,
                        'precision': False,
@@ -340,6 +348,8 @@ class MuscleTuning():
             scores_fixed = -score_src
         elif score_name == 'rmse':
             scores_fixed = -score_src
+        elif score_name == 'mse':
+            scores_fixed = -score_src
         elif score_name == 'mae':
             scores_fixed = -score_src
         elif score_name == 'rmsle':
@@ -354,6 +364,13 @@ class MuscleTuning():
         """
         チューニング結果の保持
         """
+        # 分類タスクかつXGBoostのときのみ、目的変数をint型に変換
+        if learner_name == 'xgboost' and self.objective in ['binary', 'multiclass']:
+            le = LabelEncoder()
+            le.fit(self.y)
+            y_trans = le.transform(self.y)
+        else:
+            y_trans = self.y
         # チューニング結果を保持
         self.best_scores[learner_name] = self._score_correction(tuner.best_score, self.scoring)  # スコアの保持
         self.tuners[learner_name] = tuner  # チューニング用インスタンスの保持
@@ -362,14 +379,14 @@ class MuscleTuning():
         params_before = {}
         params_before.update(tuner.not_opt_params)
         self.estimators_before[learner_name].set_params(**params_before)
-        self.estimators_before[learner_name].fit(self.X, self.y, **tuner.fit_params)
+        self.estimators_before[learner_name].fit(self.X, y_trans, **tuner.fit_params)
         # チューニング後の学習器を保持
         self.estimators_after[learner_name] = copy.deepcopy(tuner.estimator)
         params_after = {}
         params_after.update(tuner.not_opt_params)
         params_after.update(tuner.best_params)
         self.estimators_after[learner_name].set_params(**params_after)
-        self.estimators_after[learner_name].fit(self.X, self.y, **tuner.fit_params)
+        self.estimators_after[learner_name].fit(self.X, y_trans, **tuner.fit_params)
 
     def _regression_tuning(self, learner_name):
         """
@@ -455,11 +472,41 @@ class MuscleTuning():
         if after_tuning:  # チューニング後のモデルを表示したいとき
             params.update(tuner.best_params)
         estimator.set_params(**params)
-        regplot.regression_pred_true(estimator, self.x_colnames, self.y_colname, self.data,
+        regplot.regression_pred_true(estimator, tuner.X, tuner.y, x_colnames=tuner.x_colnames,
                                      scores=self.scoring,
-                                     cv=self.cv, ax=ax,
+                                     cv=tuner.cv, ax=ax,
                                      fit_params=tuner.fit_params,
                                      legend_kws={'loc':'upper left'})
+        # 一番上の行に学習器名を追加
+        title_before = ax[0].title._text
+        ax[0].set_title(f'{learner_name.upper()}\n\n{title_before}')
+
+    def _plot_roc_curve(self, learner_name, ax, after_tuning):
+        """
+        分類モデルのROC曲線プロット
+        """
+        tuner = self.tuners[learner_name]
+        estimator = copy.deepcopy(tuner.estimator)
+        fit_params = copy.deepcopy(tuner.fit_params)
+        params = {}
+        params.update(tuner.not_opt_params)
+        # LightGBM、XGBoostでobjectiveにmulticlassを指定しているとき、OVRでエラーが出るのでobjectiveを削除
+        if 'objective' in params and params['objective'] in ['multiclass', 'softmax', 'multiclassova', 'multiclass_ova', 'ova', 'ovr', 'multi:softmax', 'multi:softprob']:
+            print(f'The `objective` argument of {learner_name} set from "{params["objective"]}" to None because multiclass objective is not available in One-Vs-Rest Classifier')
+            params.pop('objective')
+        # LightGBM、XGBoostでeval_metricにmulticlassを指定しているとき、OVRでエラーが出るので置換
+        if 'eval_metric' in fit_params:
+            fit_params['eval_metric'] = fit_params['eval_metric'].replace(
+                                'multi_logloss', 'binary_logloss').replace(
+                                'multi_error', 'binary_error').replace(
+                                'mlogloss', 'logloss')
+        # チューニング後のモデルを表示したいとき
+        if after_tuning:
+            params.update(tuner.best_params)
+        estimator.set_params(**params)
+        classplot.roc_plot(estimator, tuner.X, tuner.y, x_colnames=tuner.x_colnames,
+                           cv=tuner.cv, ax=ax,
+                           fit_params=fit_params)
         # 一番上の行に学習器名を追加
         title_before = ax[0].title._text
         ax[0].set_title(f'{learner_name.upper()}\n\n{title_before}')
@@ -480,17 +527,18 @@ class MuscleTuning():
         fit_params = copy.deepcopy(tuner.fit_params)
         if self.objective in ['binary', 'multiclass']:
             le = LabelEncoder()
-            le.fit(self.y)
-            y_trans = le.transform(self.y)
-            if 'eval_set' in tuner.fit_params:
+            le.fit(tuner.y)
+            y_trans = le.transform(tuner.y)
+            # fit_paramsがstr型のとき、int型に変換
+            if 'eval_set' in fit_params and fit_params['eval_set'][0][1].dtype.name == 'object':
                 fit_params['eval_set'] = [(fit_params['eval_set'][0][0], le.transform(fit_params['eval_set'][0][1]))]
         else:
-            y_trans = self.y
+            y_trans = tuner.y
         # スコア算出
-        scores = cross_validate(estimator, self.X, y_trans,
-                                groups=self.cv_group,
+        scores = cross_validate(estimator, tuner.X, y_trans,
+                                groups=tuner.cv_group,
                                 scoring={k: self._SCORE_RENAME_DICT[k] for k in self.other_scores},
-                                cv = self.cv,
+                                cv = tuner.cv,
                                 fit_params=fit_params
                                 )
         # スコア名の'test_'文字列を除外
@@ -517,7 +565,7 @@ class MuscleTuning():
             Printed learning algorithm name
         """
 
-        print('-----------------The following is how to use best estimator-------------------\n')
+        print('----------The following is how to use the best estimator----------\n')
         tuner = self.tuners[learner_name]
 
         # importの表示
@@ -583,42 +631,69 @@ class MuscleTuning():
         Parameters
         ----------
         x : list[str], or np.ndarray
-            Explanatory variables. Should be list[str] if ``data`` is pd.DataFrame. Should be np.ndarray if ``data`` is None
+            Explanatory variables. Should be list[str] if ``data`` is pd.DataFrame. Should be np.ndarray if ``data`` is None.
+        
         y : str or np.ndarray
-            Objective variable. Should be str if ``data`` is pd.DataFrame. Should be np.ndarray if ``data`` is None
+            Objective variable. Should be str if ``data`` is pd.DataFrame. Should be np.ndarray if ``data`` is None.
+        
         data : pd.DataFrame, optional
             Input data structure.
+        
         x_colnames : list[str]
-            Names of explanatory variables. Available only if data is NOT pd.DataFrame
+            Names of explanatory variables. Available only if data is NOT pd.DataFrame.
+        
         cv_group : str or np.ndarray
-            Grouping variable that will be used for GroupKFold or LeaveOneGroupOut. Should be str if ``data`` is pd.DataFrame
+            Grouping variable that will be used for GroupKFold or LeaveOneGroupOut. Should be str if ``data`` is pd.DataFrame.
+        
         objective : {'classification', 'regression'}
             Specify the learning task. If None, select task by objective variable automatically.
+        
         scoring : str, optional
-            Score name used to parameter tuning, e.g. rmse, mae, logloss, accuracy, auc.
+            Score name used to parameter tuning.
+
+            In regression, use 'rmse', 'mse', 'mae', 'rmsle', 'mape', or 'r2'.
+            
+            In binary classification, use 'logloss', 'accuracy', 'precision', 'recall', 'f1', 'pr_auc', 'auc'.
+            
+            In multiclass classification, use 'logloss', 'accuracy', 'precision_macro', 'recall_macro', 'f1_micro', 'f1_macro', 'f1_weighted', 'auc_ovr', 'auc_ovo', 'auc_ovr_weighted', 'auc_ovo_weighted'.
+        
         other_scores : list[str], optional
-            Score names calculated after tuning, e.g. rmse, mae, logloss, accuracy, auc.
+            Score names calculated after tuning. Input strings are the same as that of `scoring` argument.
+        
         learning_algos : list[str], optional
             Estimator algorithm. 'svm': Support vector machine, 'svr': Support vector regression, 'logistic': Logistic Regression, 'elasiticnet': ElasticNet, 'randomforest': RandomForest, 'lightgbm': LightGBM, 'xgboost': XGBoost.
+            
+            In regression, use 'linear_regression', 'elasticnet', 'svr', 'randomforest', 'lightgbm', or 'xgboost'.
+            
+            In classification, use 'svm', 'logistic', 'randomforest', 'lightgbm', or 'xgboost'.
+        
         n_trials : dict[str, int], optional
             Iteration number of parameter tuning. Keys should be members of ``algo`` argument. Values should be iteration numbers.
+        
         cv : int, cross-validation generator, or an iterable, optional
             Determines the cross-validation splitting strategy. If None, to use the default 5-fold cross validation. If int, to specify the number of folds in a KFold.
+        
         tuning_algo : {'grid', 'random', 'bo', 'optuna'}, optional
             Tuning algorithm using following libraries. 'grid': sklearn.model_selection.GridSearchCV, 'random': sklearn.model_selection.RandomizedSearchCV, 'bo': BayesianOptimization, 'optuna': Optuna.
+        
         seed : int, optional
-            Seed for random number generator of cross validation, estimators, and optuna.sampler
+            Seed for random number generator of cross validation, estimators, and optuna.sampler.
+        
         estimators : dict[str, estimator object implementing 'fit'], optional
             Classification or regression estimators used to tuning. Keys should be members of ``algo`` argument. Values are assumed to implement the scikit-learn estimator interface.
+        
         tuning_params : dict[str, dict[str, {list, tuple}]], optional
             Values should be dictionary with parameters names as keys and lists of parameter settings or parameter range to try as values. Keys should be members of ``algo`` argument. If None, use default values of tuning instances
+        
         tuning_kws : dict[str, dict]
-            Additional parameters passed to tuning instances. Keys should be members of ``algo`` argument. Values should be dict of parameters passed to tuning instances, e.g. {'not_opt_params': {''kernel': 'rbf'}}
+            Additional parameters passed to tuning instances. Keys should be members of ``algo`` argument. Values should be dict of parameters passed to tuning instances, e.g. {'not_opt_params': {''kernel': 'rbf'}}.
+
+            See API Reference of tuning instances.
 
         Returns
         ----------
         df_result : pd.DataFrame
-            Validation scores, e.g. r2, mae and rmse
+            Validation scores of before and after tuning model.
         """
         ###### プロパティの初期化 ######
         # データの整形
@@ -665,7 +740,7 @@ class MuscleTuning():
             # チューニング前
             fig, axes = plt.subplots(cv_num + 1, n_learners, figsize=(n_learners*4, (cv_num+1)*4))
             fig.suptitle(f'Estimators BEFORE tuning', fontsize=18)
-            ax_pred = [[row[i] for row in axes] for i in range(n_learners)]
+            ax_pred = [[row[i] for row in axes] for i in range(n_learners)] if n_learners > 1 else [axes]
             for i, learner_name in enumerate(self.learning_algos):
                 self._plot_regression_pred_true(learner_name, ax_pred[i],
                                                 after_tuning=False)
@@ -674,7 +749,7 @@ class MuscleTuning():
             # チューニング後
             fig, axes = plt.subplots(cv_num + 1, n_learners, figsize=(n_learners*4, (cv_num+1)*4))
             fig.suptitle(f'Estimators AFTER tuning', fontsize=18)
-            ax_pred = [[row[i] for row in axes] for i in range(n_learners)]
+            ax_pred = [[row[i] for row in axes] for i in range(n_learners)] if n_learners > 1 else [axes]
             for i, learner_name in enumerate(self.learning_algos):
                 self._plot_regression_pred_true(learner_name, ax_pred[i],
                                                 after_tuning=True)
@@ -682,6 +757,25 @@ class MuscleTuning():
             plt.show()
 
         ###### 分類のとき、ROC曲線をプロット ######
+        else:
+            # チューニング前
+            fig, axes = plt.subplots(cv_num + 1, n_learners, figsize=(n_learners*6, (cv_num+1)*6))
+            fig.suptitle(f'ROC curve BEFORE tuning', fontsize=18)
+            ax_pred = [[row[i] for row in axes] for i in range(n_learners)] if n_learners > 1 else [axes]
+            for i, learner_name in enumerate(self.learning_algos):
+                self._plot_roc_curve(learner_name, ax_pred[i],
+                                                after_tuning=False)
+            fig.tight_layout(rect=[0, 0, 1, 0.98])
+            plt.show()
+            # チューニング後
+            fig, axes = plt.subplots(cv_num + 1, n_learners, figsize=(n_learners*6, (cv_num+1)*6))
+            fig.suptitle(f'ROC curve AFTER tuning', fontsize=18)
+            ax_pred = [[row[i] for row in axes] for i in range(n_learners)] if n_learners > 1 else [axes]
+            for i, learner_name in enumerate(self.learning_algos):
+                self._plot_roc_curve(learner_name, ax_pred[i],
+                                                after_tuning=True)
+            fig.tight_layout(rect=[0, 0, 1, 0.98])
+            plt.show()
 
 
         ###### チューニング対象以外のスコアを算出 ######
