@@ -3,6 +3,7 @@ import time
 import numpy as np
 from xgboost import XGBRegressor, XGBClassifier
 from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import LabelEncoder
 
 from .param_tuning import ParamTuning
 
@@ -289,11 +290,11 @@ class XGBClassifierTuning(ParamTuning):
         self.eval_data_source = eval_data_source
         
         # ラベルがstr型ならint化する（str型だとXGBClassifierのuse_label_encoderのWarningが出るため）
-        if isinstance(self.y.dtype, np.object):
+        if self.y.dtype.name == 'object':
             print('Your labels (y) are strings (np.object), so encode your labels (y) as integers')
-            unique_labels = np.unique(self.y)
-            label_dict = dict(zip(unique_labels, range(len(unique_labels))))
-            self.y = np.vectorize(lambda x: label_dict[x])(self.y)
+            le = LabelEncoder()
+            le.fit(self.y)
+            self.y = le.transform(self.y)
         return
 
     def _train_param_generation(self, estimator, src_fit_params):
