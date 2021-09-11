@@ -31,11 +31,11 @@ class MuscleTuning():
                     'regression': ['rmse', 'mae', 'rmsle', 'mape', 'r2']
                     }
     LEARNING_ALGOS = {'regression': ['linear_regression', 'elasticnet', 'svr', 'randomforest', 'lightgbm'],
-                      #'regression': ['linear_regression', 'lightgbm'],
+                      #'regression': ['svr', 'xgboost'],
                       'binary': ['svm', 'logistic', 'randomforest', 'lightgbm'],
-                      #'binary': ['svm', 'logistic'],
-                      #'multiclass': ['svm', 'logistic', 'randomforest', 'lightgbm']
-                      'multiclass': ['xgboost']
+                      #'binary': ['svm', 'xgboost'],
+                      'multiclass': ['svm', 'logistic', 'randomforest', 'lightgbm']
+                      #'multiclass': ['svm', 'xgboost']
                       }
     N_TRIALS = {'regression': {'svr': 500,
                                'elasticnet': 500,
