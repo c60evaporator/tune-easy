@@ -60,7 +60,53 @@ $ pip install param-tuning-utility
 
 <br>
 
-# チューニング手順
+# 使用法
+以下の2種類の方法からチューニング法を選び、リンク先の方法で
+
+|名称|用途|リンク|
+|---|---|---|
+|脳筋チューニング|とにかく何も考えず手早くチューニングしたい|[リンク]()|
+|詳細チューニング|詳細に条件を調整してチューニングしたい|[リンク]()|
+
+# チューニング手順（脳筋チューニング）
+[`muscle_brain_tuning()`]()というメソッドを使用することで、
+複数の機械学習アルゴリズムでのパラメータチューニングを一気に実行し、結果をグラフ表示します
+
+## 分類タスク
+```python:2クラス分類の場合
+from muscle_tuning import MuscleTuning
+import seaborn as sns
+
+iris = sns.load_dataset("iris")
+iris['species'] = iris['species'].map(lambda x: x.replace('virginica', 'setosa'))
+OBJECTIVE_VARIALBLE = 'species'  # 目的変数
+USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']  # 説明変数
+y = iris[OBJECTIVE_VARIALBLE].values
+X = iris[USE_EXPLANATORY].values
+
+kinnikun = MuscleTuning()
+kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY)
+kinnikun.df_scores
+```
+
+分類タスクでは、スコアの上昇履歴とチューニング前後のROC曲線を表示します
+
+
+
+accuracy	precision	recall	f1	logloss	auc	learning_algo	after_tuning
+0	0.960000	0.945152	0.940000	0.939558	0.087100	0.997000	svm	False
+1	0.726667	0.628571	0.443838	0.519505	0.500065	0.810189	logistic	False
+2	0.960000	0.945152	0.940000	0.939558	0.091731	0.996000	randomforest	False
+3	0.953333	0.929231	0.940000	0.930585	0.138572	0.977000	lightgbm	False
+4	0.966667	0.961818	0.937778	0.948185	0.078697	0.998000	svm	True
+5	0.733333	0.648413	0.466061	0.538824	0.497803	0.812349	logistic	True
+6	0.966667	0.963333	0.940000	0.949082	0.085176	0.995500	randomforest	True
+7	0.966667	0.977778	0.920000	0.946199	0.095663	0.989000	lightgbm	True
+
+## 回帰タスク
+
+
+# チューニング手順（詳細チューニング）
 **下図の手順**([こちらの記事に詳細](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#2-%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E3%81%AE%E6%89%8B%E9%A0%86%E3%81%A8%E3%82%A2%E3%83%AB%E3%82%B4%E3%83%AA%E3%82%BA%E3%83%A0%E4%B8%80%E8%A6%A7))に従い、パラメータチューニングを実施します。
 
 Scikit-LearnのAPIに対応した学習器が対象となります。
