@@ -2,7 +2,7 @@
 **A hyperparameter tuning tool, easy to use even if your brain is made of muscle**
 
 This documentation is Japanese language version.
-**[English version is here]()**
+**[English version is here](https://github.com/c60evaporator/muscle-tuning/blob/master/README.rst)**
 
 **[API reference is here]()**
 
