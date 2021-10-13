@@ -67,12 +67,13 @@ $ pip install param-tuning-utility
 |---|---|---|
 |ラクラクマッスルチューニング|とにかく手早くチューニングしたい|[リンク](https://github.com/c60evaporator/muscle-tuning#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E6%89%8B%E9%A0%86-muscle_brain_tuning)|
 |詳細チューニング|詳細に条件を調整してチューニングしたい|[リンク](https://github.com/c60evaporator/muscle-tuning#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E6%89%8B%E9%A0%86-%E8%A9%B3%E7%B4%B0%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0)|
+<br>
 
-# チューニング手順 (ラクラクマッスルチューニング)
+## チューニング手順 (ラクラクマッスルチューニング)
 [`muscle_brain_tuning()`]()というメソッドを使用することで、
 複数の機械学習アルゴリズムでのパラメータチューニングを一気に実行し、結果をグラフ表示します
 
-## 分類タスク
+### 分類タスク
 ```python:2クラス分類の場合
 from muscle_tuning import MuscleTuning
 import seaborn as sns
@@ -101,17 +102,17 @@ accuracy	precision	recall	f1	logloss	auc	learning_algo	after_tuning
 6	0.966667	0.963333	0.940000	0.949082	0.085176	0.995500	randomforest	True
 7	0.966667	0.977778	0.920000	0.946199	0.095663	0.989000	lightgbm	True
 
-## 回帰タスク
+### 回帰タスク
 
 
-# チューニング手順 (詳細チューニング)
+## チューニング手順 (詳細チューニング)
 **下図の手順**([こちらの記事に詳細](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#2-%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E3%81%AE%E6%89%8B%E9%A0%86%E3%81%A8%E3%82%A2%E3%83%AB%E3%82%B4%E3%83%AA%E3%82%BA%E3%83%A0%E4%B8%80%E8%A6%A7))に従い、パラメータチューニングを実施します。
 
 Scikit-LearnのAPIに対応した学習器が対象となります。
 
 ![image](https://user-images.githubusercontent.com/59557625/130362754-a85fc7fc-38f7-4d5a-9e8f-c24321a2ed98.png)
 
-## 手順一覧
+### 手順一覧
 **0. チューニングの準備**
 
 &nbsp;├─ [0.1. データの読込＆前処理](https://github.com/c60evaporator/param-tuning-utility/blob/master/README.md#01-%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E8%AA%AD%E8%BE%BC%E5%89%8D%E5%87%A6%E7%90%86)
@@ -154,10 +155,10 @@ Scikit-LearnのAPIに対応した学習器が対象となります。
 
 <br>
 
-## 0.1. データの読込＆前処理
+### 0.1. データの読込＆前処理
 使用するデータを読み込み、特徴量選択等の前処理を実行します。
 
-### 実行例
+#### 実行例
 ボストン住宅価格データセットを読み込み、特徴量 (説明変数)を選択します
 ```python
 from sklearn.datasets import load_boston
@@ -191,7 +192,7 @@ print(selector.get_support())
 ```
 特徴量選択については、[Scikit-Learn公式](https://scikit-learn.org/stable/modules/feature_selection.html#feature-selection)を参照ください
 
-## 0.2. チューニング用クラスの初期化
+### 0.2. チューニング用クラスの初期化
 以下を参考に使用したい学習器に合わせてチューニング用クラスを選択し、インスタンスを作成します
 
 |学習器の種類|クラス名|
@@ -206,14 +207,14 @@ print(selector.get_support())
 |サポートベクターマシン分類|SVMClassifierTuning|
 |ランダムフォレスト分類|RFClassifierTuning|
 
-### 実行例
+#### 実行例
 LightGBM回帰のチューニング用クラス初期化
 ```python
 from param_tuning import LGBMRegressorTuning
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)
 ```
 
-## 1. 評価指標の選択
+### 1. 評価指標の選択
 [こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#21-%E8%A9%95%E4%BE%A1%E6%8C%87%E6%A8%99%E3%81%AE%E5%AE%9A%E7%BE%A9)チューニングの評価指標を選択します。
 
 デフォルト(各メソッドの`scoring`引数を指定しないとき)では、以下の指標を使用します
@@ -223,18 +224,18 @@ tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)
 |2クラス分類|LogLoss ('neg_log_loss')|
 |多クラス分類|LogLoss ('neg_log_loss')|
 
-### 実行例
+#### 実行例
 RMSEを指標に使用するとき
 ```
 SCORING = 'neg_mean_squared_error'
 ```
 
-## 2. パラメータ探索範囲の選択
+### 2. パラメータ探索範囲の選択
 [`plot_first_validation_curve()`]()メソッドで検証曲線をプロットし、[こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#22-%E3%83%91%E3%83%A9%E3%83%A1%E3%83%BC%E3%82%BF%E7%A8%AE%E9%A1%9E%E3%81%A8%E6%8E%A2%E7%B4%A2%E7%AF%84%E5%9B%B2%E3%81%AE%E9%81%B8%E6%8A%9E)パラメータ探索範囲を選択します
 
 事前に[4.1. クロスバリデーション手法の選択]()を実施し、`cv`引数に指定する事が望ましいです
 
-### 実行例
+#### 実行例
 範囲を指定して検証曲線を描画
 ```python
 VALIDATION_CURVE_PARAMS = {'reg_alpha': [0, 0.0001, 0.001, 0.003, 0.01, 0.03, 0.1, 1, 10],
@@ -257,7 +258,7 @@ tuning.plot_first_validation_curve(validation_curve_params=VALIDATION_CURVE_PARA
 
 ![image](https://user-images.githubusercontent.com/59557625/130347923-c3ed17a2-8ad6-4f30-8ff7-fc91cf8f97ee.png)
 
-## 3. 探索法を選択
+### 3. 探索法を選択
 [こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#%E6%89%8B%E9%A0%8634-%E3%83%91%E3%83%A9%E3%83%A1%E3%83%BC%E3%82%BF%E9%81%B8%E6%8A%9E%E3%82%AF%E3%83%AD%E3%82%B9%E3%83%90%E3%83%AA%E3%83%87%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3)パラメータの探索法を選択します。
 以下の4種類の探索法から使用したい手法を選び、対応したメソッドを選択します
 
@@ -268,16 +269,16 @@ tuning.plot_first_validation_curve(validation_curve_params=VALIDATION_CURVE_PARA
 |ベイズ最適化 (BayesianOptimization)|[bayes_opt_tuning()]()|
 |ベイズ最適化 (Optuna)|[optuna_tuning()]()|
 
-## 4.1. クロスバリデーション手法を選択
+### 4.1. クロスバリデーション手法を選択
 [こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#24-%E3%82%AF%E3%83%AD%E3%82%B9%E3%83%90%E3%83%AA%E3%83%87%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3)クロスバリデーションの手法を選択します。
 
-### 実行例
+#### 実行例
 クロスバリデーションに5分割KFoldを指定
 ```python
 CV = KFold(n_splits=5, shuffle=True, random_state=42)
 ```
 
-## 4.2. チューニング前のスコアを確認
+### 4.2. チューニング前のスコアを確認
 `※チューニング前スコアは4.3実行時にも表示されるので、本工程は飛ばしても構いません`
 
 チューニング前のスコアを確認します。
@@ -289,7 +290,7 @@ CV = KFold(n_splits=5, shuffle=True, random_state=42)
 
 を忘れないようにご注意ください
 
-### 実行例
+#### 実行例
 LightGBM回帰において、`fit()`メソッドに渡す引数`fit_params`およびチューニング対象外パラメータ`not_opt_params`を指定してスコア算出
 ```python
 from lightgbm import LGBMRegressor
@@ -338,7 +339,7 @@ regplot.regression_pred_true(lgbmr,
 ```
 ![image](https://user-images.githubusercontent.com/59557625/130487845-2c9db099-f137-489a-9b09-9f01a8d55f1e.png)
 
-## 4.3. チューニング実行
+### 4.3. チューニング実行
 [3.で選択したチューニング用メソッド]()に対し、
 
 ・[1.で選択した評価指標]()を`scoring`引数に
@@ -351,7 +352,7 @@ regplot.regression_pred_true(lgbmr,
 
 （必要に応じて、4.2で選択した`fit_params`および`not_opt_params`引数も指定してください）
 
-### 実行例
+#### 実行例
 Optunaでのチューニング実行例
 ```python
 # 2.で選択したチューニング範囲を指定
@@ -401,12 +402,12 @@ Elapsed time
 |ベイズ最適化 (BayesianOptimization)|[bayes_opt_tuning()]()|
 |ベイズ最適化 (Optuna)|[optuna_tuning()]()|
 
-## 5.1. チューニング履歴の確認
+### 5.1. チューニング履歴の確認
 [`plot_search_history()`]()メソッドでチューニング進行に伴うスコアの上昇履歴をグラフ表示し、スコアの上昇具合を確認します。
 
 通常は進行とともに傾きが小さくなりますが、終了時点でもグラフの傾きが大きい場合、試行数を増やせばスコアが向上する可能性が高いです。
 
-### 実行例
+#### 実行例
 Optunaでのチューニング実行後のチューニング履歴表示例
 ```python
 tuning.plot_search_history()
@@ -422,7 +423,7 @@ tuning.plot_search_history()
 tuning.plot_search_history(x_axis='time')
 ```
 
-## 5.2. パラメータと評価指標の関係を確認
+### 5.2. パラメータと評価指標の関係を確認
 [`plot_search_history()`]()メソッドでパラメータと評価指標の関係をプロットし、評価指標のピークを捉えられているか確認します。
 4.2で使用した手法がグリッドサーチならヒートマップで、それ以外なら散布図でプロットします。
 
@@ -432,7 +433,7 @@ tuning.plot_search_history(x_axis='time')
 
 ・グリッドサーチ以外：[後述の`param_importances`]()の上位4パラメータを軸として表示します。
 
-### 実行例
+#### 実行例
 Optunaでのチューニング実行後のパラメータと評価指標の関係表示
 ```python
 tuning.plot_search_map()
@@ -441,10 +442,10 @@ tuning.plot_search_map()
 
 ![image](https://user-images.githubusercontent.com/59557625/130488301-da358b25-5ba9-4306-8e76-5e28153b89d2.png)
 
-## 5.3. 学習曲線を確認
+### 5.3. 学習曲線を確認
 [`plot_best_learning_curve()`]()メソッドで学習曲線をプロットし、[こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#%E5%AD%A6%E7%BF%92%E6%9B%B2%E7%B7%9A-1)「目的の性能を達成しているか」「過学習していないか」を確認します
 
-### 実行例
+#### 実行例
 Optunaでのチューニング実行後の学習曲線を表示
 ```python
 tuning.plot_best_learning_curve()
@@ -453,10 +454,10 @@ tuning.plot_best_learning_curve()
 
 ![image](https://user-images.githubusercontent.com/59557625/130488483-387b6fdb-8ca3-47d6-ad25-d142463683b0.png)
 
-## 5.4. 検証曲線を確認
+### 5.4. 検証曲線を確認
 [`plot_best_validation_curve()`]()メソッドで検証曲線をプロットし、[こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#%E6%A4%9C%E8%A8%BC%E6%9B%B2%E7%B7%9A-2)「性能の最大値を捉えられているか」「過学習していないか」を確認します
 
-### 実行例
+#### 実行例
 Optunaでのチューニング実行後の検証曲線を表示
 ```python
 tuning.plot_best_validation_curve()
@@ -465,14 +466,14 @@ tuning.plot_best_validation_curve()
 
 ![image](https://user-images.githubusercontent.com/59557625/130490273-345dbc31-2201-4752-be79-0749058c2b00.png)
 
-## 6. チューニング後の学習器を使用する
+### 6. チューニング後の学習器を使用する
 チューニング後の学習器は`best_estimator`プロパティから取得できます。
 
 また、学習器に`best_params`および`not_opt_params`プロパティの値を渡す事でも、チューニング後の学習器を再現することができます
 
 後者の方法での実行例を下記します
 
-### 実行例
+#### 実行例
 チューニング後の学習器から評価指標を求める (`best_score`プロパティと同じ値が求まります)
 ```python
 params_after = {}
