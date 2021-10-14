@@ -27,7 +27,6 @@ class ParamTuning():
 
     # 共通定数
     SEED = 42  # デフォルト乱数シード
-    SEEDS = [42, 43, 44, 45, 46, 47, 48, 49, 50, 51]  # デフォルト複数乱数シード
     CV_NUM = 5  # 最適化時のクロスバリデーションのデフォルト分割数
     
     # 学習器のインスタンス
@@ -111,9 +110,9 @@ class ParamTuning():
         self.best_estimator = None  # 最適化された学習モデル
         self.search_history = None  # 探索履歴(パラメータ名をキーとしたdict)
         self.param_importances = None  # ランダムフォレストで求めたパラメータのスコアに対する重要度
-        self.start_time = None  # 処理時間計測用スタート値
-        self.preprocess_time = None  # 前処理(最適化スタート前)時間
-        self.elapsed_times = None  # 処理経過時間保存用リスト
+        self._start_time = None  # 処理時間計測用スタート値
+        self._preprocess_time = None  # 前処理(最適化スタート前)時間
+        self._elapsed_times = None  # 処理経過時間保存用リスト
         # 追加処理
         self._additional_init(**kwargs)
     
@@ -281,7 +280,7 @@ class ParamTuning():
         mlflow.log_metric('score_before', self.score_before)  # チューニング前のスコア
         mlflow.log_metric('best_score', self.best_score)  # 最高スコア
         mlflow.log_metric('elapsed_time', self.elapsed_time)  # 所要時間
-        mlflow.log_metric('preprocess_time', self.preprocess_time)  # 前処理(最適化スタート前)時間
+        mlflow.log_metric('preprocess_time', self._preprocess_time)  # 前処理(最適化スタート前)時間
         # 最適モデルをMLFlow Modelsで保存(https://mlflow.org/docs/latest/models.html#how-to-log-models-with-signatures)
         estimator_output = self.best_estimator.predict(self.X)  # モデル出力
         estimator_output = pd.Series(estimator_output) if self.y_colname is None else pd.DataFrame(estimator_output, columns=[self.y_colname])
@@ -326,7 +325,7 @@ class ParamTuning():
         """
         # 処理時間測定
         start = time.time()
-        self.start_time = start
+        self._start_time = start
 
         # 引数非指定時、クラス変数から取得
         if estimator is None:
@@ -382,7 +381,7 @@ class ParamTuning():
                               scoring=scoring, **grid_kws)
 
         # ここまでに掛かった前処理時間を測定
-        self.preprocess_time = time.time() - start
+        self._preprocess_time = time.time() - start
         # グリッドサーチ実行（学習実行）
         gridcv.fit(self.X,
                self.y,
@@ -455,7 +454,7 @@ class ParamTuning():
         """
         # 処理時間測定
         start = time.time()
-        self.start_time = start
+        self._start_time = start
 
         # 引数非指定時、クラス変数から取得
         if estimator is None:
@@ -515,7 +514,7 @@ class ParamTuning():
                                     n_iter=n_iter, **rand_kws)
         
         # ここまでに掛かった前処理時間を測定
-        self.preprocess_time = time.time() - start
+        self._preprocess_time = time.time() - start
         # ランダムサーチ実行
         randcv.fit(self.X,
                self.y,
@@ -572,7 +571,7 @@ class ParamTuning():
                                  scoring=self.scoring, fit_params=self.fit_params, n_jobs=None)
         val = scores.mean()
         # 所要時間測定
-        self.elapsed_times.append(time.time() - self.start_time)
+        self._elapsed_times.append(time.time() - self._start_time)
 
         return val
 
@@ -626,8 +625,7 @@ class ParamTuning():
         int_params : List
             整数型のパラメータのリスト(ベイズ最適化時は都度int型変換する)
         param_scales : Dict
-            パラメータ
-            のスケール('linear', 'log')(Noneならクラス変数PARAM_SCALESから取得)
+            パラメータのスケール('linear', 'log')(Noneならクラス変数PARAM_SCALESから取得)
         mlflow_logging : str
             MLFlowでの結果記録有無('log':通常の記録, 'with':with構文で記録, None:記録なし)
         fit_params : Dict
@@ -636,7 +634,7 @@ class ParamTuning():
         """
         # 処理時間測定
         start = time.time()
-        self.start_time = start
+        self._start_time = start
 
         # 引数非指定時、クラス変数から取得
         if estimator is None:
@@ -699,8 +697,8 @@ class ParamTuning():
             self._bayes_evaluate, tuning_params_log, random_state=seed)
         
         # ここまでに掛かった前処理時間を測定
-        self.preprocess_time = time.time() - start
-        self.elapsed_times = [self.preprocess_time]
+        self._preprocess_time = time.time() - start
+        self._elapsed_times = [self._preprocess_time]
         # ベイズ最適化を実行
         bo.maximize(init_points=init_points, n_iter=n_iter, acq=acq)
         self.elapsed_time = time.time() - start
@@ -730,7 +728,7 @@ class ParamTuning():
         self.search_history = pd.DataFrame(params_hisotry, columns=bo.space.keys).to_dict(orient='list')  # パラメータ履歴をDict化
         self.search_history['test_score'] = bo.space.target.tolist()  # スコア履歴を追加
         # 所要時間の保持(elapsed_timesの差分)
-        self.search_history['raw_trial_time'] = np.diff(np.array(self.elapsed_times), n=1)
+        self.search_history['raw_trial_time'] = np.diff(np.array(self._elapsed_times), n=1)
 
         # 最適モデル保持のため学習（特徴量重要度算出等）
         best_params_refit = {k:v for k,v in best_params.items()}
@@ -820,7 +818,7 @@ class ParamTuning():
         """
         # 処理時間測定
         start = time.time()
-        self.start_time = start
+        self._start_time = start
 
         # 引数非指定時、クラス変数から取得
         if estimator is None:
@@ -883,7 +881,7 @@ class ParamTuning():
         study = optuna.create_study(**study_kws)
 
         # ここまでに掛かった前処理時間を測定
-        self.preprocess_time = time.time() - start
+        self._preprocess_time = time.time() - start
         # ベイズ最適化を実行
         study.optimize(self._optuna_evaluate, n_trials=n_trials,
                        **optimize_kws)
