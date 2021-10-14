@@ -5,7 +5,8 @@
 
 # クラス一覧
 以下のクラスからなります
-|クラス名|パッケージ名|概要|使用法|
+
+|クラス名|パッケージ名|概要|デフォルトパラメータのリンク|
 |---|---|---|---|
 |LGBMRegressorTuning|lgbm_tuning.py|LightGBM回帰のパラメータチューニング用クラス|[リンク]()|
 |XGBRegressorTuning|xgb_tuning.py|XGBoost回帰のパラメータチューニング用クラス|[リンク]()|
@@ -1082,3 +1083,39 @@ feature_name	importance
 3	NOX	16304
 4	CRIM	14981
 ```
+
+# プロパティ一覧
+
+|プロパティ名|型|概要|
+|---|---|---|
+|X|numpy.ndarray|説明変数データ|
+|y|numpy.ndarray|説明変数データ|
+|x_colnames|list[str]|説明変数の名称|
+|y_colname|list[str]|目的変数の名称|
+|tuning_params|dict[str, {list, tuple}]|チューニング対象のパラメータ一覧|
+|not_opt_params|dict[str]|チューニング対象外のパラメータ一覧|
+|int_params|list[str]|整数型のパラメータのリスト(ベイズ最適化のみ)|
+|param_scales|dict[str, {'linear', 'log'}]|パラメータのスケール|
+|scoring|str|チューニングで最大化する評価スコア|
+|seed|int|乱数シード(クロスバリデーション分割、ベイズ最適化のサンプラー等で使用)|
+|cv|cross-validation generator|クロスバリデーション分割法|
+|estimator|estimator object implementing 'fit'|チューニング対象の学習器インスタンス|
+|learner_name|str|パイプライン処理時の学習器名称(estimatorがパイプラインのときのみ)|
+|fit_params|str|学習時のfit()に渡すパラメータをdict指定|
+|score_before|float|チューニング前のスコア|
+|tuning_algo|{'grid', 'random', 'bayes-opt', 'optuna'}|チューニングに使用したアルゴリズム名|
+|best_params|dict[str, {float, int}]|チューニング後の最適パラメータ|
+|best_score|float|チューニング後のスコア|
+|elapsed_time|float|所要時間|
+|best_estimator|estimator object implementing 'fit'|チューニング後の学習モデル|
+|search_history|dict[str]|探索履歴(パラメータ名をキーとしたdict)|
+|param_importances|pandas.Series|ランダムフォレストで求めた各パラメータのスコアに対する重要度(x_colnamesの順)|
+
+# 定数一覧
+各機械学習アルゴリズムごとのデフォルト値は、[クラス一覧]()項の、「デフォルトパラメータのリンク」のリンク先を参照ください
+
+|プロパティ名|型|概要|
+|---|---|---|
+|SEED|int|各チューニング実行メソッドの引数`seed`のデフォルト値 (乱数シード)|
+|CV_NUM|int|各チューニング実行メソッドの引数`cv`のデフォルト値 (クロスバリデーション分割数)|
+|ESTIMATOR|int|各チューニング実行メソッドの引数`estimator`のデフォルト値 (チューニング対象の学習器インスタンス)|
