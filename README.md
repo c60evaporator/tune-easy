@@ -74,7 +74,9 @@ $ pip install param-tuning-utility
 複数の機械学習アルゴリズムでのパラメータチューニングを一気に実行し、結果をグラフ表示します
 
 ### 分類タスク
-```python:2クラス分類の場合
+分類タスクでは、スコアの上昇履歴とチューニング前後のROC曲線を表示します
+
+```python
 from muscle_tuning import MuscleTuning
 import seaborn as sns
 
@@ -86,24 +88,52 @@ y = iris[OBJECTIVE_VARIALBLE].values
 X = iris[USE_EXPLANATORY].values
 
 kinnikun = MuscleTuning()
-kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY)
+kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2)
 kinnikun.df_scores
 ```
+スコアの上昇履歴
 
-分類タスクでは、スコアの上昇履歴とチューニング前後のROC曲線を表示します
+チューニング前のROC曲線
 
-accuracy	precision	recall	f1	logloss	auc	learning_algo	after_tuning
-0	0.960000	0.945152	0.940000	0.939558	0.087100	0.997000	svm	False
-1	0.726667	0.628571	0.443838	0.519505	0.500065	0.810189	logistic	False
-2	0.960000	0.945152	0.940000	0.939558	0.091731	0.996000	randomforest	False
-3	0.953333	0.929231	0.940000	0.930585	0.138572	0.977000	lightgbm	False
-4	0.966667	0.961818	0.937778	0.948185	0.078697	0.998000	svm	True
-5	0.733333	0.648413	0.466061	0.538824	0.497803	0.812349	logistic	True
-6	0.966667	0.963333	0.940000	0.949082	0.085176	0.995500	randomforest	True
-7	0.966667	0.977778	0.920000	0.946199	0.095663	0.989000	lightgbm	True
+チューニング後のROC曲線
+
+```
+  accuracy	precision	recall	f1	logloss	auc	learning_algo	after_tuning
+0	0.973333	0.959936	0.962963	0.961060	0.091851	0.998071	svm	False
+1	0.726667	0.627451	0.439614	0.516667	0.498768	0.814146	logistic	False
+2	0.960000	0.979167	0.907407	0.938341	0.324001	0.983571	randomforest	False
+3	0.940000	0.920569	0.907407	0.909388	0.148369	0.984568	lightgbm	False
+4	0.960000	0.940705	0.944444	0.942192	0.086014	0.997685	svm	True
+5	0.720000	0.611111	0.442834	0.512737	0.492915	0.817394	logistic	True
+6	0.960000	0.979167	0.907407	0.938341	0.115052	0.991705	randomforest	True
+7	0.973333	0.980000	0.944444	0.961538	0.110297	0.990162	lightgbm	True
+```
 
 ### 回帰タスク
+回帰タスクでは、スコアの上昇履歴とチューニング前後の予測値-実測値プロットを表示します
 
+```python
+from muscle_tuning import MuscleTuning
+from sklearn.datasets import load_boston
+import pandas as pd
+# Load dataset
+USE_EXPLANATORY = ['NOX', 'RM', 'DIS', 'LSTAT']
+df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
+X = df_boston[USE_EXPLANATORY].values
+y = load_boston().target
+df_boston['price'] = y
+# Run tuning
+kinnikun = MuscleTuning()
+kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2)
+kinnikun.df_scores
+```
+スコアの上昇履歴
+
+チューニング前の予測値-実測値プロット
+
+チューニング後の予測値-実測値プロット
+
+<br>
 
 ## チューニング手順 (詳細チューニング)
 **下図の手順**([こちらの記事に詳細](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#2-%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E3%81%AE%E6%89%8B%E9%A0%86%E3%81%A8%E3%82%A2%E3%83%AB%E3%82%B4%E3%83%AA%E3%82%BA%E3%83%A0%E4%B8%80%E8%A6%A7))に従い、パラメータチューニングを実施します。
@@ -534,7 +564,7 @@ regplot.regression_pred_true(lgbmr,
 |SVMClassifierTuning|svm_tuning.py|サポートベクターマシン分類のパラメータチューニング用クラス|[リンク]()|
 |RFClassifierTuning|rf_tuning.py|ランダムフォレスト分類のパラメータチューニング用クラス|[リンク]()|
 
-# プロパティ一覧
+
 
 
 # MLFlowの活用
