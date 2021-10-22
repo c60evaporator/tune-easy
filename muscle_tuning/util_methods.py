@@ -136,15 +136,3 @@ class GroupTimeSeriesSplit(TimeSeriesSplit):
             return len(np.unique(groups)) - self.n_test_groups
         else:
             return self.n_splits
-
-import pandas as pd
-df = pd.read_csv(r'C:\Users\otlor\OneDrive\デスクトップ\df_criticizer.csv', encoding='utf_8_sig', parse_dates=['date'])
-df['month'] = df['date'].dt.year * 100 + df['date'].dt.month
-X = df[['view_count', 'subscriber_count']].to_numpy()
-y = df['critcizing_videos'].to_numpy()
-groups = df['month'].to_numpy()
-
-gtss = GroupTimeSeriesSplit(n_test_group=2)
-for train, test in gtss.split(X, y, groups):
-    X_train, X_test = X[train], X[test]
-    y_train, y_test = y[train], y[test]
