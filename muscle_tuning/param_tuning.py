@@ -169,6 +169,7 @@ class ParamTuning():
         scores = cross_val_score(estimator_before, self.X, self.y,
                                  scoring=self.scoring,
                                  cv=self.cv,
+                                 groups=self.cv_group,
                                  fit_params=self.fit_params
                                  )
         self.score_before = np.mean(scores)
