@@ -1122,7 +1122,8 @@ class ParamTuning():
 
         # 検証曲線の取得
         validation_curve_result = {}
-        for k, v in validation_curve_params.items():
+        for i, (k, v) in enumerate(validation_curve_params.items()):
+            print(f'{i+1}/{len(validation_curve_params)}. Calculating validation curve of "{k}". Parameter range = {v}')
             train_scores, valid_scores = validation_curve(estimator=estimator,
                                                           X=self.X, y=self.y,
                                                           param_name=k,
