@@ -28,7 +28,7 @@ class MuscleTuning():
                }
     OTHER_SCORES = {'binary': ['accuracy', 'precision', 'recall', 'f1', 'logloss', 'auc'],
                     'multiclass': ['accuracy', 'precision_macro', 'recall_macro', 'f1_macro', 'logloss', 'auc_ovr'],  # 多クラスではprecision, recallは文字列指定不可https://stackoverflow.com/questions/46598301/how-to-compute-precision-recall-and-f1-score-of-an-imbalanced-dataset-for-k-fold
-                    'regression': ['rmse', 'mae', 'rmsle', 'mape', 'r2']
+                    'regression': ['rmse', 'mae', 'mape', 'r2']  # RMSLEはpredicted_valueあるいはtrue_valueが負値のときにエラーが出るので注意
                     }
     LEARNING_ALGOS = {'regression': ['linear_regression', 'elasticnet', 'svr', 'randomforest', 'lightgbm'],
                       #'regression': ['svr', 'xgboost'],
