@@ -1,6 +1,6 @@
 # %% XGBClassifier, GridSearch, no argument
 import parent_import
-from param_tuning import XGBClassifierTuning
+from muscle_tuning import XGBClassifierTuning
 from sklearn.model_selection import KFold
 import seaborn as sns
 iris = sns.load_dataset("iris")
@@ -19,7 +19,7 @@ tuning.plot_param_importances()
 
 # %% XGBClassifier, RandomSearch, no argument
 import parent_import
-from param_tuning import XGBClassifierTuning
+from muscle_tuning import XGBClassifierTuning
 from sklearn.model_selection import KFold
 import seaborn as sns
 iris = sns.load_dataset("iris")
@@ -37,7 +37,7 @@ tuning.plot_param_importances()
 
 # %% XGBClassifier, BayesianOptimization, no argument
 import parent_import
-from param_tuning import XGBClassifierTuning
+from muscle_tuning import XGBClassifierTuning
 from sklearn.model_selection import KFold
 import seaborn as sns
 iris = sns.load_dataset("iris")
@@ -55,7 +55,7 @@ tuning.plot_param_importances()
 
 # %% XGBClassifier, Optuna, no argument
 import parent_import
-from param_tuning import XGBClassifierTuning
+from muscle_tuning import XGBClassifierTuning
 import seaborn as sns
 from sklearn.model_selection import KFold
 iris = sns.load_dataset("iris")

@@ -1,6 +1,6 @@
 # %% SVC, GridSearch, no argument
 import parent_import
-from param_tuning import SVMClassifierTuning
+from muscle_tuning import SVMClassifierTuning
 import seaborn as sns
 iris = sns.load_dataset("iris")
 OBJECTIVE_VARIALBLE = 'species'  # 目的変数
@@ -18,7 +18,7 @@ tuning.plot_param_importances()
 
 # %% SVC, RandomSearch, no argument
 import parent_import
-from param_tuning import SVMClassifierTuning
+from muscle_tuning import SVMClassifierTuning
 import seaborn as sns
 iris = sns.load_dataset("iris")
 OBJECTIVE_VARIALBLE = 'species'  # 目的変数
@@ -35,7 +35,7 @@ tuning.plot_param_importances()
 
 # %% SVC, BayesianOptimization, no argument
 import parent_import
-from param_tuning import SVMClassifierTuning
+from muscle_tuning import SVMClassifierTuning
 import seaborn as sns
 iris = sns.load_dataset("iris")
 OBJECTIVE_VARIALBLE = 'species'  # 目的変数
@@ -52,7 +52,7 @@ tuning.plot_param_importances()
 
 # %% SVC, Optuna, no argument
 import parent_import
-from param_tuning import SVMClassifierTuning
+from muscle_tuning import SVMClassifierTuning
 import seaborn as sns
 iris = sns.load_dataset("iris")
 OBJECTIVE_VARIALBLE = 'species'  # 目的変数

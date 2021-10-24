@@ -1,6 +1,6 @@
 # %% LogisticRegression, GridSearch, no argument
 import parent_import
-from param_tuning import LogisticRegressionTuning
+from muscle_tuning import LogisticRegressionTuning
 import seaborn as sns
 iris = sns.load_dataset("iris")
 OBJECTIVE_VARIALBLE = 'species'  # 目的変数

@@ -1,6 +1,6 @@
 # %% XGBRegressor, GridSearch, no argument
 import parent_import
-from param_tuning import XGBRegressorTuning
+from muscle_tuning import XGBRegressorTuning
 from sklearn.datasets import load_boston
 import pandas as pd
 import numpy as np
@@ -20,7 +20,7 @@ tuning.plot_param_importances()
 
 # %% XGBRegressor, RandomSearch, no argument
 import parent_import
-from param_tuning import XGBRegressorTuning
+from muscle_tuning import XGBRegressorTuning
 from sklearn.datasets import load_boston
 import pandas as pd
 import numpy as np
@@ -39,7 +39,7 @@ tuning.plot_param_importances()
 
 # %% XGBRegressor, BayesianOptimization, no argument
 import parent_import
-from param_tuning import XGBRegressorTuning
+from muscle_tuning import XGBRegressorTuning
 from sklearn.datasets import load_boston
 import pandas as pd
 import numpy as np
@@ -58,7 +58,7 @@ tuning.plot_param_importances()
 
 # %% XGBRegressor, Optuna, no argument
 import parent_import
-from param_tuning import XGBRegressorTuning
+from muscle_tuning import XGBRegressorTuning
 from sklearn.datasets import load_boston
 import pandas as pd
 import numpy as np

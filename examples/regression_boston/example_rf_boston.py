@@ -1,6 +1,6 @@
 # %% RandomForestRegressor, GridSearch, no argument
 import parent_import
-from param_tuning import RFRegressorTuning
+from muscle_tuning import RFRegressorTuning
 from sklearn.datasets import load_boston
 import pandas as pd
 import numpy as np
@@ -20,7 +20,7 @@ tuning.plot_param_importances()
 
 # %% RandomForestRegressor, RandomSearch, no argument
 import parent_import
-from param_tuning import RFRegressorTuning
+from muscle_tuning import RFRegressorTuning
 from sklearn.datasets import load_boston
 import pandas as pd
 import numpy as np
@@ -39,7 +39,7 @@ tuning.plot_param_importances()
 
 # %% RandomForestRegressor, BayesianOptimization, no argument
 import parent_import
-from param_tuning import RFRegressorTuning
+from muscle_tuning import RFRegressorTuning
 from sklearn.datasets import load_boston
 import pandas as pd
 import numpy as np
@@ -58,7 +58,7 @@ tuning.plot_param_importances()
 
 # %% RandomForestRegressor, Optuna, no argument
 import parent_import
-from param_tuning import RFRegressorTuning
+from muscle_tuning import RFRegressorTuning
 from sklearn.datasets import load_boston
 import pandas as pd
 import numpy as np

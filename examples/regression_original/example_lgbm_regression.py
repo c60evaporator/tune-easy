@@ -1,6 +1,6 @@
 # %% LGBMRegressor, GridSearch, no argument
 import parent_import
-from param_tuning import LGBMRegressorTuning
+from muscle_tuning import LGBMRegressorTuning
 import pandas as pd
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
@@ -19,7 +19,7 @@ tuning.plot_feature_importances()
 
 # %% LGBMRegressor, RandomSearch, no argument
 import parent_import
-from param_tuning import LGBMRegressorTuning
+from muscle_tuning import LGBMRegressorTuning
 import pandas as pd
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
@@ -37,7 +37,7 @@ tuning.plot_feature_importances()
 
 # %% LGBMRegressor, BayesianOptimization, no argument
 import parent_import
-from param_tuning import LGBMRegressorTuning
+from muscle_tuning import LGBMRegressorTuning
 import pandas as pd
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
@@ -55,7 +55,7 @@ tuning.plot_feature_importances()
 
 # %% LGBMRegressor, Optuna, no argument
 import parent_import
-from param_tuning import LGBMRegressorTuning
+from muscle_tuning import LGBMRegressorTuning
 import pandas as pd
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
@@ -73,7 +73,7 @@ tuning.plot_feature_importances()
 
 # %% LGBMRegressor, GridSearch, all arguments
 import parent_import
-from param_tuning import LGBMRegressorTuning
+from muscle_tuning import LGBMRegressorTuning
 from lightgbm import LGBMRegressor
 import pandas as pd
 from sklearn.model_selection import KFold
@@ -148,7 +148,7 @@ tuning.plot_feature_importances(ax=ax)
 
 # %% LGBMRegressor, Optuna, all arguments
 import parent_import
-from param_tuning import LGBMRegressorTuning
+from muscle_tuning import LGBMRegressorTuning
 from lightgbm import LGBMRegressor
 import pandas as pd
 from sklearn.model_selection import KFold

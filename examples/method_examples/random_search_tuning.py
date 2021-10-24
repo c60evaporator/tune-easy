@@ -1,6 +1,6 @@
 # %% random_search_tuning(), no argument
 import parent_import
-from param_tuning import RFRegressorTuning
+from muscle_tuning import RFRegressorTuning
 from sklearn.datasets import load_boston
 import pandas as pd
 # Load dataset
@@ -14,7 +14,7 @@ best_params, best_score = tuning.random_search_tuning()
 
 # %% random_search_tuning(), Set parameter range by 'tuning_params' argument
 import parent_import
-from param_tuning import RFRegressorTuning
+from muscle_tuning import RFRegressorTuning
 from sklearn.datasets import load_boston
 import pandas as pd
 # Load dataset
@@ -36,7 +36,7 @@ best_params, best_score = tuning.random_search_tuning(tuning_params=CV_PARAMS_RA
 
 # %% random_search_tuning(), Set estimator by 'estimator' argument
 import parent_import
-from param_tuning import RFRegressorTuning
+from muscle_tuning import RFRegressorTuning
 from sklearn.datasets import load_boston
 import pandas as pd
 from sklearn.pipeline import Pipeline

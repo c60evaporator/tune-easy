@@ -1,6 +1,6 @@
 # %% RandomForest, GridSearch, no argument
 import parent_import
-from param_tuning import RFRegressorTuning
+from muscle_tuning import RFRegressorTuning
 import pandas as pd
 df_reg = pd.read_csv('../sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
@@ -19,7 +19,7 @@ tuning.plot_feature_importances()
 
 # %% RandomForest, RandomSearch, no argument
 import parent_import
-from param_tuning import RFRegressorTuning
+from muscle_tuning import RFRegressorTuning
 import pandas as pd
 df_reg = pd.read_csv('../sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
@@ -37,7 +37,7 @@ tuning.plot_feature_importances()
 
 # %% RandomForest, BayesianOptimization, no argument
 import parent_import
-from param_tuning import RFRegressorTuning
+from muscle_tuning import RFRegressorTuning
 import pandas as pd
 df_reg = pd.read_csv('../sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
@@ -55,7 +55,7 @@ tuning.plot_feature_importances()
 
 # %% RandomForest, Optuna, no argument
 import parent_import
-from param_tuning import RFRegressorTuning
+from muscle_tuning import RFRegressorTuning
 import pandas as pd
 df_reg = pd.read_csv('../sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
@@ -73,7 +73,7 @@ tuning.plot_feature_importances()
 
 # %% ElasticNet, GridSearch, all arguments
 import parent_import
-from param_tuning import RFRegressorTuning
+from muscle_tuning import RFRegressorTuning
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import KFold
 import pandas as pd
@@ -131,7 +131,7 @@ tuning.plot_param_importances()
 
 # %% ElasticNet, Optuna, all arguments
 import parent_import
-from param_tuning import RFRegressorTuning
+from muscle_tuning import RFRegressorTuning
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import KFold
 import pandas as pd

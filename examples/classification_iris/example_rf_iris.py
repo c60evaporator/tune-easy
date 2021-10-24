@@ -1,6 +1,6 @@
 # %% RandomForestClassifier, GridSearch, no argument
 import parent_import
-from param_tuning import RFClassifierTuning
+from muscle_tuning import RFClassifierTuning
 import seaborn as sns
 iris = sns.load_dataset("iris")
 OBJECTIVE_VARIALBLE = 'species'  # 目的変数
@@ -18,7 +18,7 @@ tuning.plot_param_importances()
 
 # %% RandomForestClassifier, RandomSearch, no argument
 import parent_import
-from param_tuning import RFClassifierTuning
+from muscle_tuning import RFClassifierTuning
 import seaborn as sns
 iris = sns.load_dataset("iris")
 OBJECTIVE_VARIALBLE = 'species'  # 目的変数
@@ -35,7 +35,7 @@ tuning.plot_param_importances()
 
 # %% RandomForestClassifier, BayesianOptimization, no argument
 import parent_import
-from param_tuning import RFClassifierTuning
+from muscle_tuning import RFClassifierTuning
 import seaborn as sns
 iris = sns.load_dataset("iris")
 OBJECTIVE_VARIALBLE = 'species'  # 目的変数
@@ -52,7 +52,7 @@ tuning.plot_param_importances()
 
 # %% RandomForestClassifier, Optuna, no argument
 import parent_import
-from param_tuning import RFClassifierTuning
+from muscle_tuning import RFClassifierTuning
 import seaborn as sns
 iris = sns.load_dataset("iris")
 OBJECTIVE_VARIALBLE = 'species'  # 目的変数

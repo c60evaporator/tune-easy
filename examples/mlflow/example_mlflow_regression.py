@@ -1,6 +1,6 @@
 # %% MLFlow実装　グリッドサーチ
 import parent_import
-from param_tuning import XGBRegressorTuning
+from muscle_tuning import XGBRegressorTuning
 from xgboost import XGBRegressor
 from sklearn.model_selection import KFold
 import pandas as pd
@@ -31,7 +31,7 @@ tuning.grid_search_tuning(estimator=xgbr, mlflow_logging='with', tuning_params=t
 
 # %% MLFlow実装　ランダムサーチ
 import parent_import
-from param_tuning import SVMRegressorTuning
+from muscle_tuning import SVMRegressorTuning
 import pandas as pd
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
@@ -43,7 +43,7 @@ tuning.random_search_tuning(mlflow_logging='with')
 
 # %% MLFlow実装　BayesianOptimization
 import parent_import
-from param_tuning import SVMRegressorTuning
+from muscle_tuning import SVMRegressorTuning
 import pandas as pd
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
@@ -55,7 +55,7 @@ tuning.bayes_opt_tuning(mlflow_logging='with')
 
 # %% MLFlow実装　Optuna
 import parent_import
-from param_tuning import SVMRegressorTuning
+from muscle_tuning import SVMRegressorTuning
 import pandas as pd
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
@@ -67,7 +67,7 @@ tuning.optuna_tuning(mlflow_logging='with')
 
 # %% MLFlow実装　グリッドサーチautolog
 import parent_import
-from param_tuning import SVMRegressorTuning
+from muscle_tuning import SVMRegressorTuning
 import pandas as pd
 import mlflow
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -82,7 +82,7 @@ with mlflow.start_run() as run:
 
 # %% MLFlow実装　ランダムサーチautolog
 import parent_import
-from param_tuning import SVMRegressorTuning
+from muscle_tuning import SVMRegressorTuning
 import pandas as pd
 import mlflow
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')

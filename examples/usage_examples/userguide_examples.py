@@ -24,7 +24,7 @@ y = load_boston().target  # Objective variable
 
 # %% 0.3. Initialize tuning class
 import parent_import
-from param_tuning import LGBMRegressorTuning
+from muscle_tuning import LGBMRegressorTuning
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)
 
 # %% 1. Select validation score

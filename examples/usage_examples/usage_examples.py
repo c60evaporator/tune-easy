@@ -1,6 +1,6 @@
 # %% Usage
 import parent_import
-from param_tuning import LGBMRegressorTuning
+from muscle_tuning import LGBMRegressorTuning
 from sklearn.datasets import load_boston
 import pandas as pd
 # データセット読込

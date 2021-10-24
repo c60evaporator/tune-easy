@@ -1,6 +1,6 @@
 # %% SVC, GridSearch, no argument
 import parent_import
-from param_tuning import LogisticRegressionTuning
+from muscle_tuning import LogisticRegressionTuning
 import pandas as pd
 df_clf = pd.read_csv('../sample_data/nba_nfl_2.csv')
 OBJECTIVE_VARIALBLE = 'league'  # 目的変数

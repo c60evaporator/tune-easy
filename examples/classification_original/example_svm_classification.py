@@ -1,6 +1,6 @@
 # %% SVC, GridSearch, no argument
 import parent_import
-from param_tuning import SVMClassifierTuning
+from muscle_tuning import SVMClassifierTuning
 import pandas as pd
 df_clf = pd.read_csv('../sample_data/nba_nfl_2.csv')
 OBJECTIVE_VARIALBLE = 'league'  # 目的変数
@@ -18,7 +18,7 @@ tuning.plot_param_importances()
 
 # %% SVC, RandomSearch, no argument
 import parent_import
-from param_tuning import SVMClassifierTuning
+from muscle_tuning import SVMClassifierTuning
 import pandas as pd
 df_clf = pd.read_csv('../sample_data/nba_nfl_2.csv')
 OBJECTIVE_VARIALBLE = 'league'  # 目的変数
@@ -35,7 +35,7 @@ tuning.plot_param_importances()
 
 # %% SVC, BayesianOptimization, no argument
 import parent_import
-from param_tuning import SVMClassifierTuning
+from muscle_tuning import SVMClassifierTuning
 import pandas as pd
 df_clf = pd.read_csv('../sample_data/nba_nfl_2.csv')
 OBJECTIVE_VARIALBLE = 'league'  # 目的変数
@@ -52,7 +52,7 @@ tuning.plot_param_importances()
 
 # %% SVC, Optuna, no argument
 import parent_import
-from param_tuning import SVMClassifierTuning
+from muscle_tuning import SVMClassifierTuning
 import pandas as pd
 df_clf = pd.read_csv('../sample_data/nba_nfl_2.csv')
 OBJECTIVE_VARIALBLE = 'league'  # 目的変数
@@ -69,7 +69,7 @@ tuning.plot_param_importances()
 
 # %% SVC, GridSearch, all arguments
 import parent_import
-from param_tuning import SVMClassifierTuning
+from muscle_tuning import SVMClassifierTuning
 from sklearn.svm import SVC
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
@@ -123,7 +123,7 @@ tuning.plot_param_importances()
 
 # %% SVC, RandomSearch, all arguments
 import parent_import
-from param_tuning import SVMClassifierTuning
+from muscle_tuning import SVMClassifierTuning
 from sklearn.svm import SVC
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
@@ -171,7 +171,7 @@ tuning.plot_param_importances()
 
 # %% SVC, BayesianOptimization, all arguments
 import parent_import
-from param_tuning import SVMClassifierTuning
+from muscle_tuning import SVMClassifierTuning
 from sklearn.svm import SVC
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
@@ -219,7 +219,7 @@ tuning.plot_best_validation_curve(validation_curve_params=validation_curve_param
 
 # %% SVC, Optuna, all arguments
 import parent_import
-from param_tuning import SVMClassifierTuning
+from muscle_tuning import SVMClassifierTuning
 from sklearn.svm import SVC
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler

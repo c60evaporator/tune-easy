@@ -1,6 +1,6 @@
 # %% plot_first_validation_curve(), no argument
 import parent_import
-from param_tuning import LGBMRegressorTuning
+from muscle_tuning import LGBMRegressorTuning
 from sklearn.datasets import load_boston
 import pandas as pd
 # Load dataset
@@ -14,7 +14,7 @@ tuning.plot_first_validation_curve()
 
 # %% plot_first_validation_curve(), Set parameter range by 'validation_curve_params' argument
 import parent_import
-from param_tuning import LGBMRegressorTuning
+from muscle_tuning import LGBMRegressorTuning
 from sklearn.datasets import load_boston
 import pandas as pd
 # Load dataset

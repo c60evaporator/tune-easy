@@ -1,6 +1,6 @@
 # %% XGBRegressor, GridSearch, no argument
 import parent_import
-from param_tuning import XGBRegressorTuning
+from muscle_tuning import XGBRegressorTuning
 import pandas as pd
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
@@ -19,7 +19,7 @@ tuning.plot_feature_importances()
 
 # %% XGBRegressor, Optuna, no argument
 import parent_import
-from param_tuning import XGBRegressorTuning
+from muscle_tuning import XGBRegressorTuning
 import pandas as pd
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
 OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
@@ -37,7 +37,7 @@ tuning.plot_feature_importances()
 
 # %% XGBRegressor, GridSearch, all arguments
 import parent_import
-from param_tuning import XGBRegressorTuning
+from muscle_tuning import XGBRegressorTuning
 from xgboost import XGBRegressor
 import pandas as pd
 from sklearn.model_selection import KFold
@@ -100,7 +100,7 @@ tuning.plot_feature_importances(ax=ax)
 
 # %% XGBRegressor, RandomSearch, all arguments
 import parent_import
-from param_tuning import XGBRegressorTuning
+from muscle_tuning import XGBRegressorTuning
 from xgboost import XGBRegressor
 import pandas as pd
 from sklearn.model_selection import KFold
@@ -164,7 +164,7 @@ tuning.plot_feature_importances(ax=ax)
 
 # %% XGBRegressor, BayesianOptimization, all arguments
 import parent_import
-from param_tuning import XGBRegressorTuning
+from muscle_tuning import XGBRegressorTuning
 from xgboost import XGBRegressor
 import pandas as pd
 from sklearn.model_selection import KFold
@@ -230,7 +230,7 @@ tuning.plot_feature_importances(ax=ax)
 
 # %% XGBRegressor, Optuna, all arguments
 import parent_import
-from param_tuning import XGBRegressorTuning
+from muscle_tuning import XGBRegressorTuning
 from xgboost import XGBRegressor
 import pandas as pd
 from sklearn.model_selection import KFold

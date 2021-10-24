@@ -1,6 +1,6 @@
 # %% plot_search_map(), no argument
 import parent_import
-from param_tuning import LGBMRegressorTuning
+from muscle_tuning import LGBMRegressorTuning
 from sklearn.datasets import load_boston
 import pandas as pd
 # Load dataset
@@ -15,7 +15,7 @@ tuning.plot_search_map()
 
 # %% plot_search_map(), set number of maps by 'pair_n' argument, set axis parameter by 'order' argument
 import parent_import
-from param_tuning import LGBMRegressorTuning
+from muscle_tuning import LGBMRegressorTuning
 from sklearn.datasets import load_boston
 import pandas as pd
 # Load dataset

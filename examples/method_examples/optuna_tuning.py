@@ -1,6 +1,6 @@
 # %% optuna_tuning(), no argument
 import parent_import
-from param_tuning import LGBMRegressorTuning
+from muscle_tuning import LGBMRegressorTuning
 from sklearn.datasets import load_boston
 import pandas as pd
 # Load dataset
@@ -14,7 +14,7 @@ best_params, best_score = tuning.optuna_tuning()
 
 # %% optuna_tuning(), Set parameter range by 'tuning_params' argument
 import parent_import
-from param_tuning import LGBMRegressorTuning
+from muscle_tuning import LGBMRegressorTuning
 from sklearn.datasets import load_boston
 import pandas as pd
 # Load dataset
@@ -38,7 +38,7 @@ best_params, best_score = tuning.optuna_tuning(tuning_params=BAYES_PARAMS,
                                                )
 # %% optuna_tuning(), Set estimator by 'estimator' argument
 import parent_import
-from param_tuning import LGBMRegressorTuning
+from muscle_tuning import LGBMRegressorTuning
 from sklearn.datasets import load_boston
 import pandas as pd
 from sklearn.pipeline import Pipeline
