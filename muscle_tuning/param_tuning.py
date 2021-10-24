@@ -82,7 +82,7 @@ class ParamTuning():
             目的変数のフィールド名
         cv_group: str, optional
             GroupKFold、LeaveOneGroupOutのグルーピング対象データ
-        eval_data_source: {'all', 'valid', 'train', 'original', 'original_transferred'}, optional
+        eval_data_source: {'all', 'test', 'train', 'original', 'original_transferred'}, optional
             self.eval_dataの指定方法 (XGBoost、LightGBMのみ有効)
         """
         if X.shape[1] != len(x_colnames):
@@ -226,13 +226,13 @@ class ParamTuning():
             fit_params = self.fit_params
             fit_params['verbose'] = 0
             # eval_setにテストデータを使用
-            if eval_data_source == 'valid':
+            if eval_data_source == 'test':
                 fit_params['eval_set'] = [(X_test, y_test)]
             # eval_setに学習データを使用
             elif eval_data_source == 'train':
                 fit_params['eval_set'] = [(X_train, y_train)]
             else:
-                raise Exception('the "eval_data_source" argument must be "all", "valid", or "train"')
+                raise Exception('the "eval_data_source" argument must be "all", "test", or "train"')
             # 学習
             estimator.fit(X_train, y_train,
                             **fit_params)

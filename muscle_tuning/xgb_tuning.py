@@ -6,6 +6,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import LabelEncoder
 
 from .param_tuning import ParamTuning
+from .util_methods import cross_val_score_eval_set
 
 class XGBRegressorTuning(ParamTuning):
     """
@@ -108,8 +109,8 @@ class XGBRegressorTuning(ParamTuning):
             if 'eval_set' not in src_fit_params:
                 print('There is no "eval_set" in fit_params, so "eval_set" is set to (self.X, self.y)')
                 src_fit_params['eval_set'] = [(self.X, self.y)]
-            # estimatorがパイプラインかつeval_data_sourceが'original_transferred'以外のとき、eval_setに最終学習器以外のtransformを適用
-            if isinstance(estimator, Pipeline) and self.eval_data_source != 'original_transferred':
+            # estimatorがパイプラインかつeval_data_sourceが'original'以外のとき、eval_setに最終学習器以外のtransformを適用
+            if isinstance(estimator, Pipeline) and self.eval_data_source != 'original':
                 print('The estimator is Pipeline, so X data of "eval_set" is transformed using pipeline')
                 X_src = self.X
                 transformer = Pipeline([step for i, step in enumerate(estimator.steps) if i < len(estimator) - 1])
@@ -133,15 +134,17 @@ class XGBRegressorTuning(ParamTuning):
         estimator = self.estimator
         estimator.set_params(**params)
 
-        # eval_data_sourceに全データ指定時(cross_val_scoreでクロスバリデーション)
-        if self.eval_data_source == 'all':
+        # eval_data_source = 'all', 'original', or 'original_transferred'のとき、cross_val_scoreメソッドでクロスバリデーション
+        if self.eval_data_source in ['all', 'original', 'original_transferred']:
             scores = cross_val_score(estimator, self.X, self.y, cv=self.cv,
-                                    scoring=self.scoring, fit_params=self.fit_params, n_jobs=None)
-            val = scores.mean()
-        # eval_data_sourceに学習orテストデータ指定時(スクラッチでクロスバリデーション)
+                                     scoring=self.scoring, fit_params=self.fit_params, n_jobs=None)
+        # eval_data_source = 'train' or 'test'のとき、学習データ or テストデータをeval_setに入力して自作メソッドでクロスバリデーション
+        elif self.eval_data_source in ['train', 'test']:
+            scores = cross_val_score_eval_set(self.eval_data_source, estimator, self.X, self.y, cv=self.cv,
+                                              scoring=self.scoring, fit_params=self.fit_params, n_jobs=None)
         else:
-            scores = self._scratch_cross_val(estimator, self.eval_data_source)
-            val = sum(scores)/len(scores)
+            raise Exception('the "eval_data_source" argument must be "all", "test", "train", "original", or "original_transferred"')
+        val = scores.mean()
         # 所要時間測定
         self.elapsed_times.append(time.time() - self.start_time)
 
@@ -164,16 +167,17 @@ class XGBRegressorTuning(ParamTuning):
         estimator = self.estimator
         estimator.set_params(**params)
         
-        # eval_data_sourceに全データ指定時(cross_val_scoreでクロスバリデーション)
-        if self.eval_data_source == 'all':
+        # eval_data_source = 'all', 'original', or 'original_transferred'のとき、cross_val_scoreメソッドでクロスバリデーション
+        if self.eval_data_source in ['all', 'original', 'original_transferred']:
             scores = cross_val_score(estimator, self.X, self.y, cv=self.cv,
-                                    scoring=self.scoring, fit_params=self.fit_params, n_jobs=None)
-            val = scores.mean()
-
-        # eval_data_sourceに学習orテストデータ指定時(スクラッチでクロスバリデーション)
+                                     scoring=self.scoring, fit_params=self.fit_params, n_jobs=None)
+        # eval_data_source = 'train' or 'test'のとき、学習データ or テストデータをeval_setに入力して自作メソッドでクロスバリデーション
+        elif self.eval_data_source in ['train', 'test']:
+            scores = cross_val_score_eval_set(self.eval_data_source, estimator, self.X, self.y, cv=self.cv,
+                                              scoring=self.scoring, fit_params=self.fit_params, n_jobs=None)
         else:
-            scores = self._scratch_cross_val(estimator, self.eval_data_source)
-            val = sum(scores)/len(scores)
+            raise Exception('the "eval_data_source" argument must be "all", "test", "train", "original", or "original_transferred"')
+        val = scores.mean()
         
         return val
 
@@ -292,8 +296,8 @@ class XGBClassifierTuning(ParamTuning):
             if 'eval_set' not in src_fit_params:
                 print('There is no "eval_set" in fit_params, so "eval_set" is set to (self.X, self.y)')
                 src_fit_params['eval_set'] = [(self.X, self.y)]
-            # estimatorがパイプラインかつeval_data_sourceが'original_transferred'以外のとき、eval_setに最終学習器以外のtransformを適用
-            if isinstance(estimator, Pipeline) and self.eval_data_source != 'original_transferred':
+            # estimatorがパイプラインかつeval_data_sourceが'original'以外のとき、eval_setに最終学習器以外のtransformを適用
+            if isinstance(estimator, Pipeline) and self.eval_data_source != 'original':
                 print('The estimator is Pipeline, so X data of "eval_set" is transformed using pipeline')
                 X_src = self.X
                 transformer = Pipeline([step for i, step in enumerate(estimator.steps) if i < len(estimator) - 1])
@@ -360,15 +364,17 @@ class XGBClassifierTuning(ParamTuning):
         estimator = self.estimator
         estimator.set_params(**params)
 
-        # eval_data_sourceに全データ指定時(cross_val_scoreでクロスバリデーション)
-        if self.eval_data_source == 'all':
+        # eval_data_source = 'all', 'original', or 'original_transferred'のとき、cross_val_scoreメソッドでクロスバリデーション
+        if self.eval_data_source in ['all', 'original', 'original_transferred']:
             scores = cross_val_score(estimator, self.X, self.y, cv=self.cv,
-                                    scoring=self.scoring, fit_params=self.fit_params, n_jobs=None)
-            val = scores.mean()
-        # eval_data_sourceに学習orテストデータ指定時(スクラッチでクロスバリデーション)
+                                     scoring=self.scoring, fit_params=self.fit_params, n_jobs=None)
+        # eval_data_source = 'train' or 'test'のとき、学習データ or テストデータをeval_setに入力して自作メソッドでクロスバリデーション
+        elif self.eval_data_source in ['train', 'test']:
+            scores = cross_val_score_eval_set(self.eval_data_source, estimator, self.X, self.y, cv=self.cv,
+                                              scoring=self.scoring, fit_params=self.fit_params, n_jobs=None)
         else:
-            scores = self._scratch_cross_val(estimator, self.eval_data_source)
-            val = sum(scores)/len(scores)
+            raise Exception('the "eval_data_source" argument must be "all", "test", "train", "original", or "original_transferred"')
+        val = scores.mean()
         # 所要時間測定
         self.elapsed_times.append(time.time() - self.start_time)
 
@@ -391,15 +397,16 @@ class XGBClassifierTuning(ParamTuning):
         estimator = self.estimator
         estimator.set_params(**params)
         
-        # eval_data_sourceに全データ指定時(cross_val_scoreでクロスバリデーション)
-        if self.eval_data_source == 'all':
+        # eval_data_source = 'all', 'original', or 'original_transferred'のとき、cross_val_scoreメソッドでクロスバリデーション
+        if self.eval_data_source in ['all', 'original', 'original_transferred']:
             scores = cross_val_score(estimator, self.X, self.y, cv=self.cv,
-                                    scoring=self.scoring, fit_params=self.fit_params, n_jobs=None)
-            val = scores.mean()
-
-        # eval_data_sourceに学習orテストデータ指定時(スクラッチでクロスバリデーション)
+                                     scoring=self.scoring, fit_params=self.fit_params, n_jobs=None)
+        # eval_data_source = 'train' or 'test'のとき、学習データ or テストデータをeval_setに入力して自作メソッドでクロスバリデーション
+        elif self.eval_data_source in ['train', 'test']:
+            scores = cross_val_score_eval_set(self.eval_data_source, estimator, self.X, self.y, cv=self.cv,
+                                              scoring=self.scoring, fit_params=self.fit_params, n_jobs=None)
         else:
-            scores = self._scratch_cross_val(estimator, self.eval_data_source)
-            val = sum(scores)/len(scores)
+            raise Exception('the "eval_data_source" argument must be "all", "test", "train", "original", or "original_transferred"')
+        val = scores.mean()
         
         return val
