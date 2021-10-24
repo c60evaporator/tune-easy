@@ -659,6 +659,8 @@ class MuscleTuning():
         
         other_scores : list[str], optional
             Score names calculated after tuning. Input strings are the same as that of `scoring` argument.
+            
+            Note that "rmsle" score may causes an error if predicted values or true values include negative value.
         
         learning_algos : list[str], optional
             Estimator algorithm. 'svm': Support vector machine, 'svr': Support vector regression, 'logistic': Logistic Regression, 'elasiticnet': ElasticNet, 'randomforest': RandomForest, 'lightgbm': LightGBM, 'xgboost': XGBoost.
