@@ -66,7 +66,7 @@ class ParamTuning():
         """
         pass
 
-    def __init__(self, X, y, x_colnames, y_colname=None, cv_group=None, **kwargs):
+    def __init__(self, X, y, x_colnames, y_colname=None, cv_group=None, eval_data_source='all', **kwargs):
         """
         初期化
 
@@ -82,7 +82,7 @@ class ParamTuning():
             目的変数のフィールド名
         cv_group: str, optional
             GroupKFold、LeaveOneGroupOutのグルーピング対象データ
-        eval_data_source: {'all', 'valid', 'train'}
+        eval_data_source: {'all', 'valid', 'train', 'original', 'original_transferred'}, optional
             self.eval_dataの指定方法 (XGBoost、LightGBMのみ有効)
         """
         if X.shape[1] != len(x_colnames):
@@ -92,6 +92,7 @@ class ParamTuning():
         self.x_colnames = x_colnames
         self.y_colname = y_colname
         self.cv_group = cv_group  # GroupKFold, LeaveOneGroupOut用のグルーピング対象データ 
+        self.eval_data_source = eval_data_source  # self.eval_dataの指定方法()
         self.tuning_params = None  # チューニング対象のパラメータとその範囲
         self.not_opt_params = None  # チューニング非対象のパラメータ
         self.int_params = None  # 整数型のパラメータのリスト(ベイズ最適化時は都度int型変換する)

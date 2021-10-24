@@ -87,20 +87,6 @@ class LGBMRegressorTuning(ParamTuning):
                     'subsample_freq': 'linear',
                     'min_child_samples': 'linear'
                     }
-    
-    def _additional_init(self, eval_data_source = 'all', **kwargs):
-        """
-        初期化時の追加処理
-        
-        Parameters
-        ----------
-        eval_data_source : str
-            fit_paramsに渡すeval_setのデータ
-            'all'なら全データ、'valid'ならテストデータ、'train'なら学習データ
-        """
-        # eval_dataをテストデータから取得
-        self.eval_data_source = eval_data_source
-        return
 
     def _train_param_generation(self, estimator, src_fit_params):
         """
@@ -269,20 +255,6 @@ class LGBMClassifierTuning(ParamTuning):
                     'subsample_freq': 'linear',
                     'min_child_samples': 'linear'
                     }
-    
-    def _additional_init(self, eval_data_source = 'all', **kwargs):
-        """
-        初期化時の追加処理
-        
-        Parameters
-        ----------
-        eval_data_source : str
-            fit_paramsに渡すeval_setのデータ
-            'all'なら全データ、'valid'ならテストデータ、'train'なら学習データ
-        """
-        # eval_dataをテストデータから取得
-        self.eval_data_source = eval_data_source
-        return
 
     def _train_param_generation(self, estimator, src_fit_params):
         """

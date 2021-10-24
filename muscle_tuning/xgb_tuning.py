@@ -91,20 +91,6 @@ class XGBRegressorTuning(ParamTuning):
                     'max_depth': 'linear',
                     'gamma': 'log'
                     }
-    
-    def _additional_init(self, eval_data_source = 'all', **kwargs):
-        """
-        初期化時の追加処理（eval_dataの指定）
-        
-        Parameters
-        ----------
-        eval_data_source : str
-            XGBoostのfit_paramsに渡すeval_setのデータ
-            'all'なら全データ、'valid'ならテストデータ、'train'なら学習データ
-        """
-        # eval_dataをテストデータから取得
-        self.eval_data_source = eval_data_source
-        return
 
     def _train_param_generation(self, estimator, src_fit_params):
         """
@@ -276,18 +262,10 @@ class XGBClassifierTuning(ParamTuning):
                     'gamma': 'log'
                     }
     
-    def _additional_init(self, eval_data_source = 'all', **kwargs):
+    def _additional_init(self, **kwargs):
         """
-        初期化時の追加処理（eval_dataの指定＆ラベルをint化）
-        
-        Parameters
-        ----------
-        eval_data_source : str
-            XGBoostのfit_paramsに渡すeval_setのデータ
-            'all'なら全データ、'valid'ならテストデータ、'train'なら学習データ
+        初期化時の追加処理（yのラベルをint化）
         """
-        # eval_dataをテストデータから取得
-        self.eval_data_source = eval_data_source
         
         # ラベルがstr型ならint化する（str型だとXGBClassifierのuse_label_encoderのWarningが出るため）
         if self.y.dtype.name == 'object':
