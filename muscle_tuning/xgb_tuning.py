@@ -134,7 +134,7 @@ class XGBRegressorTuning(ParamTuning):
         estimator.set_params(**params)
 
         # 全データ or 学習データ or テストデータをeval_setに入力して自作メソッドでクロスバリデーション
-        scores = cross_val_score_eval_set(self.eval_set_selection, estimator, self.X, self.y, cv=self.cv,
+        scores = cross_val_score_eval_set(self.eval_set_selection, estimator, self.X, self.y, cv=self.cv, groups=self.cv_group,
                                           scoring=self.scoring, fit_params=self.fit_params, n_jobs=None)
         val = scores.mean()
         # 所要時間測定
@@ -160,7 +160,7 @@ class XGBRegressorTuning(ParamTuning):
         estimator.set_params(**params)
         
         # 全データ or 学習データ or テストデータをeval_setに入力して自作メソッドでクロスバリデーション
-        scores = cross_val_score_eval_set(self.eval_set_selection, estimator, self.X, self.y, cv=self.cv,
+        scores = cross_val_score_eval_set(self.eval_set_selection, estimator, self.X, self.y, cv=self.cv, groups=self.cv_group,
                                           scoring=self.scoring, fit_params=self.fit_params, n_jobs=None)
         val = scores.mean()
         
@@ -349,7 +349,7 @@ class XGBClassifierTuning(ParamTuning):
         estimator.set_params(**params)
 
         # 全データ or 学習データ or テストデータをeval_setに入力して自作メソッドでクロスバリデーション
-        scores = cross_val_score_eval_set(self.eval_set_selection, estimator, self.X, self.y, cv=self.cv,
+        scores = cross_val_score_eval_set(self.eval_set_selection, estimator, self.X, self.y, cv=self.cv, groups=self.cv_group,
                                           scoring=self.scoring, fit_params=self.fit_params, n_jobs=None)
         val = scores.mean()
         # 所要時間測定
@@ -375,7 +375,7 @@ class XGBClassifierTuning(ParamTuning):
         estimator.set_params(**params)
         
         # 全データ or 学習データ or テストデータをeval_setに入力して自作メソッドでクロスバリデーション
-        scores = cross_val_score_eval_set(self.eval_set_selection, estimator, self.X, self.y, cv=self.cv,
+        scores = cross_val_score_eval_set(self.eval_set_selection, estimator, self.X, self.y, cv=self.cv, groups=self.cv_group,
                                           scoring=self.scoring, fit_params=self.fit_params, n_jobs=None)
         val = scores.mean()
         
