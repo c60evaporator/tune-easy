@@ -8,6 +8,7 @@ from traceback import format_exc
 from joblib import Parallel, logger
 import numpy as np
 from sklearn import clone
+from sklearn.pipeline import Pipeline
 from sklearn.model_selection import TimeSeriesSplit, check_cv
 from sklearn.model_selection._validation import _insert_error_scores, _aggregate_score_dicts, _normalize_score_results, _score
 from sklearn.utils.validation import check_array, indexable, _check_fit_params, _num_samples
@@ -150,14 +151,19 @@ class GroupTimeSeriesSplit(TimeSeriesSplit):
         else:
             return self.n_splits
 
+def _transfer_except_last_estimator(transformer, X_src, X_train):
+    """パイプラインのとき、最終学習器以外のtransformを適用"""
+    if transformer is not None:
+        transformer.fit(X_train)
+        X_dst = transformer.transform(X_src)
+        return X_dst
+    else:
+        return X_src
 
-def _eval_set_selection(eval_set_selection,
+def _eval_set_selection(eval_set_selection, transformer,
                         fit_params, train, test):
     """eval_setの中から学習データ or テストデータのみを抽出"""
     fit_params_modified = copy.deepcopy(fit_params)
-    # eval_set_selection == 'all'なら、そのままfit_paramsを返す
-    if eval_set_selection == 'all':
-        return fit_params_modified
     # eval_setが存在しなければ、そのままfit_paramsを返す
     eval_sets = [v for v in fit_params.keys() if 'eval_set' in v]
     if len(eval_sets) == 0:
@@ -168,18 +174,23 @@ def _eval_set_selection(eval_set_selection,
     y_fit = fit_params[eval_set_name][0][1]
     # eval_setに該当データを入力し直す
     if eval_set_selection == 'train':
-        fit_params_modified[eval_set_name] = [(X_fit[train], y_fit[train])]
+        fit_params_modified[eval_set_name] = [(_transfer_except_last_estimator(transformer, X_fit[train], X_fit[train])\
+                                              , y_fit[train])]
     elif eval_set_selection == 'test':
-        fit_params_modified[eval_set_name] = [(X_fit[test], y_fit[test])]
+        fit_params_modified[eval_set_name] = [(_transfer_except_last_estimator(transformer, X_fit[test], X_fit[train])\
+                                              , y_fit[test])]
+    else:
+        fit_params_modified[eval_set_name] = [(_transfer_except_last_estimator(transformer, X_fit, X_fit[train])\
+                                              , y_fit)]
     return fit_params_modified
 
-def _fit_and_score(eval_set_selection,
-                   estimator, X, y, scorer, train, test, verbose,
-                   parameters, fit_params, return_train_score=False,
-                   return_parameters=False, return_n_test_samples=False,
-                   return_times=False, return_estimator=False,
-                   split_progress=None, candidate_progress=None,
-                   error_score=np.nan):
+def _fit_and_score_eval_set(eval_set_selection, transformer,
+                            estimator, X, y, scorer, train, test, verbose,
+                            parameters, fit_params, return_train_score=False,
+                            return_parameters=False, return_n_test_samples=False,
+                            return_times=False, return_estimator=False,
+                            split_progress=None, candidate_progress=None,
+                            error_score=np.nan):
 
     """Fit estimator and compute scores for a given dataset split."""
     if not isinstance(error_score, numbers.Number) and error_score != 'raise':
@@ -211,8 +222,8 @@ def _fit_and_score(eval_set_selection,
     # Adjust length of sample weights
     fit_params = fit_params if fit_params is not None else {}
     # eval_setの中から学習データ or テストデータのみを抽出
-    fit_params_modified = _eval_set_selection(eval_set_selection, fit_params,
-                                              train, test)
+    fit_params_modified = _eval_set_selection(eval_set_selection, transformer,
+                                              fit_params, train, test)
     fit_params_modified = _check_fit_params(X, fit_params_modified, train)
 
     if parameters is not None:
@@ -309,6 +320,14 @@ def _fit_and_score(eval_set_selection,
         result["estimator"] = estimator
     return result
 
+def _make_transformer(eval_set_selection, estimator):
+    """estimatorがパイプラインのとき、最終学習器以外の変換器(前処理クラスのリスト)を作成"""
+    if isinstance(estimator, Pipeline) and eval_set_selection != 'original':
+        transformer = Pipeline([step for i, step in enumerate(estimator.steps) if i < len(estimator) - 1])
+        return transformer
+    else:
+        return None
+
 def cross_validate_eval_set(eval_set_selection,
                             estimator, X, y=None, groups=None, scoring=None, cv=None,
                             n_jobs=None, verbose=0, fit_params=None,
@@ -321,14 +340,18 @@ def cross_validate_eval_set(eval_set_selection,
 
     Parameters
     ----------
-    eval_set_selection : {'all', 'train', 'test'}
-        Select data passed to `eval_set`.
-        
-        If "all", using all data in former "eval_set"
+    eval_set_selection : {'all', 'train', 'test', 'original', 'original_transfferred'}
+        Select data passed to `eval_set` in `fit_params`. Available only if "estimator" is LightGBM or XGBoost.
+            
+        If "all", use all data in `X` and `y`.
 
-        If "train", select train data in former "eval_set" using cv.split()
+        If "train", select train data from `X` and `y` using cv.split().
 
-        If "test", select test data in former "eval_set" using cv.split()
+        If "test", select test data from `X` and `y` using cv.split().
+
+        If "original", use raw `eval_set`.
+
+        If "original_transfferred", use `eval_set` transferred by fit_transform() of pipeline if `estimater` is pipeline.
 
     estimator : estimator object implementing 'fit'
         The object to use to fit the data.
@@ -451,13 +474,16 @@ def cross_validate_eval_set(eval_set_selection,
     else:
         scorers = _check_multimetric_scoring(estimator, scoring)
 
+    # 最終学習器以外の前処理変換器作成
+    transformer = _make_transformer(eval_set_selection, estimator)
+
     # We clone the estimator to make sure that all the folds are
     # independent, and that it is pickle-able.
     parallel = Parallel(n_jobs=n_jobs, verbose=verbose,
                         pre_dispatch=pre_dispatch)
     results = parallel(
-        delayed(_fit_and_score)(
-            eval_set_selection,
+        delayed(_fit_and_score_eval_set)(
+            eval_set_selection, transformer,
             clone(estimator), X, y, scorers, train, test, verbose, None,
             fit_params, return_train_score=return_train_score,
             return_times=True, return_estimator=return_estimator,

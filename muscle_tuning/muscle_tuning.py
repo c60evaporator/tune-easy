@@ -1,4 +1,3 @@
-from muscle_tuning.linearregression_tuning import LinearRegressionTuning
 from sklearn.model_selection import KFold, GroupKFold, LeaveOneGroupOut
 from sklearn.model_selection import cross_validate
 from sklearn.metrics import make_scorer, precision_score, recall_score
@@ -13,6 +12,7 @@ from seaborn_analyzer import regplot, classplot
 import numbers
 import copy
 
+from .linearregression_tuning import LinearRegressionTuning
 from .elasticnet_tuning import ElasticNetTuning
 from .lgbm_tuning import LGBMClassifierTuning, LGBMRegressorTuning
 from .rf_tuning import RFClassifierTuning, RFRegressorTuning
@@ -630,11 +630,11 @@ class MuscleTuning():
 
         Parameters
         ----------
-        x : list[str], or np.ndarray
-            Explanatory variables. Should be list[str] if ``data`` is pd.DataFrame. Should be np.ndarray if ``data`` is None.
+        x : list[str], or numpy.ndarray
+            Explanatory variables. Should be list[str] if ``data`` is pd.DataFrame. Should be numpy.ndarray if ``data`` is None.
         
-        y : str or np.ndarray
-            Objective variable. Should be str if ``data`` is pd.DataFrame. Should be np.ndarray if ``data`` is None.
+        y : str or numpy.ndarray
+            Objective variable. Should be str if ``data`` is pd.DataFrame. Should be numpy.ndarray if ``data`` is None.
         
         data : pd.DataFrame, optional
             Input data structure.
@@ -642,7 +642,7 @@ class MuscleTuning():
         x_colnames : list[str]
             Names of explanatory variables. Available only if data is NOT pd.DataFrame.
         
-        cv_group : str or np.ndarray
+        cv_group : str or numpy.ndarray
             Grouping variable that will be used for GroupKFold or LeaveOneGroupOut. Should be str if ``data`` is pd.DataFrame.
         
         objective : {'classification', 'regression'}

@@ -107,15 +107,14 @@ class LGBMRegressorTuning(ParamTuning):
             if 'eval_set' not in src_fit_params:
                 print('There is no "eval_set" in fit_params, so "eval_set" is set to (self.X, self.y)')
                 src_fit_params['eval_set'] = [(self.X, self.y)]
-            # estimatorがパイプラインかつeval_data_sourceが'original'以外のとき、eval_setに最終学習器以外のtransformを適用
-            if isinstance(estimator, Pipeline) and self.eval_data_source != 'original':
-                print('The estimator is Pipeline, so X data of "eval_set" is transformed using pipeline')
-                X_src = self.X
-                transformer = Pipeline([step for i, step in enumerate(estimator.steps) if i < len(estimator) - 1])
-                X_dst = transformer.fit_transform(X_src)
+                if self.eval_set_selection is None:  # eval_data_source未指定時、eval_setが入力されていなければeval_data_source='train'とする
+                    self.eval_set_selection = 'train'
+                if self.eval_set_selection not in ['all', 'train', 'test']:  # eval_data_sourceの指定が間違っていたらエラーを出す
+                    raise ValueError('The `eval_set_selection` argument should be "all", "train", or "test" when `eval_set` is not in `fit_params`')
+            # src_fit_paramsにeval_setが存在するとき、eval_data_source未指定ならばeval_data_source='original_transferred'とする
             else:
-                X_dst = self.X
-            src_fit_params['eval_set'] = [(X_dst, self.y)]
+                if self.eval_set_selection is None:
+                    self.eval_set_selection = 'original_transferred'
 
         return src_fit_params
 
@@ -132,16 +131,9 @@ class LGBMRegressorTuning(ParamTuning):
         estimator = self.estimator
         estimator.set_params(**params)
 
-        # eval_data_source = 'all', 'original', or 'original_transferred'のとき、cross_val_scoreメソッドでクロスバリデーション
-        if self.eval_data_source in ['all', 'original', 'original_transferred']:
-            scores = cross_val_score(estimator, self.X, self.y, cv=self.cv,
-                                     scoring=self.scoring, fit_params=self.fit_params, n_jobs=None)
-        # eval_data_source = 'train' or 'test'のとき、学習データ or テストデータをeval_setに入力して自作メソッドでクロスバリデーション
-        elif self.eval_data_source in ['train', 'test']:
-            scores = cross_val_score_eval_set(self.eval_data_source, estimator, self.X, self.y, cv=self.cv,
-                                              scoring=self.scoring, fit_params=self.fit_params, n_jobs=None)
-        else:
-            raise Exception('the "eval_data_source" argument must be "all", "test", "train", "original", or "original_transferred"')
+        # 全データ or 学習データ or テストデータをeval_setに入力して自作メソッドでクロスバリデーション
+        scores = cross_val_score_eval_set(self.eval_set_selection, estimator, self.X, self.y, cv=self.cv,
+                                          scoring=self.scoring, fit_params=self.fit_params, n_jobs=None)
         val = scores.mean()
         # 所要時間測定
         self.elapsed_times.append(time.time() - self.start_time)
@@ -165,16 +157,9 @@ class LGBMRegressorTuning(ParamTuning):
         estimator = self.estimator
         estimator.set_params(**params)
         
-        # eval_data_source = 'all', 'original', or 'original_transferred'のとき、cross_val_scoreメソッドでクロスバリデーション
-        if self.eval_data_source in ['all', 'original', 'original_transferred']:
-            scores = cross_val_score(estimator, self.X, self.y, cv=self.cv,
-                                     scoring=self.scoring, fit_params=self.fit_params, n_jobs=None)
-        # eval_data_source = 'train' or 'test'のとき、学習データ or テストデータをeval_setに入力して自作メソッドでクロスバリデーション
-        elif self.eval_data_source in ['train', 'test']:
-            scores = cross_val_score_eval_set(self.eval_data_source, estimator, self.X, self.y, cv=self.cv,
-                                              scoring=self.scoring, fit_params=self.fit_params, n_jobs=None)
-        else:
-            raise Exception('the "eval_data_source" argument must be "all", "test", "train", "original", or "original_transferred"')
+        # 全データ or 学習データ or テストデータをeval_setに入力して自作メソッドでクロスバリデーション
+        scores = cross_val_score_eval_set(self.eval_set_selection, estimator, self.X, self.y, cv=self.cv,
+                                          scoring=self.scoring, fit_params=self.fit_params, n_jobs=None)
         val = scores.mean()
         
         return val
@@ -277,15 +262,14 @@ class LGBMClassifierTuning(ParamTuning):
             if 'eval_set' not in src_fit_params:
                 print('There is no "eval_set" in fit_params, so "eval_set" is set to (self.X, self.y)')
                 src_fit_params['eval_set'] = [(self.X, self.y)]
-            # estimatorがパイプラインかつeval_data_sourceが'original'以外のとき、eval_setに最終学習器以外のtransformを適用
-            if isinstance(estimator, Pipeline) and self.eval_data_source != 'original':
-                print('The estimator is Pipeline, so X data of "eval_set" is transformed using pipeline')
-                X_src = self.X
-                transformer = Pipeline([step for i, step in enumerate(estimator.steps) if i < len(estimator) - 1])
-                X_dst = transformer.fit_transform(X_src)
+                if self.eval_set_selection is None:  # eval_data_source未指定時、eval_setが入力されていなければeval_data_source='train'とする
+                    self.eval_set_selection = 'train'
+                if self.eval_set_selection not in ['all', 'train', 'test']:  # eval_data_sourceの指定が間違っていたらエラーを出す
+                    raise ValueError('The `eval_set_selection` argument should be "all", "train", or "test" when `eval_set` is not in `fit_params`')
+            # src_fit_paramsにeval_setが存在するとき、eval_data_source未指定ならばeval_data_source='original_transferred'とする
             else:
-                X_dst = self.X
-            src_fit_params['eval_set'] = [(X_dst, self.y)]
+                if self.eval_set_selection is None:
+                    self.eval_set_selection = 'original_transferred'
 
             # 2クラス分類のときeval_metricはbinary_logloss or binary_errorを、多クラス分類のときmulti_logloss or multi_errorを入力
             unique_labels = np.unique(self.y)
@@ -313,16 +297,9 @@ class LGBMClassifierTuning(ParamTuning):
         estimator = self.estimator
         estimator.set_params(**params)
 
-        # eval_data_source = 'all', 'original', or 'original_transferred'のとき、cross_val_scoreメソッドでクロスバリデーション
-        if self.eval_data_source in ['all', 'original', 'original_transferred']:
-            scores = cross_val_score(estimator, self.X, self.y, cv=self.cv,
-                                     scoring=self.scoring, fit_params=self.fit_params, n_jobs=None)
-        # eval_data_source = 'train' or 'test'のとき、学習データ or テストデータをeval_setに入力して自作メソッドでクロスバリデーション
-        elif self.eval_data_source in ['train', 'test']:
-            scores = cross_val_score_eval_set(self.eval_data_source, estimator, self.X, self.y, cv=self.cv,
-                                              scoring=self.scoring, fit_params=self.fit_params, n_jobs=None)
-        else:
-            raise Exception('the "eval_data_source" argument must be "all", "test", "train", "original", or "original_transferred"')
+        # 全データ or 学習データ or テストデータをeval_setに入力して自作メソッドでクロスバリデーション
+        scores = cross_val_score_eval_set(self.eval_set_selection, estimator, self.X, self.y, cv=self.cv,
+                                          scoring=self.scoring, fit_params=self.fit_params, n_jobs=None)
         val = scores.mean()
         # 所要時間測定
         self.elapsed_times.append(time.time() - self.start_time)
@@ -346,16 +323,9 @@ class LGBMClassifierTuning(ParamTuning):
         estimator = self.estimator
         estimator.set_params(**params)
         
-        # eval_data_source = 'all', 'original', or 'original_transferred'のとき、cross_val_scoreメソッドでクロスバリデーション
-        if self.eval_data_source in ['all', 'original', 'original_transferred']:
-            scores = cross_val_score(estimator, self.X, self.y, cv=self.cv,
-                                     scoring=self.scoring, fit_params=self.fit_params, n_jobs=None)
-        # eval_data_source = 'train' or 'test'のとき、学習データ or テストデータをeval_setに入力して自作メソッドでクロスバリデーション
-        elif self.eval_data_source in ['train', 'test']:
-            scores = cross_val_score_eval_set(self.eval_data_source, estimator, self.X, self.y, cv=self.cv,
-                                              scoring=self.scoring, fit_params=self.fit_params, n_jobs=None)
-        else:
-            raise Exception('the "eval_data_source" argument must be "all", "test", "train", "original", or "original_transferred"')
+        # 全データ or 学習データ or テストデータをeval_setに入力して自作メソッドでクロスバリデーション
+        scores = cross_val_score_eval_set(self.eval_set_selection, estimator, self.X, self.y, cv=self.cv,
+                                          scoring=self.scoring, fit_params=self.fit_params, n_jobs=None)
         val = scores.mean()
         
         return val

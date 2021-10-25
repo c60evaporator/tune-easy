@@ -66,24 +66,39 @@ class ParamTuning():
         """
         pass
 
-    def __init__(self, X, y, x_colnames, y_colname=None, cv_group=None, eval_data_source='all', **kwargs):
+    def __init__(self, X, y, x_colnames, y_colname=None, cv_group=None, eval_set_selection=None, **kwargs):
         """
-        初期化
+        Initialization.
 
         Parameters
         ----------
-        X : np.ndarray
-            説明変数データ(pandasではなく2次元ndarray)
-        y : np.ndarray
-            目的変数データ(ndarray、2次元でも1次元でも可)
-        x_colnames : list(str)
-            説明変数のフィールド名
+        X : numpy.ndarray
+            Explanatory variables. Should be 2 dimensional numpy.ndarray.
+        
+        y : numpy.ndarray
+            Objective variable. Should be 1 dimensional numpy.ndarray.
+        
+        x_colnames : list[str]
+            Names of explanatory variables.
+        
         y_colname : str, optional
-            目的変数のフィールド名
-        cv_group: str, optional
-            GroupKFold、LeaveOneGroupOutのグルーピング対象データ
-        eval_data_source: {'all', 'test', 'train', 'original', 'original_transferred'}, optional
-            self.eval_dataの指定方法 (XGBoost、LightGBMのみ有効)
+            Name of objective variable.
+        
+        cv_group: numpy.ndarray, optional
+            Grouping variable that will be used for GroupKFold or LeaveOneGroupOut. Should be 1 dimensional numpy.ndarray.
+        
+        eval_set_selection: {'all', 'test', 'train', 'original', 'original_transferred'}, optional
+            Select data passed to `eval_set` in `fit_params`. Available only if "estimator" is LightGBM or XGBoost.
+            
+            If "all", use all data in `X` and `y`.
+
+            If "train", select train data from `X` and `y` using cv.split().
+
+            If "test", select test data from `X` and `y` using cv.split().
+
+            If "original", use raw `eval_set`.
+
+            If "original_transfferred", use `eval_set` transferred by fit_transform() of pipeline if `estimater` is pipeline.
         """
         if X.shape[1] != len(x_colnames):
             raise Exception('width of X must be equal to length of x_colnames')
@@ -92,7 +107,7 @@ class ParamTuning():
         self.x_colnames = x_colnames
         self.y_colname = y_colname
         self.cv_group = cv_group  # GroupKFold, LeaveOneGroupOut用のグルーピング対象データ 
-        self.eval_data_source = eval_data_source  # self.eval_dataの指定方法()
+        self.eval_set_selection = eval_set_selection  # self.eval_dataの指定方法()
         self.tuning_params = None  # チューニング対象のパラメータとその範囲
         self.not_opt_params = None  # チューニング非対象のパラメータ
         self.int_params = None  # 整数型のパラメータのリスト(ベイズ最適化時は都度int型変換する)
@@ -214,44 +229,6 @@ class ParamTuning():
         if isinstance(estimator, Pipeline):
             steps = estimator.steps
             self.learner_name = steps[len(steps)-1][0]
-
-    def _scratch_cross_val(self, estimator, eval_data_source):
-        scores = []
-        for train, test in self.cv.split(self.X, self.y):
-            X_train = self.X[train]
-            y_train = self.y[train]
-            X_test = self.X[test]
-            y_test = self.y[test]
-            # fitメソッド実行時のパラメータ指定
-            fit_params = self.fit_params
-            fit_params['verbose'] = 0
-            # eval_setにテストデータを使用
-            if eval_data_source == 'test':
-                fit_params['eval_set'] = [(X_test, y_test)]
-            # eval_setに学習データを使用
-            elif eval_data_source == 'train':
-                fit_params['eval_set'] = [(X_train, y_train)]
-            else:
-                raise Exception('the "eval_data_source" argument must be "all", "test", or "train"')
-            # 学習
-            estimator.fit(X_train, y_train,
-                            **fit_params)
-            scorer = check_scoring(estimator, self.scoring)
-            score = scorer(estimator, X_test, y_test)
-
-            # Learning API -> Scikit-learn APIとデフォルトパラメータが異なり結果が変わるので不使用
-            # dtrain = xgb.DMatrix(X_train, label=y_train)
-            # dtest = xgb.DMatrix(X_test, label=y_test)
-            # evals = [(dtrain, 'train'), (dtest, 'eval')]
-            # d_fit_params = {k: v for k, v in fit_params.items()}
-            # d_fit_params['num_boost_round'] = 1000
-            # d_fit_params.pop('eval_set')
-            # d_fit_params.pop('verbose')
-            # dmodel = xgb.train(params, dtrain, evals=evals, **d_fit_params)
-            # pred2 = dmodel.predict(dtest)
-            
-            scores.append(score)
-        return scores
 
     def _mlflow_logging(self):
         """
