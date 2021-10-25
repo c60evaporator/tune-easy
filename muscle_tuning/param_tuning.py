@@ -1,6 +1,5 @@
 from abc import abstractmethod
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV, KFold, GroupKFold, LeaveOneGroupOut, validation_curve, learning_curve, cross_val_score
-from sklearn.metrics import check_scoring
 from sklearn.pipeline import Pipeline
 from sklearn.ensemble import RandomForestRegressor
 from bayes_opt import BayesianOptimization
@@ -18,7 +17,7 @@ import mlflow.sklearn
 from mlflow.models.signature import infer_signature
 import os
 
-from .util_methods import round_digits
+from ._util_methods import round_digits
 
 class ParamTuning():
     """

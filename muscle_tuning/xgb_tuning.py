@@ -1,12 +1,10 @@
-from sklearn.model_selection import cross_val_score
 import time
 import numpy as np
 from xgboost import XGBRegressor, XGBClassifier
-from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import LabelEncoder
 
 from .param_tuning import ParamTuning
-from .util_methods import cross_val_score_eval_set
+from ._cv_eval_set import cross_val_score_eval_set
 
 class XGBRegressorTuning(ParamTuning):
     """
