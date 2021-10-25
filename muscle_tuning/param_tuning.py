@@ -86,7 +86,7 @@ class ParamTuning():
         cv_group: numpy.ndarray, optional
             Grouping variable that will be used for GroupKFold or LeaveOneGroupOut. Should be 1 dimensional numpy.ndarray.
         
-        eval_set_selection: {'all', 'test', 'train', 'original', 'original_transferred'}, optional
+        eval_set_selection: {'all', 'test', 'train', 'original', 'original_transformed'}, optional
             Select data passed to `eval_set` in `fit_params`. Available only if "estimator" is LightGBM or XGBoost.
             
             If "all", use all data in `X` and `y`.
@@ -97,7 +97,7 @@ class ParamTuning():
 
             If "original", use raw `eval_set`.
 
-            If "original_transfferred", use `eval_set` transferred by fit_transform() of pipeline if `estimater` is pipeline.
+            If "original_transformed", use `eval_set` transformed by fit_transform() of pipeline if `estimater` is pipeline.
         """
         if X.shape[1] != len(x_colnames):
             raise Exception('width of X must be equal to length of x_colnames')

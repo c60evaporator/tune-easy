@@ -1,22 +1,17 @@
-import numbers
-import time
-import warnings
 import copy
-from traceback import format_exc
-from joblib import Parallel, logger
+from joblib import Parallel
 import numpy as np
 from sklearn import clone
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import check_cv
-from sklearn.model_selection._validation import _insert_error_scores, _aggregate_score_dicts, _normalize_score_results, _score
-from sklearn.utils.validation import indexable, _check_fit_params, _num_samples
-from sklearn.utils.metaestimators import _safe_split
+from sklearn.model_selection._validation import _fit_and_score, _insert_error_scores, _aggregate_score_dicts, _normalize_score_results
+from sklearn.utils.validation import indexable
 from sklearn.metrics import check_scoring
 from sklearn.metrics._scorer import _check_multimetric_scoring
 from sklearn.base import is_classifier
 from sklearn.utils.fixes import delayed
 
-def _transfer_except_last_estimator(transformer, X_src, X_train):
+def _transform_except_last_estimator(transformer, X_src, X_train):
     """パイプラインのとき、最終学習器以外のtransformを適用"""
     if transformer is not None:
         transformer.fit(X_train)
@@ -39,13 +34,13 @@ def _eval_set_selection(eval_set_selection, transformer,
     y_fit = fit_params[eval_set_name][0][1]
     # eval_setに該当データを入力し直す
     if eval_set_selection == 'train':
-        fit_params_modified[eval_set_name] = [(_transfer_except_last_estimator(transformer, X_fit[train], X_fit[train])\
+        fit_params_modified[eval_set_name] = [(_transform_except_last_estimator(transformer, X_fit[train], X_fit[train])\
                                               , y_fit[train])]
     elif eval_set_selection == 'test':
-        fit_params_modified[eval_set_name] = [(_transfer_except_last_estimator(transformer, X_fit[test], X_fit[train])\
+        fit_params_modified[eval_set_name] = [(_transform_except_last_estimator(transformer, X_fit[test], X_fit[train])\
                                               , y_fit[test])]
     else:
-        fit_params_modified[eval_set_name] = [(_transfer_except_last_estimator(transformer, X_fit, X_fit[train])\
+        fit_params_modified[eval_set_name] = [(_transform_except_last_estimator(transformer, X_fit, X_fit[train])\
                                               , y_fit)]
     return fit_params_modified
 
@@ -58,131 +53,16 @@ def _fit_and_score_eval_set(eval_set_selection, transformer,
                             error_score=np.nan):
 
     """Fit estimator and compute scores for a given dataset split."""
-    if not isinstance(error_score, numbers.Number) and error_score != 'raise':
-        raise ValueError(
-            "error_score must be the string 'raise' or a numeric value. "
-            "(Hint: if using 'raise', please make sure that it has been "
-            "spelled correctly.)"
-        )
-
-    progress_msg = ""
-    if verbose > 2:
-        if split_progress is not None:
-            progress_msg = f" {split_progress[0]+1}/{split_progress[1]}"
-        if candidate_progress and verbose > 9:
-            progress_msg += (f"; {candidate_progress[0]+1}/"
-                             f"{candidate_progress[1]}")
-
-    if verbose > 1:
-        if parameters is None:
-            params_msg = ''
-        else:
-            sorted_keys = sorted(parameters)  # Ensure deterministic o/p
-            params_msg = (', '.join(f'{k}={parameters[k]}'
-                                    for k in sorted_keys))
-    if verbose > 9:
-        start_msg = f"[CV{progress_msg}] START {params_msg}"
-        print(f"{start_msg}{(80 - len(start_msg)) * '.'}")
-
-    # Adjust length of sample weights
-    fit_params = fit_params if fit_params is not None else {}
     # eval_setの中から学習データ or テストデータのみを抽出
     fit_params_modified = _eval_set_selection(eval_set_selection, transformer,
                                               fit_params, train, test)
-    fit_params_modified = _check_fit_params(X, fit_params_modified, train)
-
-    if parameters is not None:
-        # clone after setting parameters in case any parameters
-        # are estimators (like pipeline steps)
-        # because pipeline doesn't clone steps in fit
-        cloned_parameters = {}
-        for k, v in parameters.items():
-            cloned_parameters[k] = clone(v, safe=False)
-
-        estimator = estimator.set_params(**cloned_parameters)
-
-    start_time = time.time()
-
-    X_train, y_train = _safe_split(estimator, X, y, train)
-    X_test, y_test = _safe_split(estimator, X, y, test, train)
-
-    result = {}
-    try:
-        if y_train is None:
-            estimator.fit(X_train, **fit_params_modified)
-        else:
-            estimator.fit(X_train, y_train, **fit_params_modified)
-
-    except Exception as e:
-        # Note fit time as time until error
-        fit_time = time.time() - start_time
-        score_time = 0.0
-        if error_score == 'raise':
-            raise
-        elif isinstance(error_score, numbers.Number):
-            if isinstance(scorer, dict):
-                test_scores = {name: error_score for name in scorer}
-                if return_train_score:
-                    train_scores = test_scores.copy()
-            else:
-                test_scores = error_score
-                if return_train_score:
-                    train_scores = error_score
-            warnings.warn("Estimator fit failed. The score on this train-test"
-                          " partition for these parameters will be set to %f. "
-                          "Details: \n%s" %
-                          (error_score, format_exc()),
-                          Exception)
-        result["fit_failed"] = True
-    else:
-        result["fit_failed"] = False
-
-        fit_time = time.time() - start_time
-        test_scores = _score(estimator, X_test, y_test, scorer, error_score)
-        score_time = time.time() - start_time - fit_time
-        if return_train_score:
-            train_scores = _score(
-                estimator, X_train, y_train, scorer, error_score
-            )
-
-    if verbose > 1:
-        total_time = score_time + fit_time
-        end_msg = f"[CV{progress_msg}] END "
-        result_msg = params_msg + (";" if params_msg else "")
-        if verbose > 2:
-            if isinstance(test_scores, dict):
-                for scorer_name in sorted(test_scores):
-                    result_msg += f" {scorer_name}: ("
-                    if return_train_score:
-                        scorer_scores = train_scores[scorer_name]
-                        result_msg += f"train={scorer_scores:.3f}, "
-                    result_msg += f"test={test_scores[scorer_name]:.3f})"
-            else:
-                result_msg += ", score="
-                if return_train_score:
-                    result_msg += (f"(train={train_scores:.3f}, "
-                                   f"test={test_scores:.3f})")
-                else:
-                    result_msg += f"{test_scores:.3f}"
-        result_msg += f" total time={logger.short_format_time(total_time)}"
-
-        # Right align the result_msg
-        end_msg += "." * (80 - len(end_msg) - len(result_msg))
-        end_msg += result_msg
-        print(end_msg)
-
-    result["test_scores"] = test_scores
-    if return_train_score:
-        result["train_scores"] = train_scores
-    if return_n_test_samples:
-        result["n_test_samples"] = _num_samples(X_test)
-    if return_times:
-        result["fit_time"] = fit_time
-        result["score_time"] = score_time
-    if return_parameters:
-        result["parameters"] = parameters
-    if return_estimator:
-        result["estimator"] = estimator
+    result = _fit_and_score(estimator, X, y, scorer, train, test, verbose, parameters,
+                            fit_params_modified,
+                            return_train_score=return_train_score,
+                            return_parameters=return_parameters, return_n_test_samples=return_n_test_samples,
+                            return_times=return_times, return_estimator=return_estimator,
+                            split_progress=split_progress, candidate_progress=candidate_progress,
+                            error_score=error_score)
     return result
 
 def _make_transformer(eval_set_selection, estimator):
@@ -205,7 +85,7 @@ def cross_validate_eval_set(eval_set_selection,
 
     Parameters
     ----------
-    eval_set_selection : {'all', 'train', 'test', 'original', 'original_transfferred'}
+    eval_set_selection : {'all', 'train', 'test', 'original', 'original_transformed'}
         Select data passed to `eval_set` in `fit_params`. Available only if "estimator" is LightGBM or XGBoost.
             
         If "all", use all data in `X` and `y`.
@@ -216,7 +96,7 @@ def cross_validate_eval_set(eval_set_selection,
 
         If "original", use raw `eval_set`.
 
-        If "original_transfferred", use `eval_set` transferred by fit_transform() of pipeline if `estimater` is pipeline.
+        If "original_transformed", use `eval_set` transformed by fit_transform() of pipeline if `estimater` is pipeline.
 
     estimator : estimator object implementing 'fit'
         The object to use to fit the data.

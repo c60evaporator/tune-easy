@@ -109,10 +109,10 @@ class LGBMRegressorTuning(ParamTuning):
                     self.eval_set_selection = 'train'
                 if self.eval_set_selection not in ['all', 'train', 'test']:  # eval_data_sourceの指定が間違っていたらエラーを出す
                     raise ValueError('The `eval_set_selection` argument should be "all", "train", or "test" when `eval_set` is not in `fit_params`')
-            # src_fit_paramsにeval_setが存在するとき、eval_data_source未指定ならばeval_data_source='original_transferred'とする
+            # src_fit_paramsにeval_setが存在するとき、eval_data_source未指定ならばeval_data_source='original_transformed'とする
             else:
                 if self.eval_set_selection is None:
-                    self.eval_set_selection = 'original_transferred'
+                    self.eval_set_selection = 'original_transformed'
 
         return src_fit_params
 
@@ -264,10 +264,10 @@ class LGBMClassifierTuning(ParamTuning):
                     self.eval_set_selection = 'train'
                 if self.eval_set_selection not in ['all', 'train', 'test']:  # eval_data_sourceの指定が間違っていたらエラーを出す
                     raise ValueError('The `eval_set_selection` argument should be "all", "train", or "test" when `eval_set` is not in `fit_params`')
-            # src_fit_paramsにeval_setが存在するとき、eval_data_source未指定ならばeval_data_source='original_transferred'とする
+            # src_fit_paramsにeval_setが存在するとき、eval_data_source未指定ならばeval_data_source='original_transformed'とする
             else:
                 if self.eval_set_selection is None:
-                    self.eval_set_selection = 'original_transferred'
+                    self.eval_set_selection = 'original_transformed'
 
             # 2クラス分類のときeval_metricはbinary_logloss or binary_errorを、多クラス分類のときmulti_logloss or multi_errorを入力
             unique_labels = np.unique(self.y)
