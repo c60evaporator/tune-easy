@@ -18,6 +18,7 @@ from mlflow.models.signature import infer_signature
 import os
 
 from ._util_methods import round_digits
+from ._cv_eval_set import validation_curve_eval_set, learning_curve_eval_set, GridSearchCVEvalSet, RandomizedSearchCVEvalSet
 
 class ParamTuning():
     """
@@ -355,17 +356,18 @@ class ParamTuning():
         # n_jobs=-1にするとCPU100%で全コア並列計算。とても速い。
         if 'n_jobs' not in grid_kws.keys():
             grid_kws['n_jobs'] = None
-        gridcv = GridSearchCV(estimator, tuning_params, cv=cv,
-                              scoring=scoring, **grid_kws)
+        gridcv = GridSearchCVEvalSet(estimator, tuning_params, cv=cv,
+                                     scoring=scoring, **grid_kws)
 
         # ここまでに掛かった前処理時間を測定
         self._preprocess_time = time.time() - start
         # グリッドサーチ実行（学習実行）
-        gridcv.fit(self.X,
-               self.y,
-               groups=self.cv_group,
-               **fit_params
-               )
+        gridcv.fit(self.eval_set_selection,
+                   self.X,
+                   self.y,
+                   groups=self.cv_group,
+                   **fit_params
+                   )
         self.elapsed_time = time.time() - start
         self.tuning_algo = 'grid'
         
@@ -488,17 +490,18 @@ class ParamTuning():
             rand_kws['n_jobs'] = None
         if 'random_state' not in rand_kws.keys():
             rand_kws['random_state'] = seed
-        randcv = RandomizedSearchCV(estimator, tuning_params, cv=cv, scoring=scoring,
-                                    n_iter=n_iter, **rand_kws)
+        randcv = RandomizedSearchCVEvalSet(estimator, tuning_params, cv=cv, scoring=scoring,
+                                           n_iter=n_iter, **rand_kws)
         
         # ここまでに掛かった前処理時間を測定
         self._preprocess_time = time.time() - start
         # ランダムサーチ実行
-        randcv.fit(self.X,
-               self.y,
-               groups=self.cv_group,
-               **fit_params
-               )
+        randcv.fit(self.eval_set_selection,
+                   self.X,
+                   self.y,
+                   groups=self.cv_group,
+                   **fit_params
+                   )
         self.elapsed_time = time.time() - start
         self.tuning_algo = 'random'
         
@@ -1102,14 +1105,15 @@ class ParamTuning():
         validation_curve_result = {}
         for i, (k, v) in enumerate(validation_curve_params.items()):
             print(f'{i+1}/{len(validation_curve_params)}. Calculating validation curve of "{k}". Parameter range = {v}')
-            train_scores, valid_scores = validation_curve(estimator=estimator,
-                                                          X=self.X, y=self.y,
-                                                          param_name=k,
-                                                          param_range=v,
-                                                          fit_params=fit_params,
-                                                          groups=self.cv_group,
-                                                          cv=cv, scoring=scoring,
-                                                          n_jobs=None)
+            train_scores, valid_scores = validation_curve_eval_set(eval_set_selection=self.eval_set_selection,
+                                                                   estimator=estimator,
+                                                                   X=self.X, y=self.y,
+                                                                   param_name=k,
+                                                                   param_range=v,
+                                                                   fit_params=fit_params,
+                                                                   groups=self.cv_group,
+                                                                   cv=cv, scoring=scoring,
+                                                                   n_jobs=None)
             # 結果をDictに格納
             validation_curve_result[k] = {'param_values': v,
                                         'train_scores': train_scores,
@@ -1331,12 +1335,13 @@ class ParamTuning():
         estimator.set_params(**params)
 
         # 学習曲線の取得
-        train_sizes, train_scores, valid_scores = learning_curve(estimator=estimator,
-                                                                 X=self.X, y=self.y,
-                                                                 train_sizes=np.linspace(0.1, 1.0, 10),
-                                                                 fit_params=fit_params,
-                                                                 groups=self.cv_group,
-                                                                 cv=cv, scoring=scoring, n_jobs=None)
+        train_sizes, train_scores, valid_scores = learning_curve_eval_set(self.eval_set_selection,
+                                                            estimator=estimator,
+                                                            X=self.X, y=self.y,
+                                                            train_sizes=np.linspace(0.1, 1.0, 10),
+                                                            fit_params=fit_params,
+                                                            groups=self.cv_group,
+                                                            cv=cv, scoring=scoring, n_jobs=None)
         
         # 描画用axがNoneのとき、matplotlib.pyplotを使用
         if ax is None:

@@ -341,7 +341,6 @@ class LGBMClassifierTuning(ParamTuning):
             乱数シード
         scoring : str
             最適化で最大化する評価指標
-        
         """
         # 2クラス分類のときobjectiveはbinaryを、多クラス分類のときmulticlassを入力
         unique_labels = np.unique(self.y)
