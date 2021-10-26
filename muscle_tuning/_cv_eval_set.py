@@ -520,7 +520,8 @@ def validation_curve_eval_set(eval_set_selection,
         eval_set_selection, transformer,
         clone(estimator), X, y, scorer, train, test, verbose,
         parameters={param_name: v}, fit_params=fit_params,
-        return_train_score=True, error_score=error_score)
+        return_train_score=True, error_score=error_score,
+        print_message=f'Caluculating score. {param_name}={v}')
 
         # NOTE do not change order of iteration to allow one time cv splitters
         for train, test in cv.split(X, y, groups) for v in param_range)
