@@ -1,4 +1,8 @@
 # muscle-tuning
+[![python](https://img.shields.io/pypi/pyversions/muscle-tuning)](https://www.python.org/)
+[![pypi](https://img.shields.io/pypi/v/muscle-tuning?color=blue)](https://pypi.org/project/muscle-tuning/)
+[![license](https://img.shields.io/pypi/l/muscle-tuning?color=blue)](https://github.com/c60evaporator/muscle-tuning/blob/master/LICENSE)
+
 **A hyperparameter tuning tool, easy to use even if your brain is made of muscle**
 
 This documentation is Japanese language version.
