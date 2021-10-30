@@ -107,8 +107,8 @@ class XGBRegressorTuning(ParamTuning):
             if 'eval_set' not in src_fit_params:
                 print('There is no "eval_set" in fit_params, so "eval_set" is set to (self.X, self.y)')
                 src_fit_params['eval_set'] = [(self.X, self.y)]
-                if self.eval_set_selection is None:  # eval_data_source未指定時、eval_setが入力されていなければeval_data_source='train'とする
-                    self.eval_set_selection = 'train'
+                if self.eval_set_selection is None:  # eval_data_source未指定時、eval_setが入力されていなければeval_data_source='test'とする
+                    self.eval_set_selection = 'test'
                 if self.eval_set_selection not in ['all', 'train', 'test']:  # eval_data_sourceの指定が間違っていたらエラーを出す
                     raise ValueError('The `eval_set_selection` argument should be "all", "train", or "test" when `eval_set` is not in `fit_params`')
             # src_fit_paramsにeval_setが存在するとき、eval_data_source未指定ならばeval_data_source='original_transformed'とする
@@ -279,8 +279,8 @@ class XGBClassifierTuning(ParamTuning):
             if 'eval_set' not in src_fit_params:
                 print('There is no "eval_set" in fit_params, so "eval_set" is set to (self.X, self.y)')
                 src_fit_params['eval_set'] = [(self.X, self.y)]
-                if self.eval_set_selection is None:  # eval_data_source未指定時、eval_setが入力されていなければeval_data_source='train'とする
-                    self.eval_set_selection = 'train'
+                if self.eval_set_selection is None:  # eval_data_source未指定時、eval_setが入力されていなければeval_data_source='test'とする
+                    self.eval_set_selection = 'test'
                 if self.eval_set_selection not in ['all', 'train', 'test']:  # eval_data_sourceの指定が間違っていたらエラーを出す
                     raise ValueError('The `eval_set_selection` argument should be "all", "train", or "test" when `eval_set` is not in `fit_params`')
             # src_fit_paramsにeval_setが存在するとき、eval_data_source未指定ならばeval_data_source='original_transformed'とする
