@@ -3,7 +3,7 @@ import numpy as np
 from lightgbm import LGBMRegressor, LGBMClassifier
 
 from .param_tuning import ParamTuning
-from ._cv_eval_set import cross_val_score_eval_set
+from ._cv_eval_set import cross_val_score_eval_set, init_eval_set
 
 class LGBMRegressorTuning(ParamTuning):
     """
@@ -99,22 +99,11 @@ class LGBMRegressorTuning(ParamTuning):
             処理前の学習時パラメータ
         """
 
-        # src_fit_paramsにeval_metricが設定されているときのみ以下の処理を実施
-        if 'eval_metric' in src_fit_params and src_fit_params['eval_metric'] is not None:
-            # src_fit_paramsにeval_setが存在しないとき、入力データをそのまま追加
-            if 'eval_set' not in src_fit_params:
-                print('There is no "eval_set" in fit_params, so "eval_set" is set to (self.X, self.y)')
-                src_fit_params['eval_set'] = [(self.X, self.y)]
-                if self.eval_set_selection is None:  # eval_data_source未指定時、eval_setが入力されていなければeval_data_source='test'とする
-                    self.eval_set_selection = 'test'
-                if self.eval_set_selection not in ['all', 'train', 'test']:  # eval_data_sourceの指定が間違っていたらエラーを出す
-                    raise ValueError('The `eval_set_selection` argument should be "all", "train", or "test" when `eval_set` is not in `fit_params`')
-            # src_fit_paramsにeval_setが存在するとき、eval_data_source未指定ならばeval_data_source='original_transformed'とする
-            else:
-                if self.eval_set_selection is None:
-                    self.eval_set_selection = 'original_transformed'
+        # fit_paramsにeval_metricが入力されており、eval_setが入力されていないときの処理
+        fit_params, self.eval_set_selection = init_eval_set(
+                self.eval_set_selection, src_fit_params, self.X, self.y)
 
-        return src_fit_params
+        return fit_params
 
     def _bayes_evaluate(self, **kwargs):
         """
@@ -254,33 +243,24 @@ class LGBMClassifierTuning(ParamTuning):
             処理前の学習時パラメータ
         """
 
-        # src_fit_paramsにeval_metricが設定されているときのみ以下の処理を実施
-        if 'eval_metric' in src_fit_params and src_fit_params['eval_metric'] is not None:
-            # src_fit_paramsにeval_setが存在しないとき、入力データをそのまま追加
-            if 'eval_set' not in src_fit_params:
-                print('There is no "eval_set" in fit_params, so "eval_set" is set to (self.X, self.y)')
-                src_fit_params['eval_set'] = [(self.X, self.y)]
-                if self.eval_set_selection is None:  # eval_data_source未指定時、eval_setが入力されていなければeval_data_source='test'とする
-                    self.eval_set_selection = 'test'
-                if self.eval_set_selection not in ['all', 'train', 'test']:  # eval_data_sourceの指定が間違っていたらエラーを出す
-                    raise ValueError('The `eval_set_selection` argument should be "all", "train", or "test" when `eval_set` is not in `fit_params`')
-            # src_fit_paramsにeval_setが存在するとき、eval_data_source未指定ならばeval_data_source='original_transformed'とする
-            else:
-                if self.eval_set_selection is None:
-                    self.eval_set_selection = 'original_transformed'
+        # fit_paramsにeval_metricが入力されており、eval_setが入力されていないときの処理
+        fit_params, self.eval_set_selection = init_eval_set(
+                self.eval_set_selection, src_fit_params, self.X, self.y)
 
+        # fit_paramsにeval_metricが設定されているときのみ以下の処理を実施
+        if 'eval_metric' in fit_params and fit_params['eval_metric'] is not None:
             # 2クラス分類のときeval_metricはbinary_logloss or binary_errorを、多クラス分類のときmulti_logloss or multi_errorを入力
             unique_labels = np.unique(self.y)
             if len(unique_labels) == 2:
-                if src_fit_params['eval_metric'] in ['multi_logloss', 'multi_error']:
+                if fit_params['eval_metric'] in ['multi_logloss', 'multi_error']:
                     print('Labels are binary, but "eval_metric" is multiple, so "eval_metric" is set to "binary_logloss"')
-                    src_fit_params['eval_metric'] = 'binary_logloss'
+                    fit_params['eval_metric'] = 'binary_logloss'
             else:
-                if src_fit_params['eval_metric'] in ['binary_logloss', 'binary_error']:
+                if fit_params['eval_metric'] in ['binary_logloss', 'binary_error']:
                     print('Labels are multiple, but "eval_metric" is binary, so "eval_metric" is set to "multi_logloss"')
-                    src_fit_params['eval_metric'] = 'multi_logloss'
+                    fit_params['eval_metric'] = 'multi_logloss'
 
-        return src_fit_params
+        return fit_params
 
     def _bayes_evaluate(self, **kwargs):
         """

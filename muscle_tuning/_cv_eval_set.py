@@ -15,6 +15,38 @@ from sklearn.metrics._scorer import _check_multimetric_scoring
 from sklearn.base import is_classifier
 from sklearn.utils.fixes import delayed
 
+def init_eval_set(src_eval_set_selection, src_fit_params, X, y):
+        """
+        fit_paramsにeval_metricが入力されており、eval_setが入力されていないときの処理
+        
+        Parameters
+        ----------
+        src_eval_set_selection : {'all', 'test', 'train', 'original', 'original_transformed'}, optional
+            eval_setに渡すデータの決め方 ('all': X, 'test': X[test], 'train': X[train], 'original': 入力そのまま, 'original_transformed': 入力そのまま＆パイプラインの時は最終学習器以外の変換実行)
+
+        src_fit_params : Dict
+            処理前の学習時パラメータ
+        """
+
+        fit_params = copy.deepcopy(src_fit_params)
+        eval_set_selection = src_eval_set_selection
+        # fit_paramsにeval_metricが設定されているときのみ以下の処理を実施
+        if 'eval_metric' in src_fit_params and src_fit_params['eval_metric'] is not None:
+            # fit_paramsにeval_setが存在しないとき、入力データをそのまま追加
+            if 'eval_set' not in src_fit_params:
+                print('There is no "eval_set" in fit_params, so "eval_set" is set to (self.X, self.y)')
+                fit_params['eval_set'] = [(X, y)]
+                if src_eval_set_selection is None:  # eval_set_selection未指定時、eval_setが入力されていなければeval_set_selection='test'とする
+                    eval_set_selection = 'test'
+                if src_eval_set_selection not in ['all', 'train', 'test']:  # eval_set_selectionの指定が間違っていたらエラーを出す
+                    raise ValueError('The `eval_set_selection` argument should be "all", "train", or "test" when `eval_set` is not in `fit_params`')
+            # src_fit_paramsにeval_setが存在するとき、eval_set_selection未指定ならばeval_set_selection='original_transformed'とする
+            else:
+                if src_eval_set_selection is None:
+                    eval_set_selection = 'original_transformed'
+
+        return fit_params, eval_set_selection
+
 def _transform_except_last_estimator(transformer, X_src, X_train):
     """パイプラインのとき、最終学習器以外のtransformを適用"""
     if transformer is not None:
