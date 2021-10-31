@@ -38,7 +38,7 @@ def init_eval_set(src_eval_set_selection, src_fit_params, X, y):
                 fit_params['eval_set'] = [(X, y)]
                 if src_eval_set_selection is None:  # eval_set_selection未指定時、eval_setが入力されていなければeval_set_selection='test'とする
                     eval_set_selection = 'test'
-                if src_eval_set_selection not in ['all', 'train', 'test']:  # eval_set_selectionの指定が間違っていたらエラーを出す
+                if eval_set_selection not in ['all', 'train', 'test']:  # eval_set_selectionの指定が間違っていたらエラーを出す
                     raise ValueError('The `eval_set_selection` argument should be "all", "train", or "test" when `eval_set` is not in `fit_params`')
             # src_fit_paramsにeval_setが存在するとき、eval_set_selection未指定ならばeval_set_selection='original_transformed'とする
             else:
