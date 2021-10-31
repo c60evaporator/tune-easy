@@ -28,9 +28,9 @@ def _eval_set_selection(eval_set_selection, transformer,
                         fit_params, train, test):
     """eval_setの中から学習データ or テストデータのみを抽出"""
     fit_params_modified = copy.deepcopy(fit_params)
-    # eval_setが存在しなければ、そのままfit_paramsを返す
+    # eval_setが存在しない or Noneなら、そのままfit_paramsを返す
     eval_sets = [v for v in fit_params.keys() if 'eval_set' in v]
-    if len(eval_sets) == 0:
+    if len(eval_sets) == 0 or fit_params[eval_sets[0]] is None:
         return fit_params_modified
     eval_set_name = eval_sets[0]  # eval_setの列名(pipelineでは列名が変わるため)
     # 元のeval_setからX, yを取得
