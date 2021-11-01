@@ -245,8 +245,9 @@ print(selector.get_support())
 LightGBM回帰のチューニング用クラス初期化
 ```python
 from param_tuning import LGBMRegressorTuning
-tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)
+tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY, eval_set_selection='all')
 ```
+※eval_set_selection引数に関しては[こちらのリンク]()参照
 
 ### 1. 評価指標の選択
 [こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#21-%E8%A9%95%E4%BE%A1%E6%8C%87%E6%A8%99%E3%81%AE%E5%AE%9A%E7%BE%A9)チューニングの評価指標を選択します。
@@ -518,7 +519,8 @@ best_estimator = LGBMRegressor(**params_after)
 scores = cross_val_score(best_estimator, X, y,
                          scoring=tuning.scoring,
                          cv=tuning.cv,
-                         fit_params=tuning.fit_params
+                         fit_params=tuning.fit_params,
+                         eval_set_selection=tuning.eval_set_selection
                          )
 print(np.mean(scores))
 ```
@@ -537,7 +539,8 @@ regplot.regression_pred_true(lgbmr,
                              data=df_boston,
                              scores='mse',
                              cv=tuning.cv,
-                             fit_params=tuning.fit_params
+                             fit_params=tuning.fit_params,
+                             eval_set_selection=tuning.eval_set_selection
                              )
 ```
 ![image](https://user-images.githubusercontent.com/59557625/130488697-ab6f83f9-3895-4ec6-a761-770f5396bd0e.png)
