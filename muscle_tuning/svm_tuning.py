@@ -18,8 +18,8 @@ class SVMRegressorTuning(ParamTuning):
     ESTIMATOR = Pipeline([("scaler", StandardScaler()), ("svr", SVR())])
     # 学習時のパラメータのデフォルト値
     FIT_PARAMS = {}
-    # 最適化で最大化するデフォルト評価指標('r2', 'neg_mean_squared_error', 'neg_mean_squared_log_error')
-    SCORING = 'neg_mean_squared_error'
+    # 最適化で最大化するデフォルト評価指標('r2', 'neg_mean_squared_error', 'neg_root_mean_squared_error', etc.)
+    SCORING = 'neg_root_mean_squared_error'
 
     # 最適化対象外パラメータ
     NOT_OPT_PARAMS = {'kernel': 'rbf'  # カーネルの種類 (基本は'rbf')
