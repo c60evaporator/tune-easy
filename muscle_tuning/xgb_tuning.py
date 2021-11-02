@@ -174,7 +174,7 @@ class XGBClassifierTuning(ParamTuning):
     SCORING = 'neg_log_loss'
 
     # 最適化対象外パラメータ
-    NOT_OPT_PARAMS = {'objective': 'binary:logistic',  # 最小化させるべき損失関数
+    NOT_OPT_PARAMS = {'objective': None,  # 最小化させるべき損失関数
                       'random_state': SEED,  # 乱数シード
                       'booster': 'gbtree',  # ブースター
                       'n_estimators': 10000,  # 最大学習サイクル数（評価指標がearly_stopping_rounds連続で改善しなければ打ち切り）
@@ -303,11 +303,11 @@ class XGBClassifierTuning(ParamTuning):
         # 2クラス分類のときobjectiveはloglossを、多クラス分類のときmloglossを入力
         unique_labels = np.unique(self.y)
         if len(unique_labels) == 2:
-            if src_not_opt_params['objective'] in ['multi:softmax', 'multi:softprob']:
+            if 'objective' in src_not_opt_params and src_not_opt_params['objective'] in ['multi:softmax', 'multi:softprob']:
                 print('Labels are binary, but "objective" is multiple, so "objective" is set to "binary:logistic"')
                 src_not_opt_params['objective'] = 'binary:logistic'
         else:
-            if src_not_opt_params['objective'] in ['binary:logistic']:
+            if 'objective' in src_not_opt_params and src_not_opt_params['objective'] in ['binary:logistic']:
                 print('Labels are multiple, but "objective" is binary, so "objective" is set to "multi:softmax"')
                 src_not_opt_params['objective'] = 'multi:softmax'
 

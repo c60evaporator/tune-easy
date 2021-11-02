@@ -172,7 +172,7 @@ class LGBMClassifierTuning(ParamTuning):
     SCORING = 'neg_log_loss'
 
     # 最適化対象外パラメータ
-    NOT_OPT_PARAMS = {'objective': 'binary',  # 最小化させるべき損失関数
+    NOT_OPT_PARAMS = {'objective': None,  # 最小化させるべき損失関数
                       'random_state': SEED,  # 乱数シード
                       'boosting_type': 'gbdt',  # boosting_type
                       'n_estimators': 10000  # 最大学習サイクル数（評価指標がearly_stopping_rounds連続で改善しなければ打ち切り）
@@ -325,11 +325,11 @@ class LGBMClassifierTuning(ParamTuning):
         # 2クラス分類のときobjectiveはbinaryを、多クラス分類のときmulticlassを入力
         unique_labels = np.unique(self.y)
         if len(unique_labels) == 2:
-            if src_not_opt_params['objective'] in ['multiclass', 'softmax', 'multiclassova', 'multiclass_ova', 'ova', 'ovr']:
+            if 'objective' in src_not_opt_params and src_not_opt_params['objective'] in ['multiclass', 'softmax', 'multiclassova', 'multiclass_ova', 'ova', 'ovr']:
                 print('Labels are binary, but "objective" is multiple, so "objective" is set to "binary"')
                 src_not_opt_params['objective'] = 'binary'
         else:
-            if src_not_opt_params['objective'] in ['binary']:
+            if 'objective' in src_not_opt_params and src_not_opt_params['objective'] in ['binary']:
                 print('Labels are multiple, but "objective" is binary, so "objective" is set to "multiclass"')
                 src_not_opt_params['objective'] = 'multiclass'
 
