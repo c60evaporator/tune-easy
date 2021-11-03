@@ -366,11 +366,11 @@ class ParamTuning():
         if tuning_params is None:
             tuning_params = self.CV_PARAMS_GRID
         if cv is None:
-            cv = self.CV_NUM
+            cv = self._CV_NUM
         if seed is None:
-            seed = self.SEED
+            seed = self._SEED
         if scoring is None:
-            scoring = self.SCORING
+            scoring = self._SCORING
         if not_opt_params is None:
             not_opt_params = self.NOT_OPT_PARAMS
         if param_scales is None:
@@ -554,11 +554,11 @@ class ParamTuning():
         if tuning_params is None:
             tuning_params = self.CV_PARAMS_RANDOM
         if cv is None:
-            cv = self.CV_NUM
+            cv = self._CV_NUM
         if seed is None:
-            seed = self.SEED
+            seed = self._SEED
         if scoring is None:
-            scoring = self.SCORING
+            scoring = self._SCORING
         if n_iter is None:
             n_iter = self.N_ITER_RANDOM
         if not_opt_params is None:
@@ -795,17 +795,17 @@ class ParamTuning():
         if tuning_params is None:
             tuning_params = self.BAYES_PARAMS
         if cv is None:
-            cv = self.CV_NUM
+            cv = self._CV_NUM
         if seed is None:
-            seed = self.SEED
+            seed = self._SEED
         if scoring is None:
-            scoring = self.SCORING
+            scoring = self._SCORING
         if n_iter is None:
             n_iter = self.N_ITER_BAYES
         if init_points is None:
             init_points = self.INIT_POINTS
         if acq is None:
-            acq = self.ACQ
+            acq = self._ACQ
         if not_opt_params is None:
             not_opt_params = self.NOT_OPT_PARAMS
         if int_params is None:
@@ -1047,11 +1047,11 @@ class ParamTuning():
         if tuning_params is None:
             tuning_params = self.BAYES_PARAMS
         if cv is None:
-            cv = self.CV_NUM
+            cv = self._CV_NUM
         if seed is None:
-            seed = self.SEED
+            seed = self._SEED
         if scoring is None:
-            scoring = self.SCORING
+            scoring = self._SCORING
         if n_trials is None:
             n_trials = self.N_ITER_OPTUNA
         if study_kws is None:
@@ -1309,11 +1309,11 @@ class ParamTuning():
         if validation_curve_params is None:
             validation_curve_params = self.VALIDATION_CURVE_PARAMS
         if cv is None:
-            cv = self.CV_NUM
+            cv = self._CV_NUM
         if seed is None:
-            seed = self.SEED
+            seed = self._SEED
         if scoring is None:
-            scoring = self.SCORING
+            scoring = self._SCORING
         if not_opt_params is None:  # stable_paramsでself.NOT_OPT_PARAMSおよびself.not_opt_paramsが更新されないようDeepCopy
             not_opt_params_valid = copy.deepcopy(self.NOT_OPT_PARAMS)
         else:
@@ -1620,11 +1620,11 @@ class ParamTuning():
         if params is None:
             params = {}
         if cv is None:
-            cv = self.CV_NUM
+            cv = self._CV_NUM
         if seed is None:
-            seed = self.SEED
+            seed = self._SEED
         if scoring is None:
-            scoring = self.SCORING
+            scoring = self._SCORING
         if fit_params is None:
             fit_params = self.FIT_PARAMS
         
