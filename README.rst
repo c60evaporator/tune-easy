@@ -6,7 +6,7 @@ A hyperparameter tuning tool with gorgeous UI for scikit-learn API
 ============
 Requirements
 ============
-param-tuning-utility 0.1.7 requires
+param-tuning-utility 0.1.8 requires
 
 * Python >=3.6
 * Scikit-learn >=0.24.2
