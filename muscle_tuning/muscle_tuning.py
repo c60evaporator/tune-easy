@@ -31,11 +31,8 @@ class MuscleTuning():
                     'regression': ['rmse', 'mae', 'mape', 'r2']  # RMSLEはpredicted_valueあるいはtrue_valueが負値のときにエラーが出るので注意
                     }
     LEARNING_ALGOS = {'regression': ['linear_regression', 'elasticnet', 'svr', 'randomforest', 'lightgbm'],
-                      #'regression': ['svr', 'xgboost'],
                       'binary': ['svm', 'logistic', 'randomforest', 'lightgbm'],
-                      #'binary': ['svm', 'xgboost'],
                       'multiclass': ['svm', 'logistic', 'randomforest', 'lightgbm']
-                      #'multiclass': ['svm', 'xgboost']
                       }
     N_TRIALS = {'regression': {'svr': 500,
                                'elasticnet': 500,
@@ -631,24 +628,28 @@ class MuscleTuning():
         Parameters
         ----------
         x : list[str], or numpy.ndarray
-            Explanatory variables. Should be list[str] if ``data`` is pd.DataFrame. Should be numpy.ndarray if ``data`` is None.
+            Explanatory variables. Should be list[str] if ``data`` is pd.DataFrame.
+            Should be numpy.ndarray if ``data`` is None.
         
         y : str or numpy.ndarray
-            Objective variable. Should be str if ``data`` is pd.DataFrame. Should be numpy.ndarray if ``data`` is None.
+            Objective variable. Should be str if ``data`` is pd.DataFrame.
+            Should be numpy.ndarray if ``data`` is None.
         
-        data : pd.DataFrame, optional
+        data : pd.DataFrame, default=None
             Input data structure.
         
-        x_colnames : list[str]
+        x_colnames : list[str], default=None
             Names of explanatory variables. Available only if data is NOT pd.DataFrame.
         
-        cv_group : str or numpy.ndarray
-            Grouping variable that will be used for GroupKFold or LeaveOneGroupOut. Should be str if ``data`` is pd.DataFrame.
+        cv_group : str or numpy.ndarray, default=None
+            Grouping variable that will be used for GroupKFold or LeaveOneGroupOut.
+            Should be str if ``data`` is pd.DataFrame.
         
-        objective : {'classification', 'regression'}
-            Specify the learning task. If None, select task by objective variable automatically.
+        objective : {'classification', 'regression'}, default=None
+            Specify the learning task.
+            If None, select task by objective variable automatically.
         
-        scoring : str, optional
+        scoring : str, default=None
             Score name used to parameter tuning.
 
             In regression, use 'rmse', 'mse', 'mae', 'rmsle', 'mape', or 'r2'.
@@ -656,41 +657,66 @@ class MuscleTuning():
             In binary classification, use 'logloss', 'accuracy', 'precision', 'recall', 'f1', 'pr_auc', 'auc'.
             
             In multiclass classification, use 'logloss', 'accuracy', 'precision_macro', 'recall_macro', 'f1_micro', 'f1_macro', 'f1_weighted', 'auc_ovr', 'auc_ovo', 'auc_ovr_weighted', 'auc_ovo_weighted'.
+
+            If None, the `SCORING` constant is used.
+            See 
         
-        other_scores : list[str], optional
+        other_scores : list[str], default=None
             Score names calculated after tuning. Input strings are the same as that of `scoring` argument.
             
             Note that "rmsle" score may causes an error if predicted values or true values include negative value.
+
+            If None, the `OTHER_SCORES` constant is used.
+            See
         
-        learning_algos : list[str], optional
+        learning_algos : list[str], default=None
             Estimator algorithm. 'svm': Support vector machine, 'svr': Support vector regression, 'logistic': Logistic Regression, 'elasiticnet': ElasticNet, 'randomforest': RandomForest, 'lightgbm': LightGBM, 'xgboost': XGBoost.
             
             In regression, use 'linear_regression', 'elasticnet', 'svr', 'randomforest', 'lightgbm', or 'xgboost'.
             
             In classification, use 'svm', 'logistic', 'randomforest', 'lightgbm', or 'xgboost'.
+
+            If None, the `LEARNING_ALGOS` constant is used.
+            See
         
-        n_trials : dict[str, int], optional
-            Iteration number of parameter tuning. Keys should be members of ``algo`` argument. Values should be iteration numbers.
+        n_trials : dict[str, int], default=None
+            Iteration number of parameter tuning. Keys should be members of ``algo`` argument.
+            Values should be iteration numbers.
+
+            If None, the `N_TRIALS` constant is used.
+            See
         
-        cv : int, cross-validation generator, or an iterable, optional
+        cv : int, cross-validation generator, or an iterable, default=5
             Determines the cross-validation splitting strategy. If None, to use the default 5-fold cross validation. If int, to specify the number of folds in a KFold.
         
-        tuning_algo : {'grid', 'random', 'bo', 'optuna'}, optional
+        tuning_algo : {'grid', 'random', 'bo', 'optuna'}, default='optuna'
             Tuning algorithm using following libraries. 'grid': sklearn.model_selection.GridSearchCV, 'random': sklearn.model_selection.RandomizedSearchCV, 'bo': BayesianOptimization, 'optuna': Optuna.
         
-        seed : int, optional
+        seed : int, default=42
             Seed for random number generator of cross validation, estimators, and optuna.sampler.
         
-        estimators : dict[str, estimator object implementing 'fit'], optional
-            Classification or regression estimators used to tuning. Keys should be members of ``algo`` argument. Values are assumed to implement the scikit-learn estimator interface.
-        
-        tuning_params : dict[str, dict[str, {list, tuple}]], optional
-            Values should be dictionary with parameters names as keys and lists of parameter settings or parameter range to try as values. Keys should be members of ``algo`` argument. If None, use default values of tuning instances
-        
-        tuning_kws : dict[str, dict]
-            Additional parameters passed to tuning instances. Keys should be members of ``algo`` argument. Values should be dict of parameters passed to tuning instances, e.g. {'not_opt_params': {''kernel': 'rbf'}}.
+        estimators : dict[str, estimator object implementing 'fit'], default=None
+            Classification or regression estimators used to tuning.
+            Keys should be members of ``algo`` argument.
+            Values are assumed to implement the scikit-learn estimator interface.
 
-            See API Reference of tuning instances.
+            If None, use default estimators of tuning instances
+            See 
+        
+        tuning_params : dict[str, dict[str, {list, tuple}]], default=None
+            Values should be dictionary with parameters names as keys and 
+            lists of parameter settings or parameter range to try as values. 
+            Keys should be members of ``algo`` argument. 
+
+            If None, use default values of tuning instances
+            See 
+        
+        tuning_kws : dict[str, dict], default=None
+            Additional parameters passed to tuning instances.
+            Keys should be members of ``algo`` argument.
+            Values should be dict of parameters passed to tuning instances, e.g. {'not_opt_params': {''kernel': 'rbf'}}.
+
+            See API Reference of tuning instances. 
 
         Returns
         ----------

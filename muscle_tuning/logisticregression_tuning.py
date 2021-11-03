@@ -8,20 +8,21 @@ from .param_tuning import ParamTuning
 
 class LogisticRegressionTuning(ParamTuning):
     """
-    サポートベクター分類チューニング用クラス
+    Tuning class for LogisticRegression
+
+    See ``muscle_tuning.param_tuning.ParamTuning`` to see API Reference of all methods
     """
 
     # 共通定数
-    SEED = 42  # デフォルト乱数シード
-    SEEDS = [42, 43, 44, 45, 46, 47, 48, 49, 50, 51]  # デフォルト複数乱数シード
-    CV_NUM = 5  # 最適化時のクロスバリデーションのデフォルト分割数
+    _SEED = 42  # デフォルト乱数シード
+    _CV_NUM = 5  # 最適化時のクロスバリデーションのデフォルト分割数
     
     # 学習器のインスタンス (標準化+ロジスティック回帰のパイプライン)
     ESTIMATOR = Pipeline([("scaler", StandardScaler()), ("logr", LogisticRegression())])
     # 学習時のパラメータのデフォルト値
     FIT_PARAMS = {}
     # 最適化で最大化するデフォルト評価指標('neg_log_loss', 'roc_auc', 'roc_auc_ovr'など)
-    SCORING = 'neg_log_loss'
+    _SCORING = 'neg_log_loss'
 
     # 最適化対象外パラメータ
     NOT_OPT_PARAMS = {'penalty': 'l2',  # 正則化のペナルティ ('l1', 'l2', 'elasticnet')
@@ -40,7 +41,7 @@ class LogisticRegressionTuning(ParamTuning):
     # ベイズ最適化用パラメータ
     N_ITER_BAYES = 20  # BayesianOptimizationの試行数
     INIT_POINTS = 5  # BayesianOptimizationの初期観測点の個数(ランダムな探索を何回行うか)
-    ACQ = 'ei'  # BayesianOptimizationの獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
+    _ACQ = 'ei'  # BayesianOptimizationの獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
     N_ITER_OPTUNA = 25  # Optunaの試行数
     BAYES_PARAMS = {'C': (0.01, 1000)
                     }

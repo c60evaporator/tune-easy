@@ -1,0 +1,327 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>All-in-one tuning class &mdash; muscle-tuning 0.1.7 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Tuning classes of each ML estimators" href="each_estimators.html" />
+    <link rel="prev" title="Welcome to muscle-tuning’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> muscle-tuning
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">All-in-one tuning class</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-muscle_tuning.muscle_tuning">muscle_tuning.muscle_tuning module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="each_estimators.html">Tuning classes of each ML estimators</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">muscle-tuning</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>All-in-one tuning class</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/muscle_tuning.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="all-in-one-tuning-class">
+<h1>All-in-one tuning class<a class="headerlink" href="#all-in-one-tuning-class" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-muscle_tuning.muscle_tuning">
+<span id="muscle-tuning-muscle-tuning-module"></span><h2>muscle_tuning.muscle_tuning module<a class="headerlink" href="#module-muscle_tuning.muscle_tuning" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="muscle_tuning.muscle_tuning.MuscleTuning">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">muscle_tuning.muscle_tuning.</span></span><span class="sig-name descname"><span class="pre">MuscleTuning</span></span><a class="headerlink" href="#muscle_tuning.muscle_tuning.MuscleTuning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="muscle_tuning.muscle_tuning.MuscleTuning.LEARNING_ALGOS">
+<span class="sig-name descname"><span class="pre">LEARNING_ALGOS</span></span><em class="property"> <span class="pre">=</span> <span class="pre">{'binary':</span> <span class="pre">['svm',</span> <span class="pre">'logistic',</span> <span class="pre">'randomforest',</span> <span class="pre">'lightgbm'],</span> <span class="pre">'multiclass':</span> <span class="pre">['svm',</span> <span class="pre">'logistic',</span> <span class="pre">'randomforest',</span> <span class="pre">'lightgbm'],</span> <span class="pre">'regression':</span> <span class="pre">['linear_regression',</span> <span class="pre">'elasticnet',</span> <span class="pre">'svr',</span> <span class="pre">'randomforest',</span> <span class="pre">'lightgbm']}</span></em><a class="headerlink" href="#muscle_tuning.muscle_tuning.MuscleTuning.LEARNING_ALGOS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="muscle_tuning.muscle_tuning.MuscleTuning.N_TRIALS">
+<span class="sig-name descname"><span class="pre">N_TRIALS</span></span><em class="property"> <span class="pre">=</span> <span class="pre">{'binary':</span> <span class="pre">{'lightgbm':</span> <span class="pre">200,</span> <span class="pre">'logistic':</span> <span class="pre">500,</span> <span class="pre">'randomforest':</span> <span class="pre">300,</span> <span class="pre">'svm':</span> <span class="pre">500,</span> <span class="pre">'xgboost':</span> <span class="pre">100},</span> <span class="pre">'multiclass':</span> <span class="pre">{'lightgbm':</span> <span class="pre">20,</span> <span class="pre">'logistic':</span> <span class="pre">500,</span> <span class="pre">'randomforest':</span> <span class="pre">300,</span> <span class="pre">'svm':</span> <span class="pre">50,</span> <span class="pre">'xgboost':</span> <span class="pre">100},</span> <span class="pre">'regression':</span> <span class="pre">{'elasticnet':</span> <span class="pre">500,</span> <span class="pre">'lightgbm':</span> <span class="pre">200,</span> <span class="pre">'randomforest':</span> <span class="pre">300,</span> <span class="pre">'svr':</span> <span class="pre">500,</span> <span class="pre">'xgboost':</span> <span class="pre">100}}</span></em><a class="headerlink" href="#muscle_tuning.muscle_tuning.MuscleTuning.N_TRIALS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="muscle_tuning.muscle_tuning.MuscleTuning.OTHER_SCORES">
+<span class="sig-name descname"><span class="pre">OTHER_SCORES</span></span><em class="property"> <span class="pre">=</span> <span class="pre">{'binary':</span> <span class="pre">['accuracy',</span> <span class="pre">'precision',</span> <span class="pre">'recall',</span> <span class="pre">'f1',</span> <span class="pre">'logloss',</span> <span class="pre">'auc'],</span> <span class="pre">'multiclass':</span> <span class="pre">['accuracy',</span> <span class="pre">'precision_macro',</span> <span class="pre">'recall_macro',</span> <span class="pre">'f1_macro',</span> <span class="pre">'logloss',</span> <span class="pre">'auc_ovr'],</span> <span class="pre">'regression':</span> <span class="pre">['rmse',</span> <span class="pre">'mae',</span> <span class="pre">'mape',</span> <span class="pre">'r2']}</span></em><a class="headerlink" href="#muscle_tuning.muscle_tuning.MuscleTuning.OTHER_SCORES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="muscle_tuning.muscle_tuning.MuscleTuning.SCORING">
+<span class="sig-name descname"><span class="pre">SCORING</span></span><em class="property"> <span class="pre">=</span> <span class="pre">{'binary':</span> <span class="pre">'logloss',</span> <span class="pre">'multiclass':</span> <span class="pre">'logloss',</span> <span class="pre">'regression':</span> <span class="pre">'rmse'}</span></em><a class="headerlink" href="#muscle_tuning.muscle_tuning.MuscleTuning.SCORING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muscle_tuning.muscle_tuning.MuscleTuning.muscle_brain_tuning">
+<span class="sig-name descname"><span class="pre">muscle_brain_tuning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_colnames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objective</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scoring</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learning_algos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_trials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuning_algo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'optuna'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">42</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">estimators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuning_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuning_kws</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muscle_tuning.muscle_tuning.MuscleTuning.muscle_brain_tuning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parameter tuning with multiple estimators. Easy to use even if your brain is made of muscle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>list</em><em>[</em><em>str</em><em>]</em><em>, or </em><em>numpy.ndarray</em>) – Explanatory variables. Should be list[str] if <code class="docutils literal notranslate"><span class="pre">data</span></code> is pd.DataFrame.
+Should be numpy.ndarray if <code class="docutils literal notranslate"><span class="pre">data</span></code> is None.</p></li>
+<li><p><strong>y</strong> (<em>str</em><em> or </em><em>numpy.ndarray</em>) – Objective variable. Should be str if <code class="docutils literal notranslate"><span class="pre">data</span></code> is pd.DataFrame.
+Should be numpy.ndarray if <code class="docutils literal notranslate"><span class="pre">data</span></code> is None.</p></li>
+<li><p><strong>data</strong> (<em>pd.DataFrame</em><em>, </em><em>default=None</em>) – Input data structure.</p></li>
+<li><p><strong>x_colnames</strong> (<em>list</em><em>[</em><em>str</em><em>]</em><em>, </em><em>default=None</em>) – Names of explanatory variables. Available only if data is NOT pd.DataFrame.</p></li>
+<li><p><strong>cv_group</strong> (<em>str</em><em> or </em><em>numpy.ndarray</em><em>, </em><em>default=None</em>) – Grouping variable that will be used for GroupKFold or LeaveOneGroupOut.
+Should be str if <code class="docutils literal notranslate"><span class="pre">data</span></code> is pd.DataFrame.</p></li>
+<li><p><strong>objective</strong> (<em>{'classification'</em><em>, </em><em>'regression'}</em><em>, </em><em>default=None</em>) – Specify the learning task.
+If None, select task by objective variable automatically.</p></li>
+<li><p><strong>scoring</strong> (<em>str</em><em>, </em><em>default=None</em>) – <p>Score name used to parameter tuning.</p>
+<p>In regression, use ‘rmse’, ‘mse’, ‘mae’, ‘rmsle’, ‘mape’, or ‘r2’.</p>
+<p>In binary classification, use ‘logloss’, ‘accuracy’, ‘precision’, ‘recall’, ‘f1’, ‘pr_auc’, ‘auc’.</p>
+<p>In multiclass classification, use ‘logloss’, ‘accuracy’, ‘precision_macro’, ‘recall_macro’, ‘f1_micro’, ‘f1_macro’, ‘f1_weighted’, ‘auc_ovr’, ‘auc_ovo’, ‘auc_ovr_weighted’, ‘auc_ovo_weighted’.</p>
+<p>If None, the <cite>SCORING</cite> constant is used.
+See</p>
+</p></li>
+<li><p><strong>other_scores</strong> (<em>list</em><em>[</em><em>str</em><em>]</em><em>, </em><em>default=None</em>) – <p>Score names calculated after tuning. Input strings are the same as that of <cite>scoring</cite> argument.</p>
+<p>Note that “rmsle” score may causes an error if predicted values or true values include negative value.</p>
+<p>If None, the <cite>OTHER_SCORES</cite> constant is used.
+See</p>
+</p></li>
+<li><p><strong>learning_algos</strong> (<em>list</em><em>[</em><em>str</em><em>]</em><em>, </em><em>default=None</em>) – <p>Estimator algorithm. ‘svm’: Support vector machine, ‘svr’: Support vector regression, ‘logistic’: Logistic Regression, ‘elasiticnet’: ElasticNet, ‘randomforest’: RandomForest, ‘lightgbm’: LightGBM, ‘xgboost’: XGBoost.</p>
+<p>In regression, use ‘linear_regression’, ‘elasticnet’, ‘svr’, ‘randomforest’, ‘lightgbm’, or ‘xgboost’.</p>
+<p>In classification, use ‘svm’, ‘logistic’, ‘randomforest’, ‘lightgbm’, or ‘xgboost’.</p>
+<p>If None, the <cite>LEARNING_ALGOS</cite> constant is used.
+See</p>
+</p></li>
+<li><p><strong>n_trials</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>int</em><em>]</em><em>, </em><em>default=None</em>) – <p>Iteration number of parameter tuning. Keys should be members of <code class="docutils literal notranslate"><span class="pre">algo</span></code> argument.
+Values should be iteration numbers.</p>
+<p>If None, the <cite>N_TRIALS</cite> constant is used.
+See</p>
+</p></li>
+<li><p><strong>cv</strong> (<em>int</em><em>, </em><em>cross-validation generator</em><em>, or </em><em>an iterable</em><em>, </em><em>default=5</em>) – Determines the cross-validation splitting strategy. If None, to use the default 5-fold cross validation. If int, to specify the number of folds in a KFold.</p></li>
+<li><p><strong>tuning_algo</strong> (<em>{'grid'</em><em>, </em><em>'random'</em><em>, </em><em>'bo'</em><em>, </em><em>'optuna'}</em><em>, </em><em>default='optuna'</em>) – Tuning algorithm using following libraries. ‘grid’: sklearn.model_selection.GridSearchCV, ‘random’: sklearn.model_selection.RandomizedSearchCV, ‘bo’: BayesianOptimization, ‘optuna’: Optuna.</p></li>
+<li><p><strong>seed</strong> (<em>int</em><em>, </em><em>default=42</em>) – Seed for random number generator of cross validation, estimators, and optuna.sampler.</p></li>
+<li><p><strong>estimators</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>estimator object implementing 'fit'</em><em>]</em><em>, </em><em>default=None</em>) – <p>Classification or regression estimators used to tuning.
+Keys should be members of <code class="docutils literal notranslate"><span class="pre">algo</span></code> argument.
+Values are assumed to implement the scikit-learn estimator interface.</p>
+<p>If None, use default estimators of tuning instances
+See</p>
+</p></li>
+<li><p><strong>tuning_params</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>dict</em><em>[</em><em>str</em><em>, </em><em>{list</em><em>, </em><em>tuple}</em><em>]</em><em>]</em><em>, </em><em>default=None</em>) – <p>Values should be dictionary with parameters names as keys and
+lists of parameter settings or parameter range to try as values.
+Keys should be members of <code class="docutils literal notranslate"><span class="pre">algo</span></code> argument.</p>
+<p>If None, use default values of tuning instances
+See</p>
+</p></li>
+<li><p><strong>tuning_kws</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>dict</em><em>]</em><em>, </em><em>default=None</em>) – <p>Additional parameters passed to tuning instances.
+Keys should be members of <code class="docutils literal notranslate"><span class="pre">algo</span></code> argument.
+Values should be dict of parameters passed to tuning instances, e.g. {‘not_opt_params’: {‘’kernel’: ‘rbf’}}.</p>
+<p>See API Reference of tuning instances.</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>df_result</strong> – Validation scores of before and after tuning model.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muscle_tuning.muscle_tuning.MuscleTuning.print_estimator">
+<span class="sig-name descname"><span class="pre">print_estimator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">learner_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muscle_tuning.muscle_tuning.MuscleTuning.print_estimator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print estimator after tuning</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>learner_name</strong> (<em>{'linear_regression'</em><em>, </em><em>'elasticnet'</em><em>, </em><em>'svr'</em><em>, </em><em>'randomforest'</em><em>, </em><em>'lightgbm'</em><em>, </em><em>'xgboost'</em><em>, </em><em>'svm'</em><em>, </em><em>'logistic'}</em><em>, or </em><em>np.ndarray</em>) – Printed learning algorithm name</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="each_estimators.html" class="btn btn-neutral float-right" title="Tuning classes of each ML estimators" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to muscle-tuning’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Kenta Nakamura.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
