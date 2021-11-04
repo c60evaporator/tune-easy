@@ -33,9 +33,7 @@ tuning.plot_search_map()  # 探索点と評価指標を可視化
 tuning.plot_best_learning_curve()  # 学習曲線の可視化
 tuning.plot_best_validation_curve()  # 検証曲線の可視化
 ```
-上例は引数を指定せずにデフォルト設定でチューニングを実施しています。
-
-デフォルト設定でも多くの場合は適切にチューニングできますが、設定を調整しながら丁寧に実行したい場合は、[チューニング手順](https://github.com/c60evaporator/param-tuning-utility#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E6%89%8B%E9%A0%86)の項を参照ください。
+詳細は[チューニング手順](https://github.com/c60evaporator/param-tuning-utility#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E6%89%8B%E9%A0%86)の項を参照ください。
 
 <br>
 
@@ -55,12 +53,12 @@ tuning.plot_best_validation_curve()  # 検証曲線の可視化
 
 # インストール方法
 ```
-$ pip install param-tuning-utility
+$ pip install muscle-tuning
 ```
 <br>
 
 # サポート
-バグ等は[Issues](https://github.com/c60evaporator/param-tuning-utility/issues)で報告してください
+バグ等は[Issues](https://github.com/c60evaporator/muscle-tuning/issues)で報告してください
 
 <br>
 
@@ -69,48 +67,53 @@ $ pip install param-tuning-utility
 
 |名称|用途|リンク|
 |---|---|---|
-|ラクラクマッスルチューニング|とにかく手早くチューニングしたい|[リンク](https://github.com/c60evaporator/muscle-tuning#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E6%89%8B%E9%A0%86-muscle_brain_tuning)|
-|詳細チューニング|詳細に条件を調整してチューニングしたい|[リンク](https://github.com/c60evaporator/muscle-tuning#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E6%89%8B%E9%A0%86-%E8%A9%B3%E7%B4%B0%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0)|
+|一括チューニング|とにかく手早くチューニングしたい|[リンク](https://github.com/c60evaporator/muscle-tuning#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E6%89%8B%E9%A0%86-muscle_brain_tuning)|
+|個別チューニング|詳細に条件を調整してチューニングしたい|[リンク](https://github.com/c60evaporator/muscle-tuning#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E6%89%8B%E9%A0%86-%E8%A9%B3%E7%B4%B0%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0)|
 <br>
 
-## チューニング手順 (ラクラクマッスルチューニング)
-[`muscle_brain_tuning()`]()というメソッドを使用することで、
-複数の機械学習アルゴリズムでのパラメータチューニングを一気に実行し、結果をグラフ表示します
+## チューニング手順 (一括チューニング)
+[`MuscleTuning`]()クラスをを使用することで、複数の機械学習アルゴリズムでパラメータチューニングを一括実行し、結果をグラフ表示します
 
-### 分類タスク
+### 分類タスクでの使用例
 分類タスクでは、スコアの上昇履歴とチューニング前後のROC曲線を表示します
 
 ```python
 from muscle_tuning import MuscleTuning
 import seaborn as sns
-
+# データセット読込
 iris = sns.load_dataset("iris")
-iris['species'] = iris['species'].map(lambda x: x.replace('virginica', 'setosa'))
+iris = iris[iris['species'] != 'setosa']  # 2クラスに絞る
 OBJECTIVE_VARIALBLE = 'species'  # 目的変数
 USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']  # 説明変数
 y = iris[OBJECTIVE_VARIALBLE].values
 X = iris[USE_EXPLANATORY].values
-
+# チューニング実行
 kinnikun = MuscleTuning()
 kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2)
 kinnikun.df_scores
 ```
 スコアの上昇履歴
 
+![class_increase](https://user-images.githubusercontent.com/59557625/140383755-bca64ab3-1593-47ef-8401-affcd0b20a0a.png)
+
 チューニング前のROC曲線
+![before_rewrite](https://user-images.githubusercontent.com/59557625/140382285-206752d5-3def-44e3-a2ca-fc0871a5f181.png)
 
 チューニング後のROC曲線
+![after_rewrite](https://user-images.githubusercontent.com/59557625/140382175-a8261675-33ee-4a07-9a1b-074890d95ecd.png)
+
+チューニング前後のスコア
 
 ```
-  accuracy	precision	recall	f1	logloss	auc	learning_algo	after_tuning
-0	0.973333	0.959936	0.962963	0.961060	0.091851	0.998071	svm	False
-1	0.726667	0.627451	0.439614	0.516667	0.498768	0.814146	logistic	False
-2	0.960000	0.979167	0.907407	0.938341	0.324001	0.983571	randomforest	False
-3	0.940000	0.920569	0.907407	0.909388	0.148369	0.984568	lightgbm	False
-4	0.960000	0.940705	0.944444	0.942192	0.086014	0.997685	svm	True
-5	0.720000	0.611111	0.442834	0.512737	0.492915	0.817394	logistic	True
-6	0.960000	0.979167	0.907407	0.938341	0.115052	0.991705	randomforest	True
-7	0.973333	0.980000	0.944444	0.961538	0.110297	0.990162	lightgbm	True
+	accuracy	precision	recall		f1		logloss		auc		learning_algo	after_tuning
+0	0.966667	0.948276	0.959742	0.953175	0.100316	0.996914	svm		False
+1	0.960000	0.961538	0.922705	0.941719	0.152039	0.995370	logistic	False
+2	0.953333	0.919355	0.959742	0.937165	0.309636	0.987847	randomforest	False
+3	0.940000	0.919355	0.916264	0.913392	0.124904	0.985918	lightgbm	False
+4	0.973333	0.950000	0.978261	0.962573	0.085528	0.998071	svm		True
+5	0.966667	0.950000	0.956522	0.950957	0.071178	0.998039	logistic	True
+6	0.953333	0.919355	0.959742	0.937165	0.099034	0.994792	randomforest	True
+7	0.966667	0.948276	0.959742	0.953175	0.113126	0.990741	lightgbm	True
 ```
 
 ### 回帰タスク
