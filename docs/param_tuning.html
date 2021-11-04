@@ -1,0 +1,686 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Base class of parameter tuning &mdash; muscle-tuning 0.1.7 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> muscle-tuning
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="muscle_tuning.html">All-in-one tuning class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="each_estimators.html">Tuning classes of each ML estimators</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">muscle-tuning</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Base class of parameter tuning</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/param_tuning.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="base-class-of-parameter-tuning">
+<h1>Base class of parameter tuning<a class="headerlink" href="#base-class-of-parameter-tuning" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-muscle_tuning.param_tuning">
+<span id="muscle-tuning-param-tuning-module"></span><h2>muscle_tuning.param_tuning module<a class="headerlink" href="#module-muscle_tuning.param_tuning" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="muscle_tuning.param_tuning.ParamTuning">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">muscle_tuning.param_tuning.</span></span><span class="sig-name descname"><span class="pre">ParamTuning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_colnames</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_colname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eval_set_selection</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muscle_tuning.param_tuning.ParamTuning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class of Tuning classes</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="muscle_tuning.param_tuning.ParamTuning.bayes_opt_tuning">
+<span class="sig-name descname"><span class="pre">bayes_opt_tuning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">estimator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuning_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scoring</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">not_opt_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_scales</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mlflow_logging</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fit_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muscle_tuning.param_tuning.ParamTuning.bayes_opt_tuning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run bayesian optimization with <code class="docutils literal notranslate"><span class="pre">BayesianOptimization</span></code> library.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>estimator</strong> (estimator object implementing <code class="docutils literal notranslate"><span class="pre">fit</span></code>, default=None) – <p>Classification or regression estimators used to tuning. This is assumed to implement the scikit-learn estimator interface.</p>
+<p>Note that the parameters of the estimator are overridden by <code class="docutils literal notranslate"><span class="pre">not_opt_params</span></code></p>
+<p>If None, <code class="docutils literal notranslate"><span class="pre">ESTIMATOR</span></code> written in each tuning class is used.</p>
+</p></li>
+<li><p><strong>tuning_params</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>tuple</em><em>(</em><em>float</em><em>, </em><em>float</em><em>)</em><em>]</em><em>, </em><em>default=None</em>) – <p>Dictionary with parameters names (<code class="docutils literal notranslate"><span class="pre">str</span></code>) as keys and tuples of
+or minimum limit and maximum limit of parameters as value.</p>
+<p>If None, <code class="docutils literal notranslate"><span class="pre">BAYES_PARAMS</span></code> written in each tuning class is used.</p>
+</p></li>
+<li><p><strong>cv</strong> (<em>int</em><em>, </em><em>cross-validation generator</em><em>, or </em><em>an iterable</em><em>, </em><em>default=5</em>) – <p>Determines the cross-validation splitting strategy.</p>
+<p>If int, to specify the number of folds in a KFold.</p>
+</p></li>
+<li><p><strong>seed</strong> (<em>int</em><em>, </em><em>default=42</em>) – <p>Seed for random number generator of estimator and cross validation.</p>
+<p>Note that “random_state” in <code class="docutils literal notranslate"><span class="pre">not_opt_params</span></code> are overridden by this argument.</p>
+</p></li>
+<li><p><strong>scoring</strong> (<em>str</em><em>, </em><em>callable</em><em>, </em><em>list</em><em>, </em><em>tuple</em><em> or </em><em>dict</em><em>, </em><em>default='neg_root_mean_squared_error' in regression</em><em>, </em><em>'logloss' in classification.</em>) – Strategy to evaluate the performance of the cross-validated model on
+the test set.</p></li>
+<li><p><strong>n_iter</strong> (<em>int</em><em>, </em><em>default=None</em>) – <p>Number of iterations in bayesian optimization.</p>
+<p>If None, <code class="docutils literal notranslate"><span class="pre">N_ITER_BAYES</span></code> written in each tuning class is used.</p>
+</p></li>
+<li><p><strong>init_points</strong> (<em>int</em><em>, </em><em>default=None</em>) – <p>Number of initialized points, which searched randomly.</p>
+<p>If None, <code class="docutils literal notranslate"><span class="pre">INIT_POINTS</span></code> written in each tuning class is used.</p>
+</p></li>
+<li><p><strong>acq</strong> (<em>{'ei'</em><em>, </em><em>'pi'</em><em>, </em><em>'ucb'}</em><em>, </em><em>default='ei'</em>) – Acquisition function</p></li>
+<li><p><strong>not_opt_params</strong> (<em>dict</em><em>, </em><em>default=None</em>) – <p>Dictionary with parameters, which are NOT optimized.</p>
+<p>Note that the parameters override those of the estimator.</p>
+<p>If None, <code class="docutils literal notranslate"><span class="pre">NOT_OPT_PARAMS</span></code> written in each tuning class is used.</p>
+</p></li>
+<li><p><strong>int_params</strong> (<em>list</em><em>[</em><em>str</em><em>]</em><em>, </em><em>default=None</em>) – <p>List of parameters whose type is int.</p>
+<p>If None, <code class="docutils literal notranslate"><span class="pre">INT_PARAMS</span></code> written in each tuning class is used.</p>
+</p></li>
+<li><p><strong>param_scales</strong> (<em>dict</em><em>(</em><em>str</em><em>, </em><em>{'linear'</em><em>, </em><em>'log'}</em><em>)</em><em>, </em><em>default=None</em>) – <p>Dictionary with parameters’ scales.</p>
+<p>If ‘linear’, the axis of result graph is drawn in linear scale.</p>
+<p>If ‘log’, the axis of result graph is drawn in log scale.</p>
+<p>If None, <code class="docutils literal notranslate"><span class="pre">PARAM_SCALES</span></code> written in each tuning class is used.</p>
+</p></li>
+<li><p><strong>mlflow_logging</strong> (<em>str</em><em>, </em><em>default=None</em>) – <p>Strategy to record the result by MLFlow library.</p>
+<p>If ‘with’, mlflow process is started in the tuning instance. So you need not use <code class="docutils literal notranslate"><span class="pre">start_run()</span></code> explicitly.</p>
+<p>If ‘log’, mlflow process is NOT started in the tuning instance. So you should use <code class="docutils literal notranslate"><span class="pre">start_run()</span></code> outside the muscle-tuning library.</p>
+<p>If None, mlflow is not used.</p>
+</p></li>
+<li><p><strong>fit_params</strong> (<em>dict</em><em>, </em><em>default=None</em>) – <p>Parameters passed to the fit() method of the estimator,
+e.g. <code class="docutils literal notranslate"><span class="pre">early_stopping_round</span></code> and <code class="docutils literal notranslate"><span class="pre">eval_set</span></code> of XGBRegressor or LGBMRegressor.
+If the estimator is pipeline, each parameter name must be prefixed
+such that parameter p for step s has key s__p.</p>
+<p>If None, <code class="docutils literal notranslate"><span class="pre">FIT_PARAMS</span></code> written in each tuning class is used.</p>
+<p>Note that if <code class="docutils literal notranslate"><span class="pre">eval_set</span></code> is None, <code class="docutils literal notranslate"><span class="pre">self.X</span></code> and <code class="docutils literal notranslate"><span class="pre">self.y</span></code> are set to <code class="docutils literal notranslate"><span class="pre">eval_set</span></code> automatically.</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>best_params</strong> (<em>dict[str, float]</em>) – Returns best parameters determined by optimization</p></li>
+<li><p><strong>best_score</strong> (<em>float</em>) – Returns best score determined by optimization.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muscle_tuning.param_tuning.ParamTuning.get_feature_importances">
+<span class="sig-name descname"><span class="pre">get_feature_importances</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#muscle_tuning.param_tuning.ParamTuning.get_feature_importances" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get feature importances of best estimater.
+Available only if self.estimator is RandomForest, LightGBM, or XGBoost</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>df_importance</strong> – Returns feature importances of best estimater as pandas.DataFrame</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>pandas.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muscle_tuning.param_tuning.ParamTuning.get_search_history">
+<span class="sig-name descname"><span class="pre">get_search_history</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#muscle_tuning.param_tuning.ParamTuning.get_search_history" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get high score history of optimization as pandas.DataFrame</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>df_history</strong> – Returns high score history of optimization as pandas.DataFrame</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>pandas.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muscle_tuning.param_tuning.ParamTuning.grid_search_tuning">
+<span class="sig-name descname"><span class="pre">grid_search_tuning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">estimator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuning_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scoring</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">not_opt_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_scales</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mlflow_logging</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_kws</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fit_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muscle_tuning.param_tuning.ParamTuning.grid_search_tuning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run grid search optimization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>estimator</strong> (estimator object implementing <code class="docutils literal notranslate"><span class="pre">fit</span></code>, default=None) – <p>Classification or regression estimators used to tuning. This is assumed to implement the scikit-learn estimator interface.</p>
+<p>Note that the parameters of the estimator are overridden by <code class="docutils literal notranslate"><span class="pre">not_opt_params</span></code></p>
+<p>If None, <code class="docutils literal notranslate"><span class="pre">ESTIMATOR</span></code> written in each tuning class is used.</p>
+</p></li>
+<li><p><strong>tuning_params</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>list</em><em>(</em><em>float</em><em>)</em><em>]</em><em>, </em><em>default=None</em>) – <p>Dictionary with parameters names (<code class="docutils literal notranslate"><span class="pre">str</span></code>) as keys and lists of
+parameter settings to try as values.</p>
+<p>If None, <code class="docutils literal notranslate"><span class="pre">CV_PARAMS_GRID</span></code> written in each tuning class is used.</p>
+</p></li>
+<li><p><strong>cv</strong> (<em>int</em><em>, </em><em>cross-validation generator</em><em>, or </em><em>an iterable</em><em>, </em><em>default=5</em>) – <p>Determines the cross-validation splitting strategy.</p>
+<p>If int, to specify the number of folds in a KFold.</p>
+</p></li>
+<li><p><strong>seed</strong> (<em>int</em><em>, </em><em>default=42</em>) – <p>Seed for random number generator of estimator and cross validation.</p>
+<p>Note that “random_state” in <code class="docutils literal notranslate"><span class="pre">not_opt_params</span></code> are overridden by this argument.</p>
+</p></li>
+<li><p><strong>scoring</strong> (<em>str</em><em>, </em><em>callable</em><em>, </em><em>list</em><em>, </em><em>tuple</em><em> or </em><em>dict</em><em>, </em><em>default='neg_root_mean_squared_error' in regression</em><em>, </em><em>'logloss' in classification.</em>) – Strategy to evaluate the performance of the cross-validated model on
+the test set.</p></li>
+<li><p><strong>not_opt_params</strong> (<em>dict</em><em>, </em><em>default=None</em>) – <p>Dictionary with parameters, which are NOT optimized.</p>
+<p>Note that the parameters override those of the estimator.</p>
+<p>If None, <code class="docutils literal notranslate"><span class="pre">NOT_OPT_PARAMS</span></code> written in each tuning class is used.</p>
+</p></li>
+<li><p><strong>param_scales</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>{'linear'</em><em>, </em><em>'log'}</em><em>]</em><em>, </em><em>default=None</em>) – <p>Dictionary with parameters’ scales.</p>
+<p>If ‘linear’, the axis of result graph is drawn in linear scale.</p>
+<p>If ‘log’, the axis of result graph is drawn in log scale.</p>
+<p>If None, <code class="docutils literal notranslate"><span class="pre">PARAM_SCALES</span></code> written in each tuning class is used.</p>
+</p></li>
+<li><p><strong>mlflow_logging</strong> (<em>str</em><em>, </em><em>default=None</em>) – <p>Strategy to record the result by MLFlow library.</p>
+<p>If ‘with’, mlflow process is started in the tuning instance. So you need not use <code class="docutils literal notranslate"><span class="pre">start_run()</span></code> explicitly.</p>
+<p>If ‘log’, mlflow process is NOT started in the tuning instance. So you should use <code class="docutils literal notranslate"><span class="pre">start_run()</span></code> outside the muscle-tuning library.</p>
+<p>If None, mlflow is not used.</p>
+</p></li>
+<li><p><strong>grid_kws</strong> (<em>dict</em><em>, </em><em>default=None</em>) – <p>Additional parameters passed to sklearn.model_selection.GridSearchCV, e.g. <code class="docutils literal notranslate"><span class="pre">n_jobs</span></code>.</p>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">estimator</span></code>, <code class="docutils literal notranslate"><span class="pre">param_grid</span></code>, <code class="docutils literal notranslate"><span class="pre">cv</span></code>, and <code class="docutils literal notranslate"><span class="pre">scoring</span></code> CAN NOT be used in the argument</p>
+<p>See <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html">https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html</a></p>
+</p></li>
+<li><p><strong>fit_params</strong> (<em>dict</em><em>, </em><em>default=None</em>) – <p>Parameters passed to the fit() method of the estimator,
+e.g. <code class="docutils literal notranslate"><span class="pre">early_stopping_round</span></code> and <code class="docutils literal notranslate"><span class="pre">eval_set</span></code> of XGBRegressor or LGBMRegressor.
+If the estimator is pipeline, each parameter name must be prefixed
+such that parameter p for step s has key s__p.</p>
+<p>If None, <code class="docutils literal notranslate"><span class="pre">FIT_PARAMS</span></code> written in each tuning class is used.</p>
+<p>Note that if <code class="docutils literal notranslate"><span class="pre">eval_set</span></code> is None, <code class="docutils literal notranslate"><span class="pre">self.X</span></code> and <code class="docutils literal notranslate"><span class="pre">self.y</span></code> are set to <code class="docutils literal notranslate"><span class="pre">eval_set</span></code> automatically.</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>best_params</strong> (<em>dict[str, float]</em>) – Returns best parameters determined by optimization</p></li>
+<li><p><strong>best_score</strong> (<em>float</em>) – Returns best score determined by optimization.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muscle_tuning.param_tuning.ParamTuning.optuna_tuning">
+<span class="sig-name descname"><span class="pre">optuna_tuning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">estimator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuning_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scoring</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_trials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">study_kws</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimize_kws</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">not_opt_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_scales</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mlflow_logging</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fit_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muscle_tuning.param_tuning.ParamTuning.optuna_tuning" title="Permalink to this definition">¶</a></dt>
+<dd><p>ベイズ最適化(optuna)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>estimator</strong> (estimator object implementing <code class="docutils literal notranslate"><span class="pre">fit</span></code>, default=None) – <p>Classification or regression estimators used to tuning. This is assumed to implement the scikit-learn estimator interface.</p>
+<p>Note that the parameters of the estimator are overridden by <code class="docutils literal notranslate"><span class="pre">not_opt_params</span></code></p>
+<p>If None, <code class="docutils literal notranslate"><span class="pre">ESTIMATOR</span></code> written in each tuning class is used.</p>
+</p></li>
+<li><p><strong>tuning_params</strong> (<em>dict</em><em>(</em><em>str</em><em>, </em><em>tuple</em><em>(</em><em>float</em><em>, </em><em>float</em><em>)</em><em>)</em><em>, </em><em>default=None</em>) – <p>Dictionary with parameters names (<code class="docutils literal notranslate"><span class="pre">str</span></code>) as keys and tuples of
+or minimum limit and maximum limit of parameters as value.</p>
+<p>If None, <code class="docutils literal notranslate"><span class="pre">BAYES_PARAMS</span></code> written in each tuning class is used.</p>
+</p></li>
+<li><p><strong>cv</strong> (<em>int</em><em>, </em><em>cross-validation generator</em><em>, or </em><em>an iterable</em><em>, </em><em>default=5</em>) – <p>Determines the cross-validation splitting strategy.</p>
+<p>If int, to specify the number of folds in a KFold.</p>
+</p></li>
+<li><p><strong>seed</strong> (<em>int</em><em>, </em><em>default=42</em>) – <p>Seed for random number generator of estimator and cross validation.</p>
+<p>Note that “random_state” in <code class="docutils literal notranslate"><span class="pre">not_opt_params</span></code> are overridden by this argument.</p>
+</p></li>
+<li><p><strong>scoring</strong> (<em>str</em><em>, </em><em>callable</em><em>, </em><em>list</em><em>, </em><em>tuple</em><em> or </em><em>dict</em><em>, </em><em>default='neg_root_mean_squared_error' in regression</em><em>, </em><em>'logloss' in classification.</em>) – Strategy to evaluate the performance of the cross-validated model on
+the test set.</p></li>
+<li><p><strong>n_trials</strong> (<em>int</em><em>, </em><em>default=None</em>) – <p>Number of parameter settings that are sampled. n_iter trades
+off runtime vs quality of the solution.</p>
+<p>If None, <code class="docutils literal notranslate"><span class="pre">N_ITER_OPTUNA</span></code> written in each tuning class is used.</p>
+</p></li>
+<li><p><strong>study_kws</strong> (<em>dict</em><em>, </em><em>default=None</em>) – <p>Additional parameters passed to optuna.study.create_study, e.g. <code class="docutils literal notranslate"><span class="pre">sampler</span></code>.</p>
+<p>See <a class="reference external" href="https://optuna.readthedocs.io/en/stable/reference/generated/optuna.study.create_study.html#optuna.study.create_study">https://optuna.readthedocs.io/en/stable/reference/generated/optuna.study.create_study.html#optuna.study.create_study</a></p>
+</p></li>
+<li><p><strong>optimize_kws</strong> (<em>dict</em><em>, </em><em>default=None</em>) – <p>Additional parameters passed to optuna.study.Study.optimize, e.g. <code class="docutils literal notranslate"><span class="pre">n_jobs</span></code>.</p>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">n_trials</span></code> CAN NOT be used in the argument</p>
+<p>See <a class="reference external" href="https://optuna.readthedocs.io/en/stable/reference/generated/optuna.study.Study.html#optuna.study.Study.optimize">https://optuna.readthedocs.io/en/stable/reference/generated/optuna.study.Study.html#optuna.study.Study.optimize</a></p>
+</p></li>
+<li><p><strong>not_opt_params</strong> (<em>dict</em><em>, </em><em>default=None</em>) – <p>Dictionary with parameters, which are NOT optimized.</p>
+<p>Note that the parameters override those of the estimator.</p>
+<p>If None, <code class="docutils literal notranslate"><span class="pre">NOT_OPT_PARAMS</span></code> written in each tuning class is used.</p>
+</p></li>
+<li><p><strong>int_params</strong> (<em>list</em><em>[</em><em>str</em><em>]</em><em>, </em><em>default=None</em>) – <p>List of parameters whose type is int. The parameters are tuned
+by <code class="docutils literal notranslate"><span class="pre">suggest_int()</span></code> method.</p>
+<p>If None, <code class="docutils literal notranslate"><span class="pre">INT_PARAMS</span></code> written in each tuning class is used.</p>
+</p></li>
+<li><p><strong>param_scales</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>{'linear'</em><em>, </em><em>'log'}</em><em>]</em><em>, </em><em>default=None</em>) – <p>Dictionary with parameters’ scales which are passed to <code class="docutils literal notranslate"><span class="pre">log</span></code> argument
+of <code class="docutils literal notranslate"><span class="pre">suggest_float()</span></code> or <code class="docutils literal notranslate"><span class="pre">suggest_int()</span></code>.</p>
+<p>If ‘linear’, the axis of result graph is drawn in linear scale.</p>
+<p>If ‘log’, the axis of result graph is drawn in log scale.</p>
+<p>If None, <code class="docutils literal notranslate"><span class="pre">PARAM_SCALES</span></code> written in each tuning class is used.</p>
+</p></li>
+<li><p><strong>mlflow_logging</strong> (<em>str</em><em>, </em><em>default=None</em>) – <p>Strategy to record the result by MLFlow library.</p>
+<p>If ‘with’, mlflow process is started in the tuning instance.
+So you need not use <code class="docutils literal notranslate"><span class="pre">start_run()</span></code> explicitly.</p>
+<p>If ‘log’, mlflow process is NOT started in the tuning instance.
+So you should use <code class="docutils literal notranslate"><span class="pre">start_run()</span></code> outside the muscle-tuning library.</p>
+<p>If None, mlflow is not used.</p>
+</p></li>
+<li><p><strong>fit_params</strong> (<em>dict</em><em>, </em><em>default=None</em>) – <p>Parameters passed to the fit() method of the estimator,
+e.g. <code class="docutils literal notranslate"><span class="pre">early_stopping_round</span></code> and <code class="docutils literal notranslate"><span class="pre">eval_set</span></code> of XGBRegressor or LGBMRegressor.
+If the estimator is pipeline, each parameter name must be prefixed
+such that parameter p for step s has key s__p.</p>
+<p>If None, <code class="docutils literal notranslate"><span class="pre">FIT_PARAMS</span></code> written in each tuning class is used.</p>
+<p>Note that if <code class="docutils literal notranslate"><span class="pre">eval_set</span></code> is None, <code class="docutils literal notranslate"><span class="pre">self.X</span></code> and <code class="docutils literal notranslate"><span class="pre">self.y</span></code> are set to <code class="docutils literal notranslate"><span class="pre">eval_set</span></code> automatically.</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>best_params</strong> (<em>dict[str, float]</em>) – Returns best parameters determined by optimization</p></li>
+<li><p><strong>best_score</strong> (<em>float</em>) – Returns best score determined by optimization.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muscle_tuning.param_tuning.ParamTuning.plot_best_learning_curve">
+<span class="sig-name descname"><span class="pre">plot_best_learning_curve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plot_stats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muscle_tuning.param_tuning.ParamTuning.plot_best_learning_curve" title="Permalink to this definition">¶</a></dt>
+<dd><p>チューニング後の学習曲線プロット (最適パラメータ使用)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>plot_stats</strong> (<em>{'mean'</em><em>, </em><em>'median'}</em>) – <p>A statistic method plotted as validation curve</p>
+<p>If ‘mean’, mean values are plotted as dark line and
+standard deviation values are filled in light color.</p>
+<p>If ‘median’, median values are plotted as dark line and
+miminum and maximum values are filled in light color.</p>
+</p></li>
+<li><p><strong>ax</strong> (<em>matplotlib.axes.Axes</em><em>, </em><em>default=None</em>) – Pre-existing axes for the plot.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muscle_tuning.param_tuning.ParamTuning.plot_best_validation_curve">
+<span class="sig-name descname"><span class="pre">plot_best_validation_curve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">validation_curve_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_scales</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_stats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muscle_tuning.param_tuning.ParamTuning.plot_best_validation_curve" title="Permalink to this definition">¶</a></dt>
+<dd><p>チューニング後の検証曲線プロット (最適)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>validation_curve_params</strong> (<em>tuning_params : dict</em><em>(</em><em>str</em><em>, </em><em>list</em><em>(</em><em>float</em><em>)</em><em>)</em><em>, </em><em>default=None</em>) – <p>dict(str, list(float)), default=None
+Dictionary with parameters names (<code class="docutils literal notranslate"><span class="pre">str</span></code>) as keys and lists of
+parameter that will be evaluated as values.</p>
+<p>If None, <code class="docutils literal notranslate"><span class="pre">VALIDATION_CURVE_PARAMS</span></code> written in each tuning class is used.</p>
+</p></li>
+<li><p><strong>param_scales</strong> (<em>dict</em><em>(</em><em>str</em><em>, </em><em>{'linear'</em><em>, </em><em>'log'}</em><em>)</em><em>, </em><em>default=None</em>) – <p>Dictionary with parameters’ scales.</p>
+<p>If ‘linear’, the axis of result graph is drawn in linear scale.</p>
+<p>If ‘log’, the axis of result graph is drawn in log scale.</p>
+<p>If None, <code class="docutils literal notranslate"><span class="pre">PARAM_SCALES</span></code> written in each tuning class is used.</p>
+</p></li>
+<li><p><strong>plot_stats</strong> (<em>{'mean'</em><em>, </em><em>'median'}</em>) – <p>A statistic method plotted as validation curve</p>
+<p>If ‘mean’, mean values are plotted as dark line and
+standard deviation values are filled in light color.</p>
+<p>If ‘median’, median values are plotted as dark line and
+miminum and maximum values are filled in light color.</p>
+</p></li>
+<li><p><strong>axes</strong> (<em>list</em><em>[</em><em>matplotlib.axes.Axes</em><em>]</em>) – <p>List of pre-existing axes for the plot.</p>
+<p>If None, each validation curve is plotted in different figure.</p>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muscle_tuning.param_tuning.ParamTuning.plot_feature_importances">
+<span class="sig-name descname"><span class="pre">plot_feature_importances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muscle_tuning.param_tuning.ParamTuning.plot_feature_importances" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot feature importances of best estimater.
+Available only if self.estimator is RandomForest, LightGBM, or XGBoost</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ax</strong> (<em>matplotlib.axes.Axes</em><em>, </em><em>default=None</em>) – Pre-existing axes for the plot.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muscle_tuning.param_tuning.ParamTuning.plot_first_validation_curve">
+<span class="sig-name descname"><span class="pre">plot_first_validation_curve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">estimator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_curve_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scoring</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">not_opt_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_scales</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_stats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fit_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muscle_tuning.param_tuning.ParamTuning.plot_first_validation_curve" title="Permalink to this definition">¶</a></dt>
+<dd><p>初期検討用の検証曲線プロット</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>estimator</strong> (estimator object implementing <code class="docutils literal notranslate"><span class="pre">fit</span></code>, default=None) – <p>Classification or regression estimators used to tuning. This is assumed to implement the scikit-learn estimator interface.</p>
+<p>Note that the parameters of the estimator are overridden by <code class="docutils literal notranslate"><span class="pre">not_opt_params</span></code></p>
+<p>If None, <code class="docutils literal notranslate"><span class="pre">ESTIMATOR</span></code> written in each tuning class is used.</p>
+</p></li>
+<li><p><strong>validation_curve_params</strong> (<em>tuning_params : dict</em><em>(</em><em>str</em><em>, </em><em>list</em><em>(</em><em>float</em><em>)</em><em>)</em><em>, </em><em>default=None</em>) – <p>dict(str, list(float)), default=None
+Dictionary with parameters names (<code class="docutils literal notranslate"><span class="pre">str</span></code>) as keys and lists of
+parameter that will be evaluated as values.</p>
+<p>If None, <code class="docutils literal notranslate"><span class="pre">VALIDATION_CURVE_PARAMS</span></code> written in each tuning class is used.</p>
+</p></li>
+<li><p><strong>cv</strong> (<em>int</em><em>, </em><em>cross-validation generator</em><em>, or </em><em>an iterable</em><em>, </em><em>default=5</em>) – <p>Determines the cross-validation splitting strategy.</p>
+<p>If int, to specify the number of folds in a KFold.</p>
+</p></li>
+<li><p><strong>seed</strong> (<em>int</em><em>, </em><em>default=42</em>) – <p>Seed for random number generator of estimator and cross validation.</p>
+<p>Note that “random_state” in <code class="docutils literal notranslate"><span class="pre">not_opt_params</span></code> are overridden by this argument.</p>
+</p></li>
+<li><p><strong>scoring</strong> (<em>str</em><em>, </em><em>callable</em><em>, </em><em>list</em><em>, </em><em>tuple</em><em> or </em><em>dict</em><em>, </em><em>default='neg_root_mean_squared_error' in regression</em><em>, </em><em>'logloss' in classification.</em>) – Strategy to evaluate the performance of the cross-validated model on
+the test set.</p></li>
+<li><p><strong>not_opt_params</strong> (<em>dict</em><em>, </em><em>default=None</em>) – <p>Dictionary with parameters, which are NOT optimized.</p>
+<p>Note that the parameters override those of the estimator.</p>
+<p>If None, <code class="docutils literal notranslate"><span class="pre">NOT_OPT_PARAMS</span></code> written in each tuning class is used.</p>
+</p></li>
+<li><p><strong>param_scales</strong> (<em>dict</em><em>(</em><em>str</em><em>, </em><em>{'linear'</em><em>, </em><em>'log'}</em><em>)</em><em>, </em><em>default=None</em>) – <p>Dictionary with parameters’ scales.</p>
+<p>If ‘linear’, the axis of result graph is drawn in linear scale.</p>
+<p>If ‘log’, the axis of result graph is drawn in log scale.</p>
+<p>If None, <code class="docutils literal notranslate"><span class="pre">PARAM_SCALES</span></code> written in each tuning class is used.</p>
+</p></li>
+<li><p><strong>plot_stats</strong> (<em>{'mean'</em><em>, </em><em>'median'}</em>) – <p>A statistic method plotted as validation curve</p>
+<p>If ‘mean’, mean values are plotted as dark line and
+standard deviation values are filled in light color.</p>
+<p>If ‘median’, median values are plotted as dark line and
+miminum and maximum values are filled in light color.</p>
+</p></li>
+<li><p><strong>axes</strong> (<em>list</em><em>[</em><em>matplotlib.axes.Axes</em><em>]</em>) – <p>List of pre-existing axes for the plot.</p>
+<p>If None, each validation curve is plotted in different figure.</p>
+</p></li>
+<li><p><strong>fit_params</strong> (<em>dict</em><em>, </em><em>default=None</em>) – <p>Parameters passed to the fit() method of the estimator,
+e.g. <code class="docutils literal notranslate"><span class="pre">early_stopping_round</span></code> and <code class="docutils literal notranslate"><span class="pre">eval_set</span></code> of XGBRegressor or LGBMRegressor.
+If the estimator is pipeline, each parameter name must be prefixed
+such that parameter p for step s has key s__p.</p>
+<p>If None, <code class="docutils literal notranslate"><span class="pre">FIT_PARAMS</span></code> written in each tuning class is used.</p>
+<p>Note that if <code class="docutils literal notranslate"><span class="pre">eval_set</span></code> is None, <code class="docutils literal notranslate"><span class="pre">self.X</span></code> and <code class="docutils literal notranslate"><span class="pre">self.y</span></code> are set to <code class="docutils literal notranslate"><span class="pre">eval_set</span></code> automatically.</p>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muscle_tuning.param_tuning.ParamTuning.plot_search_history">
+<span class="sig-name descname"><span class="pre">plot_search_history</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'index'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_kws</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muscle_tuning.param_tuning.ParamTuning.plot_search_history" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot high score history of optimization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ax</strong> (<em>matplotlib.axes.Axes</em><em>, </em><em>default=None</em>) – Pre-existing axes for the plot.</p></li>
+<li><p><strong>x_axis</strong> (<em>str</em><em>, </em><em>optional</em>) – <p>Type of x axis.</p>
+<p>if ‘index’, put iteration index on x axis.</p>
+<p>if ‘time’, put elapsed time on x axis.</p>
+</p></li>
+<li><p><strong>plot_kws</strong> (<em>dict</em><em>, </em><em>optional</em>) – <p>Additional parameters passed to matplotlib.axes.Axes.plot(), e.g. <code class="docutils literal notranslate"><span class="pre">alpha</span></code>.</p>
+<p>See <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.plot.html">https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.plot.html</a></p>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muscle_tuning.param_tuning.ParamTuning.plot_search_map">
+<span class="sig-name descname"><span class="pre">plot_search_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pair_n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rounddigits_title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank_number</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rounddigits_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subplot_kws</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heat_kws</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scatter_kws</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muscle_tuning.param_tuning.ParamTuning.plot_search_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot score map.</p>
+<p>If self.tuning_algo is ‘grid’, the map is plotted as heat map.
+Else, the map is plotted as scatter plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>order</strong> (<em>list</em><em>[</em><em>str</em><em>]</em><em>, </em><em>default=None</em>) – <p>Axis order of parameters. The order is applied to following order:
+x-axis of each graph, y-axis of each graph, y-axis of all graphs, x-axis of all graphs.</p>
+<p>If None, the axis order of parameters is determined by parameter importance
+which is calculated by RandomForestRegressor using parameter values as X and
+using score values as y.</p>
+</p></li>
+<li><p><strong>pair_n</strong> (<em>int</em><em>, </em><em>default=4</em>) – Number of rows/columns of the maps.
+Available only if number of parameters are three or more.
+If self.tuning_algo is ‘grid’, this argument is NOT available.</p></li>
+<li><p><strong>rounddigits_title</strong> (<em>int</em><em>, </em><em>default=3</em>) – Round a numbers of parameter range values which are displayed in graph titles
+to a given precision in decimal digits.
+If self.tuning_algo is ‘grid’, this argument is NOT available.</p></li>
+<li><p><strong>rank_number</strong> (<em>int</em><em>, </em><em>default=None</em>) – Number of emphasized data that are in the top posiotions for their score.</p></li>
+<li><p><strong>rounddigits_score</strong> (<em>int</em><em>, </em><em>default=3</em>) – Round a number of error that are in the top posiotions for regression error
+to a given precision in decimal digits.</p></li>
+<li><p><strong>subplot_kws</strong> (<em>dict</em><em>, </em><em>default=None</em>) – <p>Additional parameters passed to matplotlib.pyplot.subplots(), e.g. <code class="docutils literal notranslate"><span class="pre">figsize</span></code>.</p>
+<p>See <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplots.html">https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplots.html</a></p>
+</p></li>
+<li><p><strong>heat_kws</strong> (<em>dict</em><em>, </em><em>default=None</em>) – <p>Additional parameters passed to sns.heatmap(), e.g. <code class="docutils literal notranslate"><span class="pre">cmap</span></code>.
+Available only if self.tuning_algo is ‘grid’.</p>
+<p>See <a class="reference external" href="https://seaborn.pydata.org/generated/seaborn.heatmap.html">https://seaborn.pydata.org/generated/seaborn.heatmap.html</a></p>
+</p></li>
+<li><p><strong>scatter_kws</strong> (<em>Dict</em><em>, </em><em>default=None</em>) – <p>Additional parameters passed to matplotlib.pyplot.scatter(), e.g. <code class="docutils literal notranslate"><span class="pre">alpha</span></code>.
+Available only if self.tuning_algo is NOT ‘grid’.</p>
+<p>See <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.scatter.html">https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.scatter.html</a></p>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="muscle_tuning.param_tuning.ParamTuning.random_search_tuning">
+<span class="sig-name descname"><span class="pre">random_search_tuning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">estimator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuning_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scoring</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">not_opt_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_scales</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mlflow_logging</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rand_kws</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fit_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muscle_tuning.param_tuning.ParamTuning.random_search_tuning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run random search optimization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>estimator</strong> (estimator object implementing <code class="docutils literal notranslate"><span class="pre">fit</span></code>, default=None) – <p>Classification or regression estimators used to tuning. This is assumed to implement the scikit-learn estimator interface.</p>
+<p>Note that the parameters of the estimator are overridden by <code class="docutils literal notranslate"><span class="pre">not_opt_params</span></code></p>
+<p>If None, <code class="docutils literal notranslate"><span class="pre">ESTIMATOR</span></code> written in each tuning class is used.</p>
+</p></li>
+<li><p><strong>tuning_params</strong> (<em>dict</em><em>(</em><em>str</em><em>, </em><em>tuple</em><em>(</em><em>float</em><em>, </em><em>float</em><em>)</em><em>)</em><em>, </em><em>default=None</em>) – <p>Dictionary with parameters names (<code class="docutils literal notranslate"><span class="pre">str</span></code>) as keys and distributions
+or lists of parameters to try.</p>
+<p>If None, <code class="docutils literal notranslate"><span class="pre">CV_PARAMS_RANDOM</span></code> written in each tuning class is used.</p>
+</p></li>
+<li><p><strong>cv</strong> (<em>int</em><em>, </em><em>cross-validation generator</em><em>, or </em><em>an iterable</em><em>, </em><em>default=5</em>) – <p>Determines the cross-validation splitting strategy.</p>
+<p>If int, to specify the number of folds in a KFold.</p>
+</p></li>
+<li><p><strong>seed</strong> (<em>int</em><em>, </em><em>default=42</em>) – <p>Seed for random number generator of estimator and cross validation.</p>
+<p>Note that “random_state” in <code class="docutils literal notranslate"><span class="pre">not_opt_params</span></code> are overridden by this argument.</p>
+</p></li>
+<li><p><strong>scoring</strong> (<em>str</em><em>, </em><em>callable</em><em>, </em><em>list</em><em>, </em><em>tuple</em><em> or </em><em>dict</em><em>, </em><em>default='neg_root_mean_squared_error' in regression</em><em>, </em><em>'logloss' in classification.</em>) – Strategy to evaluate the performance of the cross-validated model on
+the test set.</p></li>
+<li><p><strong>n_iter</strong> (<em>int</em><em>, </em><em>default=None</em>) – <p>Number of parameter settings that are sampled. n_iter trades
+off runtime vs quality of the solution.</p>
+<p>If None, <code class="docutils literal notranslate"><span class="pre">N_ITER_RANDOM</span></code> written in each tuning class is used.</p>
+</p></li>
+<li><p><strong>not_opt_params</strong> (<em>dict</em><em>, </em><em>default=None</em>) – <p>Dictionary with parameters, which are NOT optimized.</p>
+<p>Note that the parameters override those of the estimator.</p>
+<p>If None, <code class="docutils literal notranslate"><span class="pre">NOT_OPT_PARAMS</span></code> written in each tuning class is used.</p>
+</p></li>
+<li><p><strong>param_scales</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>{'linear'</em><em>, </em><em>'log'}</em><em>]</em><em>, </em><em>default=None</em>) – <p>Dictionary with parameters’ scales.</p>
+<p>If ‘linear’, the axis of result graph is drawn in linear scale.</p>
+<p>If ‘log’, the axis of result graph is drawn in log scale.</p>
+<p>If None, <code class="docutils literal notranslate"><span class="pre">PARAM_SCALES</span></code> written in each tuning class is used.</p>
+</p></li>
+<li><p><strong>mlflow_logging</strong> (<em>str</em><em>, </em><em>default=None</em>) – <p>Strategy to record the result by MLFlow library.</p>
+<p>If ‘with’, mlflow process is started in the tuning instance. So you need not use <code class="docutils literal notranslate"><span class="pre">start_run()</span></code> explicitly.</p>
+<p>If ‘log’, mlflow process is NOT started in the tuning instance. So you should use <code class="docutils literal notranslate"><span class="pre">start_run()</span></code> outside the muscle-tuning library.</p>
+<p>If None, mlflow is not used.</p>
+</p></li>
+<li><p><strong>rand_kws</strong> (<em>dict</em><em>, </em><em>default=None</em>) – <p>Additional parameters passed to sklearn.model_selection.RandomizedSearchCV, e.g. <code class="docutils literal notranslate"><span class="pre">n_jobs</span></code>.</p>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">estimator</span></code>, <code class="docutils literal notranslate"><span class="pre">param_grid</span></code>, <code class="docutils literal notranslate"><span class="pre">cv</span></code>, and <code class="docutils literal notranslate"><span class="pre">scoring</span></code> CAN NOT be used in the argument</p>
+<p>See <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.RandomizedSearchCV.html">https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.RandomizedSearchCV.html</a></p>
+</p></li>
+<li><p><strong>fit_params</strong> (<em>dict</em><em>, </em><em>default=None</em>) – <p>Parameters passed to the fit() method of the estimator,
+e.g. <code class="docutils literal notranslate"><span class="pre">early_stopping_round</span></code> and <code class="docutils literal notranslate"><span class="pre">eval_set</span></code> of XGBRegressor or LGBMRegressor.
+If the estimator is pipeline, each parameter name must be prefixed
+such that parameter p for step s has key s__p.</p>
+<p>If None, <code class="docutils literal notranslate"><span class="pre">FIT_PARAMS</span></code> written in each tuning class is used.</p>
+<p>Note that if <code class="docutils literal notranslate"><span class="pre">eval_set</span></code> is None, <code class="docutils literal notranslate"><span class="pre">self.X</span></code> and <code class="docutils literal notranslate"><span class="pre">self.y</span></code> are set to <code class="docutils literal notranslate"><span class="pre">eval_set</span></code> automatically.</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>best_params</strong> (<em>dict[str, float]</em>) – Returns best parameters determined by optimization</p></li>
+<li><p><strong>best_score</strong> (<em>float</em>) – Returns best score determined by optimization.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Kenta Nakamura.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

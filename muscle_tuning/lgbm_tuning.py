@@ -7,13 +7,14 @@ from ._cv_eval_set import cross_val_score_eval_set, init_eval_set
 
 class LGBMRegressorTuning(ParamTuning):
     """
-    LightGBM回帰チューニング用クラス
+    Tuning class for LGBMRegressor
+
+    See ``muscle_tuning.param_tuning.ParamTuning`` to see API Reference of all methods
     """
 
     # 共通定数
-    SEED = 42  # デフォルト乱数シード
-    SEEDS = [42, 43, 44, 45, 46, 47, 48, 49, 50, 51]  # デフォルト複数乱数シード
-    CV_NUM = 5  # 最適化時のクロスバリデーションのデフォルト分割数
+    _SEED = 42  # デフォルト乱数シード
+    _CV_NUM = 5  # 最適化時のクロスバリデーションのデフォルト分割数
     
     # 学習器のインスタンス (LightGBM)
     ESTIMATOR = LGBMRegressor()
@@ -23,11 +24,11 @@ class LGBMRegressorTuning(ParamTuning):
                   'eval_metric': 'rmse'  # early_stopping_roundsの評価指標
                   }
     # 最適化で最大化するデフォルト評価指標('r2', 'neg_mean_squared_error', 'neg_root_mean_squared_error', etc.)
-    SCORING = 'neg_root_mean_squared_error'
+    _SCORING = 'neg_root_mean_squared_error'
 
     # 最適化対象外パラメータ
     NOT_OPT_PARAMS = {'objective': 'regression',  # 最小化させるべき損失関数
-                      'random_state': SEED,  # 乱数シード
+                      'random_state': _SEED,  # 乱数シード
                       'boosting_type': 'gbdt',  # boosting_type
                       'n_estimators': 10000  # 最大学習サイクル数（評価指標がearly_stopping_rounds連続で改善しなければ打ち切り）
                       }
@@ -56,7 +57,7 @@ class LGBMRegressorTuning(ParamTuning):
     # ベイズ最適化用パラメータ
     N_ITER_BAYES = 60  # ベイズ最適化の試行数
     INIT_POINTS = 10  # 初期観測点の個数(ランダムな探索を何回行うか)
-    ACQ = 'ei'  # 獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
+    _ACQ = 'ei'  # 獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
     N_ITER_OPTUNA = 200  # Optunaの試行数
     BAYES_PARAMS = {'reg_alpha': (0.0001, 0.1),
                     'reg_lambda': (0.0001, 0.1),
@@ -153,13 +154,14 @@ class LGBMRegressorTuning(ParamTuning):
 
 class LGBMClassifierTuning(ParamTuning):
     """
-    LightGBM分類チューニング用クラス
+    Tuning class for LGBMClassifier
+
+    See ``muscle_tuning.param_tuning.ParamTuning`` to see API Reference of all methods
     """
 
     # 共通定数
-    SEED = 42  # デフォルト乱数シード
-    SEEDS = [42, 43, 44, 45, 46, 47, 48, 49, 50, 51]  # デフォルト複数乱数シード
-    CV_NUM = 5  # 最適化時のクロスバリデーションのデフォルト分割数
+    _SEED = 42  # デフォルト乱数シード
+    _CV_NUM = 5  # 最適化時のクロスバリデーションのデフォルト分割数
     
     # 学習器のインスタンス (LightGBM)
     ESTIMATOR = LGBMClassifier()
@@ -169,11 +171,11 @@ class LGBMClassifierTuning(ParamTuning):
                   'eval_metric': 'binary_logloss'  # early_stopping_roundsの評価指標
                   }
     # 最適化で最大化するデフォルト評価指標('neg_log_loss', 'roc_auc', 'roc_auc_ovr'など)
-    SCORING = 'neg_log_loss'
+    _SCORING = 'neg_log_loss'
 
     # 最適化対象外パラメータ
     NOT_OPT_PARAMS = {'objective': None,  # 最小化させるべき損失関数
-                      'random_state': SEED,  # 乱数シード
+                      'random_state': _SEED,  # 乱数シード
                       'boosting_type': 'gbdt',  # boosting_type
                       'n_estimators': 10000  # 最大学習サイクル数（評価指標がearly_stopping_rounds連続で改善しなければ打ち切り）
                       }
@@ -202,7 +204,7 @@ class LGBMClassifierTuning(ParamTuning):
     # ベイズ最適化用パラメータ
     N_ITER_BAYES = 60  # ベイズ最適化の試行数
     INIT_POINTS = 10  # 初期観測点の個数(ランダムな探索を何回行うか)
-    ACQ = 'ei'  # 獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
+    _ACQ = 'ei'  # 獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
     N_ITER_OPTUNA = 200  # Optunaの試行数
     BAYES_PARAMS = {'reg_alpha': (0.0001, 0.1),
                     'reg_lambda': (0.0001, 0.1),

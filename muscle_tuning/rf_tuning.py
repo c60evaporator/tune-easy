@@ -5,23 +5,24 @@ from .param_tuning import ParamTuning
 
 class RFRegressorTuning(ParamTuning):
     """
-    ランダムフォレスト回帰チューニング用クラス
+    Tuning class for RandomForestRegressor
+
+    See ``muscle_tuning.param_tuning.ParamTuning`` to see API Reference of all methods
     """
 
     # 共通定数
-    SEED = 42  # デフォルト乱数シード
-    SEEDS = [42, 43, 44, 45, 46, 47, 48, 49, 50, 51]  # デフォルト複数乱数シード
-    CV_NUM = 5  # 最適化時のクロスバリデーションのデフォルト分割数
+    _SEED = 42  # デフォルト乱数シード
+    _CV_NUM = 5  # 最適化時のクロスバリデーションのデフォルト分割数
     
     # 学習器のインスタンス (RandomForestRegressor)
     ESTIMATOR = RandomForestRegressor()
     # 学習時のパラメータのデフォルト値
     FIT_PARAMS = {}
     # 最適化で最大化するデフォルト評価指標('r2', 'neg_mean_squared_error', 'neg_root_mean_squared_error', etc.)
-    SCORING = 'neg_root_mean_squared_error'
+    _SCORING = 'neg_root_mean_squared_error'
 
     # 最適化対象外パラメータ
-    NOT_OPT_PARAMS = {'random_state': SEED,  # 乱数シード
+    NOT_OPT_PARAMS = {'random_state': _SEED,  # 乱数シード
                       }
 
     # グリッドサーチ用パラメータ
@@ -44,7 +45,7 @@ class RFRegressorTuning(ParamTuning):
     # ベイズ最適化用パラメータ
     N_ITER_BAYES = 10  # BayesianOptimizationの試行数
     INIT_POINTS = 80  # BayesianOptimizationの初期観測点の個数(ランダムな探索を何回行うか)
-    ACQ = 'ei'  # BayesianOptimizationの獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
+    _ACQ = 'ei'  # BayesianOptimizationの獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
     N_ITER_OPTUNA = 120  # Optunaの試行数
     BAYES_PARAMS = {'n_estimators': (20, 160),
                     'max_features': (1, 64),  # 最大値は自動でデータの特徴量数に変更されるので注意
@@ -108,23 +109,24 @@ class RFRegressorTuning(ParamTuning):
 
 class RFClassifierTuning(ParamTuning):
     """
-    ランダムフォレスト分類チューニング用クラス
+    Tuning class for RandomForestClassifier
+
+    See ``muscle_tuning.param_tuning.ParamTuning`` to see API Reference of all methods
     """
 
     # 共通定数
-    SEED = 42  # デフォルト乱数シード
-    SEEDS = [42, 43, 44, 45, 46, 47, 48, 49, 50, 51]  # デフォルト複数乱数シード
-    CV_NUM = 5  # 最適化時のクロスバリデーションのデフォルト分割数
+    _SEED = 42  # デフォルト乱数シード
+    _CV_NUM = 5  # 最適化時のクロスバリデーションのデフォルト分割数
     
     # 学習器のインスタンス (RandomForestClassifier)
     ESTIMATOR = RandomForestClassifier()
     # 学習時のパラメータのデフォルト値
     FIT_PARAMS = {}
     # 最適化で最大化するデフォルト評価指標('neg_log_loss', 'roc_auc', 'roc_auc_ovr'など)
-    SCORING = 'neg_log_loss'
+    _SCORING = 'neg_log_loss'
 
     # 最適化対象外パラメータ
-    NOT_OPT_PARAMS = {'random_state': SEED,  # 乱数シード
+    NOT_OPT_PARAMS = {'random_state': _SEED,  # 乱数シード
                       }
 
     # グリッドサーチ用パラメータ
@@ -147,7 +149,7 @@ class RFClassifierTuning(ParamTuning):
     # ベイズ最適化用パラメータ
     N_ITER_BAYES = 10  # BayesianOptimizationの試行数
     INIT_POINTS = 80  # BayesianOptimizationの初期観測点の個数(ランダムな探索を何回行うか)
-    ACQ = 'ei'  # BayesianOptimizationの獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
+    _ACQ = 'ei'  # BayesianOptimizationの獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
     N_ITER_OPTUNA = 120  # Optunaの試行数
     BAYES_PARAMS = {'n_estimators': (20, 160),
                     'max_features': (1, 64),  # 最大値は自動でデータの特徴量数に変更されるので注意

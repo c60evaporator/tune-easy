@@ -6,20 +6,21 @@ from .param_tuning import ParamTuning
 
 class SVMRegressorTuning(ParamTuning):
     """
-    サポートベクター回帰チューニング用クラス
+    Tuning class for SVR
+
+    See ``muscle_tuning.param_tuning.ParamTuning`` to see API Reference of all methods
     """
 
     # 共通定数
-    SEED = 42  # デフォルト乱数シード
-    SEEDS = [42, 43, 44, 45, 46, 47, 48, 49, 50, 51]  # デフォルト複数乱数シード
-    CV_NUM = 5  # 最適化時のクロスバリデーションのデフォルト分割数
+    _SEED = 42  # デフォルト乱数シード
+    _CV_NUM = 5  # 最適化時のクロスバリデーションのデフォルト分割数
     
     # 学習器のインスタンス (標準化+SVRのパイプライン)
     ESTIMATOR = Pipeline([("scaler", StandardScaler()), ("svr", SVR())])
     # 学習時のパラメータのデフォルト値
     FIT_PARAMS = {}
     # 最適化で最大化するデフォルト評価指標('r2', 'neg_mean_squared_error', 'neg_root_mean_squared_error', etc.)
-    SCORING = 'neg_root_mean_squared_error'
+    _SCORING = 'neg_root_mean_squared_error'
 
     # 最適化対象外パラメータ
     NOT_OPT_PARAMS = {'kernel': 'rbf'  # カーネルの種類 (基本は'rbf')
@@ -41,7 +42,7 @@ class SVMRegressorTuning(ParamTuning):
     # ベイズ最適化用パラメータ
     N_ITER_BAYES = 100  # BayesianOptimizationの試行数
     INIT_POINTS = 20  # BayesianOptimizationの初期観測点の個数(ランダムな探索を何回行うか)
-    ACQ = 'ei'  # BayesianOptimizationの獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
+    _ACQ = 'ei'  # BayesianOptimizationの獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
     N_ITER_OPTUNA = 300  # Optunaの試行数
     BAYES_PARAMS = {'gamma': (0.001, 10),
                     'C': (0.01, 10),
@@ -62,20 +63,21 @@ class SVMRegressorTuning(ParamTuning):
 
 class SVMClassifierTuning(ParamTuning):
     """
-    サポートベクター分類チューニング用クラス
+    Tuning class for SVC
+
+    See ``muscle_tuning.param_tuning.ParamTuning`` to see API Reference of all methods
     """
 
     # 共通定数
-    SEED = 42  # デフォルト乱数シード
-    SEEDS = [42, 43, 44, 45, 46, 47, 48, 49, 50, 51]  # デフォルト複数乱数シード
-    CV_NUM = 5  # 最適化時のクロスバリデーションのデフォルト分割数
+    _SEED = 42  # デフォルト乱数シード
+    _CV_NUM = 5  # 最適化時のクロスバリデーションのデフォルト分割数
     
     # 学習器のインスタンス (標準化+SVCのパイプライン)
     ESTIMATOR = Pipeline([("scaler", StandardScaler()), ("svc", SVC())])
     # 学習時のパラメータのデフォルト値
     FIT_PARAMS = {}
     # 最適化で最大化するデフォルト評価指標('neg_log_loss', 'roc_auc', 'roc_auc_ovr'など)
-    SCORING = 'neg_log_loss'
+    _SCORING = 'neg_log_loss'
 
     # 最適化対象外パラメータ
     NOT_OPT_PARAMS = {'kernel': 'rbf'  # カーネルの種類 (基本は'rbf')
@@ -95,7 +97,7 @@ class SVMClassifierTuning(ParamTuning):
     # ベイズ最適化用パラメータ
     N_ITER_BAYES = 80  # BayesianOptimizationの試行数
     INIT_POINTS = 10  # BayesianOptimizationの初期観測点の個数(ランダムな探索を何回行うか)
-    ACQ = 'ei'  # BayesianOptimizationの獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
+    _ACQ = 'ei'  # BayesianOptimizationの獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
     N_ITER_OPTUNA = 120  # Optunaの試行数
     BAYES_PARAMS = {'gamma': (0.01, 100),
                     'C': (0.01, 100)

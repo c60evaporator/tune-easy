@@ -8,13 +8,14 @@ from ._cv_eval_set import cross_val_score_eval_set, init_eval_set
 
 class XGBRegressorTuning(ParamTuning):
     """
-    XGBoost回帰チューニング用クラス
+    Tuning class for XGBRegressor
+
+    See ``muscle_tuning.param_tuning.ParamTuning`` to see API Reference of all methods
     """
 
     # 共通定数
-    SEED = 42  # デフォルト乱数シード
-    SEEDS = [42, 43, 44, 45, 46, 47, 48, 49, 50, 51]  # デフォルト複数乱数シード
-    CV_NUM = 5  # 最適化時のクロスバリデーションのデフォルト分割数
+    _SEED = 42  # デフォルト乱数シード
+    _CV_NUM = 5  # 最適化時のクロスバリデーションのデフォルト分割数
     
     # 学習器のインスタンス (XGBoost)
     ESTIMATOR = XGBRegressor()
@@ -24,11 +25,11 @@ class XGBRegressorTuning(ParamTuning):
                   'eval_metric': 'rmse'  # early_stopping_roundsの評価指標
                   }
     # 最適化で最大化するデフォルト評価指標('r2', 'neg_mean_squared_error', 'neg_root_mean_squared_error', etc.)
-    SCORING = 'neg_root_mean_squared_error'
+    _SCORING = 'neg_root_mean_squared_error'
 
     # 最適化対象外パラメータ
     NOT_OPT_PARAMS = {'objective': 'reg:squarederror',  # 最小化させるべき損失関数
-                      'random_state': SEED,  # 乱数シード
+                      'random_state': _SEED,  # 乱数シード
                       'booster': 'gbtree',  # ブースター
                       'n_estimators': 10000  # 最大学習サイクル数（評価指標がearly_stopping_rounds連続で改善しなければ打ち切り）
                       }
@@ -57,7 +58,7 @@ class XGBRegressorTuning(ParamTuning):
     # ベイズ最適化用パラメータ
     N_ITER_BAYES = 60  # BayesianOptimizationの試行数
     INIT_POINTS = 10  # BayesianOptimizationの初期観測点の個数(ランダムな探索を何回行うか)
-    ACQ = 'ei'  # BayesianOptimizationの獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
+    _ACQ = 'ei'  # BayesianOptimizationの獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
     N_ITER_OPTUNA = 120  # Optunaの試行数
     BAYES_PARAMS = {'learning_rate': (0.05, 0.3),
                     'min_child_weight': (1, 10),
@@ -155,13 +156,14 @@ class XGBRegressorTuning(ParamTuning):
 
 class XGBClassifierTuning(ParamTuning):
     """
-    XGBoost回帰チューニング用クラス
+    Tuning class for XGBClassifier
+
+    See ``muscle_tuning.param_tuning.ParamTuning`` to see API Reference of all methods
     """
 
     # 共通定数
-    SEED = 42  # デフォルト乱数シード
-    SEEDS = [42, 43, 44, 45, 46, 47, 48, 49, 50, 51]  # デフォルト複数乱数シード
-    CV_NUM = 5  # 最適化時のクロスバリデーションのデフォルト分割数
+    _SEED = 42  # デフォルト乱数シード
+    _CV_NUM = 5  # 最適化時のクロスバリデーションのデフォルト分割数
     
     # 学習器のインスタンス (XGBoost)
     ESTIMATOR = XGBClassifier()
@@ -171,11 +173,11 @@ class XGBClassifierTuning(ParamTuning):
                   'eval_metric': 'logloss'  # early_stopping_roundsの評価指標
                   }
     # 最適化で最大化するデフォルト評価指標('neg_log_loss', 'roc_auc', 'roc_auc_ovr'など)
-    SCORING = 'neg_log_loss'
+    _SCORING = 'neg_log_loss'
 
     # 最適化対象外パラメータ
     NOT_OPT_PARAMS = {'objective': None,  # 最小化させるべき損失関数
-                      'random_state': SEED,  # 乱数シード
+                      'random_state': _SEED,  # 乱数シード
                       'booster': 'gbtree',  # ブースター
                       'n_estimators': 10000,  # 最大学習サイクル数（評価指標がearly_stopping_rounds連続で改善しなければ打ち切り）
                       'use_label_encoder': False  # UserWarning防止（The use of label encoder in XGBClassifier is deprecated）
@@ -205,7 +207,7 @@ class XGBClassifierTuning(ParamTuning):
     # ベイズ最適化用パラメータ
     N_ITER_BAYES = 60  # BayesianOptimizationの試行数
     INIT_POINTS = 10  # BayesianOptimizationの初期観測点の個数(ランダムな探索を何回行うか)
-    ACQ = 'ei'  # BayesianOptimizationの獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
+    _ACQ = 'ei'  # BayesianOptimizationの獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
     N_ITER_OPTUNA = 120  # Optunaの試行数
     BAYES_PARAMS = {'learning_rate': (0.05, 0.3),
                     'min_child_weight': (1, 10),

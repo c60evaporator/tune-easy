@@ -22,19 +22,19 @@ from ._cv_eval_set import validation_curve_eval_set, learning_curve_eval_set, Gr
 
 class ParamTuning():
     """
-    パラメータチューニング用基底クラス
+    Base class of Tuning classes
     """
 
     # 共通定数
-    SEED = 42  # デフォルト乱数シード
-    CV_NUM = 5  # 最適化時のクロスバリデーションのデフォルト分割数
+    _SEED = 42  # デフォルト乱数シード
+    _CV_NUM = 5  # 最適化時のクロスバリデーションのデフォルト分割数
     
     # 学習器のインスタンス
     ESTIMATOR = None
     # 学習時のパラメータのデフォルト値
     FIT_PARAMS = {}
     # 最適化で最大化するデフォルト評価指標('r2', 'neg_mean_squared_error', 'neg_root_mean_squared_error', etc.)
-    SCORING = None
+    _SCORING = None
 
     # 最適化対象外パラメータ
     NOT_OPT_PARAMS = {}
@@ -49,7 +49,7 @@ class ParamTuning():
     # ベイズ最適化用パラメータ
     N_ITER_BAYES = 120  # ベイズ最適化の繰り返し回数
     INIT_POINTS = 10  # 初期観測点の個数(ランダムな探索を何回行うか)
-    ACQ = 'ei'  # 獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
+    _ACQ = 'ei'  # 獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
     BAYES_PARAMS = {}
     INT_PARAMS = []  # 整数型のパラメータのリスト(ベイズ最適化時は都度int型変換する)
 
@@ -87,18 +87,18 @@ class ParamTuning():
         cv_group: numpy.ndarray, optional
             Grouping variable that will be used for GroupKFold or LeaveOneGroupOut. Should be 1 dimensional numpy.ndarray.
         
-        eval_set_selection: {'all', 'test', 'train', 'original', 'original_transformed'}, default='test' if `fit_params["eval_set"]` is None, else 'original_transformed'
-            Select data passed to `eval_set` in `fit_params`. Available only if "estimator" is LightGBM or XGBoost.
+        eval_set_selection: {'all', 'test', 'train', 'original', 'original_transformed'}, default='test' if ``fit_params["eval_set"]`` is None, else 'original_transformed'
+            Select data passed to ``eval_set`` in ``fit_params``. Available only if "estimator" is LightGBM or XGBoost.
             
-            If "all", use all data in `X` and `y`.
+            If "all", use all data in ``X`` and ``y``.
 
-            If "train", select train data from `X` and `y` using cv.split().
+            If "train", select train data from ``X`` and ``y`` using cv.split().
 
-            If "test", select test data from `X` and `y` using cv.split().  
+            If "test", select test data from ``X`` and ``y`` using cv.split().  
 
-            If "original", use raw `eval_set`.
+            If "original", use raw ``eval_set``.
 
-            If "original_transformed", use `eval_set` transformed by fit_transform() of pipeline if `estimater` is pipeline.
+            If "original_transformed", use ``eval_set`` transformed by fit_transform() of pipeline if ``estimater`` is pipeline.
         """
         if X.shape[1] != len(x_colnames):
             raise Exception('width of X must be equal to length of x_colnames')
@@ -275,22 +275,22 @@ class ParamTuning():
     def grid_search_tuning(self, estimator=None, tuning_params=None, cv=None, seed=None, scoring=None,
                            not_opt_params=None, param_scales=None, mlflow_logging=None, grid_kws=None, fit_params=None):
         """
-        グリッドサーチ＋クロスバリデーション
+        Run grid search optimization.
 
         Parameters
         ----------
-        estimator : estimator object implementing `fit`, default=None
+        estimator : estimator object implementing ``fit``, default=None
             Classification or regression estimators used to tuning. This is assumed to implement the scikit-learn estimator interface.
             
-            Note that the parameters of the estimator are overridden by `not_opt_params`
+            Note that the parameters of the estimator are overridden by ``not_opt_params``
 
-            If None, `ESTIMATOR` written in each tuning class is used.
+            If None, ``ESTIMATOR`` written in each tuning class is used.
         
         tuning_params : dict[str, list(float)], default=None
-            Dictionary with parameters names (`str`) as keys and lists of
+            Dictionary with parameters names (``str``) as keys and lists of
             parameter settings to try as values.
 
-            If None, `CV_PARAMS_GRID` written in each tuning class is used.
+            If None, ``CV_PARAMS_GRID`` written in each tuning class is used.
         
         cv : int, cross-validation generator, or an iterable, default=5
             Determines the cross-validation splitting strategy.
@@ -300,7 +300,7 @@ class ParamTuning():
         seed : int, default=42
             Seed for random number generator of estimator and cross validation.
 
-            Note that "random_state" in `not_opt_params` are overridden by this argument.
+            Note that "random_state" in ``not_opt_params`` are overridden by this argument.
         
         scoring : str, callable, list, tuple or dict, default='neg_root_mean_squared_error' in regression, 'logloss' in classification.
             Strategy to evaluate the performance of the cross-validated model on
@@ -311,7 +311,7 @@ class ParamTuning():
 
             Note that the parameters override those of the estimator.
 
-            If None, `NOT_OPT_PARAMS` written in each tuning class is used.
+            If None, ``NOT_OPT_PARAMS`` written in each tuning class is used.
         
         param_scales : dict[str, {'linear', 'log'}], default=None
             Dictionary with parameters' scales.
@@ -320,33 +320,33 @@ class ParamTuning():
 
             If 'log', the axis of result graph is drawn in log scale.
 
-            If None, `PARAM_SCALES` written in each tuning class is used.
+            If None, ``PARAM_SCALES`` written in each tuning class is used.
         
         mlflow_logging : str, default=None
             Strategy to record the result by MLFlow library.
 
-            If 'with', mlflow process is started in the tuning instance. So you need not use `start_run()` explicitly.
+            If 'with', mlflow process is started in the tuning instance. So you need not use ``start_run()`` explicitly.
 
-            If 'log', mlflow process is NOT started in the tuning instance. So you should use `start_run()` outside the muscle-tuning library.
+            If 'log', mlflow process is NOT started in the tuning instance. So you should use ``start_run()`` outside the muscle-tuning library.
 
             If None, mlflow is not used.
 
         grid_kws : dict, default=None
-            Additional parameters passed to sklearn.model_selection.GridSearchCV, e.g. `n_jobs`.
+            Additional parameters passed to sklearn.model_selection.GridSearchCV, e.g. ``n_jobs``.
 
-            Note that `estimator`, `param_grid`, `cv`, and `scoring` CAN NOT be used in the argument
+            Note that ``estimator``, ``param_grid``, ``cv``, and ``scoring`` CAN NOT be used in the argument
             
             See https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html
         
         fit_params : dict, default=None
             Parameters passed to the fit() method of the estimator, 
-            e.g. `early_stopping_round` and `eval_set` of XGBRegressor or LGBMRegressor.
+            e.g. ``early_stopping_round`` and ``eval_set`` of XGBRegressor or LGBMRegressor.
             If the estimator is pipeline, each parameter name must be prefixed
             such that parameter p for step s has key s__p.
 
-            If None, `FIT_PARAMS` written in each tuning class is used.
+            If None, ``FIT_PARAMS`` written in each tuning class is used.
 
-            Note that if `eval_set` is None, `self.X` and `self.y` are set to `eval_set` automatically.
+            Note that if ``eval_set`` is None, ``self.X`` and ``self.y`` are set to ``eval_set`` automatically.
 
         Returns
         ----------
@@ -366,11 +366,11 @@ class ParamTuning():
         if tuning_params is None:
             tuning_params = self.CV_PARAMS_GRID
         if cv is None:
-            cv = self.CV_NUM
+            cv = self._CV_NUM
         if seed is None:
-            seed = self.SEED
+            seed = self._SEED
         if scoring is None:
-            scoring = self.SCORING
+            scoring = self._SCORING
         if not_opt_params is None:
             not_opt_params = self.NOT_OPT_PARAMS
         if param_scales is None:
@@ -457,22 +457,22 @@ class ParamTuning():
                              n_iter=None,
                              not_opt_params=None, param_scales=None, mlflow_logging=None, rand_kws=None, fit_params=None):
         """
-        ランダムサーチ＋クロスバリデーション
+        Run random search optimization.
 
         Parameters
         ----------
-        estimator : estimator object implementing `fit`, default=None
+        estimator : estimator object implementing ``fit``, default=None
             Classification or regression estimators used to tuning. This is assumed to implement the scikit-learn estimator interface.
             
-            Note that the parameters of the estimator are overridden by `not_opt_params`
+            Note that the parameters of the estimator are overridden by ``not_opt_params``
 
-            If None, `ESTIMATOR` written in each tuning class is used.
+            If None, ``ESTIMATOR`` written in each tuning class is used.
         
         tuning_params : dict(str, tuple(float, float)), default=None
-            Dictionary with parameters names (`str`) as keys and distributions
+            Dictionary with parameters names (``str``) as keys and distributions
             or lists of parameters to try.
 
-            If None, `CV_PARAMS_RANDOM` written in each tuning class is used.
+            If None, ``CV_PARAMS_RANDOM`` written in each tuning class is used.
         
         cv : int, cross-validation generator, or an iterable, default=5
             Determines the cross-validation splitting strategy.
@@ -482,7 +482,7 @@ class ParamTuning():
         seed : int, default=42
             Seed for random number generator of estimator and cross validation.
 
-            Note that "random_state" in `not_opt_params` are overridden by this argument.
+            Note that "random_state" in ``not_opt_params`` are overridden by this argument.
         
         scoring : str, callable, list, tuple or dict, default='neg_root_mean_squared_error' in regression, 'logloss' in classification.
             Strategy to evaluate the performance of the cross-validated model on
@@ -492,14 +492,14 @@ class ParamTuning():
             Number of parameter settings that are sampled. n_iter trades
             off runtime vs quality of the solution.
 
-            If None, `N_ITER_RANDOM` written in each tuning class is used.
+            If None, ``N_ITER_RANDOM`` written in each tuning class is used.
         
         not_opt_params : dict, default=None
             Dictionary with parameters, which are NOT optimized.
 
             Note that the parameters override those of the estimator.
 
-            If None, `NOT_OPT_PARAMS` written in each tuning class is used.
+            If None, ``NOT_OPT_PARAMS`` written in each tuning class is used.
         
         param_scales : dict[str, {'linear', 'log'}], default=None
             Dictionary with parameters' scales.
@@ -508,33 +508,33 @@ class ParamTuning():
 
             If 'log', the axis of result graph is drawn in log scale.
 
-            If None, `PARAM_SCALES` written in each tuning class is used.
+            If None, ``PARAM_SCALES`` written in each tuning class is used.
         
         mlflow_logging : str, default=None
             Strategy to record the result by MLFlow library.
 
-            If 'with', mlflow process is started in the tuning instance. So you need not use `start_run()` explicitly.
+            If 'with', mlflow process is started in the tuning instance. So you need not use ``start_run()`` explicitly.
 
-            If 'log', mlflow process is NOT started in the tuning instance. So you should use `start_run()` outside the muscle-tuning library.
+            If 'log', mlflow process is NOT started in the tuning instance. So you should use ``start_run()`` outside the muscle-tuning library.
 
             If None, mlflow is not used.
 
         rand_kws : dict, default=None
-            Additional parameters passed to sklearn.model_selection.RandomizedSearchCV, e.g. `n_jobs`.
+            Additional parameters passed to sklearn.model_selection.RandomizedSearchCV, e.g. ``n_jobs``.
 
-            Note that `estimator`, `param_grid`, `cv`, and `scoring` CAN NOT be used in the argument
+            Note that ``estimator``, ``param_grid``, ``cv``, and ``scoring`` CAN NOT be used in the argument
             
             See https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.RandomizedSearchCV.html
         
         fit_params : dict, default=None
             Parameters passed to the fit() method of the estimator, 
-            e.g. `early_stopping_round` and `eval_set` of XGBRegressor or LGBMRegressor.
+            e.g. ``early_stopping_round`` and ``eval_set`` of XGBRegressor or LGBMRegressor.
             If the estimator is pipeline, each parameter name must be prefixed
             such that parameter p for step s has key s__p.
 
-            If None, `FIT_PARAMS` written in each tuning class is used.
+            If None, ``FIT_PARAMS`` written in each tuning class is used.
 
-            Note that if `eval_set` is None, `self.X` and `self.y` are set to `eval_set` automatically.
+            Note that if ``eval_set`` is None, ``self.X`` and ``self.y`` are set to ``eval_set`` automatically.
 
         Returns
         ----------
@@ -554,11 +554,11 @@ class ParamTuning():
         if tuning_params is None:
             tuning_params = self.CV_PARAMS_RANDOM
         if cv is None:
-            cv = self.CV_NUM
+            cv = self._CV_NUM
         if seed is None:
-            seed = self.SEED
+            seed = self._SEED
         if scoring is None:
-            scoring = self.SCORING
+            scoring = self._SCORING
         if n_iter is None:
             n_iter = self.N_ITER_RANDOM
         if not_opt_params is None:
@@ -693,22 +693,22 @@ class ParamTuning():
                          n_iter=None, init_points=None, acq=None,
                          not_opt_params=None, int_params=None, param_scales=None, mlflow_logging=None, fit_params=None):
         """
-        ベイズ最適化(BayesianOptimization)
+        Run bayesian optimization with ``BayesianOptimization`` library.
 
         Parameters
         ----------
-        estimator : estimator object implementing `fit`, default=None
+        estimator : estimator object implementing ``fit``, default=None
             Classification or regression estimators used to tuning. This is assumed to implement the scikit-learn estimator interface.
             
-            Note that the parameters of the estimator are overridden by `not_opt_params`
+            Note that the parameters of the estimator are overridden by ``not_opt_params``
 
-            If None, `ESTIMATOR` written in each tuning class is used.
+            If None, ``ESTIMATOR`` written in each tuning class is used.
         
         tuning_params : dict[str, tuple(float, float)], default=None
-            Dictionary with parameters names (`str`) as keys and tuples of
+            Dictionary with parameters names (``str``) as keys and tuples of
             or minimum limit and maximum limit of parameters as value.
 
-            If None, `BAYES_PARAMS` written in each tuning class is used.
+            If None, ``BAYES_PARAMS`` written in each tuning class is used.
         
         cv : int, cross-validation generator, or an iterable, default=5
             Determines the cross-validation splitting strategy.
@@ -718,7 +718,7 @@ class ParamTuning():
         seed : int, default=42
             Seed for random number generator of estimator and cross validation.
 
-            Note that "random_state" in `not_opt_params` are overridden by this argument.
+            Note that "random_state" in ``not_opt_params`` are overridden by this argument.
         
         scoring : str, callable, list, tuple or dict, default='neg_root_mean_squared_error' in regression, 'logloss' in classification.
             Strategy to evaluate the performance of the cross-validated model on
@@ -727,12 +727,12 @@ class ParamTuning():
         n_iter : int, default=None
             Number of iterations in bayesian optimization.
 
-            If None, `N_ITER_BAYES` written in each tuning class is used.
+            If None, ``N_ITER_BAYES`` written in each tuning class is used.
         
         init_points : int, default=None
             Number of initialized points, which searched randomly.
 
-            If None, `INIT_POINTS` written in each tuning class is used.
+            If None, ``INIT_POINTS`` written in each tuning class is used.
 
         acq : {'ei', 'pi', 'ucb'}, default='ei'
             Acquisition function
@@ -742,12 +742,12 @@ class ParamTuning():
 
             Note that the parameters override those of the estimator.
 
-            If None, `NOT_OPT_PARAMS` written in each tuning class is used.
+            If None, ``NOT_OPT_PARAMS`` written in each tuning class is used.
 
         int_params : list[str], default=None
             List of parameters whose type is int.
 
-            If None, `INT_PARAMS` written in each tuning class is used.
+            If None, ``INT_PARAMS`` written in each tuning class is used.
         
         param_scales : dict(str, {'linear', 'log'}), default=None
             Dictionary with parameters' scales.
@@ -756,26 +756,26 @@ class ParamTuning():
 
             If 'log', the axis of result graph is drawn in log scale.
 
-            If None, `PARAM_SCALES` written in each tuning class is used.
+            If None, ``PARAM_SCALES`` written in each tuning class is used.
 
         mlflow_logging : str, default=None
             Strategy to record the result by MLFlow library.
 
-            If 'with', mlflow process is started in the tuning instance. So you need not use `start_run()` explicitly.
+            If 'with', mlflow process is started in the tuning instance. So you need not use ``start_run()`` explicitly.
 
-            If 'log', mlflow process is NOT started in the tuning instance. So you should use `start_run()` outside the muscle-tuning library.
+            If 'log', mlflow process is NOT started in the tuning instance. So you should use ``start_run()`` outside the muscle-tuning library.
 
             If None, mlflow is not used.
         
         fit_params : dict, default=None
             Parameters passed to the fit() method of the estimator, 
-            e.g. `early_stopping_round` and `eval_set` of XGBRegressor or LGBMRegressor.
+            e.g. ``early_stopping_round`` and ``eval_set`` of XGBRegressor or LGBMRegressor.
             If the estimator is pipeline, each parameter name must be prefixed
             such that parameter p for step s has key s__p.
 
-            If None, `FIT_PARAMS` written in each tuning class is used.
+            If None, ``FIT_PARAMS`` written in each tuning class is used.
 
-            Note that if `eval_set` is None, `self.X` and `self.y` are set to `eval_set` automatically.
+            Note that if ``eval_set`` is None, ``self.X`` and ``self.y`` are set to ``eval_set`` automatically.
         
         Returns
         ----------
@@ -795,17 +795,17 @@ class ParamTuning():
         if tuning_params is None:
             tuning_params = self.BAYES_PARAMS
         if cv is None:
-            cv = self.CV_NUM
+            cv = self._CV_NUM
         if seed is None:
-            seed = self.SEED
+            seed = self._SEED
         if scoring is None:
-            scoring = self.SCORING
+            scoring = self._SCORING
         if n_iter is None:
             n_iter = self.N_ITER_BAYES
         if init_points is None:
             init_points = self.INIT_POINTS
         if acq is None:
-            acq = self.ACQ
+            acq = self._ACQ
         if not_opt_params is None:
             not_opt_params = self.NOT_OPT_PARAMS
         if int_params is None:
@@ -911,7 +911,7 @@ class ParamTuning():
 
     def _optuna_evaluate(self, trial):
         """
-        Optuna最適化時の評価指標算出メソッド
+        Run bayesian optimization with ``Optuna`` library.
         """
         # パラメータ格納
         params = {}
@@ -940,18 +940,18 @@ class ParamTuning():
 
         Parameters
         ----------
-        estimator : estimator object implementing `fit`, default=None
+        estimator : estimator object implementing ``fit``, default=None
             Classification or regression estimators used to tuning. This is assumed to implement the scikit-learn estimator interface.
             
-            Note that the parameters of the estimator are overridden by `not_opt_params`
+            Note that the parameters of the estimator are overridden by ``not_opt_params``
 
-            If None, `ESTIMATOR` written in each tuning class is used.
+            If None, ``ESTIMATOR`` written in each tuning class is used.
         
         tuning_params : dict(str, tuple(float, float)), default=None
-            Dictionary with parameters names (`str`) as keys and tuples of
+            Dictionary with parameters names (``str``) as keys and tuples of
             or minimum limit and maximum limit of parameters as value.
 
-            If None, `BAYES_PARAMS` written in each tuning class is used.
+            If None, ``BAYES_PARAMS`` written in each tuning class is used.
 
         cv : int, cross-validation generator, or an iterable, default=5
             Determines the cross-validation splitting strategy.
@@ -961,7 +961,7 @@ class ParamTuning():
         seed : int, default=42
             Seed for random number generator of estimator and cross validation.
 
-            Note that "random_state" in `not_opt_params` are overridden by this argument.
+            Note that "random_state" in ``not_opt_params`` are overridden by this argument.
         
         scoring : str, callable, list, tuple or dict, default='neg_root_mean_squared_error' in regression, 'logloss' in classification.
             Strategy to evaluate the performance of the cross-validated model on
@@ -971,17 +971,17 @@ class ParamTuning():
             Number of parameter settings that are sampled. n_iter trades
             off runtime vs quality of the solution.
 
-            If None, `N_ITER_OPTUNA` written in each tuning class is used.
+            If None, ``N_ITER_OPTUNA`` written in each tuning class is used.
 
         study_kws : dict, default=None
-            Additional parameters passed to optuna.study.create_study, e.g. `sampler`.
+            Additional parameters passed to optuna.study.create_study, e.g. ``sampler``.
             
             See https://optuna.readthedocs.io/en/stable/reference/generated/optuna.study.create_study.html#optuna.study.create_study
         
         optimize_kws : dict, default=None
-            Additional parameters passed to optuna.study.Study.optimize, e.g. `n_jobs`.
+            Additional parameters passed to optuna.study.Study.optimize, e.g. ``n_jobs``.
 
-            Note that `n_trials` CAN NOT be used in the argument
+            Note that ``n_trials`` CAN NOT be used in the argument
             
             See https://optuna.readthedocs.io/en/stable/reference/generated/optuna.study.Study.html#optuna.study.Study.optimize
         
@@ -990,42 +990,44 @@ class ParamTuning():
 
             Note that the parameters override those of the estimator.
 
-            If None, `NOT_OPT_PARAMS` written in each tuning class is used.
+            If None, ``NOT_OPT_PARAMS`` written in each tuning class is used.
 
         int_params : list[str], default=None
             List of parameters whose type is int. The parameters are tuned
-            by `suggest_int()` method.
+            by ``suggest_int()`` method.
 
-            If None, `INT_PARAMS` written in each tuning class is used.
+            If None, ``INT_PARAMS`` written in each tuning class is used.
         
         param_scales : dict[str, {'linear', 'log'}], default=None
-            Dictionary with parameters' scales which are passed to `log` argument
-            of `suggest_float()` or `suggest_int()`.
+            Dictionary with parameters' scales which are passed to ``log`` argument
+            of ``suggest_float()`` or ``suggest_int()``.
 
             If 'linear', the axis of result graph is drawn in linear scale.
 
             If 'log', the axis of result graph is drawn in log scale.
 
-            If None, `PARAM_SCALES` written in each tuning class is used.
+            If None, ``PARAM_SCALES`` written in each tuning class is used.
         
         mlflow_logging : str, default=None
             Strategy to record the result by MLFlow library.
 
-            If 'with', mlflow process is started in the tuning instance. So you need not use `start_run()` explicitly.
+            If 'with', mlflow process is started in the tuning instance.
+            So you need not use ``start_run()`` explicitly.
 
-            If 'log', mlflow process is NOT started in the tuning instance. So you should use `start_run()` outside the muscle-tuning library.
+            If 'log', mlflow process is NOT started in the tuning instance.
+            So you should use ``start_run()`` outside the muscle-tuning library.
 
             If None, mlflow is not used.
         
         fit_params : dict, default=None
             Parameters passed to the fit() method of the estimator, 
-            e.g. `early_stopping_round` and `eval_set` of XGBRegressor or LGBMRegressor.
+            e.g. ``early_stopping_round`` and ``eval_set`` of XGBRegressor or LGBMRegressor.
             If the estimator is pipeline, each parameter name must be prefixed
             such that parameter p for step s has key s__p.
 
-            If None, `FIT_PARAMS` written in each tuning class is used.
+            If None, ``FIT_PARAMS`` written in each tuning class is used.
 
-            Note that if `eval_set` is None, `self.X` and `self.y` are set to `eval_set` automatically.
+            Note that if ``eval_set`` is None, ``self.X`` and ``self.y`` are set to ``eval_set`` automatically.
 
         Returns
         ----------
@@ -1045,11 +1047,11 @@ class ParamTuning():
         if tuning_params is None:
             tuning_params = self.BAYES_PARAMS
         if cv is None:
-            cv = self.CV_NUM
+            cv = self._CV_NUM
         if seed is None:
-            seed = self.SEED
+            seed = self._SEED
         if scoring is None:
-            scoring = self.SCORING
+            scoring = self._SCORING
         if n_trials is None:
             n_trials = self.N_ITER_OPTUNA
         if study_kws is None:
@@ -1307,11 +1309,11 @@ class ParamTuning():
         if validation_curve_params is None:
             validation_curve_params = self.VALIDATION_CURVE_PARAMS
         if cv is None:
-            cv = self.CV_NUM
+            cv = self._CV_NUM
         if seed is None:
-            seed = self.SEED
+            seed = self._SEED
         if scoring is None:
-            scoring = self.SCORING
+            scoring = self._SCORING
         if not_opt_params is None:  # stable_paramsでself.NOT_OPT_PARAMSおよびself.not_opt_paramsが更新されないようDeepCopy
             not_opt_params_valid = copy.deepcopy(self.NOT_OPT_PARAMS)
         else:
@@ -1374,19 +1376,19 @@ class ParamTuning():
 
         Parameters
         ----------
-        estimator : estimator object implementing `fit`, default=None
+        estimator : estimator object implementing ``fit``, default=None
             Classification or regression estimators used to tuning. This is assumed to implement the scikit-learn estimator interface.
             
-            Note that the parameters of the estimator are overridden by `not_opt_params`
+            Note that the parameters of the estimator are overridden by ``not_opt_params``
 
-            If None, `ESTIMATOR` written in each tuning class is used.
+            If None, ``ESTIMATOR`` written in each tuning class is used.
         
         validation_curve_params : tuning_params : dict(str, list(float)), default=None
             dict(str, list(float)), default=None
-            Dictionary with parameters names (`str`) as keys and lists of
+            Dictionary with parameters names (``str``) as keys and lists of
             parameter that will be evaluated as values.
 
-            If None, `VALIDATION_CURVE_PARAMS` written in each tuning class is used.
+            If None, ``VALIDATION_CURVE_PARAMS`` written in each tuning class is used.
 
         cv : int, cross-validation generator, or an iterable, default=5
             Determines the cross-validation splitting strategy.
@@ -1396,7 +1398,7 @@ class ParamTuning():
         seed : int, default=42
             Seed for random number generator of estimator and cross validation.
 
-            Note that "random_state" in `not_opt_params` are overridden by this argument.
+            Note that "random_state" in ``not_opt_params`` are overridden by this argument.
         
         scoring : str, callable, list, tuple or dict, default='neg_root_mean_squared_error' in regression, 'logloss' in classification.
             Strategy to evaluate the performance of the cross-validated model on
@@ -1407,7 +1409,7 @@ class ParamTuning():
 
             Note that the parameters override those of the estimator.
 
-            If None, `NOT_OPT_PARAMS` written in each tuning class is used.
+            If None, ``NOT_OPT_PARAMS`` written in each tuning class is used.
         
         param_scales : dict(str, {'linear', 'log'}), default=None
             Dictionary with parameters' scales.
@@ -1416,7 +1418,7 @@ class ParamTuning():
 
             If 'log', the axis of result graph is drawn in log scale.
 
-            If None, `PARAM_SCALES` written in each tuning class is used.
+            If None, ``PARAM_SCALES`` written in each tuning class is used.
 
         plot_stats : {'mean', 'median'}
             A statistic method plotted as validation curve
@@ -1434,13 +1436,13 @@ class ParamTuning():
         
         fit_params : dict, default=None
             Parameters passed to the fit() method of the estimator, 
-            e.g. `early_stopping_round` and `eval_set` of XGBRegressor or LGBMRegressor.
+            e.g. ``early_stopping_round`` and ``eval_set`` of XGBRegressor or LGBMRegressor.
             If the estimator is pipeline, each parameter name must be prefixed
             such that parameter p for step s has key s__p.
 
-            If None, `FIT_PARAMS` written in each tuning class is used.
+            If None, ``FIT_PARAMS`` written in each tuning class is used.
 
-            Note that if `eval_set` is None, `self.X` and `self.y` are set to `eval_set` automatically.
+            Note that if ``eval_set`` is None, ``self.X`` and ``self.y`` are set to ``eval_set`` automatically.
         """
         # 引数非指定時、クラス変数から取得(学習器名追加のため、estimatorも取得)
         if validation_curve_params is None:
@@ -1503,10 +1505,10 @@ class ParamTuning():
         ----------
         validation_curve_params : tuning_params : dict(str, list(float)), default=None
             dict(str, list(float)), default=None
-            Dictionary with parameters names (`str`) as keys and lists of
+            Dictionary with parameters names (``str``) as keys and lists of
             parameter that will be evaluated as values.
 
-            If None, `VALIDATION_CURVE_PARAMS` written in each tuning class is used.
+            If None, ``VALIDATION_CURVE_PARAMS`` written in each tuning class is used.
         
         param_scales : dict(str, {'linear', 'log'}), default=None
             Dictionary with parameters' scales.
@@ -1515,7 +1517,7 @@ class ParamTuning():
 
             If 'log', the axis of result graph is drawn in log scale.
 
-            If None, `PARAM_SCALES` written in each tuning class is used.
+            If None, ``PARAM_SCALES`` written in each tuning class is used.
         
         plot_stats : {'mean', 'median'}
             A statistic method plotted as validation curve
@@ -1618,11 +1620,11 @@ class ParamTuning():
         if params is None:
             params = {}
         if cv is None:
-            cv = self.CV_NUM
+            cv = self._CV_NUM
         if seed is None:
-            seed = self.SEED
+            seed = self._SEED
         if scoring is None:
-            scoring = self.SCORING
+            scoring = self._SCORING
         if fit_params is None:
             fit_params = self.FIT_PARAMS
         
@@ -1772,12 +1774,12 @@ class ParamTuning():
             to a given precision in decimal digits.
         
         subplot_kws: dict, default=None
-            Additional parameters passed to matplotlib.pyplot.subplots(), e.g. `figsize`.
+            Additional parameters passed to matplotlib.pyplot.subplots(), e.g. ``figsize``.
 
             See https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplots.html
 
         heat_kws: dict, default=None
-            Additional parameters passed to sns.heatmap(), e.g. `cmap`.
+            Additional parameters passed to sns.heatmap(), e.g. ``cmap``.
             Available only if self.tuning_algo is 'grid'.
 
             See https://seaborn.pydata.org/generated/seaborn.heatmap.html

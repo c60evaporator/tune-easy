@@ -4,20 +4,21 @@ from .param_tuning import ParamTuning
 
 class LinearRegressionTuning(ParamTuning):
     """
-    ElasticNet回帰チューニング用クラス
+    Dummy class for LinearRegression
+
+    See ``muscle_tuning.param_tuning.ParamTuning`` to see API Reference of all methods
     """
 
     # 共通定数
-    SEED = 42  # デフォルト乱数シード
-    SEEDS = [42, 43, 44, 45, 46, 47, 48, 49, 50, 51]  # デフォルト複数乱数シード
-    CV_NUM = 5  # 最適化時のクロスバリデーションのデフォルト分割数
+    _SEED = 42  # デフォルト乱数シード
+    _CV_NUM = 5  # 最適化時のクロスバリデーションのデフォルト分割数
     
     # 学習器のインスタンス (標準化+SVRのパイプライン)
     ESTIMATOR = LinearRegression()
     # 学習時のパラメータのデフォルト値
     FIT_PARAMS = {}
     # 最適化で最大化するデフォルト評価指標('r2', 'neg_mean_squared_error', 'neg_root_mean_squared_error', etc.)
-    SCORING = 'neg_root_mean_squared_error'
+    _SCORING = 'neg_root_mean_squared_error'
 
     # 最適化対象外パラメータ
     NOT_OPT_PARAMS = {}
@@ -32,7 +33,7 @@ class LinearRegressionTuning(ParamTuning):
     # ベイズ最適化用パラメータ
     N_ITER_BAYES = 1  # BayesianOptimizationの試行数
     INIT_POINTS = 1  # BayesianOptimizationの初期観測点の個数(ランダムな探索を何回行うか)
-    ACQ = 'ei'  # BayesianOptimizationの獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
+    _ACQ = 'ei'  # BayesianOptimizationの獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
     N_ITER_OPTUNA = 1  # Optunaの試行数
     BAYES_PARAMS = {}
     INT_PARAMS = []
