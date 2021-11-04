@@ -12,31 +12,6 @@ This documentation is Japanese language version.
 
 <br>
 
-# 使用法
-LightGBM回帰のOptunaによるチューニング実行例
-
-```python
-from param_tuning import LGBMRegressorTuning
-from sklearn.datasets import load_boston
-import pandas as pd
-# データセット読込
-USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']  # 説明変数
-df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
-X = df_boston[USE_EXPLANATORY].values
-y = load_boston().target  # 目的変数
-###### チューニング実行と評価 ######
-tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス
-tuning.plot_first_validation_curve()  # 範囲を定めて検証曲線をプロット
-tuning.optuna_tuning()  # Optunaによるチューニング実行
-tuning.plot_search_history()  # Optuna実行
-tuning.plot_search_map()  # 探索点と評価指標を可視化
-tuning.plot_best_learning_curve()  # 学習曲線の可視化
-tuning.plot_best_validation_curve()  # 検証曲線の可視化
-```
-詳細は[チューニング手順](https://github.com/c60evaporator/param-tuning-utility#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E6%89%8B%E9%A0%86)の項を参照ください。
-
-<br>
-
 # 必要要件
 * Python >=3.6
 * Scikit-learn >=0.24.2
@@ -123,13 +98,13 @@ kinnikun.df_scores
 from muscle_tuning import MuscleTuning
 from sklearn.datasets import load_boston
 import pandas as pd
-# Load dataset
+# データセット読込
 USE_EXPLANATORY = ['NOX', 'RM', 'DIS', 'LSTAT']
 df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
 X = df_boston[USE_EXPLANATORY].values
 y = load_boston().target
 df_boston['price'] = y
-# Run tuning
+# チューニング実行
 kinnikun = MuscleTuning()
 kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2)
 kinnikun.df_scores
