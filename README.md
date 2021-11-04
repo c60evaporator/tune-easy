@@ -12,6 +12,63 @@ This documentation is Japanese language version.
 
 <br>
 
+# 使用例
+**一括チューニング**
+
+```python
+from muscle_tuning import MuscleTuning
+import seaborn as sns
+# データセット読込
+iris = sns.load_dataset("iris")
+iris = iris[iris['species'] != 'setosa']  # 2クラスに絞る
+OBJECTIVE_VARIALBLE = 'species'  # 目的変数
+USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']  # 説明変数
+y = iris[OBJECTIVE_VARIALBLE].values
+X = iris[USE_EXPLANATORY].values
+###### チューニング一括実行 ######
+kinnikun = MuscleTuning()
+kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2)
+kinnikun.df_scores
+```
+![class_increase](https://user-images.githubusercontent.com/59557625/140383755-bca64ab3-1593-47ef-8401-affcd0b20a0a.png)
+全ての図をミニチュアに
+
+**詳細チューニング**
+
+```python
+from muscle_tuning import LGBMClassifierTuning
+from sklearn.datasets import load_boston
+import seaborn as sns
+# データセット読込
+iris = sns.load_dataset("iris")
+iris = iris[iris['species'] != 'setosa']  # 2クラスに絞る
+OBJECTIVE_VARIALBLE = 'species'  # 目的変数
+USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']  # 説明変数
+y = iris[OBJECTIVE_VARIALBLE].values
+X = iris[USE_EXPLANATORY].values
+###### チューニング実行と結果の可視化 ######
+tuning = LGBMClassifierTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス
+tuning.plot_first_validation_curve(cv=2)  # 範囲を定めて検証曲線をプロット
+tuning.optuna_tuning(cv=2)  # Optunaによるチューニング実行
+tuning.plot_search_history()  # スコアの上昇履歴を可視化
+tuning.plot_search_map()  # 探索点と評価指標を可視化
+tuning.plot_best_learning_curve()  # 学習曲線の可視化
+tuning.plot_best_validation_curve()  # 検証曲線の可視化
+```
+全ての図をミニチュアに
+
+**MLFlowによるチューニング履歴の記録**
+
+```python
+tuning.optuna_tuning(mlflow_logging='with', cv=2)
+```
+
+# インストール方法
+```
+$ pip install muscle-tuning
+```
+<br>
+
 # 必要要件
 * Python >=3.6
 * Scikit-learn >=0.24.2
@@ -26,12 +83,6 @@ This documentation is Japanese language version.
 * XGBoost >=1.4.2
 <br>
 
-# インストール方法
-```
-$ pip install muscle-tuning
-```
-<br>
-
 # サポート
 バグ等は[Issues](https://github.com/c60evaporator/muscle-tuning/issues)で報告してください
 
@@ -40,10 +91,10 @@ $ pip install muscle-tuning
 # 使用法
 以下の2種類の方法からチューニング法を選び、リンク先の方法で
 
-|名称|用途|リンク|
-|---|---|---|
-|一括チューニング|とにかく手早くチューニングしたい|[リンク](https://github.com/c60evaporator/muscle-tuning#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E6%89%8B%E9%A0%86-muscle_brain_tuning)|
-|個別チューニング|詳細に条件を調整してチューニングしたい|[リンク](https://github.com/c60evaporator/muscle-tuning#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E6%89%8B%E9%A0%86-%E8%A9%B3%E7%B4%B0%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0)|
+|方法|クラス名|用途|リンク|
+|---|---|---|---|
+|一括チューニング|MuscleTuning|とにかく手早くチューニングしたい|[リンク](https://github.com/c60evaporator/muscle-tuning#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E6%89%8B%E9%A0%86-muscle_brain_tuning)|
+|個別チューニング|[学習器の種類毎に異なる](https://github.com/c60evaporator/muscle-tuning/blob/master/README.md#02-チューニング用クラスの初期化)|詳細に条件を調整してチューニングしたい|[リンク](https://github.com/c60evaporator/muscle-tuning#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E6%89%8B%E9%A0%86-%E8%A9%B3%E7%B4%B0%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0)|
 <br>
 
 ## チューニング手順 (一括チューニング)
@@ -118,7 +169,7 @@ kinnikun.df_scores
 <br>
 
 ## チューニング手順 (詳細チューニング)
-**下図の手順**([こちらの記事に詳細](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#2-%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E3%81%AE%E6%89%8B%E9%A0%86%E3%81%A8%E3%82%A2%E3%83%AB%E3%82%B4%E3%83%AA%E3%82%BA%E3%83%A0%E4%B8%80%E8%A6%A7))に従い、パラメータチューニングを実施します。
+[学習器の種類に合わせてクラスを選択](https://github.com/c60evaporator/muscle-tuning/blob/master/README.md#02-チューニング用クラスの初期化)し、**下図の手順**([こちらの記事に詳細](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#2-%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E3%81%AE%E6%89%8B%E9%A0%86%E3%81%A8%E3%82%A2%E3%83%AB%E3%82%B4%E3%83%AA%E3%82%BA%E3%83%A0%E4%B8%80%E8%A6%A7))でパラメータチューニングを実施します。
 
 Scikit-LearnのAPIに対応した学習器が対象となります。
 
@@ -207,17 +258,19 @@ print(selector.get_support())
 ### 0.2. チューニング用クラスの初期化
 以下を参考に使用したい学習器に合わせてチューニング用クラスを選択し、インスタンスを作成します
 
-|学習器の種類|クラス名|
-|---|---|
-|LightGBM回帰||LGBMRegressorTuning|
-|XGBRegressorTuning|XGBRegressorTuning|
-|サポートベクター回帰|SVMRegressorTuning|
-|ランダムフォレスト回帰|RFRegressorTuning|
-|ElasticNet回帰|ElasticNetTuning|
-|LightGBM分類|LGBMClassifierTuning|
-|XGBoost分類|XGBClassifierTuning|
-|サポートベクターマシン分類|SVMClassifierTuning|
-|ランダムフォレスト分類|RFClassifierTuning|
+|問題の種類|学習器の種類|クラス名|
+|---|---|---|
+|回帰|LightGBM回帰|LGBMRegressorTuning|
+|回帰|XGBoost回帰|XGBRegressorTuning|
+|回帰|サポートベクター回帰|SVMRegressorTuning|
+|回帰|ランダムフォレスト回帰|RFRegressorTuning|
+|回帰|ElasticNet|ElasticNetTuning|
+|分類|LightGBM分類|LGBMClassifierTuning|
+|分類|XGBoost分類|XGBClassifierTuning|
+|分類|サポートベクターマシン分類|SVMClassifierTuning|
+|分類|ランダムフォレスト分類|RFClassifierTuning|
+|分類|ロジスティック回帰|LogisticRegressionTuning|
+※他のアルゴリズムも追加希望あればIssuesに書き込んで下さい
 
 #### 実行例
 LightGBM回帰のチューニング用クラス初期化
@@ -529,7 +582,7 @@ regplot.regression_pred_true(lgbmr,
 # クラス一覧
 以下のクラスからなります
 
-## ラクラクマッスルチューニング用クラス
+## 一括チューニング用クラス
 
 |クラス名|パッケージ名|概要|使用法|
 |---|---|---|---|
@@ -548,8 +601,8 @@ regplot.regression_pred_true(lgbmr,
 |XGBClassifierTuning|xgb_tuning.py|XGBoost分類のパラメータチューニング用クラス|[リンク]()|
 |SVMClassifierTuning|svm_tuning.py|サポートベクターマシン分類のパラメータチューニング用クラス|[リンク]()|
 |RFClassifierTuning|rf_tuning.py|ランダムフォレスト分類のパラメータチューニング用クラス|[リンク]()|
+|LogisticRegressionTuning|logisticregression_tuning.py|ロジスティック回帰分類のパラメータチューニング用クラス|[リンク]()|
 
-
-
-
-# MLFlowの活用
+# その他Tips
+## MLFlowの活用
+MLFlowを使って
