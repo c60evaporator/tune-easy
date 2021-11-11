@@ -325,9 +325,9 @@ class ParamTuning():
         mlflow_logging : str, default=None
             Strategy to record the result by MLFlow library.
 
-            If 'with', mlflow process is started in the tuning instance. So you need not use ``start_run()`` explicitly.
+            If 'inside', mlflow process is started in the tuning instance. So you need not use ``start_run()`` explicitly.
 
-            If 'log', mlflow process is NOT started in the tuning instance. So you should use ``start_run()`` outside the muscle-tuning library.
+            If 'outside', mlflow process is NOT started in the tuning instance. So you should use ``start_run()`` outside the muscle-tuning library.
 
             If None, mlflow is not used.
 
@@ -442,13 +442,13 @@ class ParamTuning():
         self.search_history['raw_trial_time'] = (self.search_history['fit_time'] + self.search_history['score_time']) * cv_num
 
         # MLFlowで記録
-        if mlflow_logging == 'log':
+        if mlflow_logging == 'outside':
             self._mlflow_logging()
-        elif mlflow_logging == 'with':
+        elif mlflow_logging == 'inside':
             with mlflow.start_run() as run:
                 self._mlflow_logging()
         elif mlflow_logging is not None:
-            raise Exception('the "mlflow_logging" argument must be "log", "with" or None')
+            raise Exception('the "mlflow_logging" argument must be "outside", "inside" or None')
 
         # グリッドサーチで探索した最適パラメータ、最適スコアを返す
         return gridcv.best_params_, gridcv.best_score_
@@ -513,9 +513,9 @@ class ParamTuning():
         mlflow_logging : str, default=None
             Strategy to record the result by MLFlow library.
 
-            If 'with', mlflow process is started in the tuning instance. So you need not use ``start_run()`` explicitly.
+            If 'inside', mlflow process is started in the tuning instance. So you need not use ``start_run()`` explicitly.
 
-            If 'log', mlflow process is NOT started in the tuning instance. So you should use ``start_run()`` outside the muscle-tuning library.
+            If 'outside', mlflow process is NOT started in the tuning instance. So you should use ``start_run()`` outside the muscle-tuning library.
 
             If None, mlflow is not used.
 
@@ -634,13 +634,13 @@ class ParamTuning():
         self.search_history['raw_trial_time'] = (self.search_history['fit_time'] + self.search_history['score_time']) * cv_num
 
         # MLFlowで記録
-        if mlflow_logging == 'log':
+        if mlflow_logging == 'outside':
             self._mlflow_logging()
-        elif mlflow_logging == 'with':
+        elif mlflow_logging == 'inside':
             with mlflow.start_run() as run:
                 self._mlflow_logging()
         elif mlflow_logging is not None:
-            raise Exception('the "mlflow_logging" argument must be "log", "with" or None')
+            raise Exception('the "mlflow_logging" argument must be "outside", "inside" or None')
 
         # ランダムサーチで探索した最適パラメータ、最適スコアを返す
         return randcv.best_params_, randcv.best_score_
@@ -761,9 +761,9 @@ class ParamTuning():
         mlflow_logging : str, default=None
             Strategy to record the result by MLFlow library.
 
-            If 'with', mlflow process is started in the tuning instance. So you need not use ``start_run()`` explicitly.
+            If 'inside', mlflow process is started in the tuning instance. So you need not use ``start_run()`` explicitly.
 
-            If 'log', mlflow process is NOT started in the tuning instance. So you should use ``start_run()`` outside the muscle-tuning library.
+            If 'outside', mlflow process is NOT started in the tuning instance. So you should use ``start_run()`` outside the muscle-tuning library.
 
             If None, mlflow is not used.
         
@@ -897,13 +897,13 @@ class ParamTuning():
         self.best_estimator = best_estimator
 
         # MLFlowで記録
-        if mlflow_logging == 'log':
+        if mlflow_logging == 'outside':
             self._mlflow_logging()
-        elif mlflow_logging == 'with':
+        elif mlflow_logging == 'inside':
             with mlflow.start_run() as run:
                 self._mlflow_logging()
         elif mlflow_logging is not None:
-            raise Exception('the "mlflow_logging" argument must be "log", "with" or None')
+            raise Exception('the "mlflow_logging" argument must be "outside", "inside" or None')
 
         # ベイズ最適化で探索した最適パラメータ、評価指標最大値を返す
         return self.best_params, self.best_score
@@ -1011,10 +1011,10 @@ class ParamTuning():
         mlflow_logging : str, default=None
             Strategy to record the result by MLFlow library.
 
-            If 'with', mlflow process is started in the tuning instance.
+            If 'inside', mlflow process is started in the tuning instance.
             So you need not use ``start_run()`` explicitly.
 
-            If 'log', mlflow process is NOT started in the tuning instance.
+            If 'outside', mlflow process is NOT started in the tuning instance.
             So you should use ``start_run()`` outside the muscle-tuning library.
 
             If None, mlflow is not used.
@@ -1142,13 +1142,13 @@ class ParamTuning():
         self.best_estimator = best_estimator
 
         # MLFlowで記録
-        if mlflow_logging == 'log':
+        if mlflow_logging == 'outside':
             self._mlflow_logging()
-        elif mlflow_logging == 'with':
+        elif mlflow_logging == 'inside':
             with mlflow.start_run() as run:
                 self._mlflow_logging()
         elif mlflow_logging is not None:
-            raise Exception('the "mlflow_logging" argument must be "log", "with" or None')
+            raise Exception('the "mlflow_logging" argument must be "outside", "inside" or None')
         
         # Optunaで探索した最適パラメータ、チューニング対象外パラメータ、評価指標最大値を返す
         return self.best_params, self.best_score

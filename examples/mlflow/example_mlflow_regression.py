@@ -27,7 +27,7 @@ xgbr = XGBRegressor()
 tuning = XGBRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG)
 tuning.grid_search_tuning(estimator=xgbr, mlflow_logging='with', tuning_params=tuning_params,
                           cv=KFold(n_splits=3, shuffle=True, random_state=42),
-                          not_opt_params=not_opt_params, **fit_params)
+                          not_opt_params=not_opt_params, fit_params=fit_params)
 
 # %% MLFlow実装　ランダムサーチ
 import parent_import
