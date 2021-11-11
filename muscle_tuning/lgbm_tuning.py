@@ -3,7 +3,7 @@ import numpy as np
 from lightgbm import LGBMRegressor, LGBMClassifier
 
 from .param_tuning import ParamTuning
-from ._cv_eval_set import cross_val_score_eval_set, init_eval_set
+from seaborn_analyzer._cv_eval_set import cross_val_score_eval_set, init_eval_set
 
 class LGBMRegressorTuning(ParamTuning):
     """

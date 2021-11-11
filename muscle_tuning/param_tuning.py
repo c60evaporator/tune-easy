@@ -18,7 +18,7 @@ from mlflow.models.signature import infer_signature
 import os
 
 from ._util_methods import round_digits
-from ._cv_eval_set import validation_curve_eval_set, learning_curve_eval_set, GridSearchCVEvalSet, RandomizedSearchCVEvalSet
+from seaborn_analyzer._cv_eval_set import validation_curve_eval_set, learning_curve_eval_set, GridSearchCVEvalSet, RandomizedSearchCVEvalSet
 
 class ParamTuning():
     """

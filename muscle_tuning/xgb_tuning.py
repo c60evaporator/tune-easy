@@ -4,7 +4,7 @@ from xgboost import XGBRegressor, XGBClassifier
 from sklearn.preprocessing import LabelEncoder
 
 from .param_tuning import ParamTuning
-from ._cv_eval_set import cross_val_score_eval_set, init_eval_set
+from seaborn_analyzer._cv_eval_set import cross_val_score_eval_set, init_eval_set
 
 class XGBRegressorTuning(ParamTuning):
     """
