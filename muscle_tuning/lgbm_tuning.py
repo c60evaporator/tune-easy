@@ -124,7 +124,7 @@ class LGBMRegressorTuning(ParamTuning):
                                           scoring=self.scoring, fit_params=self.fit_params, n_jobs=None)
         val = scores.mean()
         # 所要時間測定
-        self.elapsed_times.append(time.time() - self.start_time)
+        self._elapsed_times.append(time.time() - self._start_time)
 
         return val
 
@@ -282,7 +282,7 @@ class LGBMClassifierTuning(ParamTuning):
                                           scoring=self.scoring, fit_params=self.fit_params, n_jobs=None)
         val = scores.mean()
         # 所要時間測定
-        self.elapsed_times.append(time.time() - self.start_time)
+        self._elapsed_times.append(time.time() - self._start_time)
 
         return val
 
