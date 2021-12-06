@@ -1,23 +1,26 @@
 # %% 0.1.1. Feature selection
-from sklearn.datasets import load_boston
+from sklearn.datasets import fetch_california_housing
 from sklearn.feature_selection import RFE
 from sklearn.ensemble import RandomForestRegressor
 
-X_all = load_boston().data  # Feature values
-y = load_boston().target  # Objective variable
-selector = RFE(RandomForestRegressor(random_state=42), n_features_to_select=5)
+X_all = fetch_california_housing().data  # Feature values
+y = fetch_california_housing().target  # Objective variable
+selector = RFE(RandomForestRegressor(random_state=42), n_features_to_select=4)
 selector.fit(X_all, y)
-print(load_boston().feature_names)
+print(fetch_california_housing().feature_names)
 print(selector.get_support())
 
 # %% 0.1.2. Load dataset with selected explanatory variables
-from sklearn.datasets import load_boston
+from sklearn.datasets import fetch_california_housing
 import pandas as pd
-
-USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']  # Selected explanatory variables
-df_boston = pd.DataFrame(load_boston().data, columns = load_boston().feature_names)
-X = df_boston[USE_EXPLANATORY].values  # Explanatory variables
-y = load_boston().target  # Objective variable
+import numpy as np
+OBJECTIVE_VARIABLE = 'price'  # Objective variable name
+USE_EXPLANATORY = ['MedInc', 'AveOccup', 'Latitude', 'HouseAge']  # Selected explanatory variables
+california_housing = pd.DataFrame(np.column_stack((fetch_california_housing().data, fetch_california_housing().target)),
+        columns = np.append(fetch_california_housing().feature_names, OBJECTIVE_VARIABLE))
+california_housing = california_housing.sample(n=1000, random_state=42)  # sampling from 20640 to 1000
+y = california_housing[OBJECTIVE_VARIABLE].values  # Explanatory variables
+X = california_housing[USE_EXPLANATORY].values  # Objective variable
 
 # %% 0.2. Confirm validation score before tuning
 
@@ -52,7 +55,7 @@ CV = KFold(n_splits=5, shuffle=True, random_state=42)
 
 # %% 4.2.1 Calculate validation score before tuning
 from lightgbm import LGBMRegressor
-from sklearn.model_selection import cross_val_score
+from seaborn_analyzer import cross_val_score_eval_set
 import numpy as np
 # Fit parameters passed to estimator.fit()
 FIT_PARAMS = {'verbose': 0,
@@ -69,23 +72,25 @@ NOT_OPT_PARAMS = {'objective': 'regression',
 # Make estimator instance
 lgbmr = LGBMRegressor(**NOT_OPT_PARAMS)
 # Calculate validation score
-scores = cross_val_score(lgbmr, X, y,
-                         scoring=SCORING,  # Validation score selected in section 1
-                         cv=CV,  # Cross validation instance selected in section 4.2
-                         fit_params=FIT_PARAMS  # Fit parameters passed to estimator.fit()
-                         )
+scores = cross_val_score_eval_set('test',  # How to choose "eval_set" data
+        lgbmr, X, y,  # Input data
+        scoring=SCORING,  # Validation score selected in section 1
+        cv=CV,  # Cross validation instance selected in section 4.2
+        fit_params=FIT_PARAMS  # Fit parameters passed to estimator.fit()
+        )
 print(np.mean(scores))
 
 # %% 4.2.2 Visualize estimator before tuning
 from seaborn_analyzer import regplot
-df_boston['price'] = y
+california_housing['price'] = y
 regplot.regression_pred_true(lgbmr,
                              x=tuning.x_colnames,
                              y='price',
-                             data=df_boston,
+                             data=california_housing,
                              scores='mse',
                              cv=CV,
-                             fit_params=FIT_PARAMS
+                             fit_params=FIT_PARAMS,
+                             eval_set_selection='test'
                              )
 
 # %% 4.3 Execute parameter tuning
@@ -123,26 +128,29 @@ tuning.plot_best_learning_curve()
 tuning.plot_best_validation_curve()
 
 # %% 6.1 Retain optimized estimator
+from seaborn_analyzer import cross_val_score_eval_set
 params_after = {}
 params_after.update(tuning.best_params)
 params_after.update(tuning.not_opt_params)
 best_estimator = LGBMRegressor(**params_after)
 # Calculate validation score
-scores = cross_val_score(best_estimator, X, y,
-                         scoring=tuning.scoring,  # Validation score selected in section 1
-                         cv=tuning.cv,  # Cross validation instance selected in section 4.2
-                         fit_params=tuning.fit_params  # Fit parameters passed to estimator.fit()
-                         )
+scores = cross_val_score_eval_set('test',  # How to choose "eval_set" data
+        best_estimator, X, y,
+        scoring=tuning.scoring,  # Validation score selected in section 1
+        cv=tuning.cv,  # Cross validation instance selected in section 4.2
+        fit_params=tuning.fit_params  # Fit parameters passed to estimator.fit()
+        )
 print(np.mean(scores))
 
 # %% 6.2 Visualize estimator after tuning
 from seaborn_analyzer import regplot
-regplot.regression_pred_true(lgbmr,
+regplot.regression_pred_true(best_estimator,
                              x=tuning.x_colnames,
                              y='price',
-                             data=df_boston,
+                             data=california_housing,
                              scores='mse',
                              cv=tuning.cv,
-                             fit_params=tuning.fit_params
+                             fit_params=tuning.fit_params,
+                             eval_set_selection='test'
                              )
 # %%

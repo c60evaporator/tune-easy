@@ -93,4 +93,5 @@ X = df_reg[USE_EXPLANATORY_REG].values
 tuning = SVMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG, cv_group=df_reg['ward_after'].values)
 mlflow.sklearn.autolog()
 with mlflow.start_run() as run:
-    tuning.random_search_tuning()
+    tuning.random_search_tuning(n_iter=100)
+# %%
