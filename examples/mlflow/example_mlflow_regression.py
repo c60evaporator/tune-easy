@@ -25,7 +25,7 @@ not_opt_params = {'booster': 'gbtree',
                  }
 xgbr = XGBRegressor()
 tuning = XGBRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG)
-tuning.grid_search_tuning(estimator=xgbr, mlflow_logging='with', tuning_params=tuning_params,
+tuning.grid_search_tuning(estimator=xgbr, mlflow_logging='inside', tuning_params=tuning_params,
                           cv=KFold(n_splits=3, shuffle=True, random_state=42),
                           not_opt_params=not_opt_params, fit_params=fit_params)
 
@@ -39,7 +39,7 @@ USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member',
 y = df_reg[OBJECTIVE_VARIALBLE_REG].values
 X = df_reg[USE_EXPLANATORY_REG].values
 tuning = SVMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG)
-tuning.random_search_tuning(mlflow_logging='with')
+tuning.random_search_tuning(mlflow_logging='inside')
 
 # %% MLFlow実装　BayesianOptimization
 import parent_import
@@ -51,7 +51,7 @@ USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member',
 y = df_reg[OBJECTIVE_VARIALBLE_REG].values
 X = df_reg[USE_EXPLANATORY_REG].values
 tuning = SVMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG)
-tuning.bayes_opt_tuning(mlflow_logging='with')
+tuning.bayes_opt_tuning(mlflow_logging='inside')
 
 # %% MLFlow実装　Optuna
 import parent_import
@@ -63,7 +63,7 @@ USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member',
 y = df_reg[OBJECTIVE_VARIALBLE_REG].values
 X = df_reg[USE_EXPLANATORY_REG].values
 tuning = SVMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG)
-tuning.optuna_tuning(mlflow_logging='with')
+tuning.optuna_tuning(mlflow_logging='inside')
 
 # %% MLFlow実装　グリッドサーチautolog
 import parent_import

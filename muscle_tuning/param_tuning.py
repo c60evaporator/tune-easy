@@ -230,7 +230,7 @@ class ParamTuning():
             steps = estimator.steps
             self.learner_name = steps[len(steps)-1][0]
 
-    def _mlflow_logging(self):
+    def _mlflow_log_results(self):
         """
         MLFlowで各種情報と探索履歴をロギング
         """
@@ -268,12 +268,45 @@ class ParamTuning():
         mlflow.sklearn.log_model(self.best_estimator, f'best_estimator_{self.tuning_algo}', signature=signature)  # 最適化された学習モデル
         # パラメータと得点の履歴をCSV化してArtifactとして保存
         df_history = self.get_search_history()
+        # Stepでスコア履歴を保存する
+        for i, row in df_history.iterrows():
+            mlflow.log_metric('max_score', row['max_score'], step=i)
+        # スコア履歴詳細をCSVで保存
         df_history.to_csv('search_history.csv')
         mlflow.log_artifact('search_history.csv')
         os.remove('search_history.csv')
+    
+    def _mlflow_logging(self, mlflow_logging=None, mlflow_tracking_uri=None, mlflow_artifact_location=None, mlflow_experiment_name=None):
+        """
+        `mlflow_logging`で分岐してMLFlowロギング
+        """
+        # 外部でmlflow.start_runを実行しているとき
+        if mlflow_logging == 'outside':
+            self._mlflow_log_results()
+        # with構文で実行するとき
+        elif mlflow_logging == 'inside':
+            if mlflow_tracking_uri is not None:  # tracking_uri
+                mlflow.set_tracking_uri(mlflow_tracking_uri)
+            if mlflow_experiment_name is not None:  # experiment
+                experiment = mlflow.get_experiment_by_name(mlflow_experiment_name)
+                if experiment is None:  # 当該experiment存在しないとき、新たに作成
+                    experiment_id = mlflow.create_experiment(
+                                            name=mlflow_experiment_name,
+                                            artifact_location=mlflow_artifact_location)
+                else: # 当該experiment存在するとき、IDを取得
+                    experiment_id = experiment.experiment_id
+            else:
+                experiment_id = None
+            # ロギング実行
+            with mlflow.start_run(experiment_id=experiment_id) as run:
+                self._mlflow_log_results()
+        elif mlflow_logging is not None:
+            raise Exception('the "mlflow_logging" argument must be "outside", "inside" or None')
 
     def grid_search_tuning(self, estimator=None, tuning_params=None, cv=None, seed=None, scoring=None,
-                           not_opt_params=None, param_scales=None, mlflow_logging=None, grid_kws=None, fit_params=None):
+                           not_opt_params=None, param_scales=None, 
+                           mlflow_logging=None, mlflow_tracking_uri=None, mlflow_artifact_location=None, mlflow_experiment_name=None,
+                           grid_kws=None, fit_params=None):
         """
         Run grid search optimization.
 
@@ -442,20 +475,17 @@ class ParamTuning():
         self.search_history['raw_trial_time'] = (self.search_history['fit_time'] + self.search_history['score_time']) * cv_num
 
         # MLFlowで記録
-        if mlflow_logging == 'outside':
-            self._mlflow_logging()
-        elif mlflow_logging == 'inside':
-            with mlflow.start_run() as run:
-                self._mlflow_logging()
-        elif mlflow_logging is not None:
-            raise Exception('the "mlflow_logging" argument must be "outside", "inside" or None')
+        self._mlflow_logging(mlflow_logging=mlflow_logging, mlflow_tracking_uri=mlflow_tracking_uri, 
+                             mlflow_artifact_location=mlflow_artifact_location, mlflow_experiment_name=mlflow_experiment_name)
 
         # グリッドサーチで探索した最適パラメータ、最適スコアを返す
         return gridcv.best_params_, gridcv.best_score_
 
     def random_search_tuning(self, estimator=None, tuning_params=None, cv=None, seed=None, scoring=None,
                              n_iter=None,
-                             not_opt_params=None, param_scales=None, mlflow_logging=None, rand_kws=None, fit_params=None):
+                             not_opt_params=None, param_scales=None, 
+                             mlflow_logging=None, mlflow_tracking_uri=None, mlflow_artifact_location=None, mlflow_experiment_name=None,
+                             rand_kws=None, fit_params=None):
         """
         Run random search optimization.
 
@@ -634,13 +664,8 @@ class ParamTuning():
         self.search_history['raw_trial_time'] = (self.search_history['fit_time'] + self.search_history['score_time']) * cv_num
 
         # MLFlowで記録
-        if mlflow_logging == 'outside':
-            self._mlflow_logging()
-        elif mlflow_logging == 'inside':
-            with mlflow.start_run() as run:
-                self._mlflow_logging()
-        elif mlflow_logging is not None:
-            raise Exception('the "mlflow_logging" argument must be "outside", "inside" or None')
+        self._mlflow_logging(mlflow_logging=mlflow_logging, mlflow_tracking_uri=mlflow_tracking_uri, 
+                             mlflow_artifact_location=mlflow_artifact_location, mlflow_experiment_name=mlflow_experiment_name)
 
         # ランダムサーチで探索した最適パラメータ、最適スコアを返す
         return randcv.best_params_, randcv.best_score_
@@ -691,7 +716,9 @@ class ParamTuning():
 
     def bayes_opt_tuning(self, estimator=None, tuning_params=None, cv=None, seed=None, scoring=None,
                          n_iter=None, init_points=None, acq=None,
-                         not_opt_params=None, int_params=None, param_scales=None, mlflow_logging=None, fit_params=None):
+                         not_opt_params=None, int_params=None, param_scales=None, 
+                         mlflow_logging=None, mlflow_tracking_uri=None, mlflow_artifact_location=None, mlflow_experiment_name=None,
+                         fit_params=None):
         """
         Run bayesian optimization with ``BayesianOptimization`` library.
 
@@ -897,13 +924,8 @@ class ParamTuning():
         self.best_estimator = best_estimator
 
         # MLFlowで記録
-        if mlflow_logging == 'outside':
-            self._mlflow_logging()
-        elif mlflow_logging == 'inside':
-            with mlflow.start_run() as run:
-                self._mlflow_logging()
-        elif mlflow_logging is not None:
-            raise Exception('the "mlflow_logging" argument must be "outside", "inside" or None')
+        self._mlflow_logging(mlflow_logging=mlflow_logging, mlflow_tracking_uri=mlflow_tracking_uri, 
+                             mlflow_artifact_location=mlflow_artifact_location, mlflow_experiment_name=mlflow_experiment_name)
 
         # ベイズ最適化で探索した最適パラメータ、評価指標最大値を返す
         return self.best_params, self.best_score
@@ -934,7 +956,9 @@ class ParamTuning():
 
     def optuna_tuning(self, estimator=None, tuning_params=None, cv=None, seed=None, scoring=None,
                       n_trials=None, study_kws=None, optimize_kws=None,
-                      not_opt_params=None, int_params=None, param_scales=None, mlflow_logging=None, fit_params=None):
+                      not_opt_params=None, int_params=None, param_scales=None, 
+                      mlflow_logging=None, mlflow_tracking_uri=None, mlflow_artifact_location=None, mlflow_experiment_name=None,
+                      fit_params=None):
         """
         ベイズ最適化(optuna)
 
@@ -1142,13 +1166,8 @@ class ParamTuning():
         self.best_estimator = best_estimator
 
         # MLFlowで記録
-        if mlflow_logging == 'outside':
-            self._mlflow_logging()
-        elif mlflow_logging == 'inside':
-            with mlflow.start_run() as run:
-                self._mlflow_logging()
-        elif mlflow_logging is not None:
-            raise Exception('the "mlflow_logging" argument must be "outside", "inside" or None')
+        self._mlflow_logging(mlflow_logging=mlflow_logging, mlflow_tracking_uri=mlflow_tracking_uri, 
+                             mlflow_artifact_location=mlflow_artifact_location, mlflow_experiment_name=mlflow_experiment_name)
         
         # Optunaで探索した最適パラメータ、チューニング対象外パラメータ、評価指標最大値を返す
         return self.best_params, self.best_score
