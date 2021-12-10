@@ -2,10 +2,17 @@
 from sklearn.datasets import fetch_california_housing
 from sklearn.feature_selection import RFE
 from sklearn.ensemble import RandomForestRegressor
-
-X_all = fetch_california_housing().data  # Feature values
-y = fetch_california_housing().target  # Objective variable
-selector = RFE(RandomForestRegressor(random_state=42), n_features_to_select=4)
+import pandas as pd
+import numpy as np
+# Load dataset
+OBJECTIVE_VARIABLE = 'price'
+california_housing = pd.DataFrame(np.column_stack((fetch_california_housing().data, fetch_california_housing().target)),
+        columns = np.append(fetch_california_housing().feature_names, OBJECTIVE_VARIABLE))
+california_housing = california_housing.sample(n=1000, random_state=42)  # sampling from 20640 to 1000
+y = california_housing[OBJECTIVE_VARIABLE].values  # Objective variable
+X_all = california_housing[fetch_california_housing().feature_names].values  # Feature values
+# Feature selection
+selector = RFE(RandomForestRegressor(random_state=42), n_features_to_select=5)
 selector.fit(X_all, y)
 print(fetch_california_housing().feature_names)
 print(selector.get_support())
@@ -19,8 +26,8 @@ USE_EXPLANATORY = ['MedInc', 'AveOccup', 'Latitude', 'HouseAge']  # Selected exp
 california_housing = pd.DataFrame(np.column_stack((fetch_california_housing().data, fetch_california_housing().target)),
         columns = np.append(fetch_california_housing().feature_names, OBJECTIVE_VARIABLE))
 california_housing = california_housing.sample(n=1000, random_state=42)  # sampling from 20640 to 1000
-y = california_housing[OBJECTIVE_VARIABLE].values  # Explanatory variables
-X = california_housing[USE_EXPLANATORY].values  # Objective variable
+y = california_housing[OBJECTIVE_VARIABLE].values  # Objective variable
+X = california_housing[USE_EXPLANATORY].values  # Explanatory variables
 
 # %% 0.2. Confirm validation score before tuning
 
