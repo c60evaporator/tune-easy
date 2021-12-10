@@ -176,6 +176,11 @@ class MuscleTuning():
         # 引数指定したデフォルト値を読み込むプロパティ
         self.tuning_algo = None  # 最適化に使用したアルゴリズム名('grid', 'random', 'bayes-opt', 'optuna')
         self.cv = None  # クロスバリデーション用インスタンス
+        self.seed = None  # 乱数シード
+        self.mlflow_logging=False  # MLflowロギング有無
+        self.mlflow_tracking_uri=None  # MLflowのTracking URI
+        self.mlflow_artifact_location=None  # MLflowのArtifactストレージ
+        self.mlflow_experiment_name=None  # MLflowのExperiment名
         # チューニング用クラスのデフォルト値を使用するプロパティ
         self.estimators = None  # 学習器インスタンスのdict
         self.tuning_params = None  # チューニング対象のパラメータとその範囲のdict
@@ -255,7 +260,7 @@ class MuscleTuning():
         else:
             self.n_trials = n_trials
         
-    def _set_property_from_arguments(self, cv, tuning_algo, seed):
+    def _set_property_from_arguments(self, cv, tuning_algo, seed, mlflow_logging, mlflow_tracking_uri, mlflow_artifact_location, mlflow_experiment_name):
         """
         未指定時にデフォルト引数から読み込むプロパティ
         """
@@ -271,6 +276,11 @@ class MuscleTuning():
         self.tuning_algo = tuning_algo
         # seed
         self.seed = seed
+        # MLflow系
+        self.mlflow_logging = mlflow_logging
+        self.mlflow_tracking_uri = mlflow_tracking_uri
+        self.mlflow_artifact_location = mlflow_artifact_location
+        self.mlflow_experiment_name = mlflow_experiment_name
     
     def _set_property_from_algo(self, estimators, tuning_params, tuning_kws):
         """
@@ -292,7 +302,7 @@ class MuscleTuning():
         else:
             self.tuning_kws = tuning_kws
 
-    def _run_tuning(self, tuner, estimator, tuning_params, n_trials, tuning_kws):
+    def _run_tuning(self, tuner, estimator, tuning_params, n_trials, tuning_kws, mlflow_logging):
         """
         チューニング用メソッド実行
         """
@@ -303,6 +313,7 @@ class MuscleTuning():
                                     cv=self.cv,
                                     seed=self.seed,
                                     scoring=self._SCORE_RENAME_DICT[self.scoring],
+                                    mlflow_logging=mlflow_logging,
                                     **tuning_kws
                                     )
         # ランダムサーチ
@@ -312,6 +323,7 @@ class MuscleTuning():
                                     cv=self.cv,
                                     seed=self.seed,
                                     scoring=self._SCORE_RENAME_DICT[self.scoring],
+                                    mlflow_logging=mlflow_logging,
                                     n_iter=n_trials,
                                     **tuning_kws
                                     )
@@ -322,6 +334,7 @@ class MuscleTuning():
                                     cv=self.cv,
                                     seed=self.seed,
                                     scoring=self._SCORE_RENAME_DICT[self.scoring],
+                                    mlflow_logging=mlflow_logging,
                                     n_iter=n_trials,
                                     **tuning_kws
                                     )
@@ -332,11 +345,29 @@ class MuscleTuning():
                                 cv=self.cv,
                                 seed=self.seed,
                                 scoring=self._SCORE_RENAME_DICT[self.scoring],
+                                mlflow_logging=mlflow_logging,
                                 n_trials=n_trials,
                                 **tuning_kws
                                 )
         else:
             raise Exception('`tuning_algo` should be "grid", "random", "bayes-opt", "optuna"')
+
+    def _flow_and_run_tuning(self, tuner, estimator, tuning_params, n_trials, learner_name, tuning_kws):
+        """
+        MLflowのセッティングとチューニング実行
+        """
+        # MLflow実行時
+        if self.mlflow_logging:
+            if self.mlflow_experiment_name is not None:
+                experiment = mlflow.get_experiment_by_name(self.mlflow_experiment_name)
+                experiment_id = experiment.experiment_id
+            else:
+                experiment_id = None
+            with mlflow.start_run(experiment_id=experiment_id, nested=True, run_name=learner_name) as run:
+                self._run_tuning(tuner, estimator, tuning_params, n_trials, tuning_kws, mlflow_logging='outside')
+        # MLflow実行しないとき
+        else:
+            self._run_tuning(tuner, estimator, tuning_params, n_trials, tuning_kws, mlflow_logging=None)
     
     def _score_correction(self, score_src, score_name):
         """
@@ -399,27 +430,23 @@ class MuscleTuning():
         # 線形回帰 (チューニングなし)
         if learner_name == 'linear_regression':
             tuner = LinearRegressionTuning(self.X, self.y, self.x_colnames, cv_group=self.cv_group)
-            self._run_tuning(tuner, estimator, tuning_params, n_trials, tuning_kws)  
         # ElasticNet
         elif learner_name == 'elasticnet':
             tuner = ElasticNetTuning(self.X, self.y, self.x_colnames, cv_group=self.cv_group)
-            self._run_tuning(tuner, estimator, tuning_params, n_trials, tuning_kws)
         # サポートベクター回帰
         elif learner_name == 'svr':
             tuner = SVMRegressorTuning(self.X, self.y, self.x_colnames, cv_group=self.cv_group)
-            self._run_tuning(tuner, estimator, tuning_params, n_trials, tuning_kws)
         # ランダムフォレスト回帰
         elif learner_name == 'randomforest':
             tuner = RFRegressorTuning(self.X, self.y, self.x_colnames, cv_group=self.cv_group)
-            self._run_tuning(tuner, estimator, tuning_params, n_trials, tuning_kws)
         # LightGBM回帰
         elif learner_name == 'lightgbm':
             tuner = LGBMRegressorTuning(self.X, self.y, self.x_colnames, cv_group=self.cv_group)
-            self._run_tuning(tuner, estimator, tuning_params, n_trials, tuning_kws)
         # XGBoost回帰
         elif learner_name == 'xgboost':
             tuner = XGBRegressorTuning(self.X, self.y, self.x_colnames, cv_group=self.cv_group)
-            self._run_tuning(tuner, estimator, tuning_params, n_trials, tuning_kws)
+        # チューニング実行
+        self._flow_and_run_tuning(tuner, estimator, tuning_params, n_trials, learner_name, tuning_kws)
         
         # チューニング結果の保持
         self._retain_tuning_result(tuner, learner_name)
@@ -438,23 +465,20 @@ class MuscleTuning():
         # サポートベクターマシン
         if learner_name == 'svm':
             tuner = SVMClassifierTuning(self.X, self.y, self.x_colnames, cv_group=self.cv_group)
-            self._run_tuning(tuner, estimator, tuning_params, n_trials, tuning_kws)  
         # ロジスティック回帰
         elif learner_name == 'logistic':
             tuner = LogisticRegressionTuning(self.X, self.y, self.x_colnames, cv_group=self.cv_group)
-            self._run_tuning(tuner, estimator, tuning_params, n_trials, tuning_kws)
         # ランダムフォレスト
         elif learner_name == 'randomforest':
             tuner = RFClassifierTuning(self.X, self.y, self.x_colnames, cv_group=self.cv_group)
-            self._run_tuning(tuner, estimator, tuning_params, n_trials, tuning_kws)
         # LightGBM分類
         elif learner_name == 'lightgbm':
             tuner = LGBMClassifierTuning(self.X, self.y, self.x_colnames, cv_group=self.cv_group)
-            self._run_tuning(tuner, estimator, tuning_params, n_trials, tuning_kws)
         # XGBoost分類
         elif learner_name == 'xgboost':
             tuner = XGBClassifierTuning(self.X, self.y, self.x_colnames, cv_group=self.cv_group)
-            self._run_tuning(tuner, estimator, tuning_params, n_trials, tuning_kws)
+        # チューニング実行
+        self._flow_and_run_tuning(tuner, estimator, tuning_params, n_trials, learner_name, tuning_kws)
 
         # チューニング結果の保持
         self._retain_tuning_result(tuner, learner_name)
@@ -851,7 +875,7 @@ class MuscleTuning():
         # 定数からプロパティのデフォルト値読込
         self._set_property_from_const(scoring, other_scores, learning_algos, n_trials)
         # 引数からプロパティ読込
-        self._set_property_from_arguments(cv, tuning_algo, seed)
+        self._set_property_from_arguments(cv, tuning_algo, seed, mlflow_logging, mlflow_tracking_uri, mlflow_artifact_location, mlflow_experiment_name)
         # チューニング用クラスのデフォルト値から読み込むプロパティ
         self._set_property_from_algo(estimators, tuning_params, tuning_kws)
         # 学習器の数
