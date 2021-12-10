@@ -553,6 +553,98 @@ class MuscleTuning():
 
         return scores, scores_mean
 
+    def _tune_and_score(self, cv_num, n_learners):
+        """チューニング実行とスコア比較"""
+        ###### チューニング実行 ######
+        for i, learner_name in enumerate(self.learning_algos):
+            # 回帰のとき
+            if self.objective == 'regression':
+                self._regression_tuning(learner_name)
+            # 分類のとき
+            elif self.objective in ['binary', 'multiclass']:
+                self._classification_tuning(learner_name)
+
+        ###### スコア上昇履歴プロット ######
+        fig, ax = plt.subplots(1, 1, figsize=(6, 4))
+        fig.suptitle(f'{self.scoring} increase history')
+        for i, learner_name in enumerate(self.learning_algos):
+            self.tuners[learner_name].plot_search_history(ax=ax, x_axis='time',
+                                            plot_kws={'color':self._COLOR_LIST[i],
+                                                      'label':learner_name
+                                                      })
+        plt.legend()
+        plt.show()
+
+        ###### 回帰のとき、チューニング前後の予測値vs実測値プロット ######
+        if self.objective == 'regression':
+            # チューニング前
+            fig, axes = plt.subplots(cv_num + 1, n_learners, figsize=(n_learners*4, (cv_num+1)*4))
+            fig.suptitle(f'Estimators BEFORE tuning', fontsize=18)
+            ax_pred = [[row[i] for row in axes] for i in range(n_learners)] if n_learners > 1 else [axes]
+            for i, learner_name in enumerate(self.learning_algos):
+                self._plot_regression_pred_true(learner_name, ax_pred[i],
+                                                after_tuning=False)
+            fig.tight_layout(rect=[0, 0, 1, 0.98])  # https://tm23forest.com/contents/matplotlib-tightlayout-with-figure-suptitle
+            plt.show()
+            # チューニング後
+            fig, axes = plt.subplots(cv_num + 1, n_learners, figsize=(n_learners*4, (cv_num+1)*4))
+            fig.suptitle(f'Estimators AFTER tuning', fontsize=18)
+            ax_pred = [[row[i] for row in axes] for i in range(n_learners)] if n_learners > 1 else [axes]
+            for i, learner_name in enumerate(self.learning_algos):
+                self._plot_regression_pred_true(learner_name, ax_pred[i],
+                                                after_tuning=True)
+            fig.tight_layout(rect=[0, 0, 1, 0.98])
+            plt.show()
+
+        ###### 分類のとき、ROC曲線をプロット ######
+        else:
+            # チューニング前
+            fig, axes = plt.subplots(cv_num + 1, n_learners, figsize=(n_learners*6, (cv_num+1)*6))
+            fig.suptitle(f'ROC curve BEFORE tuning', fontsize=18)
+            ax_pred = [[row[i] for row in axes] for i in range(n_learners)] if n_learners > 1 else [axes]
+            for i, learner_name in enumerate(self.learning_algos):
+                self._plot_roc_curve(learner_name, ax_pred[i],
+                                                after_tuning=False)
+            fig.tight_layout(rect=[0, 0, 1, 0.98])
+            plt.show()
+            # チューニング後
+            fig, axes = plt.subplots(cv_num + 1, n_learners, figsize=(n_learners*6, (cv_num+1)*6))
+            fig.suptitle(f'ROC curve AFTER tuning', fontsize=18)
+            ax_pred = [[row[i] for row in axes] for i in range(n_learners)] if n_learners > 1 else [axes]
+            for i, learner_name in enumerate(self.learning_algos):
+                self._plot_roc_curve(learner_name, ax_pred[i],
+                                                after_tuning=True)
+            fig.tight_layout(rect=[0, 0, 1, 0.98])
+            plt.show()
+
+
+        ###### チューニング対象以外のスコアを算出 ######
+        scores_list = []
+        scores_cv_list = []
+        # チューニング前のスコア
+        for learner_name in self.learning_algos:
+            scores_cv, scores_mean = self._calc_all_scores(learner_name, False)
+            scores_cv_list.append(scores_cv)
+            scores_list.append(scores_mean)
+        # チューニング後のスコア
+        for learner_name in self.learning_algos:
+            scores_cv, scores_mean = self._calc_all_scores(learner_name, True)
+            scores_cv_list.append(scores_cv)
+            scores_list.append(scores_mean)
+        df_scores = pd.DataFrame(scores_list)
+        df_scores_cv = pd.DataFrame(scores_cv_list)
+        self.df_scores = df_scores
+        self.df_scores_cv = df_scores_cv
+
+        ###### 最も性能の良い学習器の保持と表示 ######
+        if self._SCORE_NEGATIVE[self.scoring]:  # 小さい方がGoodなスコアのとき
+            best_idx = df_scores[df_scores['after_tuning']][self.scoring].idxmin()
+        else:  # 大きい方がGoodなスコアのとき
+            best_idx = df_scores[df_scores['after_tuning']][self.scoring].idxmax()
+        self.best_learner = df_scores.loc[best_idx]['learning_algo']
+
+        return df_scores
+
     def print_estimator(self, learner_name):
         """
         Print estimator after tuning
@@ -771,93 +863,27 @@ class MuscleTuning():
         else:
             cv_num = self.cv.n_splits
 
-        ###### チューニング実行 ######
-        for i, learner_name in enumerate(self.learning_algos):
-            # 回帰のとき
-            if self.objective == 'regression':
-                self._regression_tuning(learner_name)
-            # 分類のとき
-            elif self.objective in ['binary', 'multiclass']:
-                self._classification_tuning(learner_name)
-
-        ###### スコア上昇履歴プロット ######
-        fig, ax = plt.subplots(1, 1, figsize=(6, 4))
-        fig.suptitle(f'{self.scoring} increase history')
-        for i, learner_name in enumerate(self.learning_algos):
-            self.tuners[learner_name].plot_search_history(ax=ax, x_axis='time',
-                                            plot_kws={'color':self._COLOR_LIST[i],
-                                                      'label':learner_name
-                                                      })
-        plt.legend()
-        plt.show()
-
-        ###### 回帰のとき、チューニング前後の予測値vs実測値プロット ######
-        if self.objective == 'regression':
-            # チューニング前
-            fig, axes = plt.subplots(cv_num + 1, n_learners, figsize=(n_learners*4, (cv_num+1)*4))
-            fig.suptitle(f'Estimators BEFORE tuning', fontsize=18)
-            ax_pred = [[row[i] for row in axes] for i in range(n_learners)] if n_learners > 1 else [axes]
-            for i, learner_name in enumerate(self.learning_algos):
-                self._plot_regression_pred_true(learner_name, ax_pred[i],
-                                                after_tuning=False)
-            fig.tight_layout(rect=[0, 0, 1, 0.98])  # https://tm23forest.com/contents/matplotlib-tightlayout-with-figure-suptitle
-            plt.show()
-            # チューニング後
-            fig, axes = plt.subplots(cv_num + 1, n_learners, figsize=(n_learners*4, (cv_num+1)*4))
-            fig.suptitle(f'Estimators AFTER tuning', fontsize=18)
-            ax_pred = [[row[i] for row in axes] for i in range(n_learners)] if n_learners > 1 else [axes]
-            for i, learner_name in enumerate(self.learning_algos):
-                self._plot_regression_pred_true(learner_name, ax_pred[i],
-                                                after_tuning=True)
-            fig.tight_layout(rect=[0, 0, 1, 0.98])
-            plt.show()
-
-        ###### 分類のとき、ROC曲線をプロット ######
+        ###### チューニングと評価を実行 ######
+        # MLflowによるロギング実行時
+        if mlflow_logging:
+            if mlflow_tracking_uri is not None:  # tracking_uri
+                mlflow.set_tracking_uri(mlflow_tracking_uri)
+            if mlflow_experiment_name is not None:  # experiment
+                experiment = mlflow.get_experiment_by_name(mlflow_experiment_name)
+                if experiment is None:  # 当該experiment存在しないとき、新たに作成
+                    experiment_id = mlflow.create_experiment(
+                                            name=mlflow_experiment_name,
+                                            artifact_location=mlflow_artifact_location)
+                else: # 当該experiment存在するとき、IDを取得
+                    experiment_id = experiment.experiment_id
+            else:
+                experiment_id = None
+            # ロギング実行
+            with mlflow.start_run(experiment_id=experiment_id) as run:
+                df_scores = self._tune_and_score(cv_num, n_learners)
         else:
-            # チューニング前
-            fig, axes = plt.subplots(cv_num + 1, n_learners, figsize=(n_learners*6, (cv_num+1)*6))
-            fig.suptitle(f'ROC curve BEFORE tuning', fontsize=18)
-            ax_pred = [[row[i] for row in axes] for i in range(n_learners)] if n_learners > 1 else [axes]
-            for i, learner_name in enumerate(self.learning_algos):
-                self._plot_roc_curve(learner_name, ax_pred[i],
-                                                after_tuning=False)
-            fig.tight_layout(rect=[0, 0, 1, 0.98])
-            plt.show()
-            # チューニング後
-            fig, axes = plt.subplots(cv_num + 1, n_learners, figsize=(n_learners*6, (cv_num+1)*6))
-            fig.suptitle(f'ROC curve AFTER tuning', fontsize=18)
-            ax_pred = [[row[i] for row in axes] for i in range(n_learners)] if n_learners > 1 else [axes]
-            for i, learner_name in enumerate(self.learning_algos):
-                self._plot_roc_curve(learner_name, ax_pred[i],
-                                                after_tuning=True)
-            fig.tight_layout(rect=[0, 0, 1, 0.98])
-            plt.show()
+            df_scores = self._tune_and_score(cv_num, n_learners)
 
-
-        ###### チューニング対象以外のスコアを算出 ######
-        scores_list = []
-        scores_cv_list = []
-        # チューニング前のスコア
-        for learner_name in self.learning_algos:
-            scores_cv, scores_mean = self._calc_all_scores(learner_name, False)
-            scores_cv_list.append(scores_cv)
-            scores_list.append(scores_mean)
-        # チューニング後のスコア
-        for learner_name in self.learning_algos:
-            scores_cv, scores_mean = self._calc_all_scores(learner_name, True)
-            scores_cv_list.append(scores_cv)
-            scores_list.append(scores_mean)
-        df_scores = pd.DataFrame(scores_list)
-        df_scores_cv = pd.DataFrame(scores_cv_list)
-        self.df_scores = df_scores
-        self.df_scores_cv = df_scores_cv
-
-        ###### 最も性能の良い学習器の保持と表示 ######
-        if self._SCORE_NEGATIVE[self.scoring]:  # 小さい方がGoodなスコアのとき
-            best_idx = df_scores[df_scores['after_tuning']][self.scoring].idxmin()
-        else:  # 大きい方がGoodなスコアのとき
-            best_idx = df_scores[df_scores['after_tuning']][self.scoring].idxmax()
-        self.best_learner = df_scores.loc[best_idx]['learning_algo']
         # print_estimator
         self.print_estimator(self.best_learner)
 
