@@ -8,6 +8,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import colors
+import mlflow
 from seaborn_analyzer import regplot, classplot
 import numbers
 import copy
@@ -621,6 +622,7 @@ class MuscleTuning():
                             scoring=None, other_scores=None, learning_algos=None, n_trials=None,
                             cv=5, tuning_algo='optuna', seed=42,
                             estimators=None, tuning_params=None,
+                            mlflow_logging=False, mlflow_tracking_uri=None, mlflow_artifact_location=None, mlflow_experiment_name=None,
                             tuning_kws=None):
         """
         Parameter tuning with multiple estimators. Easy to use even if your brain is made of muscle.
@@ -701,6 +703,7 @@ class MuscleTuning():
             Values are assumed to implement the scikit-learn estimator interface.
 
             If None, use default estimators of tuning instances
+
             See 
         
         tuning_params : dict[str, dict[str, {list, tuple}]], default=None
@@ -709,8 +712,33 @@ class MuscleTuning():
             Keys should be members of ``algo`` argument. 
 
             If None, use default values of tuning instances
+
             See 
         
+        mlflow_logging : str, default=None
+            Strategy to record the result by MLflow library.
+
+            If True, nested runs are created.
+            The parent run records conparison of all estimatiors such as max score history.
+            The child runs are created in each tuning instances by setting ``mlflow_logging`` argument to "outside"
+
+            If False, MLflow runs are not created.
+
+        mlflow_tracking_uri : str, default=None
+            Tracking uri for MLflow. This argument is passed to ``tracking_uri`` in ``mlflow.set_tracking_uri()``
+
+            See https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.set_tracking_uri
+
+        mlflow_artifact_location : str, default=None
+            Artifact store for MLflow. This argument is passed to ``artifact_location`` in ``mlflow.create_experiment()``
+
+            See https://mlflow.org/docs/latest/tracking.html#artifact-stores
+
+        mlflow_experiment_name : str, default=None
+            Experiment name for MLflow. This argument is passed to ``name`` in ``mlflow.create_experiment()``
+
+            See https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.create_experiment
+
         tuning_kws : dict[str, dict], default=None
             Additional parameters passed to tuning instances.
             Keys should be members of ``algo`` argument.

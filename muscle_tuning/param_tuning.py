@@ -356,7 +356,7 @@ class ParamTuning():
             If None, ``PARAM_SCALES`` written in each tuning class is used.
         
         mlflow_logging : str, default=None
-            Strategy to record the result by MLFlow library.
+            Strategy to record the result by MLflow library.
 
             If 'inside', mlflow process is started in the tuning instance. So you need not use ``start_run()`` explicitly.
 
@@ -556,7 +556,7 @@ class ParamTuning():
             If None, ``PARAM_SCALES`` written in each tuning class is used.
         
         mlflow_logging : str, default=None
-            Strategy to record the result by MLFlow library.
+            Strategy to record the result by MLflow library.
 
             If 'inside', mlflow process is started in the tuning instance. So you need not use ``start_run()`` explicitly.
 
@@ -816,7 +816,7 @@ class ParamTuning():
             If None, ``PARAM_SCALES`` written in each tuning class is used.
 
         mlflow_logging : str, default=None
-            Strategy to record the result by MLFlow library.
+            Strategy to record the result by MLflow library.
 
             If 'inside', mlflow process is started in the tuning instance. So you need not use ``start_run()`` explicitly.
 
@@ -1078,7 +1078,7 @@ class ParamTuning():
             If None, ``PARAM_SCALES`` written in each tuning class is used.
         
         mlflow_logging : str, default=None
-            Strategy to record the result by MLFlow library.
+            Strategy to record the result by MLflow library.
 
             If 'inside', mlflow process is started in the tuning instance.
             So you need not use ``start_run()`` explicitly.
