@@ -3,6 +3,8 @@ Pipfile.lock
 .vscode/settings.json
 __pycache__
 mlruns
+_tracking_uri
+_artifact_location
 build/
 dist/
 muscle_tuning.egg-info/

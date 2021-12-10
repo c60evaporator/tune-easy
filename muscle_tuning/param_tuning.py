@@ -363,6 +363,21 @@ class ParamTuning():
             If 'outside', mlflow process is NOT started in the tuning instance. So you should use ``start_run()`` outside the muscle-tuning library.
 
             If None, mlflow is not used.
+        
+        mlflow_tracking_uri : str, default=None
+            Tracking uri for MLflow. This argument is passed to ``tracking_uri`` in ``mlflow.set_tracking_uri()``
+
+            See https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.set_tracking_uri
+
+        mlflow_artifact_location : str, default=None
+            Artifact store for MLflow. This argument is passed to ``artifact_location`` in ``mlflow.create_experiment()``
+
+            See https://mlflow.org/docs/latest/tracking.html#artifact-stores
+
+        mlflow_experiment_name : str, default=None
+            Experiment name for MLflow. This argument is passed to ``name`` in ``mlflow.create_experiment()``
+
+            See https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.create_experiment
 
         grid_kws : dict, default=None
             Additional parameters passed to sklearn.model_selection.GridSearchCV, e.g. ``n_jobs``.
@@ -548,6 +563,21 @@ class ParamTuning():
             If 'outside', mlflow process is NOT started in the tuning instance. So you should use ``start_run()`` outside the muscle-tuning library.
 
             If None, mlflow is not used.
+
+        mlflow_tracking_uri : str, default=None
+            Tracking uri for MLflow. This argument is passed to ``tracking_uri`` in ``mlflow.set_tracking_uri()``
+
+            See https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.set_tracking_uri
+
+        mlflow_artifact_location : str, default=None
+            Artifact store for MLflow. This argument is passed to ``artifact_location`` in ``mlflow.create_experiment()``
+
+            See https://mlflow.org/docs/latest/tracking.html#artifact-stores
+
+        mlflow_experiment_name : str, default=None
+            Experiment name for MLflow. This argument is passed to ``name`` in ``mlflow.create_experiment()``
+
+            See https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.create_experiment
 
         rand_kws : dict, default=None
             Additional parameters passed to sklearn.model_selection.RandomizedSearchCV, e.g. ``n_jobs``.
@@ -793,6 +823,21 @@ class ParamTuning():
             If 'outside', mlflow process is NOT started in the tuning instance. So you should use ``start_run()`` outside the muscle-tuning library.
 
             If None, mlflow is not used.
+        
+        mlflow_tracking_uri : str, default=None
+            Tracking uri for MLflow. This argument is passed to ``tracking_uri`` in ``mlflow.set_tracking_uri()``
+
+            See https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.set_tracking_uri
+
+        mlflow_artifact_location : str, default=None
+            Artifact store for MLflow. This argument is passed to ``artifact_location`` in ``mlflow.create_experiment()``
+
+            See https://mlflow.org/docs/latest/tracking.html#artifact-stores
+
+        mlflow_experiment_name : str, default=None
+            Experiment name for MLflow. This argument is passed to ``name`` in ``mlflow.create_experiment()``
+
+            See https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.create_experiment
         
         fit_params : dict, default=None
             Parameters passed to the fit() method of the estimator, 
@@ -1042,6 +1087,21 @@ class ParamTuning():
             So you should use ``start_run()`` outside the muscle-tuning library.
 
             If None, mlflow is not used.
+        
+        mlflow_tracking_uri : str, default=None
+            Tracking uri for MLflow. This argument is passed to ``tracking_uri`` in ``mlflow.set_tracking_uri()``
+
+            See https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.set_tracking_uri
+
+        mlflow_artifact_location : str, default=None
+            Artifact store for MLflow. This argument is passed to ``artifact_location`` in ``mlflow.create_experiment()``
+
+            See https://mlflow.org/docs/latest/tracking.html#artifact-stores
+
+        mlflow_experiment_name : str, default=None
+            Experiment name for MLflow. This argument is passed to ``name`` in ``mlflow.create_experiment()``
+
+            See https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.create_experiment
         
         fit_params : dict, default=None
             Parameters passed to the fit() method of the estimator, 

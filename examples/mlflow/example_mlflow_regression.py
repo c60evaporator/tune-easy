@@ -1,12 +1,12 @@
-# %% MLFlow実装　グリッドサーチ
+# %% MLFlow　Grid search
 import parent_import
 from muscle_tuning import XGBRegressorTuning
 from xgboost import XGBRegressor
 from sklearn.model_selection import KFold
 import pandas as pd
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
-USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # Objective variable
+USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
 y = df_reg[OBJECTIVE_VARIALBLE_REG].values
 X = df_reg[USE_EXPLANATORY_REG].values
 tuning_params = {'learning_rate': [0.01, 0.03, 0.1, 0.3],
@@ -15,8 +15,8 @@ tuning_params = {'learning_rate': [0.01, 0.03, 0.1, 0.3],
                  'colsample_bytree': [0.2, 0.5, 0.8, 1.0],
                  'subsample': [0.2, 0.5, 0.8, 1.0]
                  }
-fit_params = {'verbose': 0,  # 学習中のコマンドライン出力
-              'eval_set':None,  # early_stopping_roundsの評価指標算出用データ
+fit_params = {'verbose': 0,  # Command line output
+              'eval_set':None,  # Eval set for early_stopping_rounds
               }
 not_opt_params = {'booster': 'gbtree',
                   'objective': 'reg:squarederror',
@@ -29,13 +29,13 @@ tuning.grid_search_tuning(estimator=xgbr, mlflow_logging='inside', tuning_params
                           cv=KFold(n_splits=3, shuffle=True, random_state=42),
                           not_opt_params=not_opt_params, fit_params=fit_params)
 
-# %% MLFlow実装　ランダムサーチ
+# %% MLFlow Random search
 import parent_import
 from muscle_tuning import SVMRegressorTuning
 import pandas as pd
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
-USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # Objective variable
+USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
 y = df_reg[OBJECTIVE_VARIALBLE_REG].values
 X = df_reg[USE_EXPLANATORY_REG].values
 tuning = SVMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG)
@@ -46,52 +46,45 @@ import parent_import
 from muscle_tuning import SVMRegressorTuning
 import pandas as pd
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
-USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # Objective variable
+USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
 y = df_reg[OBJECTIVE_VARIALBLE_REG].values
 X = df_reg[USE_EXPLANATORY_REG].values
 tuning = SVMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG)
 tuning.bayes_opt_tuning(mlflow_logging='inside')
 
-# %% MLFlow実装　Optuna
+# %% MLFlow　Optuna
 import parent_import
 from muscle_tuning import SVMRegressorTuning
 import pandas as pd
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
-USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # Objective variable
+USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
 y = df_reg[OBJECTIVE_VARIALBLE_REG].values
 X = df_reg[USE_EXPLANATORY_REG].values
 tuning = SVMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG)
 tuning.optuna_tuning(mlflow_logging='inside')
 
-# %% MLFlow実装　グリッドサーチautolog
+# %% MLFlow　Optuna SQLite
 import parent_import
 from muscle_tuning import SVMRegressorTuning
 import pandas as pd
-import mlflow
-df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
-USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIALBLE_REG].values
-X = df_reg[USE_EXPLANATORY_REG].values
-tuning = SVMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG, cv_group=df_reg['ward_after'].values)
-mlflow.sklearn.autolog()
-with mlflow.start_run() as run:
-    tuning.grid_search_tuning()
+import sqlite3
+import os
+# MLflow settings
+DB_PATH = f'{os.getcwd()}/_tracking_uri/mlruns.db'
+EXPERIMENT_NAME = 'optuna_regression'  # Experiment name
+ARTIFACT_LOCATION = f'{os.getcwd()}/_artifact_location'  # Artifact location
+os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)  # Make directory fo tracking server
+conn = sqlite3.connect(DB_PATH)  # Make backend DB
+tracking_uri = f'sqlite:///{DB_PATH}'  # Tracking uri
 
-# %% MLFlow実装　ランダムサーチautolog
-import parent_import
-from muscle_tuning import SVMRegressorTuning
-import pandas as pd
-import mlflow
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # 目的変数
-USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+OBJECTIVE_VARIALBLE_REG = 'approval_rate'  # Objective variable
+USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
 y = df_reg[OBJECTIVE_VARIALBLE_REG].values
 X = df_reg[USE_EXPLANATORY_REG].values
-tuning = SVMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG, cv_group=df_reg['ward_after'].values)
-mlflow.sklearn.autolog()
-with mlflow.start_run() as run:
-    tuning.random_search_tuning(n_iter=100)
+tuning = SVMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=OBJECTIVE_VARIALBLE_REG)
+tuning.optuna_tuning(mlflow_logging='inside', mlflow_tracking_uri=tracking_uri,
+                     mlflow_experiment_name=EXPERIMENT_NAME, mlflow_artifact_location=ARTIFACT_LOCATION)
 # %%
