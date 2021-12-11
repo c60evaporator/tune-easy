@@ -23,6 +23,46 @@ from seaborn_analyzer._cv_eval_set import validation_curve_eval_set, learning_cu
 class ParamTuning():
     """
     Base class of Tuning classes
+
+    Tuning class of each ML estimator inherits this class.
+
+    If you want to see default arguments of each tuning class, See the following link
+
+    - Classification -
+        * LGBMClassifierTuning
+        https://github.com/scikit-learn/scikit-learn
+
+        * LogisticRegressionTuning
+        https://github.com/scikit-learn/scikit-learn
+
+        * RFClassifierTuning
+        https://github.com/scikit-learn/scikit-learn
+
+        * SVMRegressorTuning
+        https://github.com/scikit-learn/scikit-learn
+
+        * XGBRegressorTuning
+        https://github.com/scikit-learn/scikit-learn
+
+    - Regression -
+        * ElasticNetTuning
+        https://github.com/scikit-learn/scikit-learn
+
+        * LGBMRegressorTuning
+        https://github.com/scikit-learn/scikit-learn
+
+        * RFRegressorTuning
+        https://github.com/scikit-learn/scikit-learn
+
+        * SVMClassifierTuning
+        https://github.com/scikit-learn/scikit-learn
+
+        * XGBClassifierTuning
+        https://github.com/scikit-learn/scikit-learn
+
+        * LinearRegression - No optimization, only display
+        https://github.com/scikit-learn/scikit-learn
+
     """
 
     # 共通定数
@@ -750,7 +790,7 @@ class ParamTuning():
                          mlflow_logging=None, mlflow_tracking_uri=None, mlflow_artifact_location=None, mlflow_experiment_name=None,
                          fit_params=None):
         """
-        Run bayesian optimization with ``BayesianOptimization`` library.
+        Run bayesian optimization using ``BayesianOptimization`` library.
 
         Parameters
         ----------
@@ -978,7 +1018,7 @@ class ParamTuning():
 
     def _optuna_evaluate(self, trial):
         """
-        Run bayesian optimization with ``Optuna`` library.
+        Run bayesian optimization using ``Optuna`` library.
         """
         # パラメータ格納
         params = {}
@@ -1005,7 +1045,9 @@ class ParamTuning():
                       mlflow_logging=None, mlflow_tracking_uri=None, mlflow_artifact_location=None, mlflow_experiment_name=None,
                       fit_params=None):
         """
-        ベイズ最適化(optuna)
+        Run bayesian optimization using ``Optuna`` library.
+
+        This method is usually faster than other tuning methods, so we recommend using it.
 
         Parameters
         ----------
@@ -1451,7 +1493,7 @@ class ParamTuning():
                                     not_opt_params=None, param_scales=None, plot_stats='mean', axes=None,
                                     fit_params=None):
         """
-        初期検討用の検証曲線プロット
+        Plot validation curve before optimization. This method is used to determine parameter range.
 
         Parameters
         ----------
@@ -1578,7 +1620,11 @@ class ParamTuning():
     def plot_best_validation_curve(self, validation_curve_params=None, param_scales=None,
                                    plot_stats='mean', axes=None):
         """
-        チューニング後の検証曲線プロット (最適)
+        Plot validation curve after optimization.
+
+        This method is used to assess wheter the optimized model catches higest point of score.
+
+        Also, this method is used to assess whether the optimized model is overfitting or not.
 
         Parameters
         ----------
@@ -1781,7 +1827,7 @@ class ParamTuning():
 
     def plot_best_learning_curve(self, plot_stats='mean', ax=None):
         """
-        チューニング後の学習曲線プロット (最適パラメータ使用)
+        Plot learning curve after optimization. This method is used to assess whether the optimized model is overfitting or not.
 
         Parameters
         ----------
@@ -1820,9 +1866,10 @@ class ParamTuning():
     def plot_search_map(self, order=None, pair_n=4, rounddigits_title=3, rank_number=None, rounddigits_score=3,
                             subplot_kws=None, heat_kws=None, scatter_kws=None):
         """
-        Plot score map.
+        Plot score map. Values of parameters are plotted as X and Y axes. Scores are plotted as color density.
 
         If self.tuning_algo is 'grid', the map is plotted as heat map.
+
         Else, the map is plotted as scatter plot.
 
         Parameters
