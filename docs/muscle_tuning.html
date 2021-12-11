@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>All-in-one tuning class &mdash; muscle-tuning 0.1.7 documentation</title>
+  <title>All-in-one tuning class &mdash; muscle-tuning 0.1.9 documentation</title>
   
 
   
@@ -41,7 +41,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Tuning classes of each ML estimators" href="each_estimators.html" />
+    <link rel="next" title="Tuning class of each ML estimator" href="each_estimators.html" />
     <link rel="prev" title="Welcome to muscle-tuning’s documentation!" href="index.html" /> 
 </head>
 
@@ -93,7 +93,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#module-muscle_tuning.muscle_tuning">muscle_tuning.muscle_tuning module</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="each_estimators.html">Tuning classes of each ML estimators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="each_estimators.html">Tuning class of each ML estimator</a></li>
 </ul>
 
             
@@ -191,7 +191,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="muscle_tuning.muscle_tuning.MuscleTuning.muscle_brain_tuning">
-<span class="sig-name descname"><span class="pre">muscle_brain_tuning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_colnames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objective</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scoring</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learning_algos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_trials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuning_algo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'optuna'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">42</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">estimators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuning_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuning_kws</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muscle_tuning.muscle_tuning.MuscleTuning.muscle_brain_tuning" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">muscle_brain_tuning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_colnames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objective</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scoring</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learning_algos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_trials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuning_algo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'optuna'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">42</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">estimators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuning_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mlflow_logging</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mlflow_tracking_uri</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mlflow_artifact_location</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mlflow_experiment_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuning_kws</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muscle_tuning.muscle_tuning.MuscleTuning.muscle_brain_tuning" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parameter tuning with multiple estimators. Easy to use even if your brain is made of muscle.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -235,14 +235,29 @@ See</p>
 <li><p><strong>estimators</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>estimator object implementing 'fit'</em><em>]</em><em>, </em><em>default=None</em>) – <p>Classification or regression estimators used to tuning.
 Keys should be members of <code class="docutils literal notranslate"><span class="pre">algo</span></code> argument.
 Values are assumed to implement the scikit-learn estimator interface.</p>
-<p>If None, use default estimators of tuning instances
-See</p>
+<p>If None, use default estimators of tuning instances</p>
+<p>See</p>
 </p></li>
 <li><p><strong>tuning_params</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>dict</em><em>[</em><em>str</em><em>, </em><em>{list</em><em>, </em><em>tuple}</em><em>]</em><em>]</em><em>, </em><em>default=None</em>) – <p>Values should be dictionary with parameters names as keys and
 lists of parameter settings or parameter range to try as values.
 Keys should be members of <code class="docutils literal notranslate"><span class="pre">algo</span></code> argument.</p>
-<p>If None, use default values of tuning instances
-See</p>
+<p>If None, use default values of tuning instances</p>
+<p>See</p>
+</p></li>
+<li><p><strong>mlflow_logging</strong> (<em>str</em><em>, </em><em>default=None</em>) – <p>Strategy to record the result by MLflow library.</p>
+<p>If True, nested runs are created.
+The parent run records conparison of all estimatiors such as max score history.
+The child runs are created in each tuning instances by setting <code class="docutils literal notranslate"><span class="pre">mlflow_logging</span></code> argument to “outside”</p>
+<p>If False, MLflow runs are not created.</p>
+</p></li>
+<li><p><strong>mlflow_tracking_uri</strong> (<em>str</em><em>, </em><em>default=None</em>) – <p>Tracking uri for MLflow. This argument is passed to <code class="docutils literal notranslate"><span class="pre">tracking_uri</span></code> in <code class="docutils literal notranslate"><span class="pre">mlflow.set_tracking_uri()</span></code></p>
+<p>See <a class="reference external" href="https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.set_tracking_uri">https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.set_tracking_uri</a></p>
+</p></li>
+<li><p><strong>mlflow_artifact_location</strong> (<em>str</em><em>, </em><em>default=None</em>) – <p>Artifact store for MLflow. This argument is passed to <code class="docutils literal notranslate"><span class="pre">artifact_location</span></code> in <code class="docutils literal notranslate"><span class="pre">mlflow.create_experiment()</span></code></p>
+<p>See <a class="reference external" href="https://mlflow.org/docs/latest/tracking.html#artifact-stores">https://mlflow.org/docs/latest/tracking.html#artifact-stores</a></p>
+</p></li>
+<li><p><strong>mlflow_experiment_name</strong> (<em>str</em><em>, </em><em>default=None</em>) – <p>Experiment name for MLflow. This argument is passed to <code class="docutils literal notranslate"><span class="pre">name</span></code> in <code class="docutils literal notranslate"><span class="pre">mlflow.create_experiment()</span></code></p>
+<p>See <a class="reference external" href="https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.create_experiment">https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.create_experiment</a></p>
 </p></li>
 <li><p><strong>tuning_kws</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>dict</em><em>]</em><em>, </em><em>default=None</em>) – <p>Additional parameters passed to tuning instances.
 Keys should be members of <code class="docutils literal notranslate"><span class="pre">algo</span></code> argument.
@@ -282,7 +297,7 @@ Values should be dict of parameters passed to tuning instances, e.g. {‘not_opt
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="each_estimators.html" class="btn btn-neutral float-right" title="Tuning classes of each ML estimators" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="each_estimators.html" class="btn btn-neutral float-right" title="Tuning class of each ML estimator" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="index.html" class="btn btn-neutral float-left" title="Welcome to muscle-tuning’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
