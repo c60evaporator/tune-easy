@@ -22,58 +22,9 @@ from seaborn_analyzer._cv_eval_set import validation_curve_eval_set, learning_cu
 
 class ParamTuning():
     """
-    Base class of Tuning classes
+    Base class of tuning classes
 
-    Tuning class of each ML estimator inherits this class.
-
-    If you want to see default arguments of each tuning class, See the following link
-
-    - Classification
-        * LGBMClassifierTuning
-
-        https://github.com/scikit-learn/scikit-learn
-
-        * LogisticRegressionTuning
-
-        https://github.com/scikit-learn/scikit-learn
-
-        * RFClassifierTuning
-
-        https://github.com/scikit-learn/scikit-learn
-
-        * SVMRegressorTuning
-
-        https://github.com/scikit-learn/scikit-learn
-
-        * XGBRegressorTuning
-
-        https://github.com/scikit-learn/scikit-learn
-
-    - Regression
-        * ElasticNetTuning
-
-        https://github.com/scikit-learn/scikit-learn
-
-        * LGBMRegressorTuning
-        
-        https://github.com/scikit-learn/scikit-learn
-
-        * RFRegressorTuning
-
-        https://github.com/scikit-learn/scikit-learn
-
-        * SVMClassifierTuning
-
-        https://github.com/scikit-learn/scikit-learn
-
-        * XGBClassifierTuning
-
-        https://github.com/scikit-learn/scikit-learn
-
-        * LinearRegression - No optimization, only display
-
-        https://github.com/scikit-learn/scikit-learn
-
+    This class is used for inheritance only, So you shouldn't use this class directly.
     """
 
     # 共通定数

@@ -158,39 +158,33 @@
             
   <div class="section" id="base-class-of-parameter-tuning">
 <h1>Base class of parameter tuning<a class="headerlink" href="#base-class-of-parameter-tuning" title="Permalink to this headline">¶</a></h1>
-<p>This class is used for inheritance only, So you shouldn’t use this class directry.</p>
+<p>This class is used for inheritance only, So you shouldn’t use this class directly.</p>
 <p>Tuning class of each ML estimator inherits this class.</p>
-<div class="section" id="module-muscle_tuning.param_tuning">
-<span id="muscle-tuning-param-tuning-module"></span><h2>muscle_tuning.param_tuning module<a class="headerlink" href="#module-muscle_tuning.param_tuning" title="Permalink to this headline">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="muscle_tuning.param_tuning.ParamTuning">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">muscle_tuning.param_tuning.</span></span><span class="sig-name descname"><span class="pre">ParamTuning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_colnames</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_colname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eval_set_selection</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muscle_tuning.param_tuning.ParamTuning" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Base class of Tuning classes</p>
-<p>Tuning class of each ML estimator inherits this class.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <p>If you want to see default arguments of each tuning class, See the following link</p>
 <ul>
 <li><dl>
 <dt>Classification</dt><dd><ul class="simple">
 <li><p>LGBMClassifierTuning</p></li>
 </ul>
-<p><a class="reference external" href="https://github.com/scikit-learn/scikit-learn">https://github.com/scikit-learn/scikit-learn</a></p>
+<p><a class="reference external" href="https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.lgbm_tuning.LGBMClassifierTuning">https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.lgbm_tuning.LGBMClassifierTuning</a></p>
 <ul class="simple">
 <li><p>LogisticRegressionTuning</p></li>
 </ul>
-<p><a class="reference external" href="https://github.com/scikit-learn/scikit-learn">https://github.com/scikit-learn/scikit-learn</a></p>
+<p><a class="reference external" href="https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.logisticregression_tuning.LogisticRegressionTuning">https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.logisticregression_tuning.LogisticRegressionTuning</a></p>
 <ul class="simple">
 <li><p>RFClassifierTuning</p></li>
 </ul>
-<p><a class="reference external" href="https://github.com/scikit-learn/scikit-learn">https://github.com/scikit-learn/scikit-learn</a></p>
+<p><a class="reference external" href="https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.rf_tuning.RFClassifierTuning">https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.rf_tuning.RFClassifierTuning</a></p>
 <ul class="simple">
-<li><p>SVMRegressorTuning</p></li>
+<li><p>SVMClassifierTuning</p></li>
 </ul>
-<p><a class="reference external" href="https://github.com/scikit-learn/scikit-learn">https://github.com/scikit-learn/scikit-learn</a></p>
+<p><a class="reference external" href="https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.svm_tuning.SVMClassifierTuning">https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.svm_tuning.SVMClassifierTuning</a></p>
 <ul class="simple">
-<li><p>XGBRegressorTuning</p></li>
+<li><p>XGBClassifierTuning</p></li>
 </ul>
-<p><a class="reference external" href="https://github.com/scikit-learn/scikit-learn">https://github.com/scikit-learn/scikit-learn</a></p>
+<p><a class="reference external" href="https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.xgb_tuning.XGBClassifierTuning">https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.xgb_tuning.XGBClassifierTuning</a></p>
 </dd>
 </dl>
 </li>
@@ -198,31 +192,40 @@
 <dt>Regression</dt><dd><ul class="simple">
 <li><p>ElasticNetTuning</p></li>
 </ul>
-<p><a class="reference external" href="https://github.com/scikit-learn/scikit-learn">https://github.com/scikit-learn/scikit-learn</a></p>
+<p><a class="reference external" href="https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.elasticnet_tuning.ElasticNetTuning">https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.elasticnet_tuning.ElasticNetTuning</a></p>
 <ul class="simple">
 <li><p>LGBMRegressorTuning</p></li>
 </ul>
-<p><a class="reference external" href="https://github.com/scikit-learn/scikit-learn">https://github.com/scikit-learn/scikit-learn</a></p>
+<p><a class="reference external" href="https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.lgbm_tuning.LGBMRegressorTuning">https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.lgbm_tuning.LGBMRegressorTuning</a></p>
 <ul class="simple">
 <li><p>RFRegressorTuning</p></li>
 </ul>
-<p><a class="reference external" href="https://github.com/scikit-learn/scikit-learn">https://github.com/scikit-learn/scikit-learn</a></p>
+<p><a class="reference external" href="https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.rf_tuning.RFRegressorTuning">https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.rf_tuning.RFRegressorTuning</a></p>
 <ul class="simple">
-<li><p>SVMClassifierTuning</p></li>
+<li><p>SVMRegressorTuning</p></li>
 </ul>
-<p><a class="reference external" href="https://github.com/scikit-learn/scikit-learn">https://github.com/scikit-learn/scikit-learn</a></p>
+<p><a class="reference external" href="https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.svm_tuning.SVMRegressorTuning">https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.svm_tuning.SVMRegressorTuning</a></p>
 <ul class="simple">
-<li><p>XGBClassifierTuning</p></li>
+<li><p>XGBRegressorTuning</p></li>
 </ul>
-<p><a class="reference external" href="https://github.com/scikit-learn/scikit-learn">https://github.com/scikit-learn/scikit-learn</a></p>
+<p><a class="reference external" href="https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.xgb_tuning.XGBRegressorTuning">https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.xgb_tuning.XGBRegressorTuning</a></p>
 <ul class="simple">
 <li><p>LinearRegression - No optimization, only display</p></li>
 </ul>
-<p><a class="reference external" href="https://github.com/scikit-learn/scikit-learn">https://github.com/scikit-learn/scikit-learn</a></p>
+<p><a class="reference external" href="https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.linearregression_tuning.LinearRegressionTuning">https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.linearregression_tuning.LinearRegressionTuning</a></p>
 </dd>
 </dl>
 </li>
 </ul>
+</div>
+<div class="section" id="module-muscle_tuning.param_tuning">
+<span id="muscle-tuning-param-tuning-module"></span><h2>muscle_tuning.param_tuning module<a class="headerlink" href="#module-muscle_tuning.param_tuning" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="muscle_tuning.param_tuning.ParamTuning">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">muscle_tuning.param_tuning.</span></span><span class="sig-name descname"><span class="pre">ParamTuning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_colnames</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_colname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eval_set_selection</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muscle_tuning.param_tuning.ParamTuning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class of tuning classes</p>
+<p>This class is used for inheritance only, So you shouldn’t use this class directly.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="muscle_tuning.param_tuning.ParamTuning.bayes_opt_tuning">
 <span class="sig-name descname"><span class="pre">bayes_opt_tuning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">estimator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuning_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scoring</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">not_opt_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_scales</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mlflow_logging</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mlflow_tracking_uri</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mlflow_artifact_location</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mlflow_experiment_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fit_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muscle_tuning.param_tuning.ParamTuning.bayes_opt_tuning" title="Permalink to this definition">¶</a></dt>
