@@ -30,28 +30,48 @@ class ParamTuning():
 
     - Classification
         * LGBMClassifierTuning
+
         https://github.com/scikit-learn/scikit-learn
+
         * LogisticRegressionTuning
+
         https://github.com/scikit-learn/scikit-learn
+
         * RFClassifierTuning
+
         https://github.com/scikit-learn/scikit-learn
+
         * SVMRegressorTuning
+
         https://github.com/scikit-learn/scikit-learn
+
         * XGBRegressorTuning
+
         https://github.com/scikit-learn/scikit-learn
 
     - Regression
         * ElasticNetTuning
+
         https://github.com/scikit-learn/scikit-learn
+
         * LGBMRegressorTuning
+        
         https://github.com/scikit-learn/scikit-learn
+
         * RFRegressorTuning
+
         https://github.com/scikit-learn/scikit-learn
+
         * SVMClassifierTuning
+
         https://github.com/scikit-learn/scikit-learn
+
         * XGBClassifierTuning
+
         https://github.com/scikit-learn/scikit-learn
+
         * LinearRegression - No optimization, only display
+
         https://github.com/scikit-learn/scikit-learn
 
     """
