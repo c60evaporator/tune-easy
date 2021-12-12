@@ -188,7 +188,7 @@ kinnikun.df_scores
 |roc_curve_before.png|[チューニング前のROC曲線](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_muscle.md#チューニング前のroc曲線)|分類タスクのみ|
 |roc_curve_after.png|[チューニング後のROC曲線](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_muscle.md#チューニング後のroc曲線)|分類タスクのみ|
 |score_result.csv|[チューニング前後のスコア](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_muscle.md#チューニング前後のスコア-1)||
-|score_result_cv.csv|クロスバリデーションチューニング前後のスコア (下図参照)|
+|score_result_cv.csv|チューニング前後のスコア (クロスバリデーションごと)|下図参照|
 |how_to_use_best_estimator.py|[チューニング後の機械学習モデル使用法](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_muscle.md#チューニング後の機械学習モデル使用法-1)||
 score_result_cv.csvの内容
 
