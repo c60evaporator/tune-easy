@@ -136,7 +136,7 @@ kinnikun.df_scores
 
 <img width="794" src="https://user-images.githubusercontent.com/59557625/145711588-be0e393f-be7b-4833-b17a-05eecd6ad014.png">
 
-ロギング結果は、親RUN（）と子RUN（）に分けてネストして保存されます。
+ロギング結果は、親RUN（全学習器の比較結果）と子RUN（各学習器ごとのチューニング結果）に分けてネストして保存されます。
 
 <img width="292" src="https://user-images.githubusercontent.com/59557625/145711846-3a445abf-4013-44ef-862f-9ace3839ffe5.png">
 
