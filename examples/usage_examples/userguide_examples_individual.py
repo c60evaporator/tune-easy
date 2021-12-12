@@ -160,4 +160,22 @@ regplot.regression_pred_true(best_estimator,
                              fit_params=tuning.fit_params,
                              eval_set_selection='test'
                              )
+
+# %% Usage of MLflow logging
+import parent_import
+from muscle_tuning import E
+from sklearn.datasets import fetch_california_housing
+import pandas as pd
+import numpy as np
+# Load dataset
+OBJECTIVE_VARIABLE = 'price'  # Objective variable name
+USE_EXPLANATORY = ['MedInc', 'AveOccup', 'Latitude', 'HouseAge']  # Selected explanatory variables
+california_housing = pd.DataFrame(np.column_stack((fetch_california_housing().data, fetch_california_housing().target)),
+        columns = np.append(fetch_california_housing().feature_names, OBJECTIVE_VARIABLE))
+california_housing = california_housing.sample(n=1000, random_state=42)  # sampling from 20640 to 1000
+y = california_housing[OBJECTIVE_VARIABLE].values  # Objective variable
+X = california_housing[USE_EXPLANATORY].values  # Explanatory variables
+# Optimization with MLflow logging
+tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIABLE)  # Make tuning instance
+tuning.optuna_tuning(cv=2, mlflow_logging='inside')  # Run tuning with MLflow logging
 # %%

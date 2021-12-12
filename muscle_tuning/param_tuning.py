@@ -236,12 +236,11 @@ class ParamTuning():
         """
         MLFlowで各種情報と探索履歴をロギング
         """
+        # タグを記載
+        mlflow.set_tag('tuning_algo', self.tuning_algo)  # 最適化に使用したアルゴリズム名('grid', 'random', 'bayes-opt', 'optuna')
+        mlflow.set_tag('x_colnames', self.x_colnames)  # 説明変数のカラム名
+        mlflow.set_tag('y_colname', self.y_colname)  # 目的変数のカラム名
         # パラメータを記載
-        mlflow.log_param('X_head', self.X[:5, :])  # 説明変数の最初5レコード
-        mlflow.log_param('y_head', self.y[:5])  # 目的変数の最初5レコード
-        mlflow.log_param('x_colnames', self.x_colnames)  # 説明変数のカラム名
-        mlflow.log_param('y_colname', self.y_colname)  # 目的変数のカラム名
-        mlflow.log_param('cv_group_head', self.cv_group[:5] if self.cv_group is not None else None)  # GroupKFold, LeaveOneGroupOut用のグルーピング対象データ 
         mlflow.log_param('tuning_params', self.tuning_params)  # チューニング対象のパラメータとその範囲
         mlflow.log_param('not_opt_params', self.not_opt_params)  # チューニング非対象のパラメータ
         mlflow.log_param('int_params', self.int_params)  # 整数型のパラメータのリスト
@@ -250,18 +249,15 @@ class ParamTuning():
         mlflow.log_param('seed', self.seed)  # 乱数シード
         mlflow.log_param('cv', str(self.cv))  # クロスバリデーション分割法
         mlflow.log_param('estimator', str(self.estimator))  # 最適化対象の学習器インスタンス
-        mlflow.log_param('learner_name', self.learner_name)  # パイプライン処理時の学習器名称
         mlflow.log_param('fit_params', self.fit_params)  # 学習時のパラメータ
-        mlflow.log_param('tuning_algo', self.tuning_algo)  # 最適化に使用したアルゴリズム名('grid', 'random', 'bayes-opt', 'optuna')
         # チューニング結果を記載
         best_params_float = {f'best__{k}':v for k, v in self.best_params.items() if isinstance(v, float) or isinstance(v, int)}
         mlflow.log_params(best_params_float)  # 最適パラメータ(数値型)
         best_params_str = {f'best__{k}':v for k, v in self.best_params.items() if not isinstance(v, float) and not isinstance(v, int)}
         mlflow.log_params(best_params_str)  # 最適パラメータ(数値型以外)
         mlflow.log_metric('score_before', self.score_before)  # チューニング前のスコア
-        mlflow.log_metric('best_score', self.best_score)  # 最高スコア
+        mlflow.log_metric('score_best', self.best_score)  # 最高スコア
         mlflow.log_metric('elapsed_time', self.elapsed_time)  # 所要時間
-        mlflow.log_metric('preprocess_time', self._preprocess_time)  # 前処理(最適化スタート前)時間
         # 最適モデルをMLFlow Modelsで保存(https://mlflow.org/docs/latest/models.html#how-to-log-models-with-signatures)
         estimator_output = self.best_estimator.predict(self.X)  # モデル出力
         estimator_output = pd.Series(estimator_output) if self.y_colname is None else pd.DataFrame(estimator_output, columns=[self.y_colname])
@@ -272,7 +268,7 @@ class ParamTuning():
         df_history = self.get_search_history()
         # Stepでスコア履歴を保存する
         for i, row in df_history.iterrows():
-            mlflow.log_metric('max_score', row['max_score'], step=i)
+            mlflow.log_metric('score_history', row['max_score'], step=i)
         # スコア履歴詳細をCSVで保存
         df_history.to_csv('search_history.csv')
         mlflow.log_artifact('search_history.csv')
