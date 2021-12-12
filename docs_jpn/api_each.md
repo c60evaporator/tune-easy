@@ -1,7 +1,7 @@
-# 詳細チューニング
+# 詳細チューニング API仕様
 詳細チューニング実施用クラスのAPI仕様を記載します
 
-使用法は[こちら]()を参照ください
+使用法は[こちら](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md)を参照ください
 
 # クラス一覧
 以下のクラスからなります
