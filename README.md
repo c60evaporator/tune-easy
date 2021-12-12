@@ -73,10 +73,13 @@ tuning.plot_best_validation_curve()  # 検証曲線の可視化
 tuning.optuna_tuning(mlflow_logging='with', cv=2)
 ```
 
+<br>
+
 # インストール方法
 ```
 $ pip install muscle-tuning
 ```
+
 <br>
 
 # 必要要件
@@ -91,6 +94,7 @@ $ pip install muscle-tuning
 * MLFlow >=1.17.0
 * LightGBM >=3.2.1
 * XGBoost >=1.4.2
+
 <br>
 
 # サポート
@@ -108,6 +112,8 @@ $ pip install muscle-tuning
 |一括チューニング|MuscleTuning|複数の機械学習アルゴリズムを一括チューニングして比較|[使用手順](https://github.com/c60evaporator/muscle-tuning#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E6%89%8B%E9%A0%86-muscle_brain_tuning)|[API仕様]()|
 |詳細チューニング|[学習器の種類毎に異なる](https://github.com/c60evaporator/muscle-tuning/blob/master/README.md#02-チューニング用クラスの初期化)|1種類の機械学習アルゴリズムのパラメータを詳細にチューニング|[使用手順](https://github.com/c60evaporator/muscle-tuning#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E6%89%8B%E9%A0%86-%E8%A9%B3%E7%B4%B0%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0)|[API仕様]()|
 
+<br>
+
 # クラス一覧
 本ライブラリは以下のクラスからなります。用途に応じて使い分けてください
 
@@ -118,7 +124,9 @@ $ pip install muscle-tuning
 |---|---|---|---|---|
 |MuscleTuning|muscle_tuning.py|複数の機械学習アルゴリズムでのチューニングを一括実行、結果をグラフ表示|[API仕様]()|[API Reference]()|
 
-## 詳細チューニング用のクラス
+<br>
+
+## 詳細チューニング用クラス
 1種類の機械学習アルゴリズムのパラメータを詳細にチューニングしたい際に使用するクラスです。
 全てベースクラスである[muscle_tuning.param_tuning.ParamTuning]()クラスを継承しています。
 メソッドのAPIリファレンスを見たい際には、[ベースクラスのAPIリファレンス](https://c60evaporator.github.io/muscle-tuning/param_tuning.html#muscle_tuning.param_tuning.ParamTuning)を参照ください
