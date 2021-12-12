@@ -182,14 +182,16 @@ kinnikun.df_scores
 |arg-estimators.json|[`muscle_brain_tuning()`]()メソッドの`estimators`引数||
 |arg-tuning_params.json|[`muscle_brain_tuning()`]()メソッドの`tuning_params`引数||
 |arg-tuning_kws.json|[`muscle_brain_tuning()`]()メソッドの`tuning_kws`引数||
-|score_history.png|[スコアの上昇履歴]()||
-|pred_true_before.png|[チューニング前の予測値-実測値プロット]()|回帰タスクのみ|
-|pred_true_after.png|[チューニング後の予測値-実測値プロット]()|回帰タスクのみ|
-|roc_curve_before.png|[チューニング前のROC曲線]()|分類タスクのみ|
-|roc_curve_after.png|[チューニング後のROC曲線]()|分類タスクのみ|
-|score_result.csv|[チューニング前後のスコア]()||
+|score_history.png|[スコアの上昇履歴](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_muscle.md#スコアの上昇履歴-1)||
+|pred_true_before.png|[チューニング前の予測値-実測値プロット](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_muscle.md#チューニング前の予測値-実測値プロット)|回帰タスクのみ|
+|pred_true_after.png|[チューニング後の予測値-実測値プロット](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_muscle.md#チューニング後の予測値-実測値プロット)|回帰タスクのみ|
+|roc_curve_before.png|[チューニング前のROC曲線](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_muscle.md#チューニング前のroc曲線)|分類タスクのみ|
+|roc_curve_after.png|[チューニング後のROC曲線](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_muscle.md#チューニング後のroc曲線)|分類タスクのみ|
+|score_result.csv|[チューニング前後のスコア](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_muscle.md#チューニング前後のスコア-1)||
 |score_result_cv.csv|クロスバリデーションチューニング前後のスコア (下図参照)|
-|how_to_use_best_estimator.py|[チューニング後の機械学習モデル使用法]()||
+|how_to_use_best_estimator.py|[チューニング後の機械学習モデル使用法](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_muscle.md#チューニング後の機械学習モデル使用法-1)||
+score_result_cv.csvの内容
+
 <img width="681" alt="スクリーンショット 2021-12-12 21 55 11" src="https://user-images.githubusercontent.com/59557625/145713542-57f3f10d-7548-49ed-bb4b-ecc8e5e15b0b.png">
 
 <br>
