@@ -162,7 +162,7 @@ tuning.plot_first_validation_curve()
 ```
 実行結果
 
-![image](https://user-images.githubusercontent.com/59557625/130490027-5ff1b717-7e45-4e02-8e50-79fd6e49b19f.png)
+![output](https://user-images.githubusercontent.com/59557625/145722194-0791ecc7-6fad-4c7a-a02e-71ec82d0c6bd.png)
 
 #### パラメータ範囲を指定して検証曲線プロット
 `validation_curve_params`引数で、検証曲線のパラメータ範囲を指定する事ができます
@@ -193,7 +193,7 @@ tuning.plot_first_validation_curve(validation_curve_params=VALIDATION_CURVE_PARA
 ```
 実行結果
 
-![image](https://user-images.githubusercontent.com/59557625/130651966-5c78f390-6bb0-474e-b64b-1b3c34eb0943.png)
+![output](https://user-images.githubusercontent.com/59557625/145722445-033a1ccb-1b71-45b7-a290-2b811620b754.png)
 
 <br>
 
