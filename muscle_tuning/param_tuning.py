@@ -232,7 +232,7 @@ class ParamTuning():
             steps = estimator.steps
             self.learner_name = steps[len(steps)-1][0]
 
-    def _mlflow_log_results(self):
+    def _log_mlflow_results(self):
         """
         MLFlowで各種情報と探索履歴をロギング
         """
@@ -280,7 +280,7 @@ class ParamTuning():
         """
         # 外部でmlflow.start_runを実行しているとき
         if mlflow_logging == 'outside':
-            self._mlflow_log_results()
+            self._log_mlflow_results()
         # with構文で実行するとき
         elif mlflow_logging == 'inside':
             if mlflow_tracking_uri is not None:  # tracking_uri
@@ -297,7 +297,7 @@ class ParamTuning():
                 experiment_id = None
             # ロギング実行
             with mlflow.start_run(experiment_id=experiment_id) as run:
-                self._mlflow_log_results()
+                self._log_mlflow_results()
         elif mlflow_logging is not None:
             raise Exception('the "mlflow_logging" argument must be "outside", "inside" or None')
 

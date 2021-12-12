@@ -12,6 +12,7 @@ import mlflow
 from seaborn_analyzer import regplot, classplot
 import numbers
 import copy
+import os
 
 from .linearregression_tuning import LinearRegressionTuning
 from .elasticnet_tuning import ElasticNetTuning
@@ -50,7 +51,7 @@ class MuscleTuning():
                 'multiclass': {'svm': 50,
                                'logistic': 500,
                                'randomforest': 300, 
-                               'lightgbm': 20,
+                               'lightgbm': 200,
                                'xgboost': 100
                                }
                 }
@@ -170,9 +171,9 @@ class MuscleTuning():
         self.objective = None  # タスク ('regression', 'binary', 'multiclass')
         # 定数から読み込むプロパティ
         self.scoring = None  # 最大化するスコア
-        self.other_scores = None  # チューニング後に表示するスコアのdict
-        self.learning_algos = None  # 学習器名称のdict
-        self.n_trials = None  # 試行数のdict (グリッドサーチ以外で有効)
+        self.other_scores = None  # チューニング後に表示するスコア一覧
+        self.learning_algos = None  # 比較する学習器の一覧
+        self.n_trials = None  # 学習器ごとのチューニング試行数 (グリッドサーチ以外で有効)
         # 引数指定したデフォルト値を読み込むプロパティ
         self.tuning_algo = None  # 最適化に使用したアルゴリズム名('grid', 'random', 'bayes-opt', 'optuna')
         self.cv = None  # クロスバリデーション用インスタンス
@@ -577,6 +578,29 @@ class MuscleTuning():
 
         return scores, scores_mean
 
+    def _log_mlflow_results(self):
+        # タグを記載
+        mlflow.set_tag('tuning_algo', self.tuning_algo)  # 最適化に使用したアルゴリズム名('grid', 'random', 'bayes-opt', 'optuna')
+        mlflow.set_tag('x_colnames', self.x_colnames)  # 説明変数のカラム名
+        mlflow.set_tag('y_colname', self.y_colname)  # 目的変数のカラム名
+        # 引数をParametersとして保存
+        mlflow.log_param('objective', self.objective)  # タスク ('regression', 'binary', 'multiclass')
+        mlflow.log_param('scoring', self.scoring)  # チューニング非対象のパラメータ
+        mlflow.log_param('other_scores', self.other_scores)  # チューニング後に表示するスコア一覧
+        mlflow.log_param('learning_algos', self.learning_algos)  # 比較する学習器の一覧
+        mlflow.log_param('n_trials', self.n_trials)  # 学習器ごとのチューニング試行数 (グリッドサーチ以外で有効)
+        mlflow.log_param('cv', str(self.cv))  # クロスバリデーション分割法
+        mlflow.log_param('seed', self.seed)  # 乱数シード
+        # dict引数をJSONとして保存
+        mlflow.log_dict(self.estimators, 'arg-estimators.json')  # 最適化対象の学習器インスタンス
+        mlflow.log_dict(self.tuning_params, 'arg-tuning_params.json')  # 学習時のパラメータ
+        mlflow.log_dict(self.tuning_kws, 'arg-tuning_kws.json')  # 学習時のパラメータ
+        # スコア履歴をMetricsとして保存
+        for i, learner_name in enumerate(self.learning_algos):
+            df_history = self.tuners[learner_name].get_search_history()
+            for i, row in df_history.iterrows():
+                mlflow.log_metric(f'score_history_{learner_name}', row['max_score'], step=i)
+
     def _tune_and_score(self, cv_num, n_learners):
         """チューニング実行とスコア比較"""
         ###### チューニング実行 ######
@@ -597,6 +621,8 @@ class MuscleTuning():
                                                       'label':learner_name
                                                       })
         plt.legend()
+        if self.mlflow_logging:  # MLflowに図を保存
+            mlflow.log_figure(fig, 'score_history.png')
         plt.show()
 
         ###### 回帰のとき、チューニング前後の予測値vs実測値プロット ######
@@ -609,6 +635,8 @@ class MuscleTuning():
                 self._plot_regression_pred_true(learner_name, ax_pred[i],
                                                 after_tuning=False)
             fig.tight_layout(rect=[0, 0, 1, 0.98])  # https://tm23forest.com/contents/matplotlib-tightlayout-with-figure-suptitle
+            if self.mlflow_logging:  # MLflowに図を保存
+                mlflow.log_figure(fig, 'pred_true_before.png')
             plt.show()
             # チューニング後
             fig, axes = plt.subplots(cv_num + 1, n_learners, figsize=(n_learners*4, (cv_num+1)*4))
@@ -618,6 +646,8 @@ class MuscleTuning():
                 self._plot_regression_pred_true(learner_name, ax_pred[i],
                                                 after_tuning=True)
             fig.tight_layout(rect=[0, 0, 1, 0.98])
+            if self.mlflow_logging:  # MLflowに図を保存
+                mlflow.log_figure(fig, 'pred_true_after.png')
             plt.show()
 
         ###### 分類のとき、ROC曲線をプロット ######
@@ -630,6 +660,8 @@ class MuscleTuning():
                 self._plot_roc_curve(learner_name, ax_pred[i],
                                                 after_tuning=False)
             fig.tight_layout(rect=[0, 0, 1, 0.98])
+            if self.mlflow_logging:  # MLflowに図を保存
+                mlflow.log_figure(fig, 'roc_curve_before.png')
             plt.show()
             # チューニング後
             fig, axes = plt.subplots(cv_num + 1, n_learners, figsize=(n_learners*6, (cv_num+1)*6))
@@ -639,6 +671,8 @@ class MuscleTuning():
                 self._plot_roc_curve(learner_name, ax_pred[i],
                                                 after_tuning=True)
             fig.tight_layout(rect=[0, 0, 1, 0.98])
+            if self.mlflow_logging:  # MLflowに図を保存
+                mlflow.log_figure(fig, 'roc_curve_after.png')
             plt.show()
 
 
@@ -659,6 +693,14 @@ class MuscleTuning():
         df_scores_cv = pd.DataFrame(scores_cv_list)
         self.df_scores = df_scores
         self.df_scores_cv = df_scores_cv
+        # MLflowにスコア一覧をCSVとして保存
+        if self.mlflow_logging:
+            df_scores.to_csv('score_result.csv')
+            mlflow.log_artifact('score_result.csv')
+            os.remove('score_result.csv')
+            df_scores_cv.to_csv('score_result_cv.csv')
+            mlflow.log_artifact('score_result_cv.csv')
+            os.remove('score_result_cv.csv')
 
         ###### 最も性能の良い学習器の保持と表示 ######
         if self._SCORE_NEGATIVE[self.scoring]:  # 小さい方がGoodなスコアのとき
@@ -667,9 +709,15 @@ class MuscleTuning():
             best_idx = df_scores[df_scores['after_tuning']][self.scoring].idxmax()
         self.best_learner = df_scores.loc[best_idx]['learning_algo']
 
+        ###### print_estimator ######
+        self.print_estimator(self.best_learner, mlflow_logging=self.mlflow_logging)
+
+        ###### MLflowにパラメータと結果をロギング ######
+        self._log_mlflow_results()
+
         return df_scores
 
-    def print_estimator(self, learner_name):
+    def print_estimator(self, learner_name, mlflow_logging=False):
         """
         Print estimator after tuning
 
@@ -681,47 +729,48 @@ class MuscleTuning():
 
         print('----------The following is how to use the best estimator----------\n')
         tuner = self.tuners[learner_name]
+        printed_model = []
 
         # importの表示
         if self.objective == 'regression':
             if learner_name == 'linear_regression':
-                print('from sklearn.linear_model import LinearRegression')
+                printed_model.append('from sklearn.linear_model import LinearRegression')
             elif learner_name == 'elasticnet':
-                print('from sklearn.linear_model import ElasticNet')
+                printed_model.append('from sklearn.linear_model import ElasticNet')
             elif learner_name == 'svr':
-                print('from sklearn.svm import SVR')
+                printed_model.append('from sklearn.svm import SVR')
             elif learner_name == 'randomforest':
-                print('from sklearn.ensemble import RandomForestRegressor')
+                printed_model.append('from sklearn.ensemble import RandomForestRegressor')
             elif learner_name == 'lightgbm':
-                print('from lightgbm import LGBMRegressor')
+                printed_model.append('from lightgbm import LGBMRegressor')
             elif learner_name == 'xgboost':
-                print('from xgboost import XGBRegressor')
+                printed_model.append('from xgboost import XGBRegressor')
         else:
             if learner_name == 'svm':
-                print('from sklearn.svm import SVC')
+                printed_model.append('from sklearn.svm import SVC')
             elif learner_name == 'logistic':
-                print('from sklearn.linear_model import LogisticRegression')
+                printed_model.append('from sklearn.linear_model import LogisticRegression')
             elif learner_name == 'randomforest':
-                print('from sklearn.ensemble import RandomForestClassifier')
+                printed_model.append('from sklearn.ensemble import RandomForestClassifier')
             elif learner_name == 'lightgbm':
-                print('from lightgbm import LGBMClassifier')
+                printed_model.append('from lightgbm import LGBMClassifier')
             elif learner_name == 'xgboost':
-                print('from xgboost import XGBClassifier')
+                printed_model.append('from xgboost import XGBClassifier')
         # パイプラインならimport追加
         if isinstance(tuner.estimator, Pipeline):
-            print('from sklearn.pipeline import Pipeline')
-            print('from sklearn.preprocessing import StandardScaler')
+            printed_model.append('from sklearn.pipeline import Pipeline')
+            printed_model.append('from sklearn.preprocessing import StandardScaler')
 
         # 学習器情報の表示
-        print(f'NOT_OPT_PARAMS = {str(tuner.not_opt_params)}')  # チューニング対象外パラメータ
-        print(f'BEST_PARAMS = {str(tuner.best_params)}')  # チューニング対象パラメータ
-        print('params = {}')
-        print('params.update(NOT_OPT_PARAMS)')
-        print('params.update(BEST_PARAMS)')
-        print(f'estimator = {str(tuner.estimator)}')  # 学習器
-        print('estimator.set_params(**params)')  # 学習器にパラメータをセット
+        printed_model.append(f'NOT_OPT_PARAMS = {str(tuner.not_opt_params)}')  # チューニング対象外パラメータ
+        printed_model.append(f'BEST_PARAMS = {str(tuner.best_params)}')  # チューニング対象パラメータ
+        printed_model.append('params = {}')
+        printed_model.append('params.update(NOT_OPT_PARAMS)')
+        printed_model.append('params.update(BEST_PARAMS)')
+        printed_model.append(f'estimator = {str(tuner.estimator)}')  # 学習器
+        printed_model.append('estimator.set_params(**params)')  # 学習器にパラメータをセット
         if tuner.fit_params == {}:  # fit_paramsがないとき
-            print('estimator.fit(X, y)')
+            printed_model.append('estimator.fit(X, y)')
         else:  # fit_paramsがあるとき
             if 'eval_set' in tuner.fit_params.keys():  # fit_paramsにeval_setが含まれるとき、[(X, y)]に置換
                 fit_params = copy.deepcopy(tuner.fit_params)
@@ -730,8 +779,15 @@ class MuscleTuning():
                 str_fit_params = str_fit_params.replace("'dummy'", "[(X, y)]")
             else:
                 str_fit_params = str(tuner.fit_params)
-            print(f'FIT_PARAMS = {str_fit_params}')
-            print('estimator.fit(X, y, FIT_PARAMS)')
+            printed_model.append(f'FIT_PARAMS = {str_fit_params}')
+            printed_model.append('estimator.fit(X, y, FIT_PARAMS)')
+        
+        # 作成したモデル文字列をPrint
+        printed_model = '\n'.join(printed_model)
+        print(printed_model)
+        # MLflowにモデル文字列を保存
+        if mlflow_logging:
+            mlflow.log_text(printed_model, 'how_to_use_best_estimator.py')
 
     def muscle_brain_tuning(self, x, y, data=None, x_colnames=None, cv_group=None,
                             objective=None, 
@@ -770,39 +826,78 @@ class MuscleTuning():
         scoring : str, default=None
             Score name used to parameter tuning.
 
-            In regression, use 'rmse', 'mse', 'mae', 'rmsle', 'mape', or 'r2'.
-            
-            In binary classification, use 'logloss', 'accuracy', 'precision', 'recall', 'f1', 'pr_auc', 'auc'.
-            
-            In multiclass classification, use 'logloss', 'accuracy', 'precision_macro', 'recall_macro', 'f1_micro', 'f1_macro', 'f1_weighted', 'auc_ovr', 'auc_ovo', 'auc_ovr_weighted', 'auc_ovo_weighted'.
+            - In regression:
+                - 'rmse' : Root mean squared error
+                - 'mse' : Mean squared error
+                - 'mae' : Mean absolute error
+                - 'rmsle' : Rot mean absolute logarithmic error
+                - 'mape' : Mean absolute percentage error
+                - 'r2' : R2 Score
 
+            - In binary classification:
+                - 'logloss' : Logarithmic Loss
+                - 'accuracy' : Accuracy
+                - 'precision' : Precision
+                - 'recall' : Recall
+                - 'f1' : F1 score
+                - 'pr_auc' : PR-AUC
+                - 'auc' : AUC
+
+            - In multiclass classification:
+                - 'logloss' : Logarithmic Loss
+                - 'accuracy' : Accuracy
+                - 'precision_macro' : Precision macro
+                - 'recall_macro' : Recall macro
+                - 'f1_micro' : F1 micro
+                - 'f1_macro' : F1 macro
+                - 'f1_weighted' : F1 weighted
+                - 'auc_ovr' : One-vs-rest AUC
+                - 'auc_ovo' : One-vs-one AUC
+                - 'auc_ovr' : One-vs-rest AUC weighted
+                - 'auc_ovo' : One-vs-one AUC weighted
+            
             If None, the `SCORING` constant is used.
-            See 
+
+            See https://c60evaporator.github.io/muscle-tuning/muscle_tuning.html#muscle_tuning.muscle_tuning.MuscleTuning.SCORING
         
         other_scores : list[str], default=None
-            Score names calculated after tuning. Input strings are the same as that of `scoring` argument.
-            
-            Note that "rmsle" score may causes an error if predicted values or true values include negative value.
+            Score names calculated after tuning. Available score names are written in the explatnation of `scoring` argument.
 
             If None, the `OTHER_SCORES` constant is used.
-            See
+
+            See https://c60evaporator.github.io/muscle-tuning/muscle_tuning.html#muscle_tuning.muscle_tuning.MuscleTuning.OTHER_SCORES
+
+            .. note::"rmsle" score may causes an error if predicted values or true values include negative value.
         
         learning_algos : list[str], default=None
-            Estimator algorithm. 'svm': Support vector machine, 'svr': Support vector regression, 'logistic': Logistic Regression, 'elasiticnet': ElasticNet, 'randomforest': RandomForest, 'lightgbm': LightGBM, 'xgboost': XGBoost.
-            
-            In regression, use 'linear_regression', 'elasticnet', 'svr', 'randomforest', 'lightgbm', or 'xgboost'.
-            
-            In classification, use 'svm', 'logistic', 'randomforest', 'lightgbm', or 'xgboost'.
+            Estimator algorithm. Select the following algorithms and make a list of them.
+
+            - In regression:
+                - 'linear_regression' : LinearRegression
+                - 'elasticnet' : ElasticNet
+                - 'svr' : SVR
+                - 'randomforest' : RandomForestRegressor
+                - 'lightgbm' : LGBMRegressor
+                - 'xgboost' : XGBRegressor
+
+            - In regression:
+                - 'svm' : SVC
+                - 'logistic' : LogisticRegression
+                - 'randomforest' : RandomForestClassifier
+                - 'lightgbm' : LGBMClassifier
+                - 'xgboost' : XGBClassifier
 
             If None, the `LEARNING_ALGOS` constant is used.
-            See
+
+            See https://c60evaporator.github.io/muscle-tuning/muscle_tuning.html#muscle_tuning.muscle_tuning.MuscleTuning.LEARNING_ALGOS
         
         n_trials : dict[str, int], default=None
             Iteration number of parameter tuning. Keys should be members of ``algo`` argument.
             Values should be iteration numbers.
 
             If None, the `N_TRIALS` constant is used.
-            See
+
+            See https://c60evaporator.github.io/muscle-tuning/muscle_tuning.html#muscle_tuning.muscle_tuning.MuscleTuning.N_TRIALS
         
         cv : int, cross-validation generator, or an iterable, default=5
             Determines the cross-validation splitting strategy. If None, to use the default 5-fold cross validation. If int, to specify the number of folds in a KFold.
@@ -820,7 +915,7 @@ class MuscleTuning():
 
             If None, use default estimators of tuning instances
 
-            See 
+            See https://c60evaporator.github.io/muscle-tuning/each_estimators.html
         
         tuning_params : dict[str, dict[str, {list, tuple}]], default=None
             Values should be dictionary with parameters names as keys and 
@@ -829,7 +924,7 @@ class MuscleTuning():
 
             If None, use default values of tuning instances
 
-            See 
+            See https://c60evaporator.github.io/muscle-tuning/each_estimators.html
         
         mlflow_logging : str, default=None
             Strategy to record the result by MLflow library.
@@ -907,8 +1002,6 @@ class MuscleTuning():
                 df_scores = self._tune_and_score(cv_num, n_learners)
         else:
             df_scores = self._tune_and_score(cv_num, n_learners)
-
-        # print_estimator
-        self.print_estimator(self.best_learner)
+        
 
         return df_scores

@@ -19,14 +19,6 @@ muscle\_tuning.lgbm\_tuning module
    :undoc-members:
    :show-inheritance:
 
-muscle\_tuning.linearregression\_tuning module
-----------------------------------------------
-
-.. automodule:: muscle_tuning.linearregression_tuning
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 muscle\_tuning.logisticregression\_tuning module
 ------------------------------------------------
 

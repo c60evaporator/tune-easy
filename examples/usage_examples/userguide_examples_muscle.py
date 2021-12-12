@@ -48,5 +48,6 @@ X = california_housing[USE_EXPLANATORY].values  # Objective variable
 ###### チューニング一括実行 ######
 kinnikun = MuscleTuning()
 kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2,
-                             mlflow_logging=True)
+                             mlflow_logging=True)  # MLflowによるロギング有効化
 kinnikun.df_scores
+# %%
