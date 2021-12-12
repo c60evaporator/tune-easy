@@ -15,8 +15,8 @@ kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2)
 kinnikun.df_scores
 
 # %% Usage of each estimater's Tuning class
+import parent_import
 from muscle_tuning import LGBMClassifierTuning
-from sklearn.datasets import load_boston
 import seaborn as sns
 # データセット読込
 iris = sns.load_dataset("iris")
@@ -33,4 +33,18 @@ tuning.plot_search_history()  # スコアの上昇履歴を可視化
 tuning.plot_search_map()  # 探索点と評価指標を可視化
 tuning.plot_best_learning_curve()  # 学習曲線の可視化
 tuning.plot_best_validation_curve()  # 検証曲線の可視化
+
+# %% Usage of MLflow logging
+import parent_import
+from muscle_tuning import SVMClassifierTuning
+import seaborn as sns
+# データセット読込
+iris = sns.load_dataset("iris")
+iris = iris[iris['species'] != 'setosa']  # 2クラスに絞る
+OBJECTIVE_VARIALBLE = 'species'  # 目的変数
+USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']  # 説明変数
+y = iris[OBJECTIVE_VARIALBLE].values
+X = iris[USE_EXPLANATORY].values
+tuning = SVMClassifierTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス
+tuning.optuna_tuning(cv=2, mlflow_logging='inside')  # Optunaによるチューニング実行
 # %%
