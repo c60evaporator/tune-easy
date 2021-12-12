@@ -131,7 +131,7 @@ get_feature_importancesおよびplot_feature_importancesメソッドは、XGBoos
 ### 引数一覧
 |引数名|必須引数orオプション|型|デフォルト値|内容|
 |---|---|---|---|---|
-|estimator|オプション|estimator object implementing 'fit'|[クラスごとに異なるESTIMATOR定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|最適化対象の学習器インスタンス。`not_opt_parans`で指定したパラメータは上書きされるので注意|
+|estimator|オプション|estimator object implementing 'fit'|[クラスごとに異なるESTIMATOR定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|最適化対象の学習器インスタンス。`not_opt_params`で指定したパラメータは上書きされるので注意|
 |validation_<br>curve_params|オプション　　|dict[str, list[float]]|[クラスごとに異なるVALIDATION_CURVE_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|検証曲線プロット対象のパラメータ範囲|
 |cv|オプション|int, cross-validation generator, or an iterable|5|クロスバリデーション分割法 (int入力時はKFoldで分割)|
 |seed|オプション|int|42|乱数シード (学習器の`random_state`に適用、`cv`引数がint型のときKFoldの乱数シードにも指定)|
@@ -208,7 +208,7 @@ tuning.plot_first_validation_curve(validation_curve_params=VALIDATION_CURVE_PARA
 ### 引数一覧
 |引数名|必須引数orオプション|型|デフォルト値|内容|
 |---|---|---|---|---|
-|estimator|オプション|estimator object implementing 'fit'|[クラスごとに異なるESTIMATOR定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|最適化対象の学習器インスタンス。`not_opt_parans`で指定したパラメータは上書きされるので注意|
+|estimator|オプション|estimator object implementing 'fit'|[クラスごとに異なるESTIMATOR定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|最適化対象の学習器インスタンス。`not_opt_params`で指定したパラメータは上書きされるので注意|
 |tuning_params|オプション|dict[str, list[float]]|[クラスごとに異なるTUNING_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|チューニング対象のパラメータ範囲|
 |cv|オプション|int, cross-validation generator, or an iterable|5|クロスバリデーション分割法 (int入力時はKFoldで分割)|
 |seed|オプション|int|42|乱数シード (学習器の`random_state`に適用、`cv`引数がint型のときKFoldの乱数シードにも指定)|
@@ -326,7 +326,7 @@ score after tuning = -0.018483563545478098
 ### 引数一覧
 |引数名|必須引数orオプション|型|デフォルト値|内容|
 |---|---|---|---|---|
-|estimator|オプション|estimator object implementing 'fit'|[クラスごとに異なる]()|最適化対象の学習器インスタンス。`not_opt_parans`で指定したパラメータは上書きされるので注意|
+|estimator|オプション|estimator object implementing 'fit'|[クラスごとに異なる]()|最適化対象の学習器インスタンス。`not_opt_params`で指定したパラメータは上書きされるので注意|
 |tuning_params|オプション|dict[str, list[float]]|[クラスごとに異なる]()|チューニング対象のパラメータ範囲|
 |cv|オプション|int, cross-validation generator, or an iterable|5|クロスバリデーション分割法 (int入力時はKFoldで分割)|
 |seed|オプション|int|42|乱数シード (学習器の`random_state`に適用、`cv`引数がint型のときKFoldの乱数シードにも指定)|
@@ -444,7 +444,7 @@ score after tuning = -10.84662079640907
 ### 引数一覧
 |引数名|必須引数orオプション|型|デフォルト値|内容|
 |---|---|---|---|---|
-|estimator|オプション|estimator object implementing 'fit'|[クラスごとに異なる]()|最適化対象の学習器インスタンス。`not_opt_parans`で指定したパラメータは上書きされるので注意|
+|estimator|オプション|estimator object implementing 'fit'|[クラスごとに異なる]()|最適化対象の学習器インスタンス。`not_opt_params`で指定したパラメータは上書きされるので注意|
 |tuning_params|オプション|dict[str, list[float]]|[クラスごとに異なる]()|チューニング対象のパラメータ範囲|
 |cv|オプション|int, cross-validation generator, or an iterable|5|クロスバリデーション分割法 (int入力時はKFoldで分割)|
 |seed|オプション|int|42|乱数シード (BayesianOptimization初期化時の`random_state`引数、および学習器の`random_state`に適用、`cv`引数がint型のときKFoldの乱数シードにも指定)|
@@ -597,7 +597,7 @@ score after tuning = -10.937025098477642
 ### 引数一覧
 |引数名|必須引数orオプション|型|デフォルト値|内容|
 |---|---|---|---|---|
-|estimator|オプション|estimator object implementing 'fit'|[クラスごとに異なる]()|最適化対象の学習器インスタンス。`not_opt_parans`で指定したパラメータは上書きされるので注意|
+|estimator|オプション|estimator object implementing 'fit'|[クラスごとに異なる]()|最適化対象の学習器インスタンス。`not_opt_params`で指定したパラメータは上書きされるので注意|
 |tuning_params|オプション|dict[str, list[float]]|[クラスごとに異なる]()|チューニング対象のパラメータ範囲|
 |cv|オプション|int, cross-validation generator, or an iterable|5|クロスバリデーション分割法 (int入力時はKFoldで分割)|
 |seed|オプション|int|42|乱数シード (TPESamplerの`seed`引数、および学習器の`random_state`に適用、`cv`引数がint型のときKFoldの乱数シードにも指定)|
