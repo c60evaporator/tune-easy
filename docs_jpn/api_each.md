@@ -1,10 +1,24 @@
 # 詳細チューニング API仕様
 詳細チューニング実施用クラスのAPI仕様を記載します
 
-使用法は[こちら](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md)を参照ください
+チューニングの実行手順は[こちら](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md)を参照ください
+
+[サンプルコードはこちらにアップロードしています](https://github.com/c60evaporator/muscle-tuning/tree/master/examples/method_examples)
 
 # クラス一覧
 以下のクラスからなります
+
+- **分類**
+
+|クラス名|パッケージ名|概要|デフォルトパラメータのリンク|
+|---|---|---|---|
+|LGBMClassifierTuning|lgbm_tuning.py|LightGBM分類のパラメータチューニング用クラス|[リンク]()|
+|XGBClassifierTuning|xgb_tuning.py|XGBoost分類のパラメータチューニング用クラス|[リンク]()|
+|SVMClassifierTuning|svm_tuning.py|サポートベクターマシン分類のパラメータチューニング用クラス|[リンク]()|
+|RFClassifierTuning|rf_tuning.py|ランダムフォレスト分類のパラメータチューニング用クラス|[リンク]()|
+|LogisticRegressionTuning|logisticregression_tuning.py|ロジスティック回帰分類のパラメータチューニング用クラス|[リンク]()|
+
+- **回帰**
 
 |クラス名|パッケージ名|概要|デフォルトパラメータのリンク|
 |---|---|---|---|
@@ -13,10 +27,8 @@
 |SVMRegressorTuning|svm_tuning.py|サポートベクター回帰のパラメータチューニング用クラス|[リンク]()|
 |RFRegressorTuning|rf_tuning.py|ランダムフォレスト回帰のパラメータチューニング用クラス|[リンク]()|
 |ElasticNetTuning|elasticnet_tuning.py|ElasticNet回帰のパラメータチューニング用クラス|[リンク]()|
-|LGBMClassifierTuning|lgbm_tuning.py|LightGBM分類のパラメータチューニング用クラス|[リンク]()|
-|XGBClassifierTuning|xgb_tuning.py|XGBoost分類のパラメータチューニング用クラス|[リンク]()|
-|SVMClassifierTuning|svm_tuning.py|サポートベクターマシン分類のパラメータチューニング用クラス|[リンク]()|
-|RFClassifierTuning|rf_tuning.py|ランダムフォレスト分類のパラメータチューニング用クラス|[リンク]()|
+
+<br>
 
 ## クラス初期化
 上記クラスは、以下のように初期化(`__init__()`メソッド)します
@@ -30,21 +42,28 @@
 |x_colnames|必須|list[str]|-|説明変数のフィールド名のリスト|
 |y_colname|オプション|str|None|目的変数のフィールド名|
 |cv_group|オプション|str|None|GroupKFold、LeaveOneGroupOutのグルーピング対象データ|
-|eval_data_source|オプション|{'all', 'valid', 'train'}|'all'|XGBoost, LightGBMにおける`fit_params`の`eval_set`の指定方法, 'all'ならeval_set =[(self.X, self.y)]|
+|eval_data_source|オプション|{'all', 'test', 'train', 'original', 'original_transformed'}|'all'|XGBoost, LightGBMにおける`fit_params['eval_set']`の指定方法※|
+
+※ eval_data_sourceの指定値による、eval_setに入るデータの変化
+  - 'all' : eval_set = [(self.X, self.y)]
+  - 'test' : eval_set = [(self.X, self.y)]のうちクロスバリデーションのテストデータ
+  - 'train' : eval_set = [(self.X, self.y)]のうちクロスバリデーションの学習データ
+  - 'original' : チューニング用メソッドの`fit_params`引数に明示的に与えた'eval_set'
+  - 'original_transformed' : チューニング用メソッドの`fit_params`引数に明示的に与えた'eval_set' (estimatorがパイプラインの時、前処理を自動適用)
 
 ### 実行例
 コードは[こちらにもアップロードしています]()
 #### オプション引数指定なしで初期化
 LightGBM回帰におけるクラス初期化実行例
 ```python
-from param_tuning import LGBMRegressorTuning
-from sklearn.datasets import load_boston
+from muscle_tuning import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
-USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
-X = boston[USE_EXPLANATORY].values
-y = load_boston().target
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
+OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLANATORY].values
 ###### クラス初期化 ######
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)
 ```
@@ -63,20 +82,20 @@ y = df_reg[OBJECTIVE_VARIABLE].values
 X = df_reg[USE_EXPLATATORY].values
 ###### クラス初期化 ######
 tuning = XGBRegressorTuning(X, y, USE_EXPLANATORY,  # 必須引数
-                             cv_group=df_reg['ward_after'].values)  # グルーピング対象データ (大阪都構想の区)
+                            cv_group=df_reg['ward_after'].values)  # グルーピング対象データ (大阪都構想の区)
 ```
 
 #### 検証データをfit_paramsのeval_setに使用したいとき
 デフォルトではeval_set (early_stopping_roundの判定に使用するデータ)は全てのデータ (self.X, self.y)を使用しますが、eval_data_source='valid'を指定するとクロスバリデーションの検証用データのみを使用します
 ```python
-from param_tuning import LGBMRegressorTuning
-from sklearn.datasets import load_boston
+from muscle_tuning import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
-USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
-X = boston[USE_EXPLANATORY].values
-y = load_boston().target
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
+OBJECTIVE_VARIABLE = 'approval_rate'  # Objective variable
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
+X = df_reg[USE_EXPLANATORY].values
+y = df_reg[OBJECTIVE_VARIABLE].values
 ###### クラス初期化 ######
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY,
                              eval_data_source='valid')  # eval_setの指定方法 (検証用データを渡す)
@@ -127,16 +146,17 @@ get_feature_importancesおよびplot_feature_importancesメソッドは、XGBoos
 コードは[こちらにもアップロードしています]()
 #### オプション引数指定なしで検証曲線プロット
 オプション引数を指定しないとき、[前述のデフォルト値]()を使用してプロットします
+
 ```python
 from param_tuning import LGBMRegressorTuning
-from sklearn.datasets import load_boston
 import pandas as pd
 # データセット読込
-USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
-X = df_boston[USE_EXPLANATORY].values
-y = load_boston().target
-tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
+OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLANATORY].values
+tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)
 ###### デフォルト引数で検証曲線プロット ######
 tuning.plot_first_validation_curve()
 ```
@@ -146,15 +166,20 @@ tuning.plot_first_validation_curve()
 
 #### パラメータ範囲を指定して検証曲線プロット
 `validation_curve_params`引数で、検証曲線のパラメータ範囲を指定する事ができます
+
 ```python
 from param_tuning import LGBMRegressorTuning
-from sklearn.datasets import load_boston
+from sklearn.datasets import fetch_california_housing
 import pandas as pd
+import numpy as np
 # データセット読込
-USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
-X = df_boston[USE_EXPLANATORY].values
-y = load_boston().target
+OBJECTIVE_VARIABLE = 'price'  # 目的変数
+USE_EXPLANATORY = ['MedInc', 'AveOccup', 'Latitude', 'HouseAge']  # 説明変数
+california_housing = pd.DataFrame(np.column_stack((fetch_california_housing().data, fetch_california_housing().target)),
+        columns = np.append(fetch_california_housing().feature_names, OBJECTIVE_VARIABLE))
+california_housing = california_housing.sample(n=1000, random_state=42)  # データ数多いので1000点にサンプリング
+y = california_housing[OBJECTIVE_VARIABLE].values 
+X = california_housing[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 # パラメータ
 VALIDATION_CURVE_PARAMS = {'reg_lambda': [0.0001, 0.001, 0.01, 0.1, 1, 10],
@@ -198,37 +223,40 @@ tuning.plot_first_validation_curve(validation_curve_params=VALIDATION_CURVE_PARA
 コードは[こちらにもアップロードしています]()
 #### オプション引数指定なしでグリッドサーチ
 オプション引数を指定しないとき、[デフォルトの引数]()を使用してプロットします
+
 ```python
 from param_tuning import RFRegressorTuning
-from sklearn.datasets import load_boston
 import pandas as pd
 # データセット読込
-USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
-X = df_boston[USE_EXPLANATORY].values
-y = load_boston().target
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
+OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLANATORY].values
 tuning = RFRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 ###### デフォルト引数でグリッドサーチ ######
 best_params, best_score = tuning.grid_search_tuning()
 ```
 実行結果
+
 ```
-score before tuning = -11.719820569093374
-best_params = {'max_depth': 32, 'max_features': 2, 'min_samples_leaf': 1, 'min_samples_split': 2, 'n_estimators': 160}
-score after tuning = -10.497362132823111
+score before tuning = -0.018627075795771445
+best_params = {'max_depth': 8, 'max_features': 4, 'min_samples_leaf': 1, 'min_samples_split': 2, 'n_estimators': 80}
+score after tuning = -0.018313930236533316
 ```
 
 #### パラメータ探索範囲を指定してグリッドサーチ
 `tuning_params`引数で、グリッドサーチのパラメータ探索範囲を指定する事ができます
+
 ```python
 from param_tuning import RFRegressorTuning
-from sklearn.datasets import load_boston
 import pandas as pd
 # データセット読込
-USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
-X = df_boston[USE_EXPLANATORY].values
-y = load_boston().target
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
+OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLANATORY].values
 tuning = RFRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 # パラメータ
 CV_PARAMS_GRID = {'n_estimators': [20, 80, 160],
@@ -241,25 +269,25 @@ best_params, best_score = tuning.grid_search_tuning(tuning_params=CV_PARAMS_GRID
 ```
 実行結果
 ```
-score before tuning = -11.719820569093374
-best_params = {'max_depth': 32, 'min_samples_leaf': 1, 'min_samples_split': 8, 'n_estimators': 80}
-score after tuning = -11.621063650183345
+score before tuning = -0.018627075795771445
+best_params = {'max_depth': 8, 'min_samples_leaf': 1, 'min_samples_split': 2, 'n_estimators': 80}
+score after tuning = -0.018313930236533316
 ```
 
 #### 学習器を指定してグリッドサーチ
 `estimator`引数で、学習器を指定する事ができます。パイプラインも指定可能です
 ```python
 from param_tuning import RFRegressorTuning
-from sklearn.datasets import load_boston
 import pandas as pd
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestRegressor
 # データセット読込
-USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
-X = df_boston[USE_EXPLANATORY].values
-y = load_boston().target
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
+OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLANATORY].values
 tuning = RFRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 # 学習器を指定
 ESTIMATOR = Pipeline([("scaler", StandardScaler()), ("rf", RandomForestRegressor())])
@@ -276,9 +304,9 @@ best_params, best_score = tuning.grid_search_tuning(estimator=ESTIMATOR,
 ```
 実行結果
 ```
-score before tuning = -11.724246256998635
-best_params = {'rf__max_depth': 32, 'rf__max_features': 2, 'rf__min_samples_leaf': 1, 'rf__min_samples_split': 2, 'rf__n_estimators': 160}
-score after tuning = -10.477565908068511
+score before tuning = -0.01862916391210388
+best_params = {'rf__max_depth': 8, 'rf__max_features': 2, 'rf__min_samples_leaf': 1, 'rf__min_samples_split': 2, 'rf__n_estimators': 80}
+score after tuning = -0.018483563545478098
 ```
 ※本来パイプラインのパラメータ名は`学習器名__パラメータ名`と指定する必要がありますが、本ツールの`tuning_params`には自動で学習器名を付加する機能を追加しているので、`パラメータ名`のみでも指定可能です (`fit_params`指定時も同様)
 
