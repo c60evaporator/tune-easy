@@ -105,12 +105,12 @@ $ pip install muscle-tuning
 <br>
 
 # 使用法
-以下の2種類の方法からチューニング法を選び、使用手順およびAPI仕様をリンク先から参照してください
+以下の2種類のチューニング法のいずれかを選び、使用手順およびAPI仕様をリンク先から参照してください
 
 |方法|クラス名|用途|使用手順リンク|API仕様リンク|
 |---|---|---|---|---|
-|一括チューニング|MuscleTuning|複数の機械学習アルゴリズムを一括チューニングして比較|[使用手順](https://github.com/c60evaporator/muscle-tuning#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E6%89%8B%E9%A0%86-muscle_brain_tuning)|[API仕様]()|
-|詳細チューニング|[学習器の種類毎に異なる](https://github.com/c60evaporator/muscle-tuning/blob/master/README.md#02-チューニング用クラスの初期化)|1種類の機械学習アルゴリズムのパラメータを詳細にチューニング|[使用手順](https://github.com/c60evaporator/muscle-tuning#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E6%89%8B%E9%A0%86-%E8%A9%B3%E7%B4%B0%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0)|[API仕様]()|
+|一括チューニング|[MuscleTuning](https://github.com/c60evaporator/muscle-tuning#一括チューニング用クラス)|複数の機械学習アルゴリズムを一括チューニングして比較|[使用手順](https://github.com/c60evaporator/muscle-tuning#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E6%89%8B%E9%A0%86-muscle_brain_tuning)|[API仕様]()|
+|詳細チューニング|[学習器の種類毎に異なる](https://github.com/c60evaporator/muscle-tuning#詳細チューニング用クラス)|1種類の機械学習アルゴリズムのパラメータを詳細にチューニング|[使用手順](https://github.com/c60evaporator/muscle-tuning#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E6%89%8B%E9%A0%86-%E8%A9%B3%E7%B4%B0%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0)|[API仕様]()|
 
 <br>
 
