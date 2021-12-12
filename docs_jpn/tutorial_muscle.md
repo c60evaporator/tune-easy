@@ -1,8 +1,12 @@
-## チューニング手順 (一括チューニング)
-[`MuscleTuning`]()クラスの[`muscle_brain_tuning()`]()メソッドを実行するのみで、
-複数の機械学習アルゴリズムでパラメータチューニングを一括実行し、結果をグラフ表示できます
+# 一括チューニング　使用手順
+以下の手順で、複数の機械学習アルゴリズムでパラメータチューニングを一括実行し、結果をグラフ表示できます
 
-### 分類タスクでの使用例
+1. [`MuscleTuning`]()クラスのインスタンスを作成
+2. [`muscle_brain_tuning()`]()メソッドを実行
+
+2行で終わってしまいます。カンタンですね！
+
+## 分類タスクでの使用例
 分類タスクでは、スコアの上昇履歴とチューニング前後のROC曲線を表示します
 
 ```python
@@ -16,8 +20,8 @@ USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']
 y = iris[OBJECTIVE_VARIALBLE].values
 X = iris[USE_EXPLANATORY].values
 # チューニング実行
-kinnikun = MuscleTuning()
-kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2)
+kinnikun = MuscleTuning()  # 1. インスタンス作成
+kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2)  # 2. チューニングメソッド実行
 kinnikun.df_scores  # スコア一覧DataFrameを表示
 ```
 チューニング完了後に、以下の情報が表示されます
@@ -42,8 +46,9 @@ kinnikun.df_scores  # スコア一覧DataFrameを表示
 
 <img width="400" src="https://user-images.githubusercontent.com/59557625/145702328-fa3845d9-10fd-43b6-8593-0544294a5c93.png">
 
+<br>
 
-### 回帰タスク
+## 回帰タスクでの使用例
 回帰タスクでは、スコアの上昇履歴とチューニング前後の予測値-実測値プロットを表示します
 
 ```python
@@ -61,8 +66,8 @@ california_housing = california_housing.sample(n=1000, random_state=42)  # デ�
 y = california_housing[OBJECTIVE_VARIALBLE].values
 X = california_housing[USE_EXPLANATORY].values
 ###### チューニング一括実行 ######
-kinnikun = MuscleTuning()
-kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2)
+kinnikun = MuscleTuning()  # 1. インスタンス作成
+kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2)  # 2. チューニングメソッド実行
 kinnikun.df_scores
 ```
 チューニング完了後に、以下の情報が表示されます
@@ -86,3 +91,24 @@ kinnikun.df_scores
 **・チューニング後の機械学習モデル使用法**
 
 <img width="400" src="https://user-images.githubusercontent.com/59557625/145703822-81940d44-229d-484d-b73a-5720282bb3a5.png">
+上図の`---The following is how to use the best estimator---`以降のコードを以下のようにコピペすれば、
+チューニング後のモデルを再現することができます
+（後述のMLflowでPickleでも保存可能）
+
+```python
+from sklearn.ensemble import RandomForestRegressor
+NOT_OPT_PARAMS = {'random_state': 42}
+BEST_PARAMS = {'n_estimators': 86, 'max_features': 2, 'max_depth': 11, 'min_samples_split': 5, 'min_samples_leaf': 6}
+params = {}
+params.update(NOT_OPT_PARAMS)
+params.update(BEST_PARAMS)
+estimator = RandomForestRegressor()
+estimator.set_params(**params)
+estimator.fit(X, y)
+```
+
+<br>
+
+## MLflowによる結果のロギング
+MLflowで結果をロギングすることもできます。
+
