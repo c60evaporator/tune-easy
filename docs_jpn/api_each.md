@@ -108,19 +108,19 @@ tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY,
 
 |メソッド名|機能|
 |---|---|
-|plot_first_validation_curve|範囲を定めて検証曲線をプロットし、パラメータ調整範囲の参考とします|
-|grid_search_tuning|グリッドサーチを実行します|
-|random_search_tuning|ランダムサーチを実行します|
-|bayes_opt_tuning|BayesianOptimizationでベイズ最適化を実行します|
-|optuna_tuning|Optunaでベイズ最適化を実行します|
-|plot_search_history|チューニング進行に伴うスコアの上昇履歴をグラフ表示します|
-|get_search_history|チューニング進行に伴うスコアの上昇履歴をpandas.DataFrameで取得します|
-|plot_search_map|チューニング探索点と評価指標をマップ表示します (グリッドサーチはヒートマップ、それ以外は散布図)|
-|plot_best_learning_curve|学習曲線をプロットし、チューニング後モデルのバイアスとバリアンスの判断材料とします|
-|plot_best_validation_curve|学習後の検証曲線をプロットし、チューニング妥当性の判断材料とします|
-|plot_param_importances|パラメータを説明変数としてスコアをランダムフォレスト回帰した際のfeature_importancesを取得します。スコアの変化に寄与するパラメータの判断材料とします|
-|get_feature_importances|チューニング後の最適モデルのfeature_importancesを取得します (feature_importances対応学習器のみ)|
-|plot_feature_importances|チューニング後の最適モデルのfeature_importancesをグラフ表示します (feature_importances対応学習器のみ)|
+|[plot_first_validation_curve]()|範囲を定めて検証曲線をプロットし、パラメータ調整範囲の参考とします|
+|[grid_search_tuning]()|グリッドサーチを実行します|
+|[random_search_tuning]()|ランダムサーチを実行します|
+|[bayes_opt_tuning]()|BayesianOptimizationでベイズ最適化を実行します|
+|[optuna_tuning]()|Optunaでベイズ最適化を実行します|
+|[plot_search_history]()|チューニング進行に伴うスコアの上昇履歴をグラフ表示します|
+|[get_search_history]()|チューニング進行に伴うスコアの上昇履歴をpandas.DataFrameで取得します|
+|[plot_search_map]()|チューニング探索点と評価指標をマップ表示します (グリッドサーチはヒートマップ、それ以外は散布図)|
+|[plot_best_learning_curve]()|学習曲線をプロットし、チューニング後モデルのバイアスとバリアンスの判断材料とします|
+|[plot_best_validation_curve]()|学習後の検証曲線をプロットし、チューニング妥当性の判断材料とします|
+|[plot_param_importances]()|パラメータを説明変数としてスコアをランダムフォレスト回帰した際のfeature_importancesを取得します。スコアの変化に寄与するパラメータの判断材料とします|
+|[get_feature_importances]()|チューニング後の最適モデルのfeature_importancesを取得します (feature_importances対応学習器のみ)|
+|[plot_feature_importances]()|チューニング後の最適モデルのfeature_importancesをグラフ表示します (feature_importances対応学習器のみ)|
 
 ※大半のメソッドは全てのクラスに対応していますが、
 get_feature_importancesおよびplot_feature_importancesメソッドは、XGBoostおよびLightGBMのみ対応しています。
@@ -131,16 +131,16 @@ get_feature_importancesおよびplot_feature_importancesメソッドは、XGBoos
 ### 引数一覧
 |引数名|必須引数orオプション|型|デフォルト値|内容|
 |---|---|---|---|---|
-|estimator|オプション|estimator object implementing 'fit'|[クラスごとに異なる]()|最適化対象の学習器インスタンス。`not_opt_parans`で指定したパラメータは上書きされるので注意|
-|validation_<br>curve_params|オプション　　|dict[str, list[float]]|[クラスごとに異なる]()|検証曲線プロット対象のパラメータ範囲|
+|estimator|オプション|estimator object implementing 'fit'|[クラスごとに異なるESTIMATOR定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|最適化対象の学習器インスタンス。`not_opt_parans`で指定したパラメータは上書きされるので注意|
+|validation_<br>curve_params|オプション　　|dict[str, list[float]]|[クラスごとに異なるVALIDATION_CURVE_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|検証曲線プロット対象のパラメータ範囲|
 |cv|オプション|int, cross-validation generator, or an iterable|5|クロスバリデーション分割法 (int入力時はKFoldで分割)|
 |seed|オプション|int|42|乱数シード (学習器の`random_state`に適用、`cv`引数がint型のときKFoldの乱数シードにも指定)|
 |scoring|オプション|str|'neg_mean_squared_error'|最適化で最大化する評価指標 ('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)|
-|not_opt_params|オプション|dict|[クラスごとに異なる]()|`validation_curve_params`以外のチューニング対象外パラメータを指定|
-|param_scales|オプション|dict[str, str]|[クラスごとに異なる]()|`validation_curve_params`のパラメータごとのスケール('linear', 'log')|
+|not_opt_params|オプション|dict|[クラスごとに異なるNOT_OPT_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|`validation_curve_params`以外のチューニング対象外パラメータを指定|
+|param_scales|オプション|dict[str, str]|[クラスごとに異なるPARAM_SCALES定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|`validation_curve_params`のパラメータごとのスケール('linear', 'log')|
 |plot_stats|オプション|str|'mean'|検証曲線グラフにプロットする統計値 ('mean'(平均±標準偏差), 'median'(中央値&最大最小値))|
 |axes|オプション|list[matplotlib.axes.Axes]|None|グラフ描画に使用するaxes (Noneならmatplotlib.pyplot.plotで1枚ごとにプロット)|
-|fit_params|オプション|dict|[クラスごとに異なる]()|学習器の`fit()`メソッドに渡すパラメータ|
+|fit_params|オプション|dict|[クラスごとに異なるFIT_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|学習器の`fit()`メソッドに渡すパラメータ|
 
 ### 実行例
 コードは[こちらにもアップロードしています]()
@@ -215,7 +215,10 @@ tuning.plot_first_validation_curve(validation_curve_params=VALIDATION_CURVE_PARA
 |scoring|オプション|str|'neg_mean_squared_error' in regression.'neg_log_loss' in clasification|最適化で最大化する評価指標 ('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)|
 |not_opt_<br>params|オプション　　|dict|[クラスごとに異なる]()|`tuning_params`以外のチューニング対象外パラメータを指定|
 |param_scales|オプション|dict[str, str]|[クラスごとに異なる]()|`tuning_params`のパラメータごとのスケール('linear', 'log')|
-|mlflow_logging|オプション|str|None|MLFlowでの結果記録有無('log':通常の記録, 'with':with構文で記録, None:記録なし)。詳細は[こちら]()|
+|mlflow_logging|オプション|{'inside','outside',None}|None|MLflowでの結果記録有無('inside':with構文で記録, 'outside':外部でRun実行, None:MLflow実行なし)。詳細は[こちら]()|
+|mlflow_<br>tracking_uri|オプション　　|str|None|MLflowのTracking URI。[こちらを参照ください]()|
+|mlflow_<br>artifact_location|オプション　　|str|None|MLflowのArtifact URI。[こちらを参照ください]()|
+|mlflow_<br>experiment_name|オプション　　|str|None|MLflowのExperiment名。[こちらを参照ください]()|
 |grid_kws|オプション|dict|None|sklearn.model_selection.GridSearchCVに渡す引数 (estimator, tuning_params, cv, scoring以外)|
 |fit_params|オプション|dict|[クラスごとに異なる]()|学習器の`fit()`メソッドに渡すパラメータ|
 
