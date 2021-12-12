@@ -6,6 +6,18 @@
 
 チューニング自体は2行で終わります。カンタンですね！
 
+<br>
+
+以下の3つのユースケースに分けてサンプルコードを解説します
+
+|ユースケース|リンク|
+|---|---|
+|分類タスク|[分類タスクでの使用例](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_muscle.md#分類タスクでの使用例)|
+|回帰タスク|[分類タスクでの使用例](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_muscle.md#回帰タスクでの使用例)|
+|MLflowで結果記録|[MLflowによる結果のロギング](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_muscle.md#mlflowによる結果のロギング)|
+
+<br>
+
 ## 分類タスクでの使用例
 分類タスクでは、スコアの上昇履歴とチューニング前後のROC曲線を表示します
 
@@ -175,8 +187,6 @@ kinnikun.df_scores
 #### ・Artifacts
 以下の内容を記録します
 
-<img width="170" src="https://user-images.githubusercontent.com/59557625/145713285-a596ba80-b0ea-4406-bdf6-67aaddda3f97.png">
-
 |名称|内容|備考|
 |---|---|---|
 |arg-estimators.json|[`muscle_brain_tuning()`]()メソッドの`estimators`引数||
@@ -190,7 +200,7 @@ kinnikun.df_scores
 |score_result.csv|[チューニング前後のスコア](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_muscle.md#チューニング前後のスコア-1)||
 |score_result_cv.csv|チューニング前後のスコア (クロスバリデーションごと)|下図参照|
 |how_to_use_best_estimator.py|[チューニング後の機械学習モデル使用法](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_muscle.md#チューニング後の機械学習モデル使用法-1)||
-score_result_cv.csvの内容
+・score_result_cv.csvの表示例
 
 <img width="681" alt="スクリーンショット 2021-12-12 21 55 11" src="https://user-images.githubusercontent.com/59557625/145713542-57f3f10d-7548-49ed-bb4b-ecc8e5e15b0b.png">
 
