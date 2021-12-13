@@ -326,20 +326,20 @@ score after tuning = -0.018483563545478098
 ### 引数一覧
 |引数名|必須引数orオプション|型|デフォルト値|内容|
 |---|---|---|---|---|
-|estimator|オプション|estimator object implementing 'fit'|[クラスごとに異なる]()|最適化対象の学習器インスタンス。`not_opt_params`で指定したパラメータは上書きされるので注意|
-|tuning_params|オプション|dict[str, list[float]]|[クラスごとに異なる]()|チューニング対象のパラメータ範囲|
+|estimator|オプション|estimator object implementing 'fit'|[クラスごとに異なるESTIMATOR定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|最適化対象の学習器インスタンス。`not_opt_params`で指定したパラメータは上書きされるので注意|
+|tuning_params|オプション|dict[str, list[float]]|[クラスごとに異なるTUNING_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|チューニング対象のパラメータ範囲|
 |cv|オプション|int, cross-validation generator, or an iterable|5|クロスバリデーション分割法 (int入力時はKFoldで分割)|
 |seed|オプション|int|42|乱数シード (学習器の`random_state`に適用、`cv`引数がint型のときKFoldの乱数シードにも指定)|
 |scoring|オプション|str|'neg_mean_squared_error'|最適化で最大化する評価指標 ('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)|
-|n_iter|オプション|int|[クラスごとに異なる]()|ランダムサーチの試行数|
-|not_opt_<br>params|オプション　　|dict|[クラスごとに異なる]()|`tuning_params`以外のチューニング対象外パラメータを指定|
-|param_scales|オプション|dict[str, str]|[クラスごとに異なる]()|`tuning_params`のパラメータごとのスケール('linear', 'log')|
-|mlflow_<br>logging|オプション|str|None|MLFlowでの結果記録有無('log':通常の記録, 'with':with構文で記録, None:記録なし)。詳細は[こちら]()|
+|n_iter|オプション|int|[クラスごとに異なるN_ITER定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|ランダムサーチの試行数|
+|not_opt_<br>params|オプション　　|dict|[クラスごとに異なるNOT_OPT_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|`tuning_params`以外のチューニング対象外パラメータを指定|
+|param_scales|オプション|dict[str, str]|[クラスごとに異なるPARAM_SCALES定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|`tuning_params`のパラメータごとのスケール('linear', 'log')|
+|mlflow_logging|オプション|{'inside','outside',None}|None|MLflowでの結果記録有無('inside':with構文で記録, 'outside':外部でRun実行, None:MLflow実行なし)。詳細は[こちら]()|
 |mlflow_<br>tracking_uri|オプション|str|None|MLflowのTracking URI。[こちらを参照ください]()|
 |mlflow_<br>artifact_location|オプション　　|str|None|MLflowのArtifact URI。[こちらを参照ください]()|
 |mlflow_<br>experiment_name|オプション|str|None|MLflowのExperiment名。[こちらを参照ください]()|
 |rand_kws|オプション|dict|None|sklearn.model_selection.RondomizedSearchCVに渡す引数 (estimator, tuning_params, cv, scoring, n_iter以外)|
-|fit_params|オプション|dict|[クラスごとに異なる]()|学習器の`fit()`メソッドに渡すパラメータ|
+|fit_params|オプション|dict|[クラスごとに異なるFIT_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|学習器の`fit()`メソッドに渡すパラメータ|
 
 ### 実行例
 コードは[こちらにもアップロードしています]()
@@ -447,50 +447,55 @@ score after tuning = -0.01786570144420851
 ### 引数一覧
 |引数名|必須引数orオプション|型|デフォルト値|内容|
 |---|---|---|---|---|
-|estimator|オプション|estimator object implementing 'fit'|[クラスごとに異なる]()|最適化対象の学習器インスタンス。`not_opt_params`で指定したパラメータは上書きされるので注意|
-|tuning_params|オプション|dict[str, list[float]]|[クラスごとに異なる]()|チューニング対象のパラメータ範囲|
+|estimator|オプション|estimator object implementing 'fit'|[クラスごとに異なるESTIMATOR定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|最適化対象の学習器インスタンス。`not_opt_params`で指定したパラメータは上書きされるので注意|
+|tuning_params|オプション|dict[str, list[float]]|[クラスごとに異なるTUNING_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|チューニング対象のパラメータ範囲|
 |cv|オプション|int, cross-validation generator, or an iterable|5|クロスバリデーション分割法 (int入力時はKFoldで分割)|
 |seed|オプション|int|42|乱数シード (BayesianOptimization初期化時の`random_state`引数、および学習器の`random_state`に適用、`cv`引数がint型のときKFoldの乱数シードにも指定)|
 |scoring|オプション|str|'neg_mean_squared_error'|最適化で最大化する評価指標 ('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)|
-|n_iter|オプション|int|[クラスごとに異なる]()|ベイズ最適化の試行数|
-|init_points|オプション|int|[クラスごとに異なる]()|ランダムな初期探索点の個数|
+|n_iter|オプション|int|[クラスごとに異なるN_ITER定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|ベイズ最適化の試行数|
+|init_points|オプション|int|[クラスごとに異なるINIT_POINTS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|ランダムな初期探索点の個数|
 |acq|オプション|{'ei', 'pi', 'ucb'}|'ei'|獲得関数 ('ei': EI戦略, 'pi': PI戦略, 'ucb': UCB戦略)|
-|not_opt_<br>params|オプション　　|dict|[クラスごとに異なる]()|`tuning_params`以外のチューニング対象外パラメータを指定|
-|param_scales|オプション|dict[str, str]|[クラスごとに異なる]()|`tuning_params`のパラメータごとのスケール('linear', 'log')|
-|mlflow_<br>logging|オプション|str|None|MLFlowでの結果記録有無('log':通常の記録, 'with':with構文で記録, None:記録なし)。詳細は[こちら]()|
-|fit_params|オプション|dict|[クラスごとに異なる]()|学習器の`fit()`メソッドに渡すパラメータ|
+|not_opt_<br>params|オプション　　|dict|[クラスごとに異なるNOT_OPT_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|`tuning_params`以外のチューニング対象外パラメータを指定|
+|int_params|オプション|int|[クラスごとに異なるINT_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|整数型のパラメータ一覧のリスト|
+|param_scales|オプション|dict[str, str]|[クラスごとに異なるPARAM_SCALES定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|`tuning_params`のパラメータごとのスケール('linear', 'log')|
+|mlflow_logging|オプション|{'inside','outside',None}|None|MLflowでの結果記録有無('inside':with構文で記録, 'outside':外部でRun実行, None:MLflow実行なし)。詳細は[こちら]()|
+|mlflow_<br>tracking_uri|オプション|str|None|MLflowのTracking URI。[こちらを参照ください]()|
+|mlflow_<br>artifact_location|オプション　　|str|None|MLflowのArtifact URI。[こちらを参照ください]()|
+|mlflow_<br>experiment_name|オプション|str|None|MLflowのExperiment名。[こちらを参照ください]()|
+|fit_params|オプション|dict|[クラスごとに異なるFIT_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|学習器の`fit()`メソッドに渡すパラメータ|
 
 ### 実行例
 コードは[こちらにもアップロードしています]()
+
 #### オプション引数指定なしでBayesianOptimization
 オプション引数を指定しないとき、[デフォルトの引数]()を使用してBayesianOptimizationでチューニングします
 ```python
 from param_tuning import LGBMRegressorTuning
-from sklearn.datasets import load_boston
 import pandas as pd
 # データセット読込
-USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
-X = df_boston[USE_EXPLANATORY].values
-y = load_boston().target
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
+OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 ###### デフォルト引数でBayesianOptimization ######
 best_params, best_score = tuning.bayes_opt_tuning()
 ```
 実行結果
 ```
-score before tuning = -11.979161807916636
+score before tuning = -0.03336768277100166
 
 |   iter    |  target   | colsam... | min_ch... | num_le... | reg_alpha | reg_la... | subsample | subsam... |
 -------------------------------------------------------------------------------------------------------------
-|  1        | -14.19    |  0.6247   |  47.54    |  37.14    | -2.204    | -3.532    |  0.4936   |  0.4066   |
-|  2        | -12.78    |  0.9197   |  30.06    |  35.99    | -3.938    | -1.09     |  0.8995   |  1.486    |
+|  1        | -0.03337  |  0.6247   |  47.54    |  37.14    | -2.204    | -3.532    |  0.4936   |  0.4066   |
+|  2        | -0.03337  |  0.9197   |  30.06    |  35.99    | -3.938    | -1.09     |  0.8995   |  1.486    |
   :
   :
-|  70       | -13.24    |  0.9837   |  33.73    |  20.4     | -3.098    | -2.831    |  0.4122   |  0.0941   |
+|  70       | -0.01939  |  0.9147   |  3.103    |  39.95    | -3.717    | -3.67     |  0.512    |  2.78     |
 =============================================================================================================
-best_params = {'colsample_bytree': 0.9479943197172334, 'min_child_samples': 14, 'num_leaves': 8, 'reg_alpha': 0.011998136674904547, 'reg_lambda': 0.03204706412377387, 'subsample': 0.595559561303092, 'subsample_freq': 6}
-score after tuning = -11.488951692728644
+best_params = {'colsample_bytree': 0.7157900674004883, 'min_child_samples': 6, 'num_leaves': 42, 'reg_alpha': 0.0024676255164280147, 'reg_lambda': 0.0025350316484909954, 'subsample': 0.8763786058923628, 'subsample_freq': 1}
+score after tuning = -0.015674379678829172
 ```
 
 #### パラメータ範囲と試行数を指定してBayesianOptimization
@@ -501,13 +506,13 @@ score after tuning = -11.488951692728644
 探索の合計試行数は、`init_points`で指定したランダム初期点数 + `n_iter`となります
 ```python
 from param_tuning import LGBMRegressorTuning
-from sklearn.datasets import load_boston
 import pandas as pd
 # データセット読込
-USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
-X = df_boston[USE_EXPLANATORY].values
-y = load_boston().target
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
+OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 # パラメータ
 BAYES_PARAMS = {'reg_alpha': (0.001, 0.1),
@@ -529,30 +534,30 @@ score before tuning = -11.979161807916636
 
 |   iter    |  target   | colsam... | min_ch... | num_le... | reg_alpha | reg_la... | subsample | subsam... |
 -------------------------------------------------------------------------------------------------------------
-|  1        | -12.14    |  0.6247   |  19.01    |  37.14    | -1.803    | -2.688    |  0.4624   |  0.2904   |
-|  2        | -11.58    |  0.9197   |  12.02    |  35.99    | -2.959    | -1.06     |  0.733    |  1.062    |
+|  1        | -0.03337  |  0.6247   |  19.01    |  37.14    | -1.803    | -2.688    |  0.4624   |  0.2904   |
+|  2        | -0.03337  |  0.9197   |  12.02    |  35.99    | -2.959    | -1.06     |  0.733    |  1.062    |
   :
   :
-|  85       | -10.5     |  1.0      |  2.584    |  16.71    | -1.364    | -1.615    |  0.8      |  3.498    |
+|  85       | -0.02821  |  1.0      |  0.0      |  22.21    | -1.0      | -1.0      |  0.4      |  5.0      |
 =============================================================================================================
-best_params = {'colsample_bytree': 1.0, 'min_child_samples': 3, 'num_leaves': 17, 'reg_alpha': 0.04321535571671176, 'reg_lambda': 0.024267598888301777, 'subsample': 0.8, 'subsample_freq': 3}
-score after tuning = -10.497077015105946
+best_params = {'colsample_bytree': 0.7663273032020579, 'min_child_samples': 5, 'num_leaves': 50, 'reg_alpha': 0.004886609538667352, 'reg_lambda': 0.0012229829134962934, 'subsample': 0.79020445435527, 'subsample_freq': 4}
+score after tuning = -0.016980186157125283
 ```
 
 #### 学習器を指定してBayesianOptimization
 `estimator`引数で、学習器を指定する事ができます。パイプラインも指定可能です
 ```python
 from param_tuning import LGBMRegressorTuning
-from sklearn.datasets import load_boston
 import pandas as pd
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from lightgbm import LGBMRegressor
 # データセット読込
-USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
-X = df_boston[USE_EXPLANATORY].values
-y = load_boston().target
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
+OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 # 学習器を指定
 ESTIMATOR = Pipeline([("scaler", StandardScaler()), ("rf", LGBMRegressor())])
@@ -573,17 +578,17 @@ best_params, best_score = tuning.bayes_opt_tuning(estimator=ESTIMATOR,
 ```
 実行結果
 ```
-score before tuning = -12.255823372962741
+score before tuning = -0.03336768277100166
 |   iter    |  target   | lgbmr_... | lgbmr_... | lgbmr_... | lgbmr_... | lgbmr_... | lgbmr_... | lgbmr_... |
 -------------------------------------------------------------------------------------------------------------
-|  1        | -11.99    |  0.6247   |  19.01    |  37.14    | -1.803    | -2.688    |  0.4624   |  0.2904   |
-|  2        | -11.53    |  0.9197   |  12.02    |  35.99    | -2.959    | -1.06     |  0.733    |  1.062    |
+|  1        | -0.03337  |  0.6247   |  19.01    |  37.14    | -1.803    | -2.688    |  0.4624   |  0.2904   |
+|  2        | -0.03337  |  0.9197   |  12.02    |  35.99    | -2.959    | -1.06     |  0.733    |  1.062    |
   :
   :
-|  85       | -12.36    |  0.8191   |  0.9298   |  31.81    | -2.811    | -1.314    |  0.4321   |  4.011    |
+|  85       | -0.01771  |  1.0      |  3.12     |  14.31    | -1.803    | -2.383    |  0.8      |  4.253    |
 =============================================================================================================
-best_params = {'lgbmr__colsample_bytree': 0.9248812273481077, 'lgbmr__min_child_samples': 4, 'lgbmr__num_leaves': 8, 'lgbmr__reg_alpha': 0.00329559380608668, 'lgbmr__reg_lambda': 0.012905694418620333, 'lgbmr__subsample': 0.5099088770971258, 'lgbmr__subsample_freq': 1}
-score after tuning = -10.937025098477642
+best_params = {'lgbmr__colsample_bytree': 0.8712626692669376, 'lgbmr__min_child_samples': 5, 'lgbmr__num_leaves': 15, 'lgbmr__reg_alpha': 0.0013795818196214403, 'lgbmr__reg_lambda': 0.06566397910906291, 'lgbmr__subsample': 0.7544905867317223, 'lgbmr__subsample_freq': 5}
+score after tuning = -0.016169025610778674
 ```
 ※本来パイプラインのパラメータ名は`学習器名__パラメータ名`と指定する必要がありますが、本ツールの`tuning_params`には自動で学習器名を付加する機能を追加しているので、`パラメータ名`のみでも指定可能です (`fit_params`指定時も同様)
 
@@ -600,18 +605,22 @@ score after tuning = -10.937025098477642
 ### 引数一覧
 |引数名|必須引数orオプション|型|デフォルト値|内容|
 |---|---|---|---|---|
-|estimator|オプション|estimator object implementing 'fit'|[クラスごとに異なる]()|最適化対象の学習器インスタンス。`not_opt_params`で指定したパラメータは上書きされるので注意|
-|tuning_params|オプション|dict[str, list[float]]|[クラスごとに異なる]()|チューニング対象のパラメータ範囲|
+|estimator|オプション|estimator object implementing 'fit'|[クラスごとに異なるESTIMATOR定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|最適化対象の学習器インスタンス。`not_opt_params`で指定したパラメータは上書きされるので注意|
+|tuning_params|オプション|dict[str, list[float]]|[クラスごとに異なるTUNING_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|チューニング対象のパラメータ範囲|
 |cv|オプション|int, cross-validation generator, or an iterable|5|クロスバリデーション分割法 (int入力時はKFoldで分割)|
 |seed|オプション|int|42|乱数シード (TPESamplerの`seed`引数、および学習器の`random_state`に適用、`cv`引数がint型のときKFoldの乱数シードにも指定)|
 |scoring|オプション|str|'neg_mean_squared_error'|最適化で最大化する評価指標 ('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)|
-|n_trials|オプション|int|[クラスごとに異なる]()|ベイズ最適化の試行数|
+|n_trials|オプション|int|[クラスごとに異なるN_TRIALS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|ベイズ最適化の試行数|
 |study_kws|オプション|dict|{'sampler': TPESampler(), 'direction': 'maximize'}|optuna.study.create_study()に渡す引数|
 |optimize_kws|オプション|dict|{}|optuna.study.Study.optimize()に渡す引数 (n_trials以外)|
-|not_opt_<br>params|オプション　　|dict|[クラスごとに異なる]()|`tuning_params`以外のチューニング対象外パラメータを指定|
-|param_scales|オプション|dict[str, str]|[クラスごとに異なる]()|`tuning_params`のパラメータごとのスケール('linear', 'log')|
-|mlflow_<br>logging|オプション|str|None|MLFlowでの結果記録有無('log':通常の記録, 'with':with構文で記録, None:記録なし)。詳細は[こちら]()|
-|fit_params|オプション|dict|[クラスごとに異なる]()|学習器の`fit()`メソッドに渡すパラメータ|
+|not_opt_<br>params|オプション　　|dict|[クラスごとに異なるNOT_OPT_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|`tuning_params`以外のチューニング対象外パラメータを指定|
+|int_params|オプション|int|[クラスごとに異なるINT_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|整数型のパラメータ一覧のリスト|
+|param_scales|オプション|dict[str, str]|[クラスごとに異なるPARAM_SCALES定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|`tuning_params`のパラメータごとのスケール('linear', 'log')|
+|mlflow_logging|オプション|{'inside','outside',None}|None|MLflowでの結果記録有無('inside':with構文で記録, 'outside':外部でRun実行, None:MLflow実行なし)。詳細は[こちら]()|
+|mlflow_<br>tracking_uri|オプション|str|None|MLflowのTracking URI。[こちらを参照ください]()|
+|mlflow_<br>artifact_location|オプション　　|str|None|MLflowのArtifact URI。[こちらを参照ください]()|
+|mlflow_<br>experiment_name|オプション|str|None|MLflowのExperiment名。[こちらを参照ください]()|
+|fit_params|オプション|dict|[クラスごとに異なるFIT_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|学習器の`fit()`メソッドに渡すパラメータ|
 
 ### 実行例
 コードは[こちらにもアップロードしています]()
@@ -619,28 +628,28 @@ score after tuning = -10.937025098477642
 オプション引数を指定しないとき、[デフォルトの引数]()を使用してOptunaでチューニングします
 ```python
 from param_tuning import LGBMRegressorTuning
-from sklearn.datasets import load_boston
 import pandas as pd
 # データセット読込
-USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
-X = df_boston[USE_EXPLANATORY].values
-y = load_boston().target
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
+OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 ###### デフォルト引数でOptunaチューニング ######
 best_params, best_score = tuning.optuna_tuning()
 ```
 実行結果
 ```
-[I 2021-08-27 01:02:55,935] A new study created in memory with name: no-name-bdd17556-7ee0-48bd-a219-c331b5f83de3
-score before tuning = -11.979161807916636
+[I 2021-12-14 00:30:14,655] A new study created in memory with name: no-name-2909a142-5e22-40de-b896-5c7e00f7fbe2
+score before tuning = -0.03336768277100166
 
-[I 2021-08-27 01:02:57,904] Trial 0 finished with value: -11.452939275675764 and parameters: {'reg_alpha': 0.0013292918943162175, 'reg_lambda': 0.07114476009343425, 'num_leaves': 37, 'colsample_bytree': 0.759195090518222, 'subsample': 0.4936111842654619, 'subsample_freq': 1, 'min_child_samples': 2}. Best is trial 0 with value: -11.452939275675764.
+[I 2021-12-14 00:30:15,077] Trial 0 finished with value: -0.01770816915416739 and parameters: {'reg_alpha': 0.0013292918943162175, 'reg_lambda': 0.07114476009343425, 'num_leaves': 37, 'colsample_bytree': 0.759195090518222, 'subsample': 0.4936111842654619, 'subsample_freq': 1, 'min_child_samples': 2}. Best is trial 0 with value: -0.01770816915416739.
   :
   :
-[I 2021-08-27 00:57:48,371] Trial 199 finished with value: -10.511358593135807 and parameters: {'reg_alpha': 0.0010789348786651755, 'reg_lambda': 0.00045050344430450247, 'num_leaves': 42, 'colsample_bytree': 0.9456531771486588, 'subsample': 0.6186892820565172, 'subsample_freq': 1, 'min_child_samples': 1}. Best is trial 188 with value: -9.616609903204923.
-best_params = {'reg_alpha': 0.003109527801280432, 'reg_lambda': 0.0035808676982557147, 'num_leaves': 41, 'colsample_bytree': 0.9453510369496361, 'subsample': 0.5947574986660598, 'subsample_freq': 1, 'min_child_samples': 0}
-score after tuning = -9.616609903204923
+[I 2021-12-14 00:31:10,918] Trial 199 finished with value: -0.018916315858869295 and parameters: {'reg_alpha': 0.00036956617235105757, 'reg_lambda': 0.08791527491442741, 'num_leaves': 48, 'colsample_bytree': 0.792614835286705, 'subsample': 0.9907365711754348, 'subsample_freq': 0, 'min_child_samples': 4}. Best is trial 106 with value: -0.015348697968670694.
+best_params = {'reg_alpha': 0.0006347418019359087, 'reg_lambda': 0.059722944467666184, 'num_leaves': 47, 'colsample_bytree': 0.7768227979321171, 'subsample': 0.9358047309028262, 'subsample_freq': 3, 'min_child_samples': 6}
+score after tuning = -0.015348697968670694
 ```
 
 #### パラメータ範囲と試行数を指定してOptunaチューニング実行
@@ -650,13 +659,13 @@ score after tuning = -9.616609903204923
 
 ```python
 from param_tuning import LGBMRegressorTuning
-from sklearn.datasets import load_boston
 import pandas as pd
 # データセット読込
-USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
-X = df_boston[USE_EXPLANATORY].values
-y = load_boston().target
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
+OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 # パラメータ
 BAYES_PARAMS = {'reg_alpha': (0.001, 0.1),
@@ -674,31 +683,32 @@ best_params, best_score = tuning.optuna_tuning(tuning_params=BAYES_PARAMS,
 ```
 実行結果
 ```
-[I 2021-08-27 01:15:21,268] A new study created in memory with name: no-name-635ede1b-7985-4548-aba8-c831963b9a8c
-score before tuning = -11.979161807916636
+[I 2021-12-14 00:38:27,069] A new study created in memory with name: no-name-8b1a53be-678f-479f-a113-b166292b030b
+score before tuning = -0.03336768277100166
 
-[I 2021-08-27 01:15:23,498] Trial 0 finished with value: -12.110663238032412 and parameters: {'reg_alpha': 0.005611516415334507, 'reg_lambda': 0.07969454818643935, 'num_leaves': 37, 'colsample_bytree': 0.759195090518222, 'subsample': 0.46240745617697465, 'subsample_freq': 0, 'min_child_samples': 1}. Best is trial 0 with value: -12.110663238032412.
+[I 2021-12-14 00:38:27,564] Trial 0 finished with value: -0.019595974792610084 and parameters: {'reg_alpha': 0.005611516415334507, 'reg_lambda': 0.07969454818643935, 'num_leaves': 37, 'colsample_bytree': 0.759195090518222, 'subsample': 0.46240745617697465, 'subsample_freq': 0, 'min_child_samples': 1}. Best is trial 0 with value: -0.019595974792610084.
+
   :
   :
-[I 2021-08-27 01:12:09,708] Trial 199 finished with value: -10.194230069453065 and parameters: {'reg_alpha': 0.001828306094799145, 'reg_lambda': 0.06571376528457373, 'num_leaves': 11, 'colsample_bytree': 0.9278346121998875, 'subsample': 0.7163240012735217, 'subsample_freq': 1, 'min_child_samples': 1}. Best is trial 173 with value: -9.823907953731936.
-best_params = {'reg_alpha': 0.0027344867053618453, 'reg_lambda': 0.06607544948281772, 'num_leaves': 10, 'colsample_bytree': 0.9598501478819825, 'subsample': 0.6910946770860599, 'subsample_freq': 1, 'min_child_samples': 1}
-score after tuning = -9.823907953731936
+[I 2021-12-14 00:39:18,042] Trial 199 finished with value: -0.016574941047789542 and parameters: {'reg_alpha': 0.002123392288572352, 'reg_lambda': 0.02246543428565874, 'num_leaves': 30, 'colsample_bytree': 0.7186823509475074, 'subsample': 0.7025863258246245, 'subsample_freq': 2, 'min_child_samples': 5}. Best is trial 128 with value: -0.016369607641459265.
+best_params = {'reg_alpha': 0.0010080175418796056, 'reg_lambda': 0.017442918126437838, 'num_leaves': 22, 'colsample_bytree': 0.8349338860971882, 'subsample': 0.7281796185085103, 'subsample_freq': 2, 'min_child_samples': 4}
+score after tuning = -0.016369607641459265
 ```
 
 #### 学習器を指定してOptunaチューニング実行
 `estimator`引数で、学習器を指定する事ができます。パイプラインも指定可能です
 ```python
 from param_tuning import LGBMRegressorTuning
-from sklearn.datasets import load_boston
 import pandas as pd
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from lightgbm import LGBMRegressor
 # データセット読込
-USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
-X = df_boston[USE_EXPLANATORY].values
-y = load_boston().target
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
+OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 # 学習器を指定
 ESTIMATOR = Pipeline([("scaler", StandardScaler()), ("lgbmr", LGBMRegressor())])
@@ -718,15 +728,15 @@ best_params, best_score = tuning.optuna_tuning(estimator=ESTIMATOR,
 ```
 実行結果
 ```
-[I 2021-08-27 01:24:57,636] A new study created in memory with name: no-name-2fb193f2-351c-4d4c-baae-b23d16859665
-score before tuning = -12.255823372962741
+[I 2021-12-14 00:44:27,750] A new study created in memory with name: no-name-9c9a5ce9-78fc-4d58-88b1-28e1e62f57d6
+score before tuning = -0.03336768277100166
 
-[I 2021-08-27 01:25:01,806] Trial 0 finished with value: -11.378859002518542 and parameters: {'lgbmr__reg_alpha': 0.005611516415334507, 'lgbmr__reg_lambda': 0.07969454818643935, 'lgbmr__num_leaves': 37, 'lgbmr__colsample_bytree': 0.759195090518222, 'lgbmr__subsample': 0.46240745617697465, 'lgbmr__subsample_freq': 0, 'lgbmr__min_child_samples': 1}. Best is trial 0 with value: -11.378859002518542.
+[I 2021-12-14 00:44:28,261] Trial 0 finished with value: -0.019134840886528483 and parameters: {'lgbmr__reg_alpha': 0.005611516415334507, 'lgbmr__reg_lambda': 0.07969454818643935, 'lgbmr__num_leaves': 37, 'lgbmr__colsample_bytree': 0.759195090518222, 'lgbmr__subsample': 0.46240745617697465, 'lgbmr__subsample_freq': 0, 'lgbmr__min_child_samples': 1}. Best is trial 0 with value: -0.019134840886528483.
   :
   :
-[I 2021-08-27 01:22:03,721] Trial 199 finished with value: -10.096037009116241 and parameters: {'lgbmr__reg_alpha': 0.002327721686775674, 'lgbmr__reg_lambda': 0.0012314391979104883, 'lgbmr__num_leaves': 13, 'lgbmr__colsample_bytree': 0.9920040005884901, 'lgbmr__subsample': 0.6013906896641126, 'lgbmr__subsample_freq': 2, 'lgbmr__min_child_samples': 0}. Best is trial 63 with value: -9.418766279450413.
-best_params = {'lgbmr__reg_alpha': 0.019197753824492524, 'lgbmr__reg_lambda': 0.0012922239440782994, 'lgbmr__num_leaves': 13, 'lgbmr__colsample_bytree': 0.9719197851402581, 'lgbmr__subsample': 0.5944071346631961, 'lgbmr__subsample_freq': 2, 'lgbmr__min_child_samples': 0}
-score after tuning = -9.418766279450413
+[I 2021-12-14 00:45:26,385] Trial 149 finished with value: -0.020414543680491087 and parameters: {'lgbmr__reg_alpha': 0.0018662271931017159, 'lgbmr__reg_lambda': 0.006697621112757029, 'lgbmr__num_leaves': 22, 'lgbmr__colsample_bytree': 0.6310482276089768, 'lgbmr__subsample': 0.6348418804738211, 'lgbmr__subsample_freq': 0, 'lgbmr__min_child_samples': 8}. Best is trial 132 with value: -0.014828721902099879.
+best_params = {'lgbmr__reg_alpha': 0.0026605704978420385, 'lgbmr__reg_lambda': 0.005932725865394271, 'lgbmr__num_leaves': 18, 'lgbmr__colsample_bytree': 0.7166351013315516, 'lgbmr__subsample': 0.5599413528050566, 'lgbmr__subsample_freq': 0, 'lgbmr__min_child_samples': 6}
+score after tuning = -0.014828721902099879
 ```
 ※本来パイプラインのパラメータ名は`学習器名__パラメータ名`と指定する必要がありますが、本ツールの`tuning_params`には自動で学習器名を付加する機能を追加しているので、`パラメータ名`のみでも指定可能です (`fit_params`指定時も同様)
 
@@ -756,13 +766,13 @@ score after tuning = -9.418766279450413
 オプション引数を指定しないとき、[デフォルトの引数]()を使用してOptunaでチューニングします
 ```python
 from param_tuning import LGBMRegressorTuning
-from sklearn.datasets import load_boston
 import pandas as pd
 # データセット読込
-USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
-X = df_boston[USE_EXPLANATORY].values
-y = load_boston().target
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
+OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
 ###### デフォルト引数でスコアの上昇履歴を表示 ######
@@ -809,13 +819,13 @@ tuning.plot_search_history(x_axis='time')
 
 ```python
 from param_tuning import LGBMRegressorTuning
-from sklearn.datasets import load_boston
 import pandas as pd
 # データセット読込
-USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
-X = df_boston[USE_EXPLANATORY].values
-y = load_boston().target
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
+OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
 ###### デフォルト引数でスコアの上昇履歴を取得 ######
@@ -856,13 +866,13 @@ reg_alpha	reg_lambda	num_leaves	colsample_bytree	subsample	subsample_freq	min_ch
 オプション引数を指定しないとき、[デフォルトの引数]()を使用して探索履歴をプロットします
 ```python
 from param_tuning import LGBMRegressorTuning
-from sklearn.datasets import load_boston
 import pandas as pd
 # データセット読込
-USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
-X = df_boston[USE_EXPLANATORY].values
-y = load_boston().target
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
+OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
 ###### デフォルト引数でスコアの上昇履歴を表示 ######
@@ -879,13 +889,13 @@ tuning.plot_search_map()
 
 ```python
 from param_tuning import LGBMRegressorTuning
-from sklearn.datasets import load_boston
 import pandas as pd
 # データセット読込
-USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
-X = df_boston[USE_EXPLANATORY].values
-y = load_boston().target
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
+OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
 ###### 時間を横軸に指定してスコアの上昇履歴を表示 ######
@@ -918,13 +928,13 @@ tuning.plot_search_map(pair_n=6,
 オプション引数を指定しないとき、[デフォルトの引数]()を使用して学習曲線をプロットします
 ```python
 from param_tuning import LGBMRegressorTuning
-from sklearn.datasets import load_boston
 import pandas as pd
 # データセット読込
-USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
-X = df_boston[USE_EXPLANATORY].values
-y = load_boston().target
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
+OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
 ###### デフォルト引数で学習曲線を表示 ######
@@ -958,13 +968,13 @@ tuning.plot_best_learning_curve()
 オプション引数を指定しないとき、[デフォルトの引数]()を使用して検証曲線をプロットします
 ```python
 from param_tuning import LGBMRegressorTuning
-from sklearn.datasets import load_boston
 import pandas as pd
 # データセット読込
-USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
-X = df_boston[USE_EXPLANATORY].values
-y = load_boston().target
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
+OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
 ###### デフォルト引数で検証曲線を表示 ######
@@ -978,13 +988,13 @@ tuning.plot_best_validation_curve()
 `validation_curve_params`引数で、検証曲線のパラメータ範囲を指定する事ができます
 ```python
 from param_tuning import LGBMRegressorTuning
-from sklearn.datasets import load_boston
 import pandas as pd
 # データセット読込
-USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
-X = df_boston[USE_EXPLANATORY].values
-y = load_boston().target
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
+OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
 # パラメータ
@@ -1021,13 +1031,13 @@ tuning.plot_best_validation_curve(validation_curve_params=VALIDATION_CURVE_PARAM
 
 ```python
 from param_tuning import LGBMRegressorTuning
-from sklearn.datasets import load_boston
 import pandas as pd
 # データセット読込
-USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
-X = df_boston[USE_EXPLANATORY].values
-y = load_boston().target
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
+OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
 tuning.plot_search_map()  # plot_search_map実行
@@ -1059,13 +1069,13 @@ feature_importances_算出に対応した学習器(ランダムフォレスト�
 オプション引数を指定しないとき、[デフォルトの引数]()を使用して学習曲線をプロットします
 ```python
 from param_tuning import LGBMRegressorTuning
-from sklearn.datasets import load_boston
 import pandas as pd
 # データセット読込
-USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
-X = df_boston[USE_EXPLANATORY].values
-y = load_boston().target
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
+OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
 ###### デフォルト引数でfeature_importancesを表示 ######
@@ -1095,13 +1105,13 @@ feature_importances_算出に対応した学習器(ランダムフォレスト�
 オプション引数を指定しないとき、[デフォルトの引数]()を使用して学習曲線をプロットします
 ```python
 from param_tuning import LGBMRegressorTuning
-from sklearn.datasets import load_boston
 import pandas as pd
 # データセット読込
-USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
-X = df_boston[USE_EXPLANATORY].values
-y = load_boston().target
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
+OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
 ###### チューニング後feature_importancesを取得 ######
