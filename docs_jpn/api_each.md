@@ -216,9 +216,9 @@ tuning.plot_first_validation_curve(validation_curve_params=VALIDATION_CURVE_PARA
 |not_opt_<br>params|オプション　　|dict|[クラスごとに異なるNOT_OPT_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|`tuning_params`以外のチューニング対象外パラメータを指定|
 |param_scales|オプション|dict[str, str]|[クラスごとに異なるPARAM_SCALES定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|`tuning_params`のパラメータごとのスケール('linear', 'log')|
 |mlflow_logging|オプション|{'inside','outside',None}|None|MLflowでの結果記録有無('inside':with構文で記録, 'outside':外部でRun実行, None:MLflow実行なし)。詳細は[こちら]()|
-|mlflow_<br>tracking_uri|オプション　　|str|None|MLflowのTracking URI。[こちらを参照ください]()|
+|mlflow_<br>tracking_uri|オプション|str|None|MLflowのTracking URI。[こちらを参照ください]()|
 |mlflow_<br>artifact_location|オプション　　|str|None|MLflowのArtifact URI。[こちらを参照ください]()|
-|mlflow_<br>experiment_name|オプション　　|str|None|MLflowのExperiment名。[こちらを参照ください]()|
+|mlflow_<br>experiment_name|オプション|str|None|MLflowのExperiment名。[こちらを参照ください]()|
 |grid_kws|オプション|dict|None|sklearn.model_selection.GridSearchCVに渡す引数 (estimator, tuning_params, cv, scoring以外)|
 |fit_params|オプション|dict|[クラスごとに異なるFIT_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|学習器の`fit()`メソッドに渡すパラメータ|
 
@@ -335,6 +335,9 @@ score after tuning = -0.018483563545478098
 |not_opt_<br>params|オプション　　|dict|[クラスごとに異なる]()|`tuning_params`以外のチューニング対象外パラメータを指定|
 |param_scales|オプション|dict[str, str]|[クラスごとに異なる]()|`tuning_params`のパラメータごとのスケール('linear', 'log')|
 |mlflow_<br>logging|オプション|str|None|MLFlowでの結果記録有無('log':通常の記録, 'with':with構文で記録, None:記録なし)。詳細は[こちら]()|
+|mlflow_<br>tracking_uri|オプション|str|None|MLflowのTracking URI。[こちらを参照ください]()|
+|mlflow_<br>artifact_location|オプション　　|str|None|MLflowのArtifact URI。[こちらを参照ください]()|
+|mlflow_<br>experiment_name|オプション|str|None|MLflowのExperiment名。[こちらを参照ください]()|
 |rand_kws|オプション|dict|None|sklearn.model_selection.RondomizedSearchCVに渡す引数 (estimator, tuning_params, cv, scoring, n_iter以外)|
 |fit_params|オプション|dict|[クラスごとに異なる]()|学習器の`fit()`メソッドに渡すパラメータ|
 
@@ -344,22 +347,22 @@ score after tuning = -0.018483563545478098
 オプション引数を指定しないとき、[デフォルトの引数]()を使用してプロットします
 ```python
 from param_tuning import RFRegressorTuning
-from sklearn.datasets import load_boston
 import pandas as pd
 # データセット読込
-USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
-X = df_boston[USE_EXPLANATORY].values
-y = load_boston().target
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
+OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLANATORY].values
 tuning = RFRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 ###### デフォルト引数でランダムサーチ ######
 best_params, best_score = tuning.random_search_tuning()
 ```
 実行結果
 ```
-score before tuning = -11.719820569093374
-best_params = {'n_estimators': 160, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 2, 'max_depth': 8}
-score after tuning = -10.832494601564617
+score before tuning = -0.018627075795771445
+best_params = {'n_estimators': 60, 'min_samples_split': 3, 'min_samples_leaf': 1, 'max_features': 2, 'max_depth': 8}
+score after tuning = -0.017934841860748053
 ```
 
 #### パラメータ探索範囲と試行数を指定してランダムサーチ
@@ -368,13 +371,13 @@ score after tuning = -10.832494601564617
 また、`n_iter`引数で探索の試行数を指定できます
 ```python
 from param_tuning import RFRegressorTuning
-from sklearn.datasets import load_boston
 import pandas as pd
 # データセット読込
-USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
-X = df_boston[USE_EXPLANATORY].values
-y = load_boston().target
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
+OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLANATORY].values
 tuning = RFRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 # パラメータ
 CV_PARAMS_RANDOM = {'n_estimators': [20, 30, 40, 60, 80, 120, 160],
@@ -389,25 +392,25 @@ best_params, best_score = tuning.random_search_tuning(tuning_params=CV_PARAMS_RA
 ```
 実行結果
 ```
-score before tuning = -11.719820569093374
-best_params = {'n_estimators': 30, 'min_samples_split': 8, 'min_samples_leaf': 1, 'max_features': 2, 'max_depth': 32}
-score after tuning = -10.890781333521025
+score before tuning = -0.018627075795771445
+best_params = {'n_estimators': 40, 'min_samples_split': 4, 'min_samples_leaf': 1, 'max_features': 4, 'max_depth': 4}
+score after tuning = -0.01786570144420851
 ```
 
 #### 学習器を指定してランダムサーチ
 `estimator`引数で、学習器を指定する事ができます。パイプラインも指定可能です
 ```python
 from param_tuning import RFRegressorTuning
-from sklearn.datasets import load_boston
 import pandas as pd
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestRegressor
 # データセット読込
-USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
-X = df_boston[USE_EXPLANATORY].values
-y = load_boston().target
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
+OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLANATORY].values
 tuning = RFRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 # 学習器を指定
 ESTIMATOR = Pipeline([("scaler", StandardScaler()), ("rf", RandomForestRegressor())])
@@ -425,9 +428,9 @@ best_params, best_score = tuning.random_search_tuning(estimator=ESTIMATOR,
 ```
 実行結果
 ```
-score before tuning = -11.724246256998635
-best_params = {'rf__n_estimators': 30, 'rf__min_samples_split': 8, 'rf__min_samples_leaf': 1, 'rf__max_features': 2, 'rf__max_depth': 32}
-score after tuning = -10.84662079640907
+score before tuning = -0.01862916391210388
+best_params = {'rf__n_estimators': 40, 'rf__min_samples_split': 4, 'rf__min_samples_leaf': 1, 'rf__max_features': 4, 'rf__max_depth': 4}
+score after tuning = -0.01786570144420851
 ```
 ※本来パイプラインのパラメータ名は`学習器名__パラメータ名`と指定する必要がありますが、本ツールの`tuning_params`には自動で学習器名を付加する機能を追加しているので、`パラメータ名`のみでも指定可能です (`fit_params`指定時も同様)
 
