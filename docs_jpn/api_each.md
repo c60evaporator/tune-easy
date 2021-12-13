@@ -52,9 +52,10 @@
   - 'original_transformed' : チューニング用メソッドの`fit_params`引数に明示的に与えた'eval_set' (estimatorがパイプラインの時、前処理を自動適用)
 
 ### 実行例
-コードは[こちらにもアップロードしています]()
+コードは[こちらにもアップロードしています](https://github.com/c60evaporator/muscle-tuning/blob/master/examples/method_examples/init.py)
 #### オプション引数指定なしで初期化
 LightGBM回帰におけるクラス初期化実行例
+
 ```python
 from muscle_tuning import LGBMRegressorTuning
 import pandas as pd
@@ -70,6 +71,7 @@ tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)
 
 #### LeaveOneGroupOutでクロスバリデーションしたいとき
 SVRにおける引数指定例
+
 ```python
 from param_tuning import XGBRegressorTuning
 from sklearn.model_selection import LeaveOneGroupOut
@@ -87,6 +89,7 @@ tuning = XGBRegressorTuning(X, y, USE_EXPLANATORY,  # 必須引数
 
 #### 検証データをfit_paramsのeval_setに使用したいとき
 デフォルトではeval_set (early_stopping_roundの判定に使用するデータ)は全てのデータ (self.X, self.y)を使用しますが、eval_data_source='valid'を指定するとクロスバリデーションの検証用データのみを使用します
+
 ```python
 from muscle_tuning import LGBMRegressorTuning
 import pandas as pd
@@ -143,7 +146,7 @@ get_feature_importancesおよびplot_feature_importancesメソッドは、XGBoos
 |fit_params|オプション|dict|[クラスごとに異なるFIT_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|学習器の`fit()`メソッドに渡すパラメータ|
 
 ### 実行例
-コードは[こちらにもアップロードしています]()
+コードは[こちらにもアップロードしています](https://github.com/c60evaporator/muscle-tuning/blob/master/examples/method_examples/plot_first_validation_curve.py)
 #### オプション引数指定なしで検証曲線プロット
 オプション引数を指定しないとき、[前述のデフォルト値]()を使用してプロットします
 
@@ -223,7 +226,7 @@ tuning.plot_first_validation_curve(validation_curve_params=VALIDATION_CURVE_PARA
 |fit_params|オプション|dict|[クラスごとに異なるFIT_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|学習器の`fit()`メソッドに渡すパラメータ|
 
 ### 実行例
-コードは[こちらにもアップロードしています]()
+コードは[こちらにもアップロードしています](https://github.com/c60evaporator/muscle-tuning/blob/master/examples/method_examples/grid_search_tuning.py)
 #### オプション引数指定なしでグリッドサーチ
 オプション引数を指定しないとき、[デフォルトの引数]()を使用してプロットします
 
@@ -271,6 +274,7 @@ CV_PARAMS_GRID = {'n_estimators': [20, 80, 160],
 best_params, best_score = tuning.grid_search_tuning(tuning_params=CV_PARAMS_GRID)
 ```
 実行結果
+
 ```
 score before tuning = -0.018627075795771445
 best_params = {'max_depth': 8, 'min_samples_leaf': 1, 'min_samples_split': 2, 'n_estimators': 80}
@@ -279,6 +283,7 @@ score after tuning = -0.018313930236533316
 
 #### 学習器を指定してグリッドサーチ
 `estimator`引数で、学習器を指定する事ができます。パイプラインも指定可能です
+
 ```python
 from param_tuning import RFRegressorTuning
 import pandas as pd
@@ -306,6 +311,7 @@ best_params, best_score = tuning.grid_search_tuning(estimator=ESTIMATOR,
                                                     tuning_params=CV_PARAMS_GRID)
 ```
 実行結果
+
 ```
 score before tuning = -0.01862916391210388
 best_params = {'rf__max_depth': 8, 'rf__max_features': 2, 'rf__min_samples_leaf': 1, 'rf__min_samples_split': 2, 'rf__n_estimators': 80}
@@ -342,9 +348,10 @@ score after tuning = -0.018483563545478098
 |fit_params|オプション|dict|[クラスごとに異なるFIT_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|学習器の`fit()`メソッドに渡すパラメータ|
 
 ### 実行例
-コードは[こちらにもアップロードしています]()
+コードは[こちらにもアップロードしています](https://github.com/c60evaporator/muscle-tuning/blob/master/examples/method_examples/random_search_tuning.py)
 #### オプション引数指定なしでランダムサーチ
 オプション引数を指定しないとき、[デフォルトの引数]()を使用してプロットします
+
 ```python
 from param_tuning import RFRegressorTuning
 import pandas as pd
@@ -359,6 +366,7 @@ tuning = RFRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラ
 best_params, best_score = tuning.random_search_tuning()
 ```
 実行結果
+
 ```
 score before tuning = -0.018627075795771445
 best_params = {'n_estimators': 60, 'min_samples_split': 3, 'min_samples_leaf': 1, 'max_features': 2, 'max_depth': 8}
@@ -369,6 +377,7 @@ score after tuning = -0.017934841860748053
 `tuning_params`引数で、ランダムサーチのパラメータ探索範囲を指定する事ができます。
 
 また、`n_iter`引数で探索の試行数を指定できます
+
 ```python
 from param_tuning import RFRegressorTuning
 import pandas as pd
@@ -399,6 +408,7 @@ score after tuning = -0.01786570144420851
 
 #### 学習器を指定してランダムサーチ
 `estimator`引数で、学習器を指定する事ができます。パイプラインも指定可能です
+
 ```python
 from param_tuning import RFRegressorTuning
 import pandas as pd
@@ -427,6 +437,7 @@ best_params, best_score = tuning.random_search_tuning(estimator=ESTIMATOR,
                                                       n_iter=160)
 ```
 実行結果
+
 ```
 score before tuning = -0.01862916391210388
 best_params = {'rf__n_estimators': 40, 'rf__min_samples_split': 4, 'rf__min_samples_leaf': 1, 'rf__max_features': 4, 'rf__max_depth': 4}
@@ -442,7 +453,7 @@ score after tuning = -0.01786570144420851
 <br>
 
 ## bayes_opt_tuningメソッド
-[BayesianOptimizationライブラリ]()によるベイズ最適化を実行します
+[BayesianOptimizationライブラリ](https://github.com/fmfn/BayesianOptimization)によるベイズ最適化を実行します
 
 ### 引数一覧
 |引数名|必須引数orオプション|型|デフォルト値|内容|
@@ -465,10 +476,11 @@ score after tuning = -0.01786570144420851
 |fit_params|オプション|dict|[クラスごとに異なるFIT_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|学習器の`fit()`メソッドに渡すパラメータ|
 
 ### 実行例
-コードは[こちらにもアップロードしています]()
+コードは[こちらにもアップロードしています](https://github.com/c60evaporator/muscle-tuning/blob/master/examples/method_examples/bayes_opt_tuning.py)
 
 #### オプション引数指定なしでBayesianOptimization
 オプション引数を指定しないとき、[デフォルトの引数]()を使用してBayesianOptimizationでチューニングします
+
 ```python
 from param_tuning import LGBMRegressorTuning
 import pandas as pd
@@ -483,6 +495,7 @@ tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用ク�
 best_params, best_score = tuning.bayes_opt_tuning()
 ```
 実行結果
+
 ```
 score before tuning = -0.03336768277100166
 
@@ -504,6 +517,7 @@ score after tuning = -0.015674379678829172
 また、`n_iter`引数でベイズ最適化の試行数を指定できます
 
 探索の合計試行数は、`init_points`で指定したランダム初期点数 + `n_iter`となります
+
 ```python
 from param_tuning import LGBMRegressorTuning
 import pandas as pd
@@ -529,6 +543,7 @@ best_params, best_score = tuning.bayes_opt_tuning(tuning_params=CV_PARAMS_RANDOM
                                                   init_points=10)
 ```
 実行結果
+
 ```
 score before tuning = -11.979161807916636
 
@@ -546,6 +561,7 @@ score after tuning = -0.016980186157125283
 
 #### 学習器を指定してBayesianOptimization
 `estimator`引数で、学習器を指定する事ができます。パイプラインも指定可能です
+
 ```python
 from param_tuning import LGBMRegressorTuning
 import pandas as pd
@@ -577,6 +593,7 @@ best_params, best_score = tuning.bayes_opt_tuning(estimator=ESTIMATOR,
                                                   init_points=10)
 ```
 実行結果
+
 ```
 score before tuning = -0.03336768277100166
 |   iter    |  target   | lgbmr_... | lgbmr_... | lgbmr_... | lgbmr_... | lgbmr_... | lgbmr_... | lgbmr_... |
@@ -600,7 +617,7 @@ score after tuning = -0.016169025610778674
 <br>
 
 ## optuna_tuningメソッド
-[Optunaライブラリ]()によるベイズ最適化を実行します
+[Optunaライブラリ](https://www.preferred.jp/ja/projects/optuna/)によるベイズ最適化を実行します
 
 ### 引数一覧
 |引数名|必須引数orオプション|型|デフォルト値|内容|
@@ -623,7 +640,7 @@ score after tuning = -0.016169025610778674
 |fit_params|オプション|dict|[クラスごとに異なるFIT_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|学習器の`fit()`メソッドに渡すパラメータ|
 
 ### 実行例
-コードは[こちらにもアップロードしています]()
+コードは[こちらにもアップロードしています](https://github.com/c60evaporator/muscle-tuning/blob/master/examples/method_examples/optuna_tuning.py)
 #### オプション引数指定なしでOptunaチューニング
 オプション引数を指定しないとき、[デフォルトの引数]()を使用してOptunaでチューニングします
 ```python
@@ -640,6 +657,7 @@ tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用ク�
 best_params, best_score = tuning.optuna_tuning()
 ```
 実行結果
+
 ```
 [I 2021-12-14 00:30:14,655] A new study created in memory with name: no-name-2909a142-5e22-40de-b896-5c7e00f7fbe2
 score before tuning = -0.03336768277100166
@@ -682,6 +700,7 @@ best_params, best_score = tuning.optuna_tuning(tuning_params=BAYES_PARAMS,
                                                )
 ```
 実行結果
+
 ```
 [I 2021-12-14 00:38:27,069] A new study created in memory with name: no-name-8b1a53be-678f-479f-a113-b166292b030b
 score before tuning = -0.03336768277100166
@@ -727,6 +746,7 @@ best_params, best_score = tuning.optuna_tuning(estimator=ESTIMATOR,
                                                n_trials=200)
 ```
 実行結果
+
 ```
 [I 2021-12-14 00:44:27,750] A new study created in memory with name: no-name-9c9a5ce9-78fc-4d58-88b1-28e1e62f57d6
 score before tuning = -0.03336768277100166
@@ -761,7 +781,7 @@ score after tuning = -0.014828721902099879
 |plot_kws|オプション|dist|None|プロット用のmatplotlib.pyplot.plotに渡す引数|
 
 ### 実行例
-コードは[こちらにもアップロードしています]()
+コードは[こちらにもアップロードしています](https://github.com/c60evaporator/muscle-tuning/blob/master/examples/method_examples/plot_search_history.py)
 #### オプション引数指定なしでスコアの上昇履歴を表示
 オプション引数を指定しないとき、[デフォルトの引数]()を使用してOptunaでチューニングします
 ```python
@@ -780,7 +800,7 @@ tuning.plot_search_history()
 ```
 実行結果
 
-![image](https://user-images.githubusercontent.com/59557625/131160736-4235e9ef-a733-42b0-9e0b-f9ab84542a1d.png)
+![history](https://user-images.githubusercontent.com/59557625/145845317-ed71e1e7-35f7-474a-bdac-cdfefa4be659.png)
 
 #### 横軸に時間を指定してスコアの上昇履歴を表示
 `x_axis`引数='time'と指定する事で、横軸を試行数 → 時間に変更する事ができます。
@@ -801,7 +821,7 @@ tuning.plot_search_history(x_axis='time')
 ```
 実行結果
 
-![image](https://user-images.githubusercontent.com/59557625/131169898-8876104b-0b66-4491-afdd-e7e3853db71b.png)
+![history_time](https://user-images.githubusercontent.com/59557625/145845648-e3424bb6-8fb9-40b7-bc74-af9971c43c45.png)
 
 その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L135)をご参照ください
 
@@ -816,6 +836,7 @@ tuning.plot_search_history(x_axis='time')
 引数はありません
 
 ### 実行例
+コードは[こちらにもアップロードしています](https://github.com/c60evaporator/muscle-tuning/blob/master/examples/method_examples/get_search_history.py)
 
 ```python
 from param_tuning import LGBMRegressorTuning
@@ -833,11 +854,12 @@ df_history = tuning.get_search_history()
 df_history
 ```
 実行結果
+
 ```
 reg_alpha	reg_lambda	num_leaves	colsample_bytree	subsample	subsample_freq	min_child_samples	test_score	raw_trial_time	max_score	raw_total_time	total_time
-0	0.001329	0.071145	37	0.759195	0.493611	1	2	-11.452939	1.599340	-11.452939	1.599340	1.626420
+0	0.001329	0.071145	37	0.759195	0.493611	1	2	-0.017708	0.429852	-0.017708	0.429852	0.431247
 ...	...	...	
-199	0.001079	0.000451	42	0.945653	0.618689	1	1	-10.511359	1.620776	-9.616610	301.749652	306.858965
+199	0.000370	0.087915	48	0.792615	0.990737	0	4	-0.018916	0.314449	-0.015349	55.788442	55.969547
 ```
 
 <br>
@@ -861,7 +883,7 @@ reg_alpha	reg_lambda	num_leaves	colsample_bytree	subsample	subsample_freq	min_ch
 |scatter_kws|オプション|dict|None|プロット用のplt.subplots()に渡す引数 (グリッドサーチ以外)|
 
 ### 実行例
-コードは[こちらにもアップロードしています]()
+コードは[こちらにもアップロードしています](https://github.com/c60evaporator/muscle-tuning/blob/master/examples/method_examples/plot_search_map.py)
 #### オプション引数指定なしで探索履歴をプロット
 オプション引数を指定しないとき、[デフォルトの引数]()を使用して探索履歴をプロットします
 ```python
@@ -923,7 +945,7 @@ tuning.plot_search_map(pair_n=6,
 |ax|オプション|matplotlib.axes.Axes|None|表示対象のax (Noneならmatplotlib.pyplot.plotで1枚ごとにプロット)|
 
 ### 実行例
-コードは[こちらにもアップロードしています]()
+コードは[こちらにもアップロードしています](https://github.com/c60evaporator/muscle-tuning/blob/master/examples/method_examples/plot_best_learning_curve.py)
 #### オプション引数指定なしで学習曲線をプロット
 オプション引数を指定しないとき、[デフォルトの引数]()を使用して学習曲線をプロットします
 ```python
@@ -963,7 +985,7 @@ tuning.plot_best_learning_curve()
 |axes|オプション|list[matplotlib.axes.Axes]|None|グラフ描画に使用するaxes (Noneならmatplotlib.pyplot.plotで1枚ごとにプロット)|
 
 ### 実行例
-コードは[こちらにもアップロードしています]()
+コードは[こちらにもアップロードしています](https://github.com/c60evaporator/muscle-tuning/blob/master/examples/method_examples/plot_best_validation_curve.py)
 #### オプション引数指定なしで学習曲線をプロット
 オプション引数を指定しないとき、[デフォルトの引数]()を使用して検証曲線をプロットします
 ```python
@@ -1028,6 +1050,7 @@ tuning.plot_best_validation_curve(validation_curve_params=VALIDATION_CURVE_PARAM
 引数はありません
 
 ### 実行例
+コードは[こちらにもアップロードしています](https://github.com/c60evaporator/muscle-tuning/blob/master/examples/method_examples/plot_param_importances.py)
 
 ```python
 from param_tuning import LGBMRegressorTuning
@@ -1064,7 +1087,7 @@ feature_importances_算出に対応した学習器(ランダムフォレスト�
 |ax|オプション|matplotlib.axes.Axes|None|表示対象のax (Noneならmatplotlib.pyplot.plotで1枚ごとにプロット)|
 
 ### 実行例
-コードは[こちらにもアップロードしています]()
+コードは[こちらにもアップロードしています](https://github.com/c60evaporator/muscle-tuning/blob/master/examples/method_examples/plot_feature_importances.py)
 #### オプション引数指定なしでfeature_importancesをプロット
 オプション引数を指定しないとき、[デフォルトの引数]()を使用して学習曲線をプロットします
 ```python
@@ -1100,7 +1123,7 @@ feature_importances_算出に対応した学習器(ランダムフォレスト�
 引数はありません
 
 ### 実行例
-コードは[こちらにもアップロードしています]()
+コードは[こちらにもアップロードしています](https://github.com/c60evaporator/muscle-tuning/blob/master/examples/method_examples/get_feature_importances.py)
 #### feature_importancesを取得
 オプション引数を指定しないとき、[デフォルトの引数]()を使用して学習曲線をプロットします
 ```python
