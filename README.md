@@ -38,7 +38,7 @@ kinnikun.df_scores
 
 
 ## 詳細チューニング
-1種類の機械学習アルゴリズムのパラメータを詳細にチューニングできます
+1種類の機械学習アルゴリズムのパラメータを詳細にチューニング・可視化できます
 
 ```python
 from muscle_tuning import LGBMClassifierTuning
