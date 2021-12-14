@@ -6,7 +6,8 @@
 [サンプルコードはこちらにアップロードしています](https://github.com/c60evaporator/muscle-tuning/tree/master/examples/method_examples)
 
 # クラス一覧
-以下のクラスからなります
+2021/12現在、以下のクラスを準備しています。
+使用したい機械学習アルゴリズム（学習器）に合わせて適切なクラスを選択してください
 
 - **分類**
 
@@ -165,7 +166,7 @@ tuning.plot_first_validation_curve()
 ```
 実行結果
 
-![output](https://user-images.githubusercontent.com/59557625/145722194-0791ecc7-6fad-4c7a-a02e-71ec82d0c6bd.png)
+<img width="720px" src="https://user-images.githubusercontent.com/59557625/145722194-0791ecc7-6fad-4c7a-a02e-71ec82d0c6bd.png">
 
 #### パラメータ範囲を指定して検証曲線プロット
 `validation_curve_params`引数で、検証曲線のパラメータ範囲を指定する事ができます
@@ -196,7 +197,7 @@ tuning.plot_first_validation_curve(validation_curve_params=VALIDATION_CURVE_PARA
 ```
 実行結果
 
-![output](https://user-images.githubusercontent.com/59557625/145722445-033a1ccb-1b71-45b7-a290-2b811620b754.png)
+<img width="720px" src="https://user-images.githubusercontent.com/59557625/145722445-033a1ccb-1b71-45b7-a290-2b811620b754.png">
 
 <br>
 
@@ -1005,7 +1006,7 @@ tuning.plot_best_validation_curve()
 ```
 実行結果
 
-![image](https://user-images.githubusercontent.com/59557625/130490273-345dbc31-2201-4752-be79-0749058c2b00.png)
+<img width="720px" src="https://user-images.githubusercontent.com/59557625/146039412-3a0f99a8-de96-480a-9502-941dbd6a96b1.png">
 
 #### パラメータ範囲を指定して検証曲線プロット
 `validation_curve_params`引数で、検証曲線のパラメータ範囲を指定する事ができます
@@ -1033,7 +1034,7 @@ tuning.plot_best_validation_curve(validation_curve_params=VALIDATION_CURVE_PARAM
 ```
 実行結果
 
-![image](https://user-images.githubusercontent.com/59557625/131208321-747b8883-68eb-4a67-aa1d-7e03623e2e53.png)
+<img width="720px" src="https://user-images.githubusercontent.com/59557625/146040510-90bf88a7-9854-43d5-abcb-edb2fde26203.png">
 
 <br>
 
@@ -1183,7 +1184,7 @@ feature_name	importance
 |param_importances|pandas.Series|ランダムフォレストで求めた各パラメータのスコアに対する重要度(x_colnamesの順)|
 
 # 定数一覧
-各機械学習アルゴリズムごとのデフォルト値は、[クラス一覧]()項の、「デフォルトパラメータのリンク」のリンク先を参照ください
+各機械学習アルゴリズムごとのデフォルト値は、[クラス一覧](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/api_each.md#クラス一覧)項の、「デフォルトパラメータのリンク」のリンク先を参照ください
 
 |プロパティ名|型|概要|
 |---|---|---|
