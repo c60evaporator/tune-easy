@@ -1149,11 +1149,11 @@ importances
 実行結果
 
 ```
-feature_name	importance
-0	latitude	1310
-1	5_household_member	896
-2	3_male_ratio	1338
-3	2_between_30to60	1061
+      feature_name       importance
+0	latitude           1310
+1	5_household_member 896
+2	3_male_ratio       1338
+3	2_between_30to60   1061
 ```
 
 # プロパティ一覧
