@@ -1,14 +1,13 @@
 # %% plot_param_importances(), no argument
 import parent_import
 from muscle_tuning import LGBMRegressorTuning
-from sklearn.datasets import fetch_california_housing
 import pandas as pd
 # Load dataset
-USE_EXPLANATORY = ['MedInc', 'AveOccup', 'Latitude', 'HouseAge']
-df_california = pd.DataFrame(fetch_california_housing().data, 
-        columns=fetch_california_housing().feature_names)
-X = df_california[USE_EXPLANATORY].values
-y = fetch_california_housing().target
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
+OBJECTIVE_VARIABLE = 'approval_rate'  # Objective variable
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)
 best_params, best_score = tuning.optuna_tuning()
 tuning.plot_search_map()
