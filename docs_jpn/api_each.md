@@ -12,21 +12,21 @@
 
 |クラス名|パッケージ名|概要|デフォルトパラメータのリンク|
 |---|---|---|---|
-|LGBMClassifierTuning|lgbm_tuning.py|LightGBM分類のパラメータチューニング用クラス|[リンク]()|
-|XGBClassifierTuning|xgb_tuning.py|XGBoost分類のパラメータチューニング用クラス|[リンク]()|
-|SVMClassifierTuning|svm_tuning.py|サポートベクターマシン分類のパラメータチューニング用クラス|[リンク]()|
-|RFClassifierTuning|rf_tuning.py|ランダムフォレスト分類のパラメータチューニング用クラス|[リンク]()|
-|LogisticRegressionTuning|logisticregression_tuning.py|ロジスティック回帰分類のパラメータチューニング用クラス|[リンク]()|
+|LGBMClassifierTuning|lgbm_tuning.py|LightGBM分類のパラメータチューニング用クラス|[リンク](https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.lgbm_tuning.LGBMClassifierTuning)|
+|XGBClassifierTuning|xgb_tuning.py|XGBoost分類のパラメータチューニング用クラス|[リンク](https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.xgb_tuning.XGBClassifierTuning)|
+|SVMClassifierTuning|svm_tuning.py|サポートベクターマシン分類のパラメータチューニング用クラス|[リンク](https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.svm_tuning.SVMClassifierTuning)|
+|RFClassifierTuning|rf_tuning.py|ランダムフォレスト分類のパラメータチューニング用クラス|[リンク](https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.rf_tuning.RFClassifierTuning)|
+|LogisticRegressionTuning|logisticregression_tuning.py|ロジスティック回帰分類のパラメータチューニング用クラス|[リンク](https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.logisticregression_tuning.LogisticRegressionTuning)|
 
 - **回帰**
 
 |クラス名|パッケージ名|概要|デフォルトパラメータのリンク|
 |---|---|---|---|
-|LGBMRegressorTuning|lgbm_tuning.py|LightGBM回帰のパラメータチューニング用クラス|[リンク]()|
-|XGBRegressorTuning|xgb_tuning.py|XGBoost回帰のパラメータチューニング用クラス|[リンク]()|
-|SVMRegressorTuning|svm_tuning.py|サポートベクター回帰のパラメータチューニング用クラス|[リンク]()|
-|RFRegressorTuning|rf_tuning.py|ランダムフォレスト回帰のパラメータチューニング用クラス|[リンク]()|
-|ElasticNetTuning|elasticnet_tuning.py|ElasticNet回帰のパラメータチューニング用クラス|[リンク]()|
+|LGBMRegressorTuning|lgbm_tuning.py|LightGBM回帰のパラメータチューニング用クラス|[リンク](https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.lgbm_tuning.LGBMRegressorTuning)|
+|XGBRegressorTuning|xgb_tuning.py|XGBoost回帰のパラメータチューニング用クラス|[リンク](https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.xgb_tuning.XGBRegressorTuning)|
+|SVMRegressorTuning|svm_tuning.py|サポートベクター回帰のパラメータチューニング用クラス|[リンク](https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.svm_tuning.SVMRegressorTuning)|
+|RFRegressorTuning|rf_tuning.py|ランダムフォレスト回帰のパラメータチューニング用クラス|[リンク](https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.rf_tuning.RFRegressorTuning)|
+|ElasticNetTuning|elasticnet_tuning.py|ElasticNet回帰のパラメータチューニング用クラス|[リンク](https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.elasticnet_tuning.ElasticNetTuning)|
 
 <br>
 
@@ -807,13 +807,13 @@ tuning.plot_search_history()
 
 ```python
 from param_tuning import LGBMRegressorTuning
-from sklearn.datasets import load_boston
 import pandas as pd
 # データセット読込
-USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']
-df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
-X = df_boston[USE_EXPLANATORY].values
-y = load_boston().target
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
+OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[OBJECTIVE_VARIABLE].values
+X = df_reg[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
 ###### 時間を横軸に指定してスコアの上昇履歴を表示 ######
@@ -902,7 +902,7 @@ tuning.plot_search_map()
 ```
 実行結果
 
-![image](https://user-images.githubusercontent.com/59557625/131164885-2ae5288c-0a80-468d-8bb8-641eb52ba03b.png)
+<img width="720px" src="https://user-images.githubusercontent.com/59557625/146015194-811bf37c-d487-4ade-ab06-b57cb5f34c6d.png">
 
 #### 図の枚数と軸のパラメータを指定してスコアの上昇履歴を表示
 `pair_n`引数で、プロットする図の縦横枚数を指定する事ができます
@@ -926,7 +926,7 @@ tuning.plot_search_map(pair_n=6,
 ```
 実行結果
 
-![image](https://user-images.githubusercontent.com/59557625/131168816-b297e298-99fd-43c1-96b9-a2673b13aaaa.png)
+<img width="840px" src="https://user-images.githubusercontent.com/59557625/146015925-c9c571cc-23a0-4f3f-bb12-2792073a0ee3.png">
 
 その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L211)をご参照ください
 
@@ -964,7 +964,7 @@ tuning.plot_best_learning_curve()
 ```
 実行結果
 
-![image](https://user-images.githubusercontent.com/59557625/131206591-6ec6b08b-66d2-43a1-a138-519d62ac7a9f.png)
+![learningcurve](https://user-images.githubusercontent.com/59557625/146016500-0c141127-ab95-4f72-a43e-5c4418312caf.png)
 
 その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L215)をご参照ください
 
@@ -988,6 +988,7 @@ tuning.plot_best_learning_curve()
 コードは[こちらにもアップロードしています](https://github.com/c60evaporator/muscle-tuning/blob/master/examples/method_examples/plot_best_validation_curve.py)
 #### オプション引数指定なしで学習曲線をプロット
 オプション引数を指定しないとき、[デフォルトの引数]()を使用して検証曲線をプロットします
+
 ```python
 from param_tuning import LGBMRegressorTuning
 import pandas as pd
@@ -1008,6 +1009,7 @@ tuning.plot_best_validation_curve()
 
 #### パラメータ範囲を指定して検証曲線プロット
 `validation_curve_params`引数で、検証曲線のパラメータ範囲を指定する事ができます
+
 ```python
 from param_tuning import LGBMRegressorTuning
 import pandas as pd
@@ -1069,7 +1071,7 @@ tuning.plot_param_importances()
 ```
 実行結果
 
-![image](https://user-images.githubusercontent.com/59557625/131208350-ec5274bd-a964-4e18-a510-5c5e220980a4.png)
+![param_importance](https://user-images.githubusercontent.com/59557625/146016932-d970d6ab-0b23-4927-96e9-a0aca0f9eca1.png)
 
 <br>
 <br>
@@ -1090,6 +1092,7 @@ feature_importances_算出に対応した学習器(ランダムフォレスト�
 コードは[こちらにもアップロードしています](https://github.com/c60evaporator/muscle-tuning/blob/master/examples/method_examples/plot_feature_importances.py)
 #### オプション引数指定なしでfeature_importancesをプロット
 オプション引数を指定しないとき、[デフォルトの引数]()を使用して学習曲線をプロットします
+
 ```python
 from param_tuning import LGBMRegressorTuning
 import pandas as pd
@@ -1106,7 +1109,7 @@ tuning.plot_feature_importances()
 ```
 実行結果
 
-![image](https://user-images.githubusercontent.com/59557625/131211230-e227d761-7528-44c4-8563-fa2a426e711a.png)
+![featureimportance](https://user-images.githubusercontent.com/59557625/146017482-a5c5b422-7b42-4edd-817e-ab0faeb11d4b.png)
 
 その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L221)をご参照ください
 
@@ -1126,6 +1129,7 @@ feature_importances_算出に対応した学習器(ランダムフォレスト�
 コードは[こちらにもアップロードしています](https://github.com/c60evaporator/muscle-tuning/blob/master/examples/method_examples/get_feature_importances.py)
 #### feature_importancesを取得
 オプション引数を指定しないとき、[デフォルトの引数]()を使用して学習曲線をプロットします
+
 ```python
 from param_tuning import LGBMRegressorTuning
 import pandas as pd
@@ -1142,13 +1146,13 @@ importances = tuning.get_feature_importances()
 importances
 ```
 実行結果
+
 ```
 feature_name	importance
-0	LSTAT	17242
-1	DIS	8268
-2	RM	16020
-3	NOX	16304
-4	CRIM	14981
+0	latitude	1310
+1	5_household_member	896
+2	3_male_ratio	1338
+3	2_between_30to60	1061
 ```
 
 # プロパティ一覧
