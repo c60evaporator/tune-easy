@@ -166,7 +166,7 @@ tuning.plot_first_validation_curve()
 ```
 実行結果
 
-<img width="720px" src="https://user-images.githubusercontent.com/59557625/145722194-0791ecc7-6fad-4c7a-a02e-71ec82d0c6bd.png">
+<img width="800px" src="https://user-images.githubusercontent.com/59557625/145722194-0791ecc7-6fad-4c7a-a02e-71ec82d0c6bd.png">
 
 #### パラメータ範囲を指定して検証曲線プロット
 `validation_curve_params`引数で、検証曲線のパラメータ範囲を指定する事ができます
@@ -197,7 +197,7 @@ tuning.plot_first_validation_curve(validation_curve_params=VALIDATION_CURVE_PARA
 ```
 実行結果
 
-<img width="720px" src="https://user-images.githubusercontent.com/59557625/145722445-033a1ccb-1b71-45b7-a290-2b811620b754.png">
+<img width="800px" src="https://user-images.githubusercontent.com/59557625/145722445-033a1ccb-1b71-45b7-a290-2b811620b754.png">
 
 <br>
 
@@ -1006,7 +1006,7 @@ tuning.plot_best_validation_curve()
 ```
 実行結果
 
-<img width="720px" src="https://user-images.githubusercontent.com/59557625/146039412-3a0f99a8-de96-480a-9502-941dbd6a96b1.png">
+<img width="800px" src="https://user-images.githubusercontent.com/59557625/146039412-3a0f99a8-de96-480a-9502-941dbd6a96b1.png">
 
 #### パラメータ範囲を指定して検証曲線プロット
 `validation_curve_params`引数で、検証曲線のパラメータ範囲を指定する事ができます
@@ -1034,7 +1034,7 @@ tuning.plot_best_validation_curve(validation_curve_params=VALIDATION_CURVE_PARAM
 ```
 実行結果
 
-<img width="720px" src="https://user-images.githubusercontent.com/59557625/146040510-90bf88a7-9854-43d5-abcb-edb2fde26203.png">
+<img width="800px" src="https://user-images.githubusercontent.com/59557625/146040510-90bf88a7-9854-43d5-abcb-edb2fde26203.png">
 
 <br>
 
