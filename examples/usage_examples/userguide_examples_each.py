@@ -11,7 +11,7 @@ california_housing = pd.DataFrame(np.column_stack((fetch_california_housing().da
 california_housing = california_housing.sample(n=1000, random_state=42)  # sampling from 20640 to 1000
 y = california_housing[TARGET_VARIABLE].values  # Target variable
 X_all = california_housing[fetch_california_housing().feature_names].values  # Feature values
-# Feature selection
+# Feature selection by RFE
 selector = RFE(RandomForestRegressor(random_state=42), n_features_to_select=5)
 selector.fit(X_all, y)
 print(fetch_california_housing().feature_names)

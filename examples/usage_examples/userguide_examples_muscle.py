@@ -4,9 +4,9 @@ from muscle_tuning import MuscleTuning
 import seaborn as sns
 # データセット読込
 iris = sns.load_dataset("iris")
-iris = iris[iris['species'] != 'setosa']  # 2クラスに絞る
-TARGET_VARIALBLE = 'species'  # 目的変数
-USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']  # 説明変数
+iris = iris[iris['species'] != 'setosa']  # Only 2 class
+TARGET_VARIALBLE = 'species'  # Target variable name
+USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']  # Selected explanatory variables
 y = iris[TARGET_VARIALBLE].values
 X = iris[USE_EXPLANATORY].values
 ###### チューニング一括実行 ######

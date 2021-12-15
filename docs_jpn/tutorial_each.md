@@ -52,38 +52,51 @@ Scikit-LearnのAPIに対応した学習器が対象となります。
 使用するデータを読み込み、特徴量選択等の前処理を実行します。
 
 #### 実行例
-ボストン住宅価格データセットを読み込み、特徴量 (説明変数)を選択します
-```python
-from sklearn.datasets import load_boston
-import pandas as pd
+カリフォルニア住宅価格データセットを読み込み、特徴量 (説明変数)を選択します
 
-USE_EXPLANATORY = ['CRIM', 'NOX', 'RM', 'DIS', 'LSTAT']  # 選択した5つの説明変数
-df_boston = pd.DataFrame(load_boston().data, columns=load_boston().feature_names)
-X = df_boston[USE_EXPLANATORY].values
-y = load_boston().target  # 目的変数
+```python
+from sklearn.datasets import fetch_california_housing
+import pandas as pd
+import numpy as np
+# データセット読込
+TARGET_VARIABLE = 'price'  # 目的変数
+USE_EXPLANATORY = ['MedInc', 'AveOccup', 'Latitude', 'HouseAge']  # 選択した4説明変数
+california_housing = pd.DataFrame(np.column_stack((fetch_california_housing().data, fetch_california_housing().target)),
+        columns = np.append(fetch_california_housing().feature_names, TARGET_VARIABLE))
+california_housing = california_housing.sample(n=1000, random_state=42)  # データ数多いので1000点にサンプリング
+y = california_housing[TARGET_VARIALBLE].values
+X = california_housing[USE_EXPLANATORY].values
 ```
 
-※選択した5特徴量は、ランダムフォレストのRFE (再帰的特徴量削減)により選定
+※選択した4特徴量は、ランダムフォレストのRFE (再帰的特徴量削減)により選定
+
 ```python
-from sklearn.datasets import load_boston
+from sklearn.datasets import fetch_california_housing
+import pandas as pd
+import numpy as np
 from sklearn.feature_selection import RFE
 from sklearn.ensemble import RandomForestRegressor
-
-X_all = load_boston().data
-y = load_boston().target
+# データセット読込
+TARGET_VARIABLE = 'price'  # 目的変数
+california_housing = pd.DataFrame(np.column_stack((fetch_california_housing().data, fetch_california_housing().target)),
+        columns = np.append(fetch_california_housing().feature_names, TARGET_VARIABLE))
+california_housing = california_housing.sample(n=1000, random_state=42)
+y = california_housing[TARGET_VARIABLE].values
+X_all = california_housing[fetch_california_housing().feature_names].values  # 全特徴量
+# RFEで特徴量選択
 selector = RFE(RandomForestRegressor(random_state=42), n_features_to_select=5)
 selector.fit(X_all, y)
-print(load_boston().feature_names)
+print(fetch_california_housing().feature_names)
 print(selector.get_support())
 ```
 
 ```
-['CRIM' 'ZN' 'INDUS' 'CHAS' 'NOX' 'RM' 'AGE' 'DIS' 'RAD' 'TAX' 'PTRATIO'
- 'B' 'LSTAT']
-[ True False False False  True  True False  True False False False False
-  True]
+['MedInc', 'HouseAge', 'AveRooms', 'AveBedrms', 'Population', 'AveOccup', 'Latitude', 'Longitude']
+[ True  True False False False  True  True  True]
 ```
-特徴量選択については、[Scikit-Learn公式](https://scikit-learn.org/stable/modules/feature_selection.html#feature-selection)を参照ください
+特徴量選択については、[Scikit-Learn公式](https://scikit-learn.org/stable/modules/feature_selection.html#feature-selection)を参照ください。
+
+上例では、RFEで選ばれた5特徴量のうちLatitudeとLongitudeの相関係数が高い（0.9）ので、多重共線性防止のため後者を除外した4特徴量を採用しています。
 
 ### 0.2. チューニング用クラスの初期化
 以下を参考に使用したい学習器に合わせてチューニング用クラスを選択し、インスタンスを作成します
@@ -216,24 +229,27 @@ print(np.mean(scores))
 ```
 実行結果
 ```
--11.979161807916636
+-0.4561245619412457
 ```
 <br>
 
 [seaborn-analyzer](https://pypi.org/project/seaborn-analyzer/)ライブラリを活用して予測値と実測値の関係を可視化すると、挙動がわかりやすくなるのでお勧めです
 ```python
 from seaborn_analyzer import regplot
-df_boston['price'] = y
+california_housing['price'] = y
 regplot.regression_pred_true(lgbmr,
                              x=tuning.x_colnames,
                              y='price',
-                             data=df_boston,
+                             data=california_housing,
                              scores='mse',
                              cv=CV,
-                             fit_params=FIT_PARAMS
+                             fit_params=FIT_PARAMS,
+                             eval_set_selection='test'
                              )
 ```
 ![image](https://user-images.githubusercontent.com/59557625/130487845-2c9db099-f137-489a-9b09-9f01a8d55f1e.png)
+
+`eval_set_selection`引数については[こちら]()を参照ください
 
 ### 4.3. チューニング実行
 [3.で選択したチューニング用メソッド]()に対し、
@@ -276,27 +292,27 @@ print(f'Elapsed time\n{tuning.elapsed_time}')  # チューニング所要時間
 実行結果
 ```
 Best parameters
-{'reg_alpha': 0.003109527801280432, 'reg_lambda': 0.0035808676982557147, 'num_leaves': 41, 'colsample_bytree': 0.9453510369496361, 'subsample': 0.5947574986660598, 'subsample_freq': 1, 'min_child_samples': 0}
+{'reg_alpha': 0.0016384726888678286, 'reg_lambda': 0.04644984234834465, 'num_leaves': 7, 'colsample_bytree': 0.7968135425414318, 'subsample': 0.7878217860051357, 'subsample_freq': 0, 'min_child_samples': 4}
 
 Not tuned parameters
 {'objective': 'regression', 'random_state': 42, 'boosting_type': 'gbdt', 'n_estimators': 10000}
 
 Best score
--9.616609903204923
+-0.4124940780628491
 
 Elapsed time
-278.3654930591583
+304.8196430206299
 ```
 
 上記以外にも、チューニングの試行数や乱数シード、チューニング対象外のパラメータ等を引数として渡せます。
 詳しくは以下のリンクを参照ください
 
-|探索法|メソッドの引数リンク|
+|探索法|メソッドのAPI仕様リンク|
 |---|---|
-|グリッドサーチ|[grid_search_tuning()]()|
-|ランダムサーチ|[random_search_tuning()]()|
-|ベイズ最適化 (BayesianOptimization)|[bayes_opt_tuning()]()|
-|ベイズ最適化 (Optuna)|[optuna_tuning()]()|
+|グリッドサーチ|[grid_search_tuning()](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/api_each.md#grid_search_tuningメソッド)|
+|ランダムサーチ|[random_search_tuning()](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/api_each.md#random_search_tuningメソッド)|
+|ベイズ最適化 (BayesianOptimization)|[bayes_opt_tuning()](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/api_each.md#bayes_opt_tuningメソッド)|
+|ベイズ最適化 (Optuna)|[optuna_tuning()](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/api_each.md#optuna_tuningメソッド)|
 
 ### 5.1. チューニング履歴の確認
 [`plot_search_history()`]()メソッドでチューニング進行に伴うスコアの上昇履歴をグラフ表示し、スコアの上昇具合を確認します。
@@ -377,17 +393,17 @@ params_after.update(tuning.best_params)
 params_after.update(tuning.not_opt_params)
 best_estimator = LGBMRegressor(**params_after)
 # 評価指標算出
-scores = cross_val_score(best_estimator, X, y,
-                         scoring=tuning.scoring,
-                         cv=tuning.cv,
-                         fit_params=tuning.fit_params,
-                         eval_set_selection=tuning.eval_set_selection
-                         )
+scores = cross_val_score_eval_set('test',  # eval_set_selection
+                            best_estimator, X, y,
+                            scoring=tuning.scoring,
+                            cv=tuning.cv,
+                            fit_params=tuning.fit_params
+                            )
 print(np.mean(scores))
 ```
 実行結果
 ```
--9.616609903204923
+-0.4124940780628491
 ```
 <br>
 
