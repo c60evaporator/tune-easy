@@ -1,11 +1,11 @@
-## チューニング手順 (詳細チューニング)
+# 詳細チューニング 実行手順
 [学習器の種類に合わせてクラスを選択](https://github.com/c60evaporator/muscle-tuning/blob/master/README.md#02-チューニング用クラスの初期化)し、**下図の手順**([こちらの記事に詳細](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#2-%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E3%81%AE%E6%89%8B%E9%A0%86%E3%81%A8%E3%82%A2%E3%83%AB%E3%82%B4%E3%83%AA%E3%82%BA%E3%83%A0%E4%B8%80%E8%A6%A7))でパラメータチューニングを実施します。
 
-Scikit-LearnのAPIに対応した学習器が対象となります。
+2022/1現在、Scikit-LearnのAPIに対応した学習器が対象となります。
 
 <img width="600" src="https://user-images.githubusercontent.com/59557625/130362754-a85fc7fc-38f7-4d5a-9e8f-c24321a2ed98.png">
 
-### 手順一覧
+## 手順一覧
 **0. チューニングの準備**
 
 &nbsp;├─ [0.1. データの読込＆前処理](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md#01-データの読込前処理)
@@ -48,6 +48,7 @@ Scikit-LearnのAPIに対応した学習器が対象となります。
 
 <br>
 
+## 詳細手順
 ### 0.1. データの読込＆前処理
 使用するデータを読み込み、特徴量選択等の前処理を実行します。
 
