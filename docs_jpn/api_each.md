@@ -45,7 +45,7 @@
 |cv_group|オプション|str|None|GroupKFold、LeaveOneGroupOutのグルーピング対象データ|
 |eval_data_source|オプション|{'all', 'test', 'train', 'original', 'original_transformed'}|'all'|XGBoost, LightGBMにおける`fit_params['eval_set']`の指定方法※|
 
-※ eval_data_sourceの指定値による、eval_setに入るデータの変化
+#### ※ eval_data_sourceの指定値による、eval_setに入るデータの変化
   - 'all' : eval_set = [(self.X, self.y)]
   - 'test' : eval_set = [(self.X, self.y)]のうちクロスバリデーションのテストデータ
   - 'train' : eval_set = [(self.X, self.y)]のうちクロスバリデーションの学習データ
