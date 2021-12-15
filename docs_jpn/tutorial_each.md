@@ -8,43 +8,43 @@ Scikit-LearnのAPIに対応した学習器が対象となります。
 ### 手順一覧
 **0. チューニングの準備**
 
-&nbsp;├─ [0.1. データの読込＆前処理](https://github.com/c60evaporator/param-tuning-utility/blob/master/README.md#01-%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E8%AA%AD%E8%BE%BC%E5%89%8D%E5%87%A6%E7%90%86)
+&nbsp;├─ [0.1. データの読込＆前処理](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md#01-データの読込前処理)
 
-&nbsp;└─ [0.2. チューニング用クラスの初期化](https://github.com/c60evaporator/param-tuning-utility/blob/master/README.md#02-%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E7%94%A8%E3%82%AF%E3%83%A9%E3%82%B9%E3%81%AE%E5%88%9D%E6%9C%9F%E5%8C%96)
+&nbsp;└─ [0.2. チューニング用クラスの初期化](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md#02-チューニング用クラスの初期化)
 
 **1. 最大化したい評価指標を定義**
 
-&nbsp;└─ [1.1. 評価指標の選択](https://github.com/c60evaporator/param-tuning-utility/blob/master/README.md#1-%E8%A9%95%E4%BE%A1%E6%8C%87%E6%A8%99%E3%81%AE%E9%81%B8%E6%8A%9E)
+&nbsp;└─ [1.1. 評価指標の選択](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md#1-評価指標の選択)
 
 **2. パラメータ探索範囲の選択**
 
-&nbsp;└─ [2.1. パラメータ探索範囲の選択](https://github.com/c60evaporator/param-tuning-utility/blob/master/README.md#2-%E3%83%91%E3%83%A9%E3%83%A1%E3%83%BC%E3%82%BF%E6%8E%A2%E7%B4%A2%E7%AF%84%E5%9B%B2%E3%81%AE%E9%81%B8%E6%8A%9E)
+&nbsp;└─ [2.1. パラメータ探索範囲の選択](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md#2-パラメータ探索範囲の選択)
 
 **3. 探索法を選択**
 
-&nbsp;└─ [3.1. 探索手法を選択](https://github.com/c60evaporator/param-tuning-utility/blob/master/README.md#3-%E6%8E%A2%E7%B4%A2%E6%B3%95%E3%82%92%E9%81%B8%E6%8A%9E)
+&nbsp;└─ [3.1. 探索手法を選択](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md#3-探索法を選択)
 
 **4. クロスバリデーションでチューニングを実行**
 
-&nbsp;├─ [4.1. クロスバリデーション手法を選択](https://github.com/c60evaporator/param-tuning-utility/blob/master/README.md#41-%E3%82%AF%E3%83%AD%E3%82%B9%E3%83%90%E3%83%AA%E3%83%87%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E6%89%8B%E6%B3%95%E3%82%92%E9%81%B8%E6%8A%9E)
+&nbsp;├─ [4.1. クロスバリデーション手法を選択](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md#41-クロスバリデーション手法を選択)
 
-&nbsp;├─ [4.2. チューニング前のスコアを確認](https://github.com/c60evaporator/param-tuning-utility/blob/master/README.md#42-%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E5%89%8D%E3%81%AE%E3%82%B9%E3%82%B3%E3%82%A2%E3%82%92%E7%A2%BA%E8%AA%8D)
+&nbsp;├─ [4.2. チューニング前のスコアを確認](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md#42-チューニング前のスコアを確認)
 
-&nbsp;└─ [4.3. チューニング実行](https://github.com/c60evaporator/param-tuning-utility/blob/master/README.md#43-%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E5%AE%9F%E8%A1%8C)
+&nbsp;└─ [4.3. チューニング実行](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md#43-チューニング実行)
 
 **5. 学習曲線・検証曲線等でチューニング結果を確認**
 
-&nbsp;├─ [5.1. チューニング履歴の確認](https://github.com/c60evaporator/param-tuning-utility/blob/master/README.md#01-%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E8%AA%AD%E8%BE%BC%E5%89%8D%E5%87%A6%E7%90%86)
+&nbsp;├─ [5.1. チューニング履歴の確認](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md#51-チューニング履歴の確認)
 
-&nbsp;├─ [5.2. パラメータと評価指標の関係をマップ表示して確認](https://github.com/c60evaporator/param-tuning-utility/blob/master/README.md#52-%E3%83%91%E3%83%A9%E3%83%A1%E3%83%BC%E3%82%BF%E3%81%A8%E8%A9%95%E4%BE%A1%E6%8C%87%E6%A8%99%E3%81%AE%E9%96%A2%E4%BF%82%E3%82%92%E7%A2%BA%E8%AA%8D)
+&nbsp;├─ [5.2. パラメータと評価指標の関係をマップ表示して確認](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md#52-パラメータと評価指標の関係をマップ表示して確認)
 
-&nbsp;├─ [5.3. 学習曲線を確認](https://github.com/c60evaporator/param-tuning-utility/blob/master/README.md#53-%E5%AD%A6%E7%BF%92%E6%9B%B2%E7%B7%9A%E3%82%92%E7%A2%BA%E8%AA%8D)
+&nbsp;├─ [5.3. 学習曲線を確認](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md#53-学習曲線を確認)
 
-&nbsp;└─ [5.4. 検証曲線を確認](https://github.com/c60evaporator/param-tuning-utility/blob/master/README.md#54-%E6%A4%9C%E8%A8%BC%E6%9B%B2%E7%B7%9A%E3%82%92%E7%A2%BA%E8%AA%8D)
+&nbsp;└─ [5.4. 検証曲線を確認](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md#54-検証曲線を確認)
 
 **6. チューニング結果の活用**
 
-&nbsp;└─ [6.1. チューニング後の学習器を使用する](https://github.com/c60evaporator/param-tuning-utility/blob/master/README.md#6-%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E5%BE%8C%E3%81%AE%E5%AD%A6%E7%BF%92%E5%99%A8%E3%82%92%E4%BD%BF%E7%94%A8%E3%81%99%E3%82%8B)
+&nbsp;└─ [6.1. チューニング後の学習器を使用する](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md#6-チューニング後の学習器を使用する)
 
 <br>
 
@@ -103,38 +103,39 @@ print(selector.get_support())
 
 |問題の種類|学習器の種類|クラス名|
 |---|---|---|
-|回帰|LightGBM回帰|LGBMRegressorTuning|
-|回帰|XGBoost回帰|XGBRegressorTuning|
-|回帰|サポートベクター回帰|SVMRegressorTuning|
-|回帰|ランダムフォレスト回帰|RFRegressorTuning|
-|回帰|ElasticNet|ElasticNetTuning|
-|分類|LightGBM分類|LGBMClassifierTuning|
-|分類|XGBoost分類|XGBClassifierTuning|
-|分類|サポートベクターマシン分類|SVMClassifierTuning|
-|分類|ランダムフォレスト分類|RFClassifierTuning|
-|分類|ロジスティック回帰|LogisticRegressionTuning|
+|回帰|LightGBM回帰|[LGBMRegressorTuning]()|
+|回帰|XGBoost回帰|[XGBRegressorTuning]()|
+|回帰|サポートベクター回帰|[SVMRegressorTuning]()|
+|回帰|ランダムフォレスト回帰|[RFRegressorTuning]()|
+|回帰|ElasticNet|[ElasticNetTuning]()|
+|分類|LightGBM分類|[LGBMClassifierTuning]()|
+|分類|XGBoost分類|[XGBClassifierTuning]()|
+|分類|サポートベクターマシン分類|[SVMClassifierTuning]()|
+|分類|ランダムフォレスト分類|[RFClassifierTuning]()|
+|分類|ロジスティック回帰|[LogisticRegressionTuning]()|
 ※他のアルゴリズムも追加希望あればIssuesに書き込んで下さい
 
 #### 実行例
 LightGBM回帰のチューニング用クラス初期化
+
 ```python
 from param_tuning import LGBMRegressorTuning
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY, eval_set_selection='all')
 ```
-※eval_set_selection引数に関しては[こちらのリンク]()参照
+※eval_set_selection引数に関しては[こちらのリンク](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/api_each.md#-eval_data_sourceの指定値によるeval_setに入るデータの変化)参照
 
 ### 1. 評価指標の選択
 [こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#21-%E8%A9%95%E4%BE%A1%E6%8C%87%E6%A8%99%E3%81%AE%E5%AE%9A%E7%BE%A9)チューニングの評価指標を選択します。
 
 デフォルト(各メソッドの`scoring`引数を指定しないとき)では、以下の指標を使用します
-|手法|デフォルトで使用する手法|
-|---|---|
-|回帰|RMSE ('neg_mean_squared_error')|
-|2クラス分類|LogLoss ('neg_log_loss')|
-|多クラス分類|LogLoss ('neg_log_loss')|
+|手法|デフォルトで使用する手法|文字列|
+|---|---|---|
+|回帰|RMSE|'neg_root_mean_squared_error'|
+|2クラス分類|LogLoss|'neg_log_loss'|
+|多クラス分類|LogLoss|'neg_log_loss'|
 
 #### 実行例
-RMSEを指標に使用するとき
+MSEを指標に使用するとき
 
 ```
 SCORING = 'neg_mean_squared_error'
@@ -260,11 +261,11 @@ regplot.regression_pred_true(lgbmr,
 ### 4.3. チューニング実行
 [3.で選択したチューニング用メソッド]()に対し、
 
-・[1.で選択した評価指標]()を`scoring`引数に
+・[1.で選択した評価指標](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md#1-評価指標の選択)を`scoring`引数に
 
-・[2.で選択したチューニング範囲]()を`tuning_params`引数に
+・[2.で選択したチューニング範囲](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md#2-パラメータ探索範囲の選択)を`tuning_params`引数に
 
-・[4.1で選択したクロスバリデーション手法]()を`cv`引数に
+・[4.1で選択したクロスバリデーション手法](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md#41-クロスバリデーション手法を選択)を`cv`引数に
 
 指定し、実行します
 
@@ -352,7 +353,7 @@ tuning.plot_search_history(x_axis='time')
 
 ・グリッドサーチ：パラメータの要素数()上位4パラメータを軸として表示します。表示軸以外のパラメータは最適値を使用します。
 
-・グリッドサーチ以外：[後述の`param_importances`]()の上位4パラメータを軸として表示します。
+・グリッドサーチ以外：[`param_importances`]()の上位4パラメータを軸として表示します。
 
 #### 実行例
 Optunaでのチューニング実行後のパラメータと評価指標の関係表示
