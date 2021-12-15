@@ -5,9 +5,9 @@ import seaborn as sns
 # データセット読込
 iris = sns.load_dataset("iris")
 iris = iris[iris['species'] != 'setosa']  # 2クラスに絞る
-OBJECTIVE_VARIALBLE = 'species'  # 目的変数
+TARGET_VARIALBLE = 'species'  # 目的変数
 USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']  # 説明変数
-y = iris[OBJECTIVE_VARIALBLE].values
+y = iris[TARGET_VARIALBLE].values
 X = iris[USE_EXPLANATORY].values
 ###### チューニング一括実行 ######
 kinnikun = MuscleTuning()
@@ -21,9 +21,9 @@ import seaborn as sns
 # データセット読込
 iris = sns.load_dataset("iris")
 iris = iris[iris['species'] != 'setosa']  # 2クラスに絞る
-OBJECTIVE_VARIALBLE = 'species'  # 目的変数
+TARGET_VARIALBLE = 'species'  # 目的変数
 USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']  # 説明変数
-y = iris[OBJECTIVE_VARIALBLE].values
+y = iris[TARGET_VARIALBLE].values
 X = iris[USE_EXPLANATORY].values
 ###### チューニング実行と結果の可視化 ######
 tuning = LGBMClassifierTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス
@@ -41,9 +41,9 @@ import seaborn as sns
 # データセット読込
 iris = sns.load_dataset("iris")
 iris = iris[iris['species'] != 'setosa']  # 2クラスに絞る
-OBJECTIVE_VARIALBLE = 'species'  # 目的変数
+TARGET_VARIALBLE = 'species'  # 目的変数
 USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']  # 説明変数
-y = iris[OBJECTIVE_VARIALBLE].values
+y = iris[TARGET_VARIALBLE].values
 X = iris[USE_EXPLANATORY].values
 ###### チューニング一括実行 ######
 kinnikun = MuscleTuning()

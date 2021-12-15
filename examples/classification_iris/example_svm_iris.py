@@ -3,11 +3,11 @@ import parent_import
 from muscle_tuning import SVMClassifierTuning
 import seaborn as sns
 iris = sns.load_dataset("iris")
-OBJECTIVE_VARIALBLE = 'species'  # 目的変数
+TARGET_VARIALBLE = 'species'  # 目的変数
 USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']  # 説明変数
-y = iris[OBJECTIVE_VARIALBLE].values
+y = iris[TARGET_VARIALBLE].values
 X = iris[USE_EXPLANATORY].values
-tuning = SVMClassifierTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE)
+tuning = SVMClassifierTuning(X, y, USE_EXPLANATORY, y_colname=TARGET_VARIALBLE)
 tuning.plot_first_validation_curve()
 tuning.grid_search_tuning()
 tuning.plot_search_history()
@@ -21,11 +21,11 @@ import parent_import
 from muscle_tuning import SVMClassifierTuning
 import seaborn as sns
 iris = sns.load_dataset("iris")
-OBJECTIVE_VARIALBLE = 'species'  # 目的変数
+TARGET_VARIALBLE = 'species'  # 目的変数
 USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']  # 説明変数
-y = iris[OBJECTIVE_VARIALBLE].values
+y = iris[TARGET_VARIALBLE].values
 X = iris[USE_EXPLANATORY].values
-tuning = SVMClassifierTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE)
+tuning = SVMClassifierTuning(X, y, USE_EXPLANATORY, y_colname=TARGET_VARIALBLE)
 tuning.random_search_tuning()
 tuning.plot_search_history()
 tuning.plot_search_map()
@@ -38,11 +38,11 @@ import parent_import
 from muscle_tuning import SVMClassifierTuning
 import seaborn as sns
 iris = sns.load_dataset("iris")
-OBJECTIVE_VARIALBLE = 'species'  # 目的変数
+TARGET_VARIALBLE = 'species'  # 目的変数
 USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']  # 説明変数
-y = iris[OBJECTIVE_VARIALBLE].values
+y = iris[TARGET_VARIALBLE].values
 X = iris[USE_EXPLANATORY].values
-tuning = SVMClassifierTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE)
+tuning = SVMClassifierTuning(X, y, USE_EXPLANATORY, y_colname=TARGET_VARIALBLE)
 tuning.bayes_opt_tuning()
 tuning.plot_search_history()
 tuning.plot_search_map()
@@ -55,11 +55,11 @@ import parent_import
 from muscle_tuning import SVMClassifierTuning
 import seaborn as sns
 iris = sns.load_dataset("iris")
-OBJECTIVE_VARIALBLE = 'species'  # 目的変数
+TARGET_VARIALBLE = 'species'  # 目的変数
 USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']  # 説明変数
-y = iris[OBJECTIVE_VARIALBLE].values
+y = iris[TARGET_VARIALBLE].values
 X = iris[USE_EXPLANATORY].values
-tuning = SVMClassifierTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE)
+tuning = SVMClassifierTuning(X, y, USE_EXPLANATORY, y_colname=TARGET_VARIALBLE)
 tuning.optuna_tuning()
 tuning.plot_search_history()
 tuning.plot_search_map()

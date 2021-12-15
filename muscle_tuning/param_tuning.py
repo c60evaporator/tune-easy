@@ -78,13 +78,13 @@ class ParamTuning():
             Explanatory variables. Should be 2 dimensional numpy.ndarray.
         
         y : numpy.ndarray
-            Objective variable. Should be 1 dimensional numpy.ndarray.
+            Target variable. Should be 1 dimensional numpy.ndarray.
         
         x_colnames : list[str]
             Names of explanatory variables.
         
         y_colname : str, optional
-            Name of objective variable.
+            Name of target variable.
         
         cv_group: numpy.ndarray, optional
             Grouping variable that will be used for GroupKFold or LeaveOneGroupOut. Should be 1 dimensional numpy.ndarray.

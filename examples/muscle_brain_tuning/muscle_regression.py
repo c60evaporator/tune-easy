@@ -4,12 +4,12 @@ from muscle_tuning import MuscleTuning
 from sklearn.datasets import fetch_california_housing
 import pandas as pd
 import numpy as np
-OBJECTIVE_VARIALBLE = 'price'  # Objective variable name
+TARGET_VARIALBLE = 'price'  # Objective variable name
 USE_EXPLANATORY = ['MedInc', 'AveOccup', 'Latitude', 'HouseAge']  # Selected explanatory variables
 california_housing = pd.DataFrame(np.column_stack((fetch_california_housing().data, fetch_california_housing().target)),
-        columns = np.append(fetch_california_housing().feature_names, OBJECTIVE_VARIALBLE))
+        columns = np.append(fetch_california_housing().feature_names, TARGET_VARIALBLE))
 california_housing = california_housing.sample(n=1000, random_state=42)  # sampling from 20640 to 1000
-y = california_housing[OBJECTIVE_VARIALBLE].values  # Explanatory variables
+y = california_housing[TARGET_VARIALBLE].values  # Explanatory variables
 X = california_housing[USE_EXPLANATORY].values  # Objective variable
 # Run tuning
 kinnikun = MuscleTuning()
@@ -26,9 +26,9 @@ import seaborn as sns
 from sklearn.model_selection import cross_val_score, KFold
 # Load dataset
 iris = sns.load_dataset("iris")
-OBJECTIVE_VARIABLE = 'species'  # Objective variable name
+TARGET_VARIABLE = 'species'  # Objective variable name
 USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']  # Selected explanatory variables
-y = iris[OBJECTIVE_VARIABLE].values  # Objective variable
+y = iris[TARGET_VARIABLE].values  # Objective variable
 X = iris[USE_EXPLANATORY].values  # Explanatory variables
 
 NOT_OPT_PARAMS = {'logr__penalty': 'l2', 'logr__solver': 'lbfgs'}

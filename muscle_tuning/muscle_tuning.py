@@ -142,7 +142,7 @@ class MuscleTuning():
                 raise Exception('width of X must be equal to length of x_colnames')
             else:
                 self.x_colnames = x_colnames
-            self.y_colname = 'objective_variable'
+            self.y_colname = 'target_variable'
             self.cv_group = cv_group
             if cv_group is not None:  # cv_group指定時
                 self.group_name = 'group'
@@ -205,18 +205,18 @@ class MuscleTuning():
             if isinstance(objective, (int, float)):
                 self.objective = 'regression'
             else:
-                raise Exception('Objective variable should be int or float if `objective` is "regression"')
+                raise Exception('Target variable should be int or float if `objective` is "regression"')
         # 分類指定時
         elif objective == 'classification':
             n_classes = len(np.unique(self.y))  # 目的変数の固有メンバー数
             if n_classes <= 1:  # 固有メンバー数の下限は2
-                raise Exception('Number of unique members of objective variable should be bigger than 1')
+                raise Exception('Number of unique members of target variable should be bigger than 1')
             elif n_classes == 2:  # 2クラス分類
                 self.objective = 'binary'
             elif n_classes <= 20:  # 多クラス分類
                 self.objective = 'multiclass'
             else:  # 固有メンバーは20が上限
-                raise Exception('Number of unique members of objective variable should be less than 20')
+                raise Exception('Number of unique members of target variable should be less than 20')
         # タスク未指定時
         elif objective is None:
             # float型 or int型のとき、回帰タスクとみなす
@@ -226,13 +226,13 @@ class MuscleTuning():
             elif objective_dtype in [np.object, np.bool]:
                 n_classes = len(np.unique(self.y))  # 目的変数の固有メンバー数
                 if n_classes <= 1:  # 固有メンバー数の下限は2
-                    raise Exception('Number of unique members of objective variable should be bigger than 1')
+                    raise Exception('Number of unique members of target variable should be bigger than 1')
                 elif n_classes == 2:  # 2クラス分類
                     self.objective = 'binary'
                 elif n_classes <= 20:  # 多クラス分類
                     self.objective = 'multiclass'
                 else:  # 固有メンバーは20が上限
-                    raise Exception('Number of unique members of objective variable should be less than 20')
+                    raise Exception('Number of unique members of target variable should be less than 20')
         else:
             raise Exception('`objective` argument should be "regression" or "classification"')
 
@@ -806,7 +806,7 @@ class MuscleTuning():
             Should be numpy.ndarray if ``data`` is None.
         
         y : str or numpy.ndarray
-            Objective variable. Should be str if ``data`` is pd.DataFrame.
+            Target variable. Should be str if ``data`` is pd.DataFrame.
             Should be numpy.ndarray if ``data`` is None.
         
         data : pd.DataFrame, default=None
@@ -821,7 +821,7 @@ class MuscleTuning():
         
         objective : {'classification', 'regression'}, default=None
             Specify the learning task.
-            If None, select task by objective variable automatically.
+            If None, select task by target variable automatically.
         
         scoring : str, default=None
             Score name used to parameter tuning.

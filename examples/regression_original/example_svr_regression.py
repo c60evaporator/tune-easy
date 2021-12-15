@@ -4,11 +4,11 @@ from muscle_tuning import SVMRegressorTuning
 from sklearn.model_selection import LeaveOneGroupOut
 import pandas as pd
 df_reg = pd.read_csv('../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+TARGET_VARIABLE = 'approval_rate'  # 目的変数
 USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLATATORY].values
-tuning = SVMRegressorTuning(X, y, USE_EXPLATATORY, y_colname=OBJECTIVE_VARIABLE)
+tuning = SVMRegressorTuning(X, y, USE_EXPLATATORY, y_colname=TARGET_VARIABLE)
 tuning.plot_first_validation_curve()
 tuning.grid_search_tuning()
 tuning.plot_search_history()
@@ -23,11 +23,11 @@ from muscle_tuning import SVMRegressorTuning
 from sklearn.model_selection import LeaveOneGroupOut
 import pandas as pd
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+TARGET_VARIABLE = 'approval_rate'  # 目的変数
 USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLATATORY].values
-tuning = SVMRegressorTuning(X, y, USE_EXPLATATORY, y_colname=OBJECTIVE_VARIABLE)
+tuning = SVMRegressorTuning(X, y, USE_EXPLATATORY, y_colname=TARGET_VARIABLE)
 tuning.random_search_tuning()
 tuning.plot_search_history()
 tuning.plot_search_map()
@@ -41,11 +41,11 @@ from muscle_tuning import SVMRegressorTuning
 import pandas as pd
 from sklearn.model_selection import LeaveOneGroupOut
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+TARGET_VARIABLE = 'approval_rate'  # 目的変数
 USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLATATORY].values
-tuning = SVMRegressorTuning(X, y, USE_EXPLATATORY, y_colname=OBJECTIVE_VARIABLE)
+tuning = SVMRegressorTuning(X, y, USE_EXPLATATORY, y_colname=TARGET_VARIABLE)
 tuning.bayes_opt_tuning()
 tuning.plot_search_history()
 tuning.plot_search_map()
@@ -59,11 +59,11 @@ from muscle_tuning import SVMRegressorTuning
 import pandas as pd
 from sklearn.model_selection import LeaveOneGroupOut
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+TARGET_VARIABLE = 'approval_rate'  # 目的変数
 USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLATATORY].values
-tuning = SVMRegressorTuning(X, y, USE_EXPLATATORY, y_colname=OBJECTIVE_VARIABLE)
+tuning = SVMRegressorTuning(X, y, USE_EXPLATATORY, y_colname=TARGET_VARIABLE)
 tuning.optuna_tuning()
 tuning.plot_search_history()
 tuning.plot_search_map()
@@ -79,11 +79,11 @@ from sklearn.svm import SVR
 import pandas as pd
 import matplotlib.pyplot as plt
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+TARGET_VARIABLE = 'approval_rate'  # 目的変数
 USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLATATORY].values
-tuning = SVMRegressorTuning(X, y, USE_EXPLATATORY, y_colname=OBJECTIVE_VARIABLE, cv_group=df_reg['ward_after'].values)
+tuning = SVMRegressorTuning(X, y, USE_EXPLATATORY, y_colname=TARGET_VARIABLE, cv_group=df_reg['ward_after'].values)
 validation_curve_params = {'gamma': [0.0001, 0.001, 0.01, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 50, 100, 1000],
                            'C': [0.001, 0.01, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 50, 100, 1000],
                            'epsilon': [0, 0.01, 0.02, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5]
@@ -132,11 +132,11 @@ from sklearn.svm import SVR
 import pandas as pd
 import matplotlib.pyplot as plt
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+TARGET_VARIABLE = 'approval_rate'  # 目的変数
 USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLATATORY].values
-tuning = SVMRegressorTuning(X, y, USE_EXPLATATORY, y_colname=OBJECTIVE_VARIABLE, cv_group=df_reg['ward_after'].values)
+tuning = SVMRegressorTuning(X, y, USE_EXPLATATORY, y_colname=TARGET_VARIABLE, cv_group=df_reg['ward_after'].values)
 tuning_params = {'gamma': [0.001, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10],
                  'C': [0.01, 0.1, 0.2, 0.5, 1, 2, 5, 10],
                  'epsilon': [0, 0.01, 0.02, 0.03, 0.05, 0.1, 0.15, 0.2, 0.3]
@@ -179,11 +179,11 @@ from sklearn.svm import SVR
 import pandas as pd
 import matplotlib.pyplot as plt
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+TARGET_VARIABLE = 'approval_rate'  # 目的変数
 USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLATATORY].values
-tuning = SVMRegressorTuning(X, y, USE_EXPLATATORY, y_colname=OBJECTIVE_VARIABLE, cv_group=df_reg['ward_after'].values)
+tuning = SVMRegressorTuning(X, y, USE_EXPLATATORY, y_colname=TARGET_VARIABLE, cv_group=df_reg['ward_after'].values)
 tuning_params = {'gamma':(0.001, 10),
                  'C': (0.01, 10),
                  'epsilon': (0, 0.2)
@@ -227,11 +227,11 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import optuna
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+TARGET_VARIABLE = 'approval_rate'  # 目的変数
 USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLATATORY].values
-tuning = SVMRegressorTuning(X, y, USE_EXPLATATORY, y_colname=OBJECTIVE_VARIABLE, cv_group=df_reg['ward_after'].values)
+tuning = SVMRegressorTuning(X, y, USE_EXPLATATORY, y_colname=TARGET_VARIABLE, cv_group=df_reg['ward_after'].values)
 tuning_params = {'gamma':(0.001, 10),
                  'C': (0.01, 10),
                  'epsilon': (0, 0.2)

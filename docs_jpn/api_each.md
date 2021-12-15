@@ -62,9 +62,9 @@ from muscle_tuning import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+TARGET_VARIABLE = 'approval_rate'  # 目的変数
 USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLANATORY].values
 ###### クラス初期化 ######
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)
@@ -79,9 +79,9 @@ from sklearn.model_selection import LeaveOneGroupOut
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+TARGET_VARIABLE = 'approval_rate'  # 目的変数
 USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLATATORY].values
 ###### クラス初期化 ######
 tuning = XGBRegressorTuning(X, y, USE_EXPLANATORY,  # 必須引数
@@ -96,10 +96,10 @@ from muscle_tuning import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # Objective variable
-USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
+TARGET_VARIABLE = 'approval_rate'  # 目的変数
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
 X = df_reg[USE_EXPLANATORY].values
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 ###### クラス初期化 ######
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY,
                              eval_data_source='valid')  # eval_setの指定方法 (検証用データを渡す)
@@ -156,9 +156,9 @@ from param_tuning import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+TARGET_VARIABLE = 'approval_rate'  # 目的変数
 USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)
 ###### デフォルト引数で検証曲線プロット ######
@@ -177,12 +177,12 @@ from sklearn.datasets import fetch_california_housing
 import pandas as pd
 import numpy as np
 # データセット読込
-OBJECTIVE_VARIABLE = 'price'  # 目的変数
+TARGET_VARIABLE = 'price'  # 目的変数
 USE_EXPLANATORY = ['MedInc', 'AveOccup', 'Latitude', 'HouseAge']  # 説明変数
 california_housing = pd.DataFrame(np.column_stack((fetch_california_housing().data, fetch_california_housing().target)),
-        columns = np.append(fetch_california_housing().feature_names, OBJECTIVE_VARIABLE))
+        columns = np.append(fetch_california_housing().feature_names, TARGET_VARIABLE))
 california_housing = california_housing.sample(n=1000, random_state=42)  # データ数多いので1000点にサンプリング
-y = california_housing[OBJECTIVE_VARIABLE].values 
+y = california_housing[TARGET_VARIABLE].values 
 X = california_housing[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 # パラメータ
@@ -236,9 +236,9 @@ from param_tuning import RFRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+TARGET_VARIABLE = 'approval_rate'  # 目的変数
 USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLANATORY].values
 tuning = RFRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 ###### デフォルト引数でグリッドサーチ ######
@@ -260,9 +260,9 @@ from param_tuning import RFRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+TARGET_VARIABLE = 'approval_rate'  # 目的変数
 USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLANATORY].values
 tuning = RFRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 # パラメータ
@@ -293,9 +293,9 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestRegressor
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+TARGET_VARIABLE = 'approval_rate'  # 目的変数
 USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLANATORY].values
 tuning = RFRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 # 学習器を指定
@@ -358,9 +358,9 @@ from param_tuning import RFRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+TARGET_VARIABLE = 'approval_rate'  # 目的変数
 USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLANATORY].values
 tuning = RFRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 ###### デフォルト引数でランダムサーチ ######
@@ -384,9 +384,9 @@ from param_tuning import RFRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+TARGET_VARIABLE = 'approval_rate'  # 目的変数
 USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLANATORY].values
 tuning = RFRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 # パラメータ
@@ -418,9 +418,9 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestRegressor
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+TARGET_VARIABLE = 'approval_rate'  # 目的変数
 USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLANATORY].values
 tuning = RFRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 # 学習器を指定
@@ -487,9 +487,9 @@ from param_tuning import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+TARGET_VARIABLE = 'approval_rate'  # 目的変数
 USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 ###### デフォルト引数でBayesianOptimization ######
@@ -524,9 +524,9 @@ from param_tuning import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+TARGET_VARIABLE = 'approval_rate'  # 目的変数
 USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 # パラメータ
@@ -571,9 +571,9 @@ from sklearn.preprocessing import StandardScaler
 from lightgbm import LGBMRegressor
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+TARGET_VARIABLE = 'approval_rate'  # 目的変数
 USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 # 学習器を指定
@@ -649,9 +649,9 @@ from param_tuning import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+TARGET_VARIABLE = 'approval_rate'  # 目的変数
 USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 ###### デフォルト引数でOptunaチューニング ######
@@ -681,9 +681,9 @@ from param_tuning import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+TARGET_VARIABLE = 'approval_rate'  # 目的変数
 USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 # パラメータ
@@ -725,9 +725,9 @@ from sklearn.preprocessing import StandardScaler
 from lightgbm import LGBMRegressor
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+TARGET_VARIABLE = 'approval_rate'  # 目的変数
 USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 # 学習器を指定
@@ -790,9 +790,9 @@ from param_tuning import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+TARGET_VARIABLE = 'approval_rate'  # 目的変数
 USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
@@ -811,9 +811,9 @@ from param_tuning import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+TARGET_VARIABLE = 'approval_rate'  # 目的変数
 USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
@@ -844,9 +844,9 @@ from param_tuning import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+TARGET_VARIABLE = 'approval_rate'  # 目的変数
 USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
@@ -892,9 +892,9 @@ from param_tuning import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+TARGET_VARIABLE = 'approval_rate'  # 目的変数
 USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
@@ -915,9 +915,9 @@ from param_tuning import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+TARGET_VARIABLE = 'approval_rate'  # 目的変数
 USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
@@ -954,9 +954,9 @@ from param_tuning import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+TARGET_VARIABLE = 'approval_rate'  # 目的変数
 USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
@@ -995,9 +995,9 @@ from param_tuning import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+TARGET_VARIABLE = 'approval_rate'  # 目的変数
 USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
@@ -1016,9 +1016,9 @@ from param_tuning import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+TARGET_VARIABLE = 'approval_rate'  # 目的変数
 USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
@@ -1060,9 +1060,9 @@ from param_tuning import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+TARGET_VARIABLE = 'approval_rate'  # 目的変数
 USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
@@ -1099,9 +1099,9 @@ from param_tuning import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+TARGET_VARIABLE = 'approval_rate'  # 目的変数
 USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング
@@ -1136,9 +1136,9 @@ from param_tuning import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # 目的変数
+TARGET_VARIABLE = 'approval_rate'  # 目的変数
 USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス初期化
 best_params, best_score = tuning.optuna_tuning()  # Optunaチューニング

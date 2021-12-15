@@ -5,11 +5,11 @@ from sklearn.ensemble import RandomForestRegressor
 import pandas as pd
 import numpy as np
 # Load dataset
-OBJECTIVE_VARIABLE = 'price'
+TARGET_VARIABLE = 'price'
 california_housing = pd.DataFrame(np.column_stack((fetch_california_housing().data, fetch_california_housing().target)),
-        columns = np.append(fetch_california_housing().feature_names, OBJECTIVE_VARIABLE))
+        columns = np.append(fetch_california_housing().feature_names, TARGET_VARIABLE))
 california_housing = california_housing.sample(n=1000, random_state=42)  # sampling from 20640 to 1000
-y = california_housing[OBJECTIVE_VARIABLE].values  # Objective variable
+y = california_housing[TARGET_VARIABLE].values  # Target variable
 X_all = california_housing[fetch_california_housing().feature_names].values  # Feature values
 # Feature selection
 selector = RFE(RandomForestRegressor(random_state=42), n_features_to_select=5)
@@ -21,12 +21,12 @@ print(selector.get_support())
 from sklearn.datasets import fetch_california_housing
 import pandas as pd
 import numpy as np
-OBJECTIVE_VARIABLE = 'price'  # Objective variable name
+TARGET_VARIABLE = 'price'  # Target variable name
 USE_EXPLANATORY = ['MedInc', 'AveOccup', 'Latitude', 'HouseAge']  # Selected explanatory variables
 california_housing = pd.DataFrame(np.column_stack((fetch_california_housing().data, fetch_california_housing().target)),
-        columns = np.append(fetch_california_housing().feature_names, OBJECTIVE_VARIABLE))
+        columns = np.append(fetch_california_housing().feature_names, TARGET_VARIABLE))
 california_housing = california_housing.sample(n=1000, random_state=42)  # sampling from 20640 to 1000
-y = california_housing[OBJECTIVE_VARIABLE].values  # Objective variable
+y = california_housing[TARGET_VARIABLE].values  # Target variable
 X = california_housing[USE_EXPLANATORY].values  # Explanatory variables
 
 # %% 0.2. Confirm validation score before tuning
@@ -168,14 +168,14 @@ from sklearn.datasets import fetch_california_housing
 import pandas as pd
 import numpy as np
 # Load dataset
-OBJECTIVE_VARIABLE = 'price'  # Objective variable name
+TARGET_VARIABLE = 'price'  # Target variable name
 USE_EXPLANATORY = ['MedInc', 'AveOccup', 'Latitude', 'HouseAge']  # Selected explanatory variables
 california_housing = pd.DataFrame(np.column_stack((fetch_california_housing().data, fetch_california_housing().target)),
-        columns = np.append(fetch_california_housing().feature_names, OBJECTIVE_VARIABLE))
+        columns = np.append(fetch_california_housing().feature_names, TARGET_VARIABLE))
 california_housing = california_housing.sample(n=1000, random_state=42)  # sampling from 20640 to 1000
-y = california_housing[OBJECTIVE_VARIABLE].values  # Objective variable
+y = california_housing[TARGET_VARIABLE].values  # Target variable
 X = california_housing[USE_EXPLANATORY].values  # Explanatory variables
 # Optimization with MLflow logging
-tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIABLE)  # Make tuning instance
+tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY, y_colname=TARGET_VARIABLE)  # Make tuning instance
 tuning.optuna_tuning(cv=2, mlflow_logging='inside')  # Run tuning with MLflow logging
 # %%

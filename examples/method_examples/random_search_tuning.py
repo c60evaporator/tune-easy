@@ -4,9 +4,9 @@ from muscle_tuning import RFRegressorTuning
 import pandas as pd
 # Load dataset
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # Objective variable
+TARGET_VARIABLE = 'approval_rate'  # Target variable
 USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLANATORY].values
 tuning = RFRegressorTuning(X, y, USE_EXPLANATORY)
 ###### Run random_search_tuning() ######
@@ -18,9 +18,9 @@ from muscle_tuning import RFRegressorTuning
 import pandas as pd
 # Load dataset
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # Objective variable
+TARGET_VARIABLE = 'approval_rate'  # Target variable
 USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLANATORY].values
 tuning = RFRegressorTuning(X, y, USE_EXPLANATORY)
 # Set 'tuning_params' argument
@@ -43,9 +43,9 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestRegressor
 # Load dataset
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-OBJECTIVE_VARIABLE = 'approval_rate'  # Objective variable
+TARGET_VARIABLE = 'approval_rate'  # Target variable
 USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
-y = df_reg[OBJECTIVE_VARIABLE].values
+y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLANATORY].values
 tuning = RFRegressorTuning(X, y, USE_EXPLANATORY)
 # Set 'estimator' argument

@@ -3,11 +3,11 @@ import parent_import
 from muscle_tuning import SVMClassifierTuning
 import pandas as pd
 df_clf = pd.read_csv('../sample_data/nba_nfl_2.csv')
-OBJECTIVE_VARIALBLE = 'league'  # 目的変数
+TARGET_VARIALBLE = 'league'  # 目的変数
 USE_EXPLANATORY = ['height', 'weight']  # 説明変数
-y = df_clf[OBJECTIVE_VARIALBLE].values
+y = df_clf[TARGET_VARIALBLE].values
 X = df_clf[USE_EXPLANATORY].values
-tuning = SVMClassifierTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE)
+tuning = SVMClassifierTuning(X, y, USE_EXPLANATORY, y_colname=TARGET_VARIALBLE)
 tuning.plot_first_validation_curve()
 tuning.grid_search_tuning()
 tuning.plot_search_history()
@@ -21,11 +21,11 @@ import parent_import
 from muscle_tuning import SVMClassifierTuning
 import pandas as pd
 df_clf = pd.read_csv('../sample_data/nba_nfl_2.csv')
-OBJECTIVE_VARIALBLE = 'league'  # 目的変数
+TARGET_VARIALBLE = 'league'  # 目的変数
 USE_EXPLANATORY = ['height', 'weight']  # 説明変数
-y = df_clf[OBJECTIVE_VARIALBLE].values
+y = df_clf[TARGET_VARIALBLE].values
 X = df_clf[USE_EXPLANATORY].values
-tuning = SVMClassifierTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE)
+tuning = SVMClassifierTuning(X, y, USE_EXPLANATORY, y_colname=TARGET_VARIALBLE)
 tuning.random_search_tuning()
 tuning.plot_search_history()
 tuning.plot_search_map()
@@ -38,11 +38,11 @@ import parent_import
 from muscle_tuning import SVMClassifierTuning
 import pandas as pd
 df_clf = pd.read_csv('../sample_data/nba_nfl_2.csv')
-OBJECTIVE_VARIALBLE = 'league'  # 目的変数
+TARGET_VARIALBLE = 'league'  # 目的変数
 USE_EXPLANATORY = ['height', 'weight']  # 説明変数
-y = df_clf[OBJECTIVE_VARIALBLE].values
+y = df_clf[TARGET_VARIALBLE].values
 X = df_clf[USE_EXPLANATORY].values
-tuning = SVMClassifierTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE)
+tuning = SVMClassifierTuning(X, y, USE_EXPLANATORY, y_colname=TARGET_VARIALBLE)
 tuning.bayes_opt_tuning()
 tuning.plot_search_history()
 tuning.plot_search_map()
@@ -55,11 +55,11 @@ import parent_import
 from muscle_tuning import SVMClassifierTuning
 import pandas as pd
 df_clf = pd.read_csv('../sample_data/nba_nfl_2.csv')
-OBJECTIVE_VARIALBLE = 'league'  # 目的変数
+TARGET_VARIALBLE = 'league'  # 目的変数
 USE_EXPLANATORY = ['height', 'weight']  # 説明変数
-y = df_clf[OBJECTIVE_VARIALBLE].values
+y = df_clf[TARGET_VARIALBLE].values
 X = df_clf[USE_EXPLANATORY].values
-tuning = SVMClassifierTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE)
+tuning = SVMClassifierTuning(X, y, USE_EXPLANATORY, y_colname=TARGET_VARIALBLE)
 best, not_opt, best_score, elapsed = tuning.optuna_tuning()
 tuning.plot_search_history()
 tuning.plot_search_map()
@@ -77,11 +77,11 @@ from sklearn.model_selection import StratifiedKFold
 import pandas as pd
 import matplotlib.pyplot as plt
 df_clf = pd.read_csv('../sample_data/nba_nfl_2.csv')
-OBJECTIVE_VARIALBLE = 'league'  # 目的変数
+TARGET_VARIALBLE = 'league'  # 目的変数
 USE_EXPLANATORY = ['height', 'weight']  # 説明変数
-y = df_clf[OBJECTIVE_VARIALBLE].values
+y = df_clf[TARGET_VARIALBLE].values
 X = df_clf[USE_EXPLANATORY].values
-tuning = SVMClassifierTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE)
+tuning = SVMClassifierTuning(X, y, USE_EXPLANATORY, y_colname=TARGET_VARIALBLE)
 validation_curve_params = {'gamma': [0.0001, 0.001, 0.01, 0.03, 0.1, 0.3, 1, 3, 10, 100, 1000],
                            'C': [0.001, 0.01, 0.1, 0.3, 1, 3, 10, 100, 1000]
                            }
@@ -131,11 +131,11 @@ from sklearn.model_selection import StratifiedKFold
 import pandas as pd
 import matplotlib.pyplot as plt
 df_clf = pd.read_csv('../sample_data/nba_nfl_2.csv')
-OBJECTIVE_VARIALBLE = 'league'  # 目的変数
+TARGET_VARIALBLE = 'league'  # 目的変数
 USE_EXPLANATORY = ['height', 'weight']  # 説明変数
-y = df_clf[OBJECTIVE_VARIALBLE].values
+y = df_clf[TARGET_VARIALBLE].values
 X = df_clf[USE_EXPLANATORY].values
-tuning = SVMClassifierTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE)
+tuning = SVMClassifierTuning(X, y, USE_EXPLANATORY, y_colname=TARGET_VARIALBLE)
 tuning_params = {'gamma': [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100],
                  'C': [0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000]
                  }
@@ -179,11 +179,11 @@ from sklearn.model_selection import StratifiedKFold
 import pandas as pd
 import matplotlib.pyplot as plt
 df_clf = pd.read_csv('../sample_data/nba_nfl_2.csv')
-OBJECTIVE_VARIALBLE = 'league'  # 目的変数
+TARGET_VARIALBLE = 'league'  # 目的変数
 USE_EXPLANATORY = ['height', 'weight']  # 説明変数
-y = df_clf[OBJECTIVE_VARIALBLE].values
+y = df_clf[TARGET_VARIALBLE].values
 X = df_clf[USE_EXPLANATORY].values
-tuning = SVMClassifierTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE)
+tuning = SVMClassifierTuning(X, y, USE_EXPLANATORY, y_colname=TARGET_VARIALBLE)
 tuning_params = {'gamma':(0.01, 100),
                  'C': (0.1, 1000)
                  }
@@ -228,11 +228,11 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import optuna
 df_clf = pd.read_csv('../sample_data/nba_nfl_2.csv')
-OBJECTIVE_VARIALBLE = 'league'  # 目的変数
+TARGET_VARIALBLE = 'league'  # 目的変数
 USE_EXPLANATORY = ['height', 'weight']  # 説明変数
-y = df_clf[OBJECTIVE_VARIALBLE].values
+y = df_clf[TARGET_VARIALBLE].values
 X = df_clf[USE_EXPLANATORY].values
-tuning = SVMClassifierTuning(X, y, USE_EXPLANATORY, y_colname=OBJECTIVE_VARIALBLE, cv_group=df_clf['position'].values)
+tuning = SVMClassifierTuning(X, y, USE_EXPLANATORY, y_colname=TARGET_VARIALBLE, cv_group=df_clf['position'].values)
 tuning_params = {'gamma':(0.01, 100),
                  'C': (0.1, 1000)
                  }

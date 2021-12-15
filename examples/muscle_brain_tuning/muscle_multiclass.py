@@ -4,9 +4,9 @@ from muscle_tuning import MuscleTuning
 import seaborn as sns
 
 iris = sns.load_dataset("iris")
-OBJECTIVE_VARIALBLE = 'species'  # 目的変数
+TARGET_VARIALBLE = 'species'  # 目的変数
 USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']  # 説明変数
-y = iris[OBJECTIVE_VARIALBLE].values
+y = iris[TARGET_VARIALBLE].values
 X = iris[USE_EXPLANATORY].values
 
 kinnikun = MuscleTuning()
@@ -21,9 +21,9 @@ from sklearn.svm import SVC
 from xgboost import XGBClassifier
 
 iris = sns.load_dataset("iris")
-OBJECTIVE_VARIALBLE = 'species'  # 目的変数
+TARGET_VARIALBLE = 'species'  # 目的変数
 USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']  # 説明変数
-y = iris[OBJECTIVE_VARIALBLE].values
+y = iris[TARGET_VARIALBLE].values
 X = iris[USE_EXPLANATORY].values
 
 not_opt_params_svm = {'kernel': 'rbf'}
