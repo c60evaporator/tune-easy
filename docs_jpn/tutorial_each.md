@@ -3,7 +3,7 @@
 
 Scikit-LearnのAPIに対応した学習器が対象となります。
 
-![image](https://user-images.githubusercontent.com/59557625/130362754-a85fc7fc-38f7-4d5a-9e8f-c24321a2ed98.png)
+<img width="600" src="https://user-images.githubusercontent.com/59557625/130362754-a85fc7fc-38f7-4d5a-9e8f-c24321a2ed98.png">
 
 ### 手順一覧
 **0. チューニングの準備**
@@ -36,7 +36,7 @@ Scikit-LearnのAPIに対応した学習器が対象となります。
 
 &nbsp;├─ [5.1. チューニング履歴の確認](https://github.com/c60evaporator/param-tuning-utility/blob/master/README.md#01-%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E8%AA%AD%E8%BE%BC%E5%89%8D%E5%87%A6%E7%90%86)
 
-&nbsp;├─ [5.2. パラメータと評価指標の関係を確認](https://github.com/c60evaporator/param-tuning-utility/blob/master/README.md#52-%E3%83%91%E3%83%A9%E3%83%A1%E3%83%BC%E3%82%BF%E3%81%A8%E8%A9%95%E4%BE%A1%E6%8C%87%E6%A8%99%E3%81%AE%E9%96%A2%E4%BF%82%E3%82%92%E7%A2%BA%E8%AA%8D)
+&nbsp;├─ [5.2. パラメータと評価指標の関係をマップ表示して確認](https://github.com/c60evaporator/param-tuning-utility/blob/master/README.md#52-%E3%83%91%E3%83%A9%E3%83%A1%E3%83%BC%E3%82%BF%E3%81%A8%E8%A9%95%E4%BE%A1%E6%8C%87%E6%A8%99%E3%81%AE%E9%96%A2%E4%BF%82%E3%82%92%E7%A2%BA%E8%AA%8D)
 
 &nbsp;├─ [5.3. 学習曲線を確認](https://github.com/c60evaporator/param-tuning-utility/blob/master/README.md#53-%E5%AD%A6%E7%BF%92%E6%9B%B2%E7%B7%9A%E3%82%92%E7%A2%BA%E8%AA%8D)
 
@@ -135,6 +135,7 @@ tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY, eval_set_selection='all')
 
 #### 実行例
 RMSEを指標に使用するとき
+
 ```
 SCORING = 'neg_mean_squared_error'
 ```
@@ -146,6 +147,7 @@ SCORING = 'neg_mean_squared_error'
 
 #### 実行例
 範囲を指定して検証曲線を描画
+
 ```python
 VALIDATION_CURVE_PARAMS = {'reg_alpha': [0, 0.0001, 0.001, 0.003, 0.01, 0.03, 0.1, 1, 10],
                            'reg_lambda': [0, 0.0001, 0.001, 0.003, 0.01, 0.03, 0.1, 1, 10],
@@ -161,11 +163,11 @@ tuning.plot_first_validation_curve(validation_curve_params=VALIDATION_CURVE_PARA
 ```
 実行結果
 
-![image](https://user-images.githubusercontent.com/59557625/130490027-5ff1b717-7e45-4e02-8e50-79fd6e49b19f.png)
+<img width="800" src="https://user-images.githubusercontent.com/59557625/146211814-5ac00ce2-c2cf-4292-9e38-5036ea3c2669.png">
 
-下図のように検証曲線から過学習にも未学習にもなりすぎていない範囲を抽出し、探索範囲とすることが望ましいです (数はSVMでの実行例)
+下図 (SVMでの実行例)のように検証曲線から過学習にも未学習にもなりすぎていない範囲を抽出し、探索範囲とすることが望ましいです
 
-![image](https://user-images.githubusercontent.com/59557625/130347923-c3ed17a2-8ad6-4f30-8ff7-fc91cf8f97ee.png)
+<img width="720" src="https://user-images.githubusercontent.com/59557625/130347923-c3ed17a2-8ad6-4f30-8ff7-fc91cf8f97ee.png">
 
 ### 3. 探索法を選択
 [こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#%E6%89%8B%E9%A0%8634-%E3%83%91%E3%83%A9%E3%83%A1%E3%83%BC%E3%82%BF%E9%81%B8%E6%8A%9E%E3%82%AF%E3%83%AD%E3%82%B9%E3%83%90%E3%83%AA%E3%83%87%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3)パラメータの探索法を選択します。
@@ -173,16 +175,17 @@ tuning.plot_first_validation_curve(validation_curve_params=VALIDATION_CURVE_PARA
 
 |探索法|使用するメソッド|
 |---|---|
-|グリッドサーチ|[grid_search_tuning()]()|
-|ランダムサーチ|[random_search_tuning()]()|
-|ベイズ最適化 (BayesianOptimization)|[bayes_opt_tuning()]()|
-|ベイズ最適化 (Optuna)|[optuna_tuning()]()|
+|グリッドサーチ|[grid_search_tuning()](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/api_each.md#grid_search_tuningメソッド)|
+|ランダムサーチ|[random_search_tuning()](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/api_each.md#random_search_tuningメソッド)|
+|ベイズ最適化 (BayesianOptimization)|[bayes_opt_tuning()](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/api_each.md#random_search_tuningメソッド)|
+|ベイズ最適化 (Optuna)|[optuna_tuning()](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/api_each.md#random_search_tuningメソッド)|
 
 ### 4.1. クロスバリデーション手法を選択
 [こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#24-%E3%82%AF%E3%83%AD%E3%82%B9%E3%83%90%E3%83%AA%E3%83%87%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3)クロスバリデーションの手法を選択します。
 
 #### 実行例
 クロスバリデーションに5分割KFoldを指定
+
 ```python
 CV = KFold(n_splits=5, shuffle=True, random_state=42)
 ```
@@ -201,6 +204,7 @@ CV = KFold(n_splits=5, shuffle=True, random_state=42)
 
 #### 実行例
 LightGBM回帰において、`fit()`メソッドに渡す引数`fit_params`およびチューニング対象外パラメータ`not_opt_params`を指定してスコア算出
+
 ```python
 from lightgbm import LGBMRegressor
 from sklearn.model_selection import cross_val_score
@@ -228,12 +232,14 @@ scores = cross_val_score(lgbmr, X, y,
 print(np.mean(scores))
 ```
 実行結果
+
 ```
 -0.4561245619412457
 ```
 <br>
 
 [seaborn-analyzer](https://pypi.org/project/seaborn-analyzer/)ライブラリを活用して予測値と実測値の関係を可視化すると、挙動がわかりやすくなるのでお勧めです
+
 ```python
 from seaborn_analyzer import regplot
 california_housing['price'] = y
@@ -247,9 +253,9 @@ regplot.regression_pred_true(lgbmr,
                              eval_set_selection='test'
                              )
 ```
-![image](https://user-images.githubusercontent.com/59557625/130487845-2c9db099-f137-489a-9b09-9f01a8d55f1e.png)
+<img width="240" src="https://user-images.githubusercontent.com/59557625/146212543-8c49c900-eedb-453b-9c37-32eb3b25074a.png">
 
-`eval_set_selection`引数については[こちら]()を参照ください
+`eval_set_selection`引数については[こちら](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/api_each.md#-eval_data_sourceの指定値によるeval_setに入るデータの変化)を参照ください
 
 ### 4.3. チューニング実行
 [3.で選択したチューニング用メソッド]()に対し、
@@ -266,6 +272,7 @@ regplot.regression_pred_true(lgbmr,
 
 #### 実行例
 Optunaでのチューニング実行例
+
 ```python
 # 2.で選択したチューニング範囲を指定
 TUNING_PARAMS = {'reg_alpha': (0.0001, 0.1),
@@ -290,6 +297,7 @@ print(f'Elapsed time\n{tuning.elapsed_time}')  # チューニング所要時間
 ```
 
 実行結果
+
 ```
 Best parameters
 {'reg_alpha': 0.0016384726888678286, 'reg_lambda': 0.04644984234834465, 'num_leaves': 7, 'colsample_bytree': 0.7968135425414318, 'subsample': 0.7878217860051357, 'subsample_freq': 0, 'min_child_samples': 4}
@@ -321,13 +329,14 @@ Elapsed time
 
 #### 実行例
 Optunaでのチューニング実行後のチューニング履歴表示例
+
 ```python
 tuning.plot_search_history()
 ```
 
 実行結果
 
-![image](https://user-images.githubusercontent.com/59557625/130488044-75d316ba-f251-4ecd-9729-65d33e402b5b.png)
+<img width="360" src="https://user-images.githubusercontent.com/59557625/146213822-f42bba74-bd6d-408a-a93b-d0c25f976253.png">
 
 横軸は試行数以外に時間も指定できます(`x_axis`引数='time')
 
@@ -335,7 +344,7 @@ tuning.plot_search_history()
 tuning.plot_search_history(x_axis='time')
 ```
 
-### 5.2. パラメータと評価指標の関係を確認
+### 5.2. パラメータと評価指標の関係をマップ表示して確認
 [`plot_search_history()`]()メソッドでパラメータと評価指標の関係をプロットし、評価指標のピークを捉えられているか確認します。
 4.2で使用した手法がグリッドサーチならヒートマップで、それ以外なら散布図でプロットします。
 
@@ -347,36 +356,39 @@ tuning.plot_search_history(x_axis='time')
 
 #### 実行例
 Optunaでのチューニング実行後のパラメータと評価指標の関係表示
+
 ```python
 tuning.plot_search_map()
 ```
 実行結果
 
-![image](https://user-images.githubusercontent.com/59557625/130488301-da358b25-5ba9-4306-8e76-5e28153b89d2.png)
+<img width="720" src="https://user-images.githubusercontent.com/59557625/146214163-d85658d6-3ff4-4df1-a564-48a7c77cb456.png">
 
 ### 5.3. 学習曲線を確認
 [`plot_best_learning_curve()`]()メソッドで学習曲線をプロットし、[こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#%E5%AD%A6%E7%BF%92%E6%9B%B2%E7%B7%9A-1)「目的の性能を達成しているか」「過学習していないか」を確認します
 
 #### 実行例
 Optunaでのチューニング実行後の学習曲線を表示
+
 ```python
 tuning.plot_best_learning_curve()
 ```
 実行結果
 
-![image](https://user-images.githubusercontent.com/59557625/130488483-387b6fdb-8ca3-47d6-ad25-d142463683b0.png)
+<img width="360" src="https://user-images.githubusercontent.com/59557625/146214383-2c784424-173c-4c0c-b2c4-56e04bb1eb1b.png">
 
 ### 5.4. 検証曲線を確認
 [`plot_best_validation_curve()`]()メソッドで検証曲線をプロットし、[こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#%E6%A4%9C%E8%A8%BC%E6%9B%B2%E7%B7%9A-2)「性能の最大値を捉えられているか」「過学習していないか」を確認します
 
 #### 実行例
 Optunaでのチューニング実行後の検証曲線を表示
+
 ```python
 tuning.plot_best_validation_curve()
 ```
 実行結果
 
-![image](https://user-images.githubusercontent.com/59557625/130490273-345dbc31-2201-4752-be79-0749058c2b00.png)
+<img width="800" src="https://user-images.githubusercontent.com/59557625/146214628-1fbddbe2-9198-4515-8536-2c1d858f7126.png">
 
 ### 6. チューニング後の学習器を使用する
 チューニング後の学習器は`best_estimator`プロパティから取得できます。
@@ -387,6 +399,7 @@ tuning.plot_best_validation_curve()
 
 #### 実行例
 チューニング後の学習器から評価指標を求める (`best_score`プロパティと同じ値が求まります)
+
 ```python
 params_after = {}
 params_after.update(tuning.best_params)
@@ -402,12 +415,14 @@ scores = cross_val_score_eval_set('test',  # eval_set_selection
 print(np.mean(scores))
 ```
 実行結果
+
 ```
 -0.4124940780628491
 ```
 <br>
 
 チューニング前と同様、[seaborn-analyzer](https://pypi.org/project/seaborn-analyzer/)ライブラリを使用して予測値と実測値の関係を可視化すると、挙動がわかりやすくなるのでお勧めです
+
 ```python
 from seaborn_analyzer import regplot
 regplot.regression_pred_true(lgbmr,
@@ -420,4 +435,5 @@ regplot.regression_pred_true(lgbmr,
                              eval_set_selection=tuning.eval_set_selection
                              )
 ```
-![image](https://user-images.githubusercontent.com/59557625/130488697-ab6f83f9-3895-4ec6-a761-770f5396bd0e.png)
+
+<img width="240" src="https://user-images.githubusercontent.com/59557625/146214802-22dfeb48-a9c8-4557-a6c6-d72581cd827d.png">
