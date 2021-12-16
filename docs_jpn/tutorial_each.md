@@ -47,6 +47,7 @@
 &nbsp;└─ [6.1. チューニング後の学習器を使用する](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md#6-チューニング後の学習器を使用する)
 
 <br>
+<br>
 
 **App. MLflowによる結果ロギング**
 [MLflowによる結果ロギング]()
@@ -470,7 +471,7 @@ regplot.regression_pred_true(lgbmr,
 
 引数指定以外の処理が不要で簡単にロギングできるため、通常はこちらの方法がおすすめです
 
-### デフォルト構成での実行例
+### ・デフォルト構成での実行例
 以下のように、チューニング用メソッド実行時に`mlflow_logging`='inside'を指定するとMLflowによるロギングが自動実行されます
 
 ```python
@@ -492,11 +493,12 @@ tuning.optuna_tuning(mlflow_logging='inside')  # MLflowのロギングを指定�
 mlflow ui
 ```
 `mlflow_logging`[以外のMLflow用引数]()を指定していなければ、ローカルホストにUIが作成される（[こちらの記事]()のシナリオ1に相当）ので、ブラウザに`http://127.0.0.1:5000`と打つと、以下のような画面が表示されます。
+<img width="800" src="https://user-images.githubusercontent.com/59557625/146404411-dc0102e9-e57c-49b4-82b4-0bc4a5c4bbf4.png">
 
-<img width="794" src="https://user-images.githubusercontent.com/59557625/145711588-be0e393f-be7b-4833-b17a-05eecd6ad014.png">
+### ・トラッキングサーバを指定した実行例
+`mlflow_logging`[以外のMLflow用引数]()を指定すると、[トラッキングサーバ]()や[エクスペリメント名]()を指定したロギングが実行可能です
 
-## トラッキングサーバを指定した実行例
-`mlflow_logging`[以外のMLflow用引数]()を指定すると、[トラッキングサーバ]()や[Artifactストレージ]()を指定したロギングが実行可能です（詳しくは[こちらの記事]()を参照ください）
+（トラッキングサーバやエクスペリメントについては[こちらの記事]()を参照ください）
 
 リモートにトラッキングサーバを立ち上げた場合は、こちらの方法を利用ください
 
@@ -504,6 +506,7 @@ mlflow ui
 |---|---|
 |mlflow_tracking_uri|トラッキングサーバを指定|
 |mlflow_artifact_location|Artifactストレージを指定※|
+|mlflow_experiment_name|エクスペリメント名を指定|
 
 ※トラッキングサーバ作成時に[--default-artifact-root]()オプションを指定していれば、不要です。
 
@@ -533,12 +536,12 @@ tuning.optuna_tuning(mlflow_logging='inside')  # MLflowのロギングを指定�
 ```
 
 ## `mlflow_logging`='outside'のとき
-`mlflow_logging`='inside'と指定すると、エクスペリメント立ち上げ等のMLflowに必要な処理が内部で自動実行されます。
+`mlflow_logging`='outside'と指定すると、エクスペリメント立ち上げ等のMLflowに必要な処理を外部で明示的に実装する必要があります。
 
-引数指定以外の処理が不要で簡単にロギングできるため、通常はこちらの方法がおすすめです
+チューニング関係以外の情報も同じRunで記録したい場合、こちらの方法を使用してください
 
 
-
+なお、この方法では`mlflow_logging`[以外のMLflow用引数]()は指定できないのでご注意ください。
 
 
 ##
