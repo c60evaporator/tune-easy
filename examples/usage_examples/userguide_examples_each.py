@@ -161,21 +161,39 @@ regplot.regression_pred_true(best_estimator,
                              eval_set_selection='test'
                              )
 
-# %% Usage of MLflow logging
+# %% MLflow logging Default
 import parent_import
-from muscle_tuning import E
-from sklearn.datasets import fetch_california_housing
+from muscle_tuning import LGBMRegressorTuning
 import pandas as pd
-import numpy as np
 # Load dataset
-TARGET_VARIABLE = 'price'  # Target variable name
-USE_EXPLANATORY = ['MedInc', 'AveOccup', 'Latitude', 'HouseAge']  # Selected explanatory variables
-california_housing = pd.DataFrame(np.column_stack((fetch_california_housing().data, fetch_california_housing().target)),
-        columns = np.append(fetch_california_housing().feature_names, TARGET_VARIABLE))
-california_housing = california_housing.sample(n=1000, random_state=42)  # sampling from 20640 to 1000
-y = california_housing[TARGET_VARIABLE].values  # Target variable
-X = california_housing[USE_EXPLANATORY].values  # Explanatory variables
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
+TARGET_VARIABLE = 'approval_rate'  # Target variable
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
+y = df_reg[TARGET_VARIABLE].values
+X = df_reg[USE_EXPLANATORY].values
 # Optimization with MLflow logging
-tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY, y_colname=TARGET_VARIABLE)  # Make tuning instance
-tuning.optuna_tuning(cv=2, mlflow_logging='inside')  # Run tuning with MLflow logging
-# %%
+tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # Make tuning instance
+tuning.optuna_tuning(mlflow_logging='inside')  # Run tuning with MLflow logging
+
+# %% MLflow logging SQLite
+import parent_import
+from muscle_tuning import LGBMRegressorTuning
+import pandas as pd
+import sqlite3
+import os
+# MLflow settings
+DB_PATH = f'{os.getcwd()}/_tracking_uri/mlruns.db'
+EXPERIMENT_NAME = 'optuna_regression'  # Experiment name
+ARTIFACT_LOCATION = f'{os.getcwd()}/_artifact_location'  # Artifact location
+os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)  # Make directory fo tracking server
+conn = sqlite3.connect(DB_PATH)  # Make backend DB
+tracking_uri = f'sqlite:///{DB_PATH}'  # Tracking uri
+# Load dataset
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
+TARGET_VARIABLE = 'approval_rate'  # Target variable
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
+y = df_reg[TARGET_VARIABLE].values
+X = df_reg[USE_EXPLANATORY].values
+# Optimization with MLflow logging
+tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # Make tuning instance
+tuning.optuna_tuning(mlflow_logging='inside')  # Run tuning with MLflow logging

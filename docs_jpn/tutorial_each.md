@@ -48,6 +48,11 @@
 
 <br>
 
+**App. MLflowによる結果ロギング**
+[MLflowによる結果ロギング]()
+
+<br>
+
 ## 詳細手順
 ### 0.1. データの読込＆前処理
 使用するデータを読み込み、特徴量選択等の前処理を実行します。
@@ -439,3 +444,101 @@ regplot.regression_pred_true(lgbmr,
 ```
 
 <img width="240" src="https://user-images.githubusercontent.com/59557625/146214802-22dfeb48-a9c8-4557-a6c6-d72581cd827d.png">
+
+# App. MLflowによる結果ロギング
+以下4種類のチューニング用メソッドの`mlflow_logging`引数を指定することで、MLflowで結果をロギングできます。
+
+- [grid_search_tuning()](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/api_each.md#grid_search_tuningメソッド)
+
+- [random_search_tuning()](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/api_each.md#random_search_tuningメソッド)
+
+- [bayes_opt_tuning()](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/api_each.md#random_search_tuningメソッド)
+
+- [optuna_tuning()](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/api_each.md#random_search_tuningメソッド)
+
+## ロギング時の引数指定
+以下の
+
+|`mlflow_logging`引数|動作|
+|---|---|
+|None|MLflowによるロギングなし|
+|'inside'|MLflow実行 (必要な処理を内部で全て自動実行)|
+|'outside'|MLflow実行 (エクスペリメント立ち上げ等を手動実行する必要あり)|
+
+## `mlflow_logging`='inside'のとき
+`mlflow_logging`='inside'と指定すると、エクスペリメント立ち上げ等のMLflowに必要な処理が内部で自動実行されます。
+
+引数指定以外の処理が不要で簡単にロギングできるため、通常はこちらの方法がおすすめです
+
+### デフォルト構成での実行例
+以下のように、チューニング用メソッド実行時に`mlflow_logging`='inside'を指定するとMLflowによるロギングが自動実行されます
+
+```python
+from muscle_tuning import LGBMRegressorTuning
+import pandas as pd
+# データセット読込
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
+TARGET_VARIABLE = 'approval_rate'
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  
+y = df_reg[TARGET_VARIABLE].values
+X = df_reg[USE_EXPLANATORY].values
+# Optunaでのチューニング結果をMLflowでロギング
+tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用インスタンス作成
+tuning.optuna_tuning(mlflow_logging='inside')  # MLflowのロギングを指定してOptunaでチューニング
+```
+チューニング完了後、ターミナルで以下のコマンドを打つと、MLflowのUI用Webサーバが立ち上がります。
+
+```
+mlflow ui
+```
+`mlflow_logging`[以外のMLflow用引数]()を指定していなければ、ローカルホストにUIが作成される（[こちらの記事]()のシナリオ1に相当）ので、ブラウザに`http://127.0.0.1:5000`と打つと、以下のような画面が表示されます。
+
+<img width="794" src="https://user-images.githubusercontent.com/59557625/145711588-be0e393f-be7b-4833-b17a-05eecd6ad014.png">
+
+## トラッキングサーバを指定した実行例
+`mlflow_logging`[以外のMLflow用引数]()を指定すると、[トラッキングサーバ]()や[Artifactストレージ]()を指定したロギングが実行可能です（詳しくは[こちらの記事]()を参照ください）
+
+リモートにトラッキングサーバを立ち上げた場合は、こちらの方法を利用ください
+
+|引数名|指定内容|
+|---|---|
+|mlflow_tracking_uri|トラッキングサーバを指定|
+|mlflow_artifact_location|Artifactストレージを指定※|
+
+※トラッキングサーバ作成時に[--default-artifact-root]()オプションを指定していれば、不要です。
+
+[こちらの記事のシナリオ2の構成]()での実行例（SQLiteをバックエンドに指定）を下記します
+
+```python
+from muscle_tuning import LGBMRegressorTuning
+import pandas as pd
+import sqlite3
+import os
+# MLflow settings
+DB_PATH = f'{os.getcwd()}/_tracking_uri/mlruns.db'  # バックエンドとなるSQLite DBファイルのパス
+EXPERIMENT_NAME = 'optuna_regression'  # エクスペリメント名
+ARTIFACT_LOCATION = f'{os.getcwd()}/_artifact_location'  # Artifactストレージ
+os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)  # トラッキングサーバ用フォルダ作成
+conn = sqlite3.connect(DB_PATH)  # バックエンドとなるSQLite DBファイル作成
+tracking_uri = f'sqlite:///{DB_PATH}'  # トラッキングサーバのURI
+# データセット読込
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
+TARGET_VARIABLE = 'approval_rate'
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  
+y = df_reg[TARGET_VARIABLE].values
+X = df_reg[USE_EXPLANATORY].values
+# Optunaでのチューニング結果をMLflowでロギング
+tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # チューニング用インスタンス作成
+tuning.optuna_tuning(mlflow_logging='inside')  # MLflowのロギングを指定してOptunaでチューニング
+```
+
+## `mlflow_logging`='outside'のとき
+`mlflow_logging`='inside'と指定すると、エクスペリメント立ち上げ等のMLflowに必要な処理が内部で自動実行されます。
+
+引数指定以外の処理が不要で簡単にロギングできるため、通常はこちらの方法がおすすめです
+
+
+
+
+
+##

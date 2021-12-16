@@ -144,7 +144,12 @@ kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2,
                              mlflow_logging=True)  # MLflowによるロギング有効化
 kinnikun.df_scores
 ```
-上記コードを実行後にMLflow UIを起動すると、以下のような画面が表示されます。
+チューニング完了後、ターミナルで以下のコマンドを打つと、MLflowのUI用Webサーバが立ち上がります。
+
+```
+mlflow ui
+```
+`mlflow_logging`[以外のMLflow用引数]()を指定していなければ、ローカルホストにUIが作成される（[こちらの記事]()のシナリオ1に相当）ので、ブラウザに`http://127.0.0.1:5000`と打つと、以下のような画面が表示されます。
 
 <img width="794" src="https://user-images.githubusercontent.com/59557625/145711588-be0e393f-be7b-4833-b17a-05eecd6ad014.png">
 
