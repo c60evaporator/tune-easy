@@ -1,5 +1,5 @@
 # 詳細チューニング API仕様
-詳細チューニング実施用クラスのAPI仕様を記載します
+詳細チューニング実施用クラスのAPI仕様を記載します ([English version](https://c60evaporator.github.io/muscle-tuning/each_estimators.html))
 
 チューニングの実行手順は[こちら](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md)を参照ください
 
