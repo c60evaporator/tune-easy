@@ -6,8 +6,9 @@
 [サンプルコードはこちらにアップロードしています](https://github.com/c60evaporator/muscle-tuning/tree/master/examples/method_examples)
 
 # クラス一覧
-2021/12現在、以下のクラスを準備しています。
 使用したい機械学習アルゴリズム（学習器）に合わせて適切なクラスを選択してください
+
+※ここにない学習器の追加希望があれば、[Issues](https://github.com/c60evaporator/muscle-tuning/issues)または[私のTwitter](https://twitter.com/c60evaporator)まで連絡下さい
 
 - **分類**
 
