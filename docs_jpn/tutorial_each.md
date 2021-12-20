@@ -446,7 +446,7 @@ regplot.regression_pred_true(lgbmr,
 
 <img width="240" src="https://user-images.githubusercontent.com/59557625/146214802-22dfeb48-a9c8-4557-a6c6-d72581cd827d.png">
 
-# App. MLflowによる結果ロギング
+# MLflowによる結果ロギング
 以下4種類のチューニング用メソッドの`mlflow_logging`引数を指定することで、MLflowで結果をロギングできます。
 
 - [grid_search_tuning()](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/api_each.md#grid_search_tuningメソッド)
@@ -543,5 +543,8 @@ tuning.optuna_tuning(mlflow_logging='inside')  # MLflowのロギングを指定�
 
 なお、この方法では`mlflow_logging`[以外のMLflow用引数]()は指定できないのでご注意ください。
 
+実装例
 
-##
+```python
+
+```
