@@ -592,7 +592,8 @@ class MuscleTuning():
         mlflow.log_param('cv', str(self.cv))  # クロスバリデーション分割法
         mlflow.log_param('seed', self.seed)  # 乱数シード
         # dict引数をJSONとして保存
-        mlflow.log_dict(self.estimators, 'arg-estimators.json')  # 最適化対象の学習器インスタンス
+        estimators = {k: str(v) for k, v in self.estimators.items()}
+        mlflow.log_dict(estimators, 'arg-estimators.json')  # 最適化対象の学習器インスタンス
         mlflow.log_dict(self.tuning_params, 'arg-tuning_params.json')  # 学習時のパラメータ
         mlflow.log_dict(self.tuning_kws, 'arg-tuning_kws.json')  # 学習時のパラメータ
         # スコア履歴をMetricsとして保存
@@ -713,7 +714,8 @@ class MuscleTuning():
         self.print_estimator(self.best_learner, mlflow_logging=self.mlflow_logging)
 
         ###### MLflowにパラメータと結果をロギング ######
-        self._log_mlflow_results()
+        if self.mlflow_logging:
+            self._log_mlflow_results()
 
         return df_scores
 
