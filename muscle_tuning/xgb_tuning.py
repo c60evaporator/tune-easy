@@ -302,7 +302,7 @@ class XGBClassifierTuning(ParamTuning):
         if 'random_state' in src_not_opt_params:
             src_not_opt_params['random_state'] = seed
         
-        # 2クラス分類のときobjectiveはloglossを、多クラス分類のときmloglossを入力
+        # 2クラス分類のときobjectiveはbinary:logisticを、多クラス分類のときmulti:softmaxを入力
         unique_labels = np.unique(self.y)
         if len(unique_labels) == 2:
             if 'objective' in src_not_opt_params and src_not_opt_params['objective'] in ['multi:softmax', 'multi:softprob']:

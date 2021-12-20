@@ -202,7 +202,7 @@ class MuscleTuning():
         objective_dtype = self.y.dtype
         # 回帰指定時
         if objective == 'regression':
-            if isinstance(objective, (int, float)):
+            if objective_dtype in [np.int32, np.int64, np.float32, np.float64]:
                 self.objective = 'regression'
             else:
                 raise Exception('Target variable should be int or float if `objective` is "regression"')
@@ -711,7 +711,7 @@ class MuscleTuning():
         self.best_learner = df_scores.loc[best_idx]['learning_algo']
 
         ###### print_estimator ######
-        self.print_estimator(self.best_learner, mlflow_logging=self.mlflow_logging)
+        self.print_estimator(self.best_learner, 'best estimator', mlflow_logging=self.mlflow_logging)
 
         ###### MLflowにパラメータと結果をロギング ######
         if self.mlflow_logging:
@@ -719,7 +719,7 @@ class MuscleTuning():
 
         return df_scores
 
-    def print_estimator(self, learner_name, mlflow_logging=False):
+    def print_estimator(self, learner_name, printed_name, mlflow_logging=False):
         """
         Print estimator after tuning
 
@@ -729,7 +729,7 @@ class MuscleTuning():
             Printed learning algorithm name
         """
 
-        print('----------The following is how to use the best estimator----------\n')
+        print(f'----------The following is how to use the {printed_name}----------\n')
         tuner = self.tuners[learner_name]
         printed_model = []
 
