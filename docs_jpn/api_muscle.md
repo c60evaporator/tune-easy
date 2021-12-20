@@ -61,7 +61,7 @@ kinnikun = MuscleTuning()
 ### 実行例
 コードは[こちらにもアップロードしています](https://github.com/c60evaporator/muscle-tuning/tree/master/examples/muscle_brain_tuning)
 #### 2クラス分類でチューニング一括実行（オプション引数なし）
-オプション引数を指定しないとき、[前述のデフォルト値]()を使用してプロットします
+オプション引数を指定しないとき、[前述のデフォルト値](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/api_muscle.md#引数一覧)を使用してプロットします
 
 ```python
 from muscle_tuning import MuscleTuning
@@ -78,45 +78,242 @@ kinnikun = MuscleTuning()
 kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY)
 kinnikun.df_scores
 ```
-実行結果
+実行結果（プロットされる図は割愛 → [実行手順参照](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_muscle.md#分類タスクでの使用例)）
 
-<img width="800px" src="https://user-images.githubusercontent.com/59557625/145722194-0791ecc7-6fad-4c7a-a02e-71ec82d0c6bd.png">
+<img width="480" src="https://user-images.githubusercontent.com/59557625/146761738-ae77db76-d542-4e03-9a37-b1c3b1ccdd5a.png">
 
-その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L123)をご参照ください
+#### 2クラス分類でチューニング一括実行（オプション引数なし）
+オプション引数の指定例を下記します
+
+```python
+from muscle_tuning import MuscleTuning
+import seaborn as sns
+from sklearn.svm import SVC
+from xgboost import XGBClassifier
+# データセット読込
+iris = sns.load_dataset("iris")
+iris = iris[iris['species'] != 'setosa']  # 2クラスに絞る
+TARGET_VARIALBLE = 'species'  # 目的変数
+USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']  # 説明変数
+y = iris[TARGET_VARIALBLE].values
+X = iris[USE_EXPLANATORY].values
+# 引数を指定
+not_opt_params_svm = {'kernel': 'rbf'}
+not_opt_params_xgb = {'objective': 'binary:logistic',
+                      'random_state': 42,
+                      'booster': 'gbtree',
+                      'n_estimators': 100,
+                      'use_label_encoder': False}
+fit_params_xgb = {'verbose': 0,
+                  'eval_metric': 'logloss'}
+tuning_params_svm = {'gamma': (0.001, 1000),
+                     'C': (0.001, 1000)
+                     }
+tuning_params_xgb = {'learning_rate': (0.05, 0.3),
+                     'min_child_weight': (1, 10),
+                     'max_depth': (2, 9),
+                     'colsample_bytree': (0.2, 1.0),
+                     'subsample': (0.2, 1.0)
+                     }
+###### 一括チューニング実行 ######
+kinnikun = MuscleTuning()
+kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY,
+                             objective='classification', 
+                             scoring='auc_ovo',
+                             other_scores=['accuracy', 'precision_macro', 'recall_macro', 'f1_micro', 'f1_macro', 'f1_weighted', 'auc_ovr', 'auc_ovo'],
+                             learning_algos=['svm', 'xgboost'], 
+                             n_iter={'svm': 50,
+                                       'xgboost': 20},
+                             cv=3, tuning_algo='optuna', seed=42,
+                             estimators={'svm': SVC(),
+                                         'xgboost': XGBClassifier()},
+                             tuning_params={'svm': tuning_params_svm,
+                                            'xgboost': tuning_params_xgb},
+                             tuning_kws={'svm': {'not_opt_params': not_opt_params_svm},
+                                         'xgboost': {'not_opt_params': not_opt_params_xgb,
+                                                     'fit_params': fit_params_xgb}}
+                             )
+kinnikun.df_scores
+```
+実行結果（プロットされる図は割愛）
+
+<img width="540" src="https://user-images.githubusercontent.com/59557625/146782743-85bc5816-82d4-4db9-ab43-21e15f973607.png">
 
 #### 多クラス分類でチューニング一括実行（オプション引数なし）
+オプション引数を指定しないとき、[前述のデフォルト値](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/api_muscle.md#引数一覧)を使用してプロットします
 
-その他の引数の使用法は、[こちらのサンプルコード](https://github.com/c60evaporator/param-tuning-utility/blob/master/examples/regression_original/example_lgbm_regression.py#L123)をご参照ください
+```python
+from muscle_tuning import MuscleTuning
+import seaborn as sns
+# データセット読込
+iris = sns.load_dataset("iris")
+TARGET_VARIALBLE = 'species'  # 目的変数
+USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']  # 説明変数
+y = iris[TARGET_VARIALBLE].values
+X = iris[USE_EXPLANATORY].values
+###### 一括チューニング実行 ######
+kinnikun = MuscleTuning()
+kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY)
+kinnikun.df_scores
+```
+実行結果（プロットされる図は割愛）
+
+<img width="480" src="https://user-images.githubusercontent.com/59557625/146782390-fcf71e83-0513-4b2b-8d99-6185b2a239b1.png">
+
+#### 多クラス分類でチューニング一括実行（オプション引数あり）
+オプション引数の指定例を下記します
+
+```python
+from muscle_tuning import MuscleTuning
+import seaborn as sns
+from sklearn.svm import SVC
+from xgboost import XGBClassifier
+# データセット読込
+iris = sns.load_dataset("iris")
+TARGET_VARIALBLE = 'species'  # 目的変数
+USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']  # 説明変数
+y = iris[TARGET_VARIALBLE].values
+X = iris[USE_EXPLANATORY].values
+# 引数指定
+not_opt_params_svm = {'kernel': 'rbf'}
+not_opt_params_xgb = {'objective': 'multi:softmax',
+                      'random_state': 42,
+                      'booster': 'gbtree',
+                      'n_estimators': 100,
+                      'use_label_encoder': False}
+fit_params_xgb = {'verbose': 0,
+                  'eval_metric': 'mlogloss'}
+tuning_params_svm = {'gamma': (0.001, 1000),
+                     'C': (0.001, 1000)
+                     }
+tuning_params_xgb = {'learning_rate': (0.05, 0.3),
+                     'min_child_weight': (1, 10),
+                     'max_depth': (2, 9),
+                     'colsample_bytree': (0.2, 1.0),
+                     'subsample': (0.2, 1.0)
+                     }
+###### 一括チューニング実行 ######
+kinnikun = MuscleTuning()
+kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY,
+                             objective='classification',
+                             scoring='auc_ovo',
+                             other_scores=['accuracy', 'precision_macro', 'recall_macro', 'f1_micro', 'f1_macro', 'f1_weighted', 'auc_ovr', 'auc_ovo'],
+                             learning_algos=['svm', 'xgboost'], 
+                             n_iter={'svm': 50,
+                                     'xgboost': 20},
+                             cv=3, tuning_algo='optuna', seed=42,
+                             estimators={'svm': SVC(),
+                                         'xgboost': XGBClassifier()},
+                             tuning_params={'svm': tuning_params_svm,
+                                            'xgboost': tuning_params_xgb},
+                             tuning_kws={'svm': {'not_opt_params': not_opt_params_svm},
+                                         'xgboost': {'not_opt_params': not_opt_params_xgb,
+                                                     'fit_params': fit_params_xgb}}
+                             )
+kinnikun.df_scores
+```
+実行結果（プロットされる図は割愛）
+
+<img width="480" src="https://user-images.githubusercontent.com/59557625/146783147-dbd3d1cb-d465-4cbc-b88c-8297e902304a.png">
 
 #### 回帰でチューニング一括実行（オプション引数なし）
+オプション引数を指定しないとき、[前述のデフォルト値](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/api_muscle.md#引数一覧)を使用してプロットします
 
+```python
+from muscle_tuning import MuscleTuning
+from sklearn.datasets import fetch_california_housing
+import pandas as pd
+import numpy as np
+# データセット読込
+TARGET_VARIALBLE = 'price'  # 目的変数
+USE_EXPLANATORY = ['MedInc', 'AveOccup', 'Latitude', 'HouseAge']  # 説明変数
+california_housing = pd.DataFrame(np.column_stack((fetch_california_housing().data, fetch_california_housing().target)),
+        columns = np.append(fetch_california_housing().feature_names, TARGET_VARIALBLE))
+california_housing = california_housing.sample(n=1000, random_state=42)  # sampling from 20640 to 1000
+y = california_housing[TARGET_VARIALBLE].values  # Explanatory variables
+X = california_housing[USE_EXPLANATORY].values  # Objective variable
+# Run tuning
+kinnikun = MuscleTuning()
+kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2)
+kinnikun.df_scores
+```
+実行結果（プロットされる図は割愛）
+
+<img width="480" src="https://user-images.githubusercontent.com/59557625/146791019-c869507f-f9ae-4700-b524-f710b621b7d9.png">
+
+#### 回帰でチューニング一括実行（オプション引数あり）
+オプション引数の指定例を下記します
+
+```python
+from muscle_tuning import MuscleTuning
+from sklearn.datasets import fetch_california_housing
+import pandas as pd
+import numpy as np
+from sklearn.svm import SVR
+from xgboost import XGBRegressor
+# Load dataset
+TARGET_VARIALBLE = 'price'  # Objective variable name
+USE_EXPLANATORY = ['MedInc', 'AveOccup', 'Latitude', 'HouseAge']  # Selected explanatory variables
+california_housing = pd.DataFrame(np.column_stack((fetch_california_housing().data, fetch_california_housing().target)),
+        columns = np.append(fetch_california_housing().feature_names, TARGET_VARIALBLE))
+california_housing = california_housing.sample(n=1000, random_state=42)  # sampling from 20640 to 1000
+y = california_housing[TARGET_VARIALBLE].values  # Explanatory variables
+X = california_housing[USE_EXPLANATORY].values  # Objective variable
+# Set arguments
+not_opt_params_svr = {'kernel': 'rbf'}
+not_opt_params_xgb = {'objective': 'reg:squarederror',
+                      'random_state': 42,
+                      'booster': 'gbtree',
+                      'n_estimators': 100,
+                      'use_label_encoder': False}
+fit_params_xgb = {'verbose': 0,
+                  'eval_metric': 'rmse'}
+tuning_params_svr = {'gamma': (0.001, 1000),
+                     'C': (0.001, 1000),
+                     'epsilon': (0, 0.3)
+                     }
+tuning_params_xgb = {'learning_rate': (0.05, 0.3),
+                     'min_child_weight': (1, 10),
+                     'max_depth': (2, 9),
+                     'colsample_bytree': (0.2, 1.0),
+                     'subsample': (0.2, 1.0)
+                     }
+# Run tuning
+kinnikun = MuscleTuning()
+kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY,
+                             objective='regression',
+                             scoring='mae',
+                             other_scores=['rmse', 'mae', 'mape', 'r2'],
+                             learning_algos=['svr', 'xgboost'], 
+                             n_iter={'svr': 50,
+                                     'xgboost': 20},
+                             cv=3, tuning_algo='optuna', seed=42,
+                             estimators={'svr': SVR(),
+                                         'xgboost': XGBRegressor()},
+                             tuning_params={'svr': tuning_params_svr,
+                                            'xgboost': tuning_params_xgb},
+                             tuning_kws={'svr': {'not_opt_params': not_opt_params_svr},
+                                         'xgboost': {'not_opt_params': not_opt_params_xgb,
+                                                     'fit_params': fit_params_xgb}}
+                             )
+kinnikun.df_scores
+```
+実行結果（プロットされる図は割愛）
+
+<img width="480" src="https://user-images.githubusercontent.com/59557625/146788783-22107653-f277-47d7-9ba7-e05487b9d961.png">
 
 <br>
-
-
-
-<br>
 <br>
 
-## grid_search_tuningメソッド
-グリッドサーチを実行します
+## print_estimatorメソッド
+チューニング後の学習器の使用方法をコマンドラインにprintします
 
 ### 引数一覧
 |引数名|必須引数orオプション|型|デフォルト値|内容|
 |---|---|---|---|---|
-|estimator|オプション|estimator object implementing 'fit'|[クラスごとに異なるESTIMATOR定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|最適化対象の学習器インスタンス。`not_opt_params`で指定したパラメータは上書きされるので注意|
-|tuning_params|オプション|dict[str, list[float]]|[クラスごとに異なるTUNING_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|チューニング対象のパラメータ範囲|
-|cv|オプション|int, cross-validation generator, or an iterable|5|クロスバリデーション分割法 (int入力時はKFoldで分割)|
-|seed|オプション|int|42|乱数シード (学習器の`random_state`に適用、`cv`引数がint型のときKFoldの乱数シードにも指定)|
-|scoring|オプション|str|'neg_mean_squared_error' in regression.'neg_log_loss' in clasification|最適化で最大化する評価指標 ('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)|
-|not_opt_<br>params|オプション　　|dict|[クラスごとに異なるNOT_OPT_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|`tuning_params`以外のチューニング対象外パラメータを指定|
-|param_scales|オプション|dict[str, str]|[クラスごとに異なるPARAM_SCALES定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|`tuning_params`のパラメータごとのスケール('linear', 'log')|
-|mlflow_logging|オプション|{'inside','outside',None}|None|MLflowでの結果記録有無('inside':with構文で記録, 'outside':外部でRun実行, None:MLflow実行なし)。詳細は[こちら]()|
-|mlflow_<br>tracking_uri|オプション|str|None|MLflowのTracking URI。[こちらを参照ください]()|
-|mlflow_<br>artifact_location|オプション　　|str|None|MLflowのArtifact URI。[こちらを参照ください]()|
-|mlflow_<br>experiment_name|オプション|str|None|MLflowのExperiment名。[こちらを参照ください]()|
-|grid_kws|オプション|dict|None|sklearn.model_selection.GridSearchCVに渡す引数 (estimator, tuning_params, cv, scoring以外)|
-|fit_params|オプション|dict|[クラスごとに異なるFIT_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|学習器の`fit()`メソッドに渡すパラメータ|
+|learner_name|必須|str|-|print対象の学習器名。`learning_algos`で指定した名称の中から選択|
+|printed_name|必須|str|-|'The following is how to use the xxx'の`xxx`の部分の文字列|
+|mlflow_logging|オプション|bool|False|MLflowでの結果記録有無(True:MLflow記録あり, False:MLflow記録なし|
 
 ### 実行例
 コードは[こちらにもアップロードしています](https://github.com/c60evaporator/muscle-tuning/blob/master/examples/method_examples/grid_search_tuning.py)
