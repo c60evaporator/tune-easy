@@ -14,10 +14,65 @@ y = california_housing[TARGET_VARIALBLE].values  # Explanatory variables
 X = california_housing[USE_EXPLANATORY].values  # Objective variable
 # Run tuning
 kinnikun = MuscleTuning()
-kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2)
+kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY)
 kinnikun.df_scores
 
 # %% MuscleTuning, regression, with argumets
+import parent_import
+from muscle_tuning import MuscleTuning
+from sklearn.datasets import fetch_california_housing
+import pandas as pd
+import numpy as np
+from sklearn.svm import SVR
+from xgboost import XGBRegressor
+# Load dataset
+TARGET_VARIALBLE = 'price'  # Objective variable name
+USE_EXPLANATORY = ['MedInc', 'AveOccup', 'Latitude', 'HouseAge']  # Selected explanatory variables
+california_housing = pd.DataFrame(np.column_stack((fetch_california_housing().data, fetch_california_housing().target)),
+        columns = np.append(fetch_california_housing().feature_names, TARGET_VARIALBLE))
+california_housing = california_housing.sample(n=1000, random_state=42)  # sampling from 20640 to 1000
+y = california_housing[TARGET_VARIALBLE].values  # Explanatory variables
+X = california_housing[USE_EXPLANATORY].values  # Objective variable
+# Set arguments
+not_opt_params_svr = {'kernel': 'rbf'}
+not_opt_params_xgb = {'objective': 'reg:squarederror',
+                      'random_state': 42,
+                      'booster': 'gbtree',
+                      'n_estimators': 100,
+                      'use_label_encoder': False}
+fit_params_xgb = {'verbose': 0,
+                  'eval_metric': 'rmse'}
+tuning_params_svr = {'gamma': (0.001, 1000),
+                     'C': (0.001, 1000),
+                     'epsilon': (0, 0.3)
+                     }
+tuning_params_xgb = {'learning_rate': (0.05, 0.3),
+                     'min_child_weight': (1, 10),
+                     'max_depth': (2, 9),
+                     'colsample_bytree': (0.2, 1.0),
+                     'subsample': (0.2, 1.0)
+                     }
+# Run tuning
+kinnikun = MuscleTuning()
+kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY,
+                             objective='regression',
+                             scoring='mae',
+                             other_scores=['rmse', 'mae', 'mape', 'r2'],
+                             learning_algos=['svr', 'xgboost'], 
+                             n_iter={'svr': 50,
+                                     'xgboost': 20},
+                             cv=3, tuning_algo='optuna', seed=42,
+                             estimators={'svr': SVR(),
+                                         'xgboost': XGBRegressor()},
+                             tuning_params={'svr': tuning_params_svr,
+                                            'xgboost': tuning_params_xgb},
+                             tuning_kws={'svr': {'not_opt_params': not_opt_params_svr},
+                                         'xgboost': {'not_opt_params': not_opt_params_xgb,
+                                                     'fit_params': fit_params_xgb}}
+                             )
+kinnikun.df_scores
+
+# %% MuscleTuning, regression, no argument, print_estimator
 import parent_import
 from muscle_tuning import MuscleTuning
 from sklearn.datasets import fetch_california_housing
@@ -31,38 +86,10 @@ california_housing = pd.DataFrame(np.column_stack((fetch_california_housing().da
 california_housing = california_housing.sample(n=1000, random_state=42)  # sampling from 20640 to 1000
 y = california_housing[TARGET_VARIALBLE].values  # Explanatory variables
 X = california_housing[USE_EXPLANATORY].values  # Objective variable
-# Set arguments
-
-# Run tuning
+# Run parameter tuning
 kinnikun = MuscleTuning()
-kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2)
-kinnikun.df_scores
-# %% MuscleTuning, regression, with argumets
-import parent_import
-from seaborn_analyzer import classplot
-from sklearn.linear_model import LogisticRegression
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler
-import seaborn as sns
-from sklearn.model_selection import cross_val_score, KFold
-# Load dataset
-iris = sns.load_dataset("iris")
-TARGET_VARIABLE = 'species'  # Objective variable name
-USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']  # Selected explanatory variables
-y = iris[TARGET_VARIABLE].values  # Objective variable
-X = iris[USE_EXPLANATORY].values  # Explanatory variables
+kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY)
+# Print estimator
+kinnikun.print_estimator('svr', 'svr estimator')
 
-NOT_OPT_PARAMS = {'logr__penalty': 'l2', 'logr__solver': 'lbfgs'}
-BEST_PARAMS = {'logr__C': 29.13656314177006}
-params = {}
-params.update(NOT_OPT_PARAMS)
-params.update(BEST_PARAMS)
-estimator = Pipeline(steps=[('scaler', StandardScaler()), ('logr', LogisticRegression())])
-estimator.set_params(**params)
-
-classplot.class_separator_plot(estimator, X, y, x_colnames=USE_EXPLANATORY, cv=5, pair_sigmarange=1.0)
-
-auc = cross_val_score(estimator, X, y, scoring='roc_auc_ovr', cv=KFold(n_splits=5, shuffle=True, random_state=42))
-print(auc)
-#classplot.roc_plot(estimator, X, y, x_colnames=USE_EXPLANATORY, cv=5)
 # %%

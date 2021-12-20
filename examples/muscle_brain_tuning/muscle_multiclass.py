@@ -46,12 +46,12 @@ tuning_params_xgb = {'learning_rate': (0.05, 0.3),
 # Run parameter tuning
 kinnikun = MuscleTuning()
 kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY,
-                             objective='classification', 
+                             objective='classification',
                              scoring='auc_ovo',
                              other_scores=['accuracy', 'precision_macro', 'recall_macro', 'f1_micro', 'f1_macro', 'f1_weighted', 'auc_ovr', 'auc_ovo'],
                              learning_algos=['svm', 'xgboost'], 
-                             n_trials={'svm': 50,
-                                       'xgboost': 20},
+                             n_iter={'svm': 50,
+                                     'xgboost': 20},
                              cv=3, tuning_algo='optuna', seed=42,
                              estimators={'svm': SVC(),
                                          'xgboost': XGBClassifier()},
@@ -61,6 +61,22 @@ kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY,
                                          'xgboost': {'not_opt_params': not_opt_params_xgb,
                                                      'fit_params': fit_params_xgb}}
                              )
-kinnikun.print_estimator('xgboost')
 kinnikun.df_scores
+
+# %% MuscleTuning, multiclass, no argument, print_estimator
+import parent_import
+from muscle_tuning import MuscleTuning
+import seaborn as sns
+# Load dataset
+iris = sns.load_dataset("iris")
+TARGET_VARIALBLE = 'species'  # Target variable name
+USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']  # Selected explanatory variables
+y = iris[TARGET_VARIALBLE].values
+X = iris[USE_EXPLANATORY].values
+# Run parameter tuning
+kinnikun = MuscleTuning()
+kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY)
+# Print estimator
+kinnikun.print_estimator('randomforest', 'randomforest estimator')
+
 # %%
