@@ -538,7 +538,7 @@ tuning.optuna_tuning(mlflow_logging='inside')  # MLflowのロギングを指定�
 ## `mlflow_logging`='outside'のとき
 `mlflow_logging`='outside'と指定すると、エクスペリメント立ち上げ等のMLflowに必要な処理を外部で明示的に実装する必要があります。
 
-チューニング関係以外の情報も同じRunで記録したい場合、こちらの方法を使用してください
+本ライブラリで自動記録されるもの以外の情報も同じRunで記録したい場合、こちらの方法を使用してください
 
 ### ・実装例
 
@@ -546,14 +546,19 @@ tuning.optuna_tuning(mlflow_logging='inside')  # MLflowのロギングを指定�
 from muscle_tuning import SVMRegressorTuning
 import pandas as pd
 import mlflow
+# データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-TARGET_VARIALBLE_REG = 'approval_rate'  # Target variable
-USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
+TARGET_VARIALBLE_REG = 'approval_rate'  # 目的変数
+USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
 y = df_reg[TARGET_VARIALBLE_REG].values
 X = df_reg[USE_EXPLANATORY_REG].values
 tuning = SVMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=TARGET_VARIALBLE_REG)
+# MLflowのRun開始
 with mlflow.start_run() as run:
+    # Optunaでのチューニング結果をMLflowでロギング
     tuning.optuna_tuning(mlflow_logging='outside')
+    # 追加で記録したい情報
     mlflow.log_param('data_name', 'osaka_metropolis')
+    mlflow.log_dict(tuning.tuning_params, 'tuning_params.json')
 ```
-※ なお、この方法では`mlflow_logging`[以外のMLflow用引数]()は指定できないのでご注意ください。
+※ なお、この方法では`mlflow_logging`以外のMLflow用引数 (`mlflow_tracking_uri`, `mlflow_artifact_location`, `mlflow_experiment_name`)は指定できないのでご注意ください。
