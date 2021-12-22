@@ -87,4 +87,20 @@ X = df_reg[USE_EXPLANATORY_REG].values
 tuning = SVMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=TARGET_VARIALBLE_REG)
 tuning.optuna_tuning(mlflow_logging='inside', mlflow_tracking_uri=tracking_uri,
                      mlflow_experiment_name=EXPERIMENT_NAME, mlflow_artifact_location=ARTIFACT_LOCATION)
+
+# %% MLFlow　Optuna outside
+import parent_import
+from muscle_tuning import SVMRegressorTuning
+import pandas as pd
+import mlflow
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
+TARGET_VARIALBLE_REG = 'approval_rate'  # Target variable
+USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
+y = df_reg[TARGET_VARIALBLE_REG].values
+X = df_reg[USE_EXPLANATORY_REG].values
+tuning = SVMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=TARGET_VARIALBLE_REG)
+with mlflow.start_run() as run:
+    tuning.optuna_tuning(mlflow_logging='outside')
+    mlflow.log_param('data_name', 'osaka_metropolis')
+
 # %%
