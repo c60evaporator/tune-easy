@@ -316,6 +316,24 @@ kinnikun.df_scores
 |mlflow_logging|オプション|bool|False|MLflowでの結果記録有無(True:MLflow記録あり, False:MLflow記録なし|
 
 ### 実行例
-コードは[こちらにもアップロードしています](https://github.com/c60evaporator/muscle-tuning/blob/master/examples/method_examples/grid_search_tuning.py)
-#### オプション引数指定なしでグリッドサーチ
-オプション引数を指定しないとき、[デフォルトの引数]()を使用してプロットします
+コードは[こちらにもアップロードしています](https://github.com/c60evaporator/muscle-tuning/blob/master/examples/muscle_brain_tuning/print_estimator.py)
+
+```python
+from muscle_tuning import MuscleTuning
+import seaborn as sns
+# データセット読込
+iris = sns.load_dataset("iris")
+iris = iris[iris['species'] != 'setosa']  # 2クラスに絞る
+TARGET_VARIALBLE = 'species'  # 目的変数
+USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']  # 説明変数
+y = iris[TARGET_VARIALBLE].values
+X = iris[USE_EXPLANATORY].values
+# 一括チューニング実行 
+kinnikun = MuscleTuning()
+kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY)
+###### Print estimator ######
+kinnikun.print_estimator('randomforest', 'randomforest estimator')
+```
+
+<img width="480" src="https://user-images.githubusercontent.com/59557625/147111845-bf4225c1-429c-46c5-ac6f-379b721fcab7.png">
+
