@@ -334,6 +334,6 @@ kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY)
 ###### Print estimator ######
 kinnikun.print_estimator('randomforest', 'randomforest estimator')
 ```
+実行結果（プロットされる図は割愛）
 
 <img width="480" src="https://user-images.githubusercontent.com/59557625/147111845-bf4225c1-429c-46c5-ac6f-379b721fcab7.png">
-
