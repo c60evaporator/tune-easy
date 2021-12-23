@@ -1,7 +1,7 @@
-====================
-param-tuning-utility
-====================
-A hyperparameter tuning tool with gorgeous UI for scikit-learn API
+=============
+muscle-tuning
+=============
+A hyperparameter tuning tool with numerous UI for scikit-learn API
 
 =====
 Usage
