@@ -42,7 +42,6 @@ kinnikun.df_scores
 
 ```python
 from muscle_tuning import LGBMClassifierTuning
-from sklearn.datasets import load_boston
 import seaborn as sns
 # データセット読込
 iris = sns.load_dataset("iris")
