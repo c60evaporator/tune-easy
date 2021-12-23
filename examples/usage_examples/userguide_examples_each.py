@@ -122,7 +122,7 @@ print(f'Not tuned parameters\n{tuning.not_opt_params}\n')  # Parameters not used
 print(f'Best score\n{best_score}\n')  # Best score in optimized parameters
 print(f'Elapsed time\n{tuning.elapsed_time}\n')  # Elapsed time
 
-# %% 5.1 Plot search history
+# %% 5.1 Plot score increase history
 tuning.plot_search_history()
 
 # %% 5.2 Visualize relationship between parameters and validation score
