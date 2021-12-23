@@ -1,7 +1,19 @@
 =============
 muscle-tuning
 =============
-A hyperparameter tuning tool with numerous UI for scikit-learn API
+
+|python| |pypi| |license|
+
+.. |python| image:: https://img.shields.io/pypi/pyversions/muscle-tuning
+   :target: https://www.python.org/
+
+.. |pypi| image:: https://img.shields.io/pypi/v/muscle-tuning?color=blue
+   :target: https://pypi.org/project/muscle-tuning/
+
+.. |license| image:: https://img.shields.io/pypi/l/muscle-tuning?color=blue
+   :target: https://github.com/c60evaporator/muscle-tuning/blob/master/LICENSE
+
+A hyperparameter tuning tool, easy to use for scikit-learn API
 
 =====
 Usage
