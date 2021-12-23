@@ -1,7 +1,7 @@
-Tuning classes of each ML estimators
-====================================
+Tuning class of each ML estimator
+=================================
 
-Select tuning class of appropreate machine learning estimator.
+Select appropreate tuning class for your machine learning estimator.
 
 muscle\_tuning.elasticnet\_tuning module
 ----------------------------------------
@@ -15,14 +15,6 @@ muscle\_tuning.lgbm\_tuning module
 ----------------------------------
 
 .. automodule:: muscle_tuning.lgbm_tuning
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-muscle\_tuning.linearregression\_tuning module
-----------------------------------------------
-
-.. automodule:: muscle_tuning.linearregression_tuning
    :members:
    :undoc-members:
    :show-inheritance:

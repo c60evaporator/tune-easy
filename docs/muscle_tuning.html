@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>All-in-one tuning class &mdash; muscle-tuning 0.1.9 documentation</title>
+  <title>All-in-one tuning class &mdash; muscle-tuning 0.1.10 documentation</title>
   
 
   
@@ -175,8 +175,8 @@
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="muscle_tuning.muscle_tuning.MuscleTuning.N_TRIALS">
-<span class="sig-name descname"><span class="pre">N_TRIALS</span></span><em class="property"> <span class="pre">=</span> <span class="pre">{'binary':</span> <span class="pre">{'lightgbm':</span> <span class="pre">200,</span> <span class="pre">'logistic':</span> <span class="pre">500,</span> <span class="pre">'randomforest':</span> <span class="pre">300,</span> <span class="pre">'svm':</span> <span class="pre">500,</span> <span class="pre">'xgboost':</span> <span class="pre">100},</span> <span class="pre">'multiclass':</span> <span class="pre">{'lightgbm':</span> <span class="pre">20,</span> <span class="pre">'logistic':</span> <span class="pre">500,</span> <span class="pre">'randomforest':</span> <span class="pre">300,</span> <span class="pre">'svm':</span> <span class="pre">50,</span> <span class="pre">'xgboost':</span> <span class="pre">100},</span> <span class="pre">'regression':</span> <span class="pre">{'elasticnet':</span> <span class="pre">500,</span> <span class="pre">'lightgbm':</span> <span class="pre">200,</span> <span class="pre">'randomforest':</span> <span class="pre">300,</span> <span class="pre">'svr':</span> <span class="pre">500,</span> <span class="pre">'xgboost':</span> <span class="pre">100}}</span></em><a class="headerlink" href="#muscle_tuning.muscle_tuning.MuscleTuning.N_TRIALS" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="muscle_tuning.muscle_tuning.MuscleTuning.N_ITER">
+<span class="sig-name descname"><span class="pre">N_ITER</span></span><em class="property"> <span class="pre">=</span> <span class="pre">{'binary':</span> <span class="pre">{'lightgbm':</span> <span class="pre">200,</span> <span class="pre">'logistic':</span> <span class="pre">500,</span> <span class="pre">'randomforest':</span> <span class="pre">300,</span> <span class="pre">'svm':</span> <span class="pre">500,</span> <span class="pre">'xgboost':</span> <span class="pre">100},</span> <span class="pre">'multiclass':</span> <span class="pre">{'lightgbm':</span> <span class="pre">200,</span> <span class="pre">'logistic':</span> <span class="pre">500,</span> <span class="pre">'randomforest':</span> <span class="pre">300,</span> <span class="pre">'svm':</span> <span class="pre">50,</span> <span class="pre">'xgboost':</span> <span class="pre">100},</span> <span class="pre">'regression':</span> <span class="pre">{'elasticnet':</span> <span class="pre">500,</span> <span class="pre">'lightgbm':</span> <span class="pre">200,</span> <span class="pre">'randomforest':</span> <span class="pre">300,</span> <span class="pre">'svr':</span> <span class="pre">500,</span> <span class="pre">'xgboost':</span> <span class="pre">100}}</span></em><a class="headerlink" href="#muscle_tuning.muscle_tuning.MuscleTuning.N_ITER" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -191,58 +191,121 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="muscle_tuning.muscle_tuning.MuscleTuning.muscle_brain_tuning">
-<span class="sig-name descname"><span class="pre">muscle_brain_tuning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_colnames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objective</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scoring</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learning_algos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_trials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuning_algo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'optuna'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">42</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">estimators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuning_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mlflow_logging</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mlflow_tracking_uri</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mlflow_artifact_location</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mlflow_experiment_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuning_kws</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muscle_tuning.muscle_tuning.MuscleTuning.muscle_brain_tuning" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">muscle_brain_tuning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_colnames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objective</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scoring</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learning_algos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuning_algo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'optuna'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">42</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">estimators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuning_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mlflow_logging</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mlflow_tracking_uri</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mlflow_artifact_location</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mlflow_experiment_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuning_kws</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muscle_tuning.muscle_tuning.MuscleTuning.muscle_brain_tuning" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parameter tuning with multiple estimators. Easy to use even if your brain is made of muscle.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>list</em><em>[</em><em>str</em><em>]</em><em>, or </em><em>numpy.ndarray</em>) – Explanatory variables. Should be list[str] if <code class="docutils literal notranslate"><span class="pre">data</span></code> is pd.DataFrame.
 Should be numpy.ndarray if <code class="docutils literal notranslate"><span class="pre">data</span></code> is None.</p></li>
-<li><p><strong>y</strong> (<em>str</em><em> or </em><em>numpy.ndarray</em>) – Objective variable. Should be str if <code class="docutils literal notranslate"><span class="pre">data</span></code> is pd.DataFrame.
+<li><p><strong>y</strong> (<em>str</em><em> or </em><em>numpy.ndarray</em>) – Target variable. Should be str if <code class="docutils literal notranslate"><span class="pre">data</span></code> is pd.DataFrame.
 Should be numpy.ndarray if <code class="docutils literal notranslate"><span class="pre">data</span></code> is None.</p></li>
 <li><p><strong>data</strong> (<em>pd.DataFrame</em><em>, </em><em>default=None</em>) – Input data structure.</p></li>
 <li><p><strong>x_colnames</strong> (<em>list</em><em>[</em><em>str</em><em>]</em><em>, </em><em>default=None</em>) – Names of explanatory variables. Available only if data is NOT pd.DataFrame.</p></li>
 <li><p><strong>cv_group</strong> (<em>str</em><em> or </em><em>numpy.ndarray</em><em>, </em><em>default=None</em>) – Grouping variable that will be used for GroupKFold or LeaveOneGroupOut.
 Should be str if <code class="docutils literal notranslate"><span class="pre">data</span></code> is pd.DataFrame.</p></li>
 <li><p><strong>objective</strong> (<em>{'classification'</em><em>, </em><em>'regression'}</em><em>, </em><em>default=None</em>) – Specify the learning task.
-If None, select task by objective variable automatically.</p></li>
+If None, select task by target variable automatically.</p></li>
 <li><p><strong>scoring</strong> (<em>str</em><em>, </em><em>default=None</em>) – <p>Score name used to parameter tuning.</p>
-<p>In regression, use ‘rmse’, ‘mse’, ‘mae’, ‘rmsle’, ‘mape’, or ‘r2’.</p>
-<p>In binary classification, use ‘logloss’, ‘accuracy’, ‘precision’, ‘recall’, ‘f1’, ‘pr_auc’, ‘auc’.</p>
-<p>In multiclass classification, use ‘logloss’, ‘accuracy’, ‘precision_macro’, ‘recall_macro’, ‘f1_micro’, ‘f1_macro’, ‘f1_weighted’, ‘auc_ovr’, ‘auc_ovo’, ‘auc_ovr_weighted’, ‘auc_ovo_weighted’.</p>
-<p>If None, the <cite>SCORING</cite> constant is used.
-See</p>
+<ul>
+<li><dl class="simple">
+<dt>In regression:</dt><dd><ul>
+<li><p>’rmse’ : Root mean squared error</p></li>
+<li><p>’mse’ : Mean squared error</p></li>
+<li><p>’mae’ : Mean absolute error</p></li>
+<li><p>’rmsle’ : Rot mean absolute logarithmic error</p></li>
+<li><p>’mape’ : Mean absolute percentage error</p></li>
+<li><p>’r2’ : R2 Score</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>In binary classification:</dt><dd><ul>
+<li><p>’logloss’ : Logarithmic Loss</p></li>
+<li><p>’accuracy’ : Accuracy</p></li>
+<li><p>’precision’ : Precision</p></li>
+<li><p>’recall’ : Recall</p></li>
+<li><p>’f1’ : F1 score</p></li>
+<li><p>’pr_auc’ : PR-AUC</p></li>
+<li><p>’auc’ : AUC</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>In multiclass classification:</dt><dd><ul>
+<li><p>’logloss’ : Logarithmic Loss</p></li>
+<li><p>’accuracy’ : Accuracy</p></li>
+<li><p>’precision_macro’ : Precision macro</p></li>
+<li><p>’recall_macro’ : Recall macro</p></li>
+<li><p>’f1_micro’ : F1 micro</p></li>
+<li><p>’f1_macro’ : F1 macro</p></li>
+<li><p>’f1_weighted’ : F1 weighted</p></li>
+<li><p>’auc_ovr’ : One-vs-rest AUC</p></li>
+<li><p>’auc_ovo’ : One-vs-one AUC</p></li>
+<li><p>’auc_ovr’ : One-vs-rest AUC weighted</p></li>
+<li><p>’auc_ovo’ : One-vs-one AUC weighted</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p>If None, the <cite>SCORING</cite> constant is used.</p>
+<p>See <a class="reference external" href="https://c60evaporator.github.io/muscle-tuning/muscle_tuning.html#muscle_tuning.muscle_tuning.MuscleTuning.SCORING">https://c60evaporator.github.io/muscle-tuning/muscle_tuning.html#muscle_tuning.muscle_tuning.MuscleTuning.SCORING</a></p>
 </p></li>
-<li><p><strong>other_scores</strong> (<em>list</em><em>[</em><em>str</em><em>]</em><em>, </em><em>default=None</em>) – <p>Score names calculated after tuning. Input strings are the same as that of <cite>scoring</cite> argument.</p>
-<p>Note that “rmsle” score may causes an error if predicted values or true values include negative value.</p>
-<p>If None, the <cite>OTHER_SCORES</cite> constant is used.
-See</p>
+<li><p><strong>other_scores</strong> (<em>list</em><em>[</em><em>str</em><em>]</em><em>, </em><em>default=None</em>) – <p>Score names calculated after tuning. Available score names are written in the explatnation of <cite>scoring</cite> argument.</p>
+<p>If None, the <cite>OTHER_SCORES</cite> constant is used.</p>
+<p>See <a class="reference external" href="https://c60evaporator.github.io/muscle-tuning/muscle_tuning.html#muscle_tuning.muscle_tuning.MuscleTuning.OTHER_SCORES">https://c60evaporator.github.io/muscle-tuning/muscle_tuning.html#muscle_tuning.muscle_tuning.MuscleTuning.OTHER_SCORES</a></p>
 </p></li>
-<li><p><strong>learning_algos</strong> (<em>list</em><em>[</em><em>str</em><em>]</em><em>, </em><em>default=None</em>) – <p>Estimator algorithm. ‘svm’: Support vector machine, ‘svr’: Support vector regression, ‘logistic’: Logistic Regression, ‘elasiticnet’: ElasticNet, ‘randomforest’: RandomForest, ‘lightgbm’: LightGBM, ‘xgboost’: XGBoost.</p>
-<p>In regression, use ‘linear_regression’, ‘elasticnet’, ‘svr’, ‘randomforest’, ‘lightgbm’, or ‘xgboost’.</p>
-<p>In classification, use ‘svm’, ‘logistic’, ‘randomforest’, ‘lightgbm’, or ‘xgboost’.</p>
-<p>If None, the <cite>LEARNING_ALGOS</cite> constant is used.
-See</p>
+<li><p><strong>learning_algos</strong> (<em>list</em><em>[</em><em>str</em><em>]</em><em>, </em><em>default=None</em>) – <p>Estimator algorithm. Select the following algorithms and make a list of them.</p>
+<ul>
+<li><dl class="simple">
+<dt>In regression:</dt><dd><ul>
+<li><p>’linear_regression’ : LinearRegression</p></li>
+<li><p>’elasticnet’ : ElasticNet</p></li>
+<li><p>’svr’ : SVR</p></li>
+<li><p>’randomforest’ : RandomForestRegressor</p></li>
+<li><p>’lightgbm’ : LGBMRegressor</p></li>
+<li><p>’xgboost’ : XGBRegressor</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>In regression:</dt><dd><ul>
+<li><p>’svm’ : SVC</p></li>
+<li><p>’logistic’ : LogisticRegression</p></li>
+<li><p>’randomforest’ : RandomForestClassifier</p></li>
+<li><p>’lightgbm’ : LGBMClassifier</p></li>
+<li><p>’xgboost’ : XGBClassifier</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p>If None, the <cite>LEARNING_ALGOS</cite> constant is used.</p>
+<p>See <a class="reference external" href="https://c60evaporator.github.io/muscle-tuning/muscle_tuning.html#muscle_tuning.muscle_tuning.MuscleTuning.LEARNING_ALGOS">https://c60evaporator.github.io/muscle-tuning/muscle_tuning.html#muscle_tuning.muscle_tuning.MuscleTuning.LEARNING_ALGOS</a></p>
 </p></li>
-<li><p><strong>n_trials</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>int</em><em>]</em><em>, </em><em>default=None</em>) – <p>Iteration number of parameter tuning. Keys should be members of <code class="docutils literal notranslate"><span class="pre">algo</span></code> argument.
+<li><p><strong>n_iter</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>int</em><em>]</em><em>, </em><em>default=None</em>) – <p>Iteration number of parameter tuning. Keys should be members of <code class="docutils literal notranslate"><span class="pre">learning_algos</span></code> argument.
 Values should be iteration numbers.</p>
-<p>If None, the <cite>N_TRIALS</cite> constant is used.
-See</p>
+<p>If None, the <cite>N_ITER</cite> constant is used.</p>
+<p>See <a class="reference external" href="https://c60evaporator.github.io/muscle-tuning/muscle_tuning.html#muscle_tuning.muscle_tuning.MuscleTuning.N_ITER">https://c60evaporator.github.io/muscle-tuning/muscle_tuning.html#muscle_tuning.muscle_tuning.MuscleTuning.N_ITER</a></p>
 </p></li>
 <li><p><strong>cv</strong> (<em>int</em><em>, </em><em>cross-validation generator</em><em>, or </em><em>an iterable</em><em>, </em><em>default=5</em>) – Determines the cross-validation splitting strategy. If None, to use the default 5-fold cross validation. If int, to specify the number of folds in a KFold.</p></li>
 <li><p><strong>tuning_algo</strong> (<em>{'grid'</em><em>, </em><em>'random'</em><em>, </em><em>'bo'</em><em>, </em><em>'optuna'}</em><em>, </em><em>default='optuna'</em>) – Tuning algorithm using following libraries. ‘grid’: sklearn.model_selection.GridSearchCV, ‘random’: sklearn.model_selection.RandomizedSearchCV, ‘bo’: BayesianOptimization, ‘optuna’: Optuna.</p></li>
 <li><p><strong>seed</strong> (<em>int</em><em>, </em><em>default=42</em>) – Seed for random number generator of cross validation, estimators, and optuna.sampler.</p></li>
 <li><p><strong>estimators</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>estimator object implementing 'fit'</em><em>]</em><em>, </em><em>default=None</em>) – <p>Classification or regression estimators used to tuning.
-Keys should be members of <code class="docutils literal notranslate"><span class="pre">algo</span></code> argument.
+Keys should be members of <code class="docutils literal notranslate"><span class="pre">learning_algos</span></code> argument.
 Values are assumed to implement the scikit-learn estimator interface.</p>
 <p>If None, use default estimators of tuning instances</p>
-<p>See</p>
+<p>See <a class="reference external" href="https://c60evaporator.github.io/muscle-tuning/each_estimators.html">https://c60evaporator.github.io/muscle-tuning/each_estimators.html</a></p>
 </p></li>
 <li><p><strong>tuning_params</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>dict</em><em>[</em><em>str</em><em>, </em><em>{list</em><em>, </em><em>tuple}</em><em>]</em><em>]</em><em>, </em><em>default=None</em>) – <p>Values should be dictionary with parameters names as keys and
 lists of parameter settings or parameter range to try as values.
-Keys should be members of <code class="docutils literal notranslate"><span class="pre">algo</span></code> argument.</p>
+Keys should be members of <code class="docutils literal notranslate"><span class="pre">learning_algos</span></code> argument.</p>
 <p>If None, use default values of tuning instances</p>
-<p>See</p>
+<p>See <a class="reference external" href="https://c60evaporator.github.io/muscle-tuning/each_estimators.html">https://c60evaporator.github.io/muscle-tuning/each_estimators.html</a></p>
 </p></li>
 <li><p><strong>mlflow_logging</strong> (<em>str</em><em>, </em><em>default=None</em>) – <p>Strategy to record the result by MLflow library.</p>
 <p>If True, nested runs are created.
@@ -260,7 +323,7 @@ The child runs are created in each tuning instances by setting <code class="docu
 <p>See <a class="reference external" href="https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.create_experiment">https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.create_experiment</a></p>
 </p></li>
 <li><p><strong>tuning_kws</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>dict</em><em>]</em><em>, </em><em>default=None</em>) – <p>Additional parameters passed to tuning instances.
-Keys should be members of <code class="docutils literal notranslate"><span class="pre">algo</span></code> argument.
+Keys should be members of <code class="docutils literal notranslate"><span class="pre">learning_algos</span></code> argument.
 Values should be dict of parameters passed to tuning instances, e.g. {‘not_opt_params’: {‘’kernel’: ‘rbf’}}.</p>
 <p>See API Reference of tuning instances.</p>
 </p></li>
@@ -277,7 +340,7 @@ Values should be dict of parameters passed to tuning instances, e.g. {‘not_opt
 
 <dl class="py method">
 <dt class="sig sig-object py" id="muscle_tuning.muscle_tuning.MuscleTuning.print_estimator">
-<span class="sig-name descname"><span class="pre">print_estimator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">learner_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muscle_tuning.muscle_tuning.MuscleTuning.print_estimator" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">print_estimator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">learner_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">printed_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mlflow_logging</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#muscle_tuning.muscle_tuning.MuscleTuning.print_estimator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print estimator after tuning</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
