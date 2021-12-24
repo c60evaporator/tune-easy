@@ -49,3 +49,4 @@ X = iris[USE_EXPLANATORY].values
 kinnikun = MuscleTuning()
 kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2,
                              mlflow_logging=True)  # Set MLflow logging argument
+# %%

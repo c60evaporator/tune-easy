@@ -2,11 +2,13 @@
 import parent_import
 from muscle_tuning import XGBRegressorTuning
 import pandas as pd
+# Load dataset
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-TARGET_VARIABLE = 'approval_rate'  # 目的変数
-USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+TARGET_VARIABLE = 'approval_rate'  # Target variable
+USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
 y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLATATORY].values
+# Run parameter tuning
 tuning = XGBRegressorTuning(X, y, USE_EXPLATATORY, y_colname=TARGET_VARIABLE)
 tuning.plot_first_validation_curve()
 tuning.grid_search_tuning()
@@ -21,11 +23,13 @@ tuning.plot_feature_importances()
 import parent_import
 from muscle_tuning import XGBRegressorTuning
 import pandas as pd
+# Load dataset
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-TARGET_VARIABLE = 'approval_rate'  # 目的変数
-USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+TARGET_VARIABLE = 'approval_rate'  # Target variable
+USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
 y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLATATORY].values
+# Run parameter tuning
 tuning = XGBRegressorTuning(X, y, USE_EXPLATATORY, y_colname=TARGET_VARIABLE)
 tuning.optuna_tuning()
 tuning.plot_search_history()
@@ -42,11 +46,13 @@ from xgboost import XGBRegressor
 import pandas as pd
 from sklearn.model_selection import KFold
 import matplotlib.pyplot as plt
+# Load dataset
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-TARGET_VARIABLE = 'approval_rate'  # 目的変数
-USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+TARGET_VARIABLE = 'approval_rate'  # Target variable
+USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
 y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLATATORY].values
+# Run parameter tuning
 tuning = XGBRegressorTuning(X, y, USE_EXPLATATORY, y_colname=TARGET_VARIABLE)
 tuning_params = {'learning_rate': [0.01, 0.1, 0.3],  # 過学習のバランス(高いほど過学習寄り、低いほど汎化寄り）別名eta
                  'min_child_weight': [2, 4, 8],  # 葉に割り当てるスコアwiの合計の最小値。これを下回った場合、それ以上の分割を行わない
@@ -105,11 +111,13 @@ from xgboost import XGBRegressor
 import pandas as pd
 from sklearn.model_selection import KFold
 import matplotlib.pyplot as plt
+# Load dataset
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-TARGET_VARIABLE = 'approval_rate'  # 目的変数
-USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+TARGET_VARIABLE = 'approval_rate'  # Target variable
+USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
 y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLATATORY].values
+# Run parameter tuning
 tuning = XGBRegressorTuning(X, y, USE_EXPLATATORY, y_colname=TARGET_VARIABLE)
 tuning_params = {'learning_rate': [0.01, 0.02, 0.05, 0.1, 0.2, 0.3],
                  'min_child_weight': [2, 3, 4, 5],
@@ -169,11 +177,13 @@ from xgboost import XGBRegressor
 import pandas as pd
 from sklearn.model_selection import KFold
 import matplotlib.pyplot as plt
+# Load dataset
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-TARGET_VARIABLE = 'approval_rate'  # 目的変数
-USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+TARGET_VARIABLE = 'approval_rate'  # Target variable
+USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
 y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLATATORY].values
+# Run parameter tuning
 tuning = XGBRegressorTuning(X, y, USE_EXPLATATORY, y_colname=TARGET_VARIABLE)
 tuning_params = {'learning_rate': (0.01, 0.3),  # 過学習のバランス(高いほど過学習寄り、低いほど汎化寄り）別名eta
                  'min_child_weight': (2, 5),  # 葉に割り当てるスコアwiの合計の最小値。これを下回った場合、それ以上の分割を行わない
@@ -236,11 +246,13 @@ import pandas as pd
 from sklearn.model_selection import KFold
 import matplotlib.pyplot as plt
 import optuna
+# Load dataset
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-TARGET_VARIABLE = 'approval_rate'  # 目的変数
-USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+TARGET_VARIABLE = 'approval_rate'  # Target variable
+USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
 y = df_reg[TARGET_VARIABLE].values
 X = df_reg[USE_EXPLATATORY].values
+# Run parameter tuning
 tuning = XGBRegressorTuning(X, y, USE_EXPLATATORY, y_colname=TARGET_VARIABLE)
 tuning_params = {'learning_rate': (0.01, 0.3),  # 過学習のバランス(高いほど過学習寄り、低いほど汎化寄り）別名eta
                  'min_child_weight': (2, 5),  # 葉に割り当てるスコアwiの合計の最小値。これを下回った場合、それ以上の分割を行わない

@@ -3,10 +3,12 @@ import parent_import
 from muscle_tuning import LogisticRegressionTuning
 import seaborn as sns
 iris = sns.load_dataset("iris")
-TARGET_VARIALBLE = 'species'  # 目的変数
-USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']  # 説明変数
+# Load dataset
+TARGET_VARIALBLE = 'species'  # Target variable
+USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']  # Explanatory variables
 y = iris[TARGET_VARIALBLE].values
 X = iris[USE_EXPLANATORY].values
+# Run parameter tuning
 tuning = LogisticRegressionTuning(X, y, USE_EXPLANATORY, y_colname=TARGET_VARIALBLE)
 tuning.plot_first_validation_curve()
 tuning.grid_search_tuning()
