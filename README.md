@@ -84,7 +84,7 @@ kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2,
                              mlflow_logging=True)  # MLflowによる記録を指定
 ```
 
-<img width="640" src="https://user-images.githubusercontent.com/59557625/145711588-be0e393f-be7b-4833-b17a-05eecd6ad014.png">
+<img width="640" src="https://user-images.githubusercontent.com/59557625/147270240-f779cf1f-b216-42a2-8156-37169511ec3e.png">
 
 <br>
 

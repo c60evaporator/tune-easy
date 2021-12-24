@@ -1,7 +1,19 @@
 =============
 muscle-tuning
 =============
-A hyperparameter tuning tool with numerous UI for scikit-learn API
+
+|python| |pypi| |license|
+
+.. |python| image:: https://img.shields.io/pypi/pyversions/muscle-tuning
+   :target: https://www.python.org/
+
+.. |pypi| image:: https://img.shields.io/pypi/v/muscle-tuning?color=blue
+   :target: https://pypi.org/project/muscle-tuning/
+
+.. |license| image:: https://img.shields.io/pypi/l/muscle-tuning?color=blue
+   :target: https://github.com/c60evaporator/muscle-tuning/blob/master/LICENSE
+
+A hyperparameter tuning tool, easy to use for scikit-learn API
 
 =====
 Usage
@@ -92,7 +104,7 @@ Example of MLflow logging
     kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2,
                                  mlflow_logging=True)  # Set MLflow logging argument
 
-.. image:: https://user-images.githubusercontent.com/59557625/145711588-be0e393f-be7b-4833-b17a-05eecd6ad014.png
+.. image:: https://user-images.githubusercontent.com/59557625/147270240-f779cf1f-b216-42a2-8156-37169511ec3e.png
    :width: 640px
 
 If you want to know usage of the other classes, see `API Reference
