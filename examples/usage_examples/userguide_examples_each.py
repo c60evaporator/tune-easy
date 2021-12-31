@@ -199,6 +199,7 @@ tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # Make tuning instance
 tuning.optuna_tuning(mlflow_logging='inside')  # Run tuning with MLflow logging
 
 # %% MLflow logging 'outside'
+import parent_import
 from tune_easy import SVMRegressorTuning
 import pandas as pd
 import mlflow
@@ -216,3 +217,4 @@ with mlflow.start_run() as run:
     # 追加で記録したい情報
     mlflow.log_param('data_name', 'osaka_metropolis')
     mlflow.log_dict(tuning.tuning_params, 'tuning_params.json')
+# %%
