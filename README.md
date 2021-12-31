@@ -122,8 +122,8 @@ $ pip install tune-easy
 
 |方法|クラス名|用途|使用手順リンク|API仕様リンク|
 |---|---|---|---|---|
-|一括チューニング|[AllInOneTuning](https://github.com/c60evaporator/tune-easy#一括チューニング用クラス)|複数の機械学習アルゴリズムを一括チューニングして比較|[使用手順](https://github.com/c60evaporator/tune-easy#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E6%89%8B%E9%A0%86-all_in_one_tuning)|[API仕様](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_all_in_one.md)|
-|詳細チューニング|[学習器の種類毎に異なる](https://github.com/c60evaporator/tune-easy#詳細チューニング用クラス)|1種類の機械学習アルゴリズムのパラメータを詳細にチューニング|[使用手順](https://github.com/c60evaporator/tune-easy#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E6%89%8B%E9%A0%86-%E8%A9%B3%E7%B4%B0%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0)|[API仕様](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md)|
+|一括チューニング|[AllInOneTuning](https://github.com/c60evaporator/tune-easy#一括チューニング用クラス)|複数の機械学習アルゴリズムを一括チューニングして比較|[使用手順](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_all_in_one.md)|[API仕様](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_all_in_one.md)|
+|詳細チューニング|[学習器の種類毎に異なる](https://github.com/c60evaporator/tune-easy#詳細チューニング用クラス)|1種類の機械学習アルゴリズムのパラメータを詳細にチューニング|[使用手順](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_each.md)|[API仕様](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md)|
 
 <br>
 
