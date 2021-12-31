@@ -503,7 +503,7 @@ mlflow ui
 
 <img width="800" src="https://user-images.githubusercontent.com/59557625/147819096-fca5b4da-eca1-4898-bc04-592d74359571.png">
 
-##### ・Parameters
+##### ・Parametersに保存される内容
 以下の内容が記録されます
 
 <img width="720" src="https://user-images.githubusercontent.com/59557625/147819346-1def6aa2-7f7a-4529-88b2-9abdc94014cb.png">
@@ -521,7 +521,7 @@ mlflow ui
 |seed|乱数シード(クロスバリデーション分割、ベイズ最適化のサンプラー等で使用)|[`seed`プロパティ](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#プロパティ一覧)の値|チューニング用メソッド実行時の`seed`引数|
 |tuning_params|チューニング対象のパラメータ一覧|[`tuning_params`プロパティ](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#プロパティ一覧)の値|チューニング用メソッド実行時の`tuning_params`引数|
 
-##### ・Metrics
+##### ・Metricsに保存される内容
 以下の内容が記録されます
 
 <img width="200" src="https://user-images.githubusercontent.com/59557625/147820639-9e0d5be7-36de-494d-8dc0-ece3be7d33dd.png">
@@ -537,7 +537,7 @@ score_historyは、クリックすると推移をグラフ表示することが�
 
 <img width="600" src="https://user-images.githubusercontent.com/59557625/147820829-2d40f343-cb99-4214-9c87-46e74fb680a3.png">
 
-##### ・Tags
+##### ・Tagsに保存される内容
 以下の内容が記録されます
 
 <img width="240" src="https://user-images.githubusercontent.com/59557625/147820868-e1a2f50c-1706-4064-9404-77cf705ab3cd.png">
@@ -548,7 +548,7 @@ score_historyは、クリックすると推移をグラフ表示することが�
 |x_colnames|説明変数の名称|[`x_colnames`プロパティ](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#プロパティ一覧)の値|クラス初期化時の`x_colnames`引数|
 |y_colname|目的変数の名称|[`y_colname`プロパティ](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#プロパティ一覧)の値|クラス初期化時の`y_colname`引数|
 
-##### ・Artifacts
+##### ・Artifactsに保存される内容
 以下の内容が記録されます
 
 <img width="640" alt="スクリーンショット 2021-12-31 19 32 54" src="https://user-images.githubusercontent.com/59557625/147821140-4e32bad9-434e-4c34-b157-d4654db03d79.png">
