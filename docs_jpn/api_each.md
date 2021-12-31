@@ -1159,30 +1159,32 @@ importances
 
 # プロパティ一覧
 
-|プロパティ名|型|概要|
-|---|---|---|
-|X|numpy.ndarray|説明変数データ|
-|y|numpy.ndarray|説明変数データ|
-|x_colnames|list[str]|説明変数の名称|
-|y_colname|list[str]|目的変数の名称|
-|tuning_params|dict[str, {list, tuple}]|チューニング対象のパラメータ一覧|
-|not_opt_params|dict[str]|チューニング対象外のパラメータ一覧|
-|int_params|list[str]|整数型のパラメータのリスト(ベイズ最適化のみ)|
-|param_scales|dict[str, {'linear', 'log'}]|パラメータのスケール|
-|scoring|str|チューニングで最大化する評価スコア|
-|seed|int|乱数シード(クロスバリデーション分割、ベイズ最適化のサンプラー等で使用)|
-|cv|cross-validation generator|クロスバリデーション分割法|
-|estimator|estimator object implementing 'fit'|チューニング対象の学習器インスタンス|
-|learner_name|str|パイプライン処理時の学習器名称(estimatorがパイプラインのときのみ)|
-|fit_params|str|学習時のfit()に渡すパラメータをdict指定|
-|score_before|float|チューニング前のスコア|
-|tuning_algo|{'grid', 'random', 'bayes-opt', 'optuna'}|チューニングに使用したアルゴリズム名|
-|best_params|dict[str, {float, int}]|チューニング後の最適パラメータ|
-|best_score|float|チューニング後のスコア|
-|elapsed_time|float|所要時間|
-|best_estimator|estimator object implementing 'fit'|チューニング後の学習モデル|
-|search_history|dict[str]|探索履歴(パラメータ名をキーとしたdict)|
-|param_importances|pandas.Series|ランダムフォレストで求めた各パラメータのスコアに対する重要度(x_colnamesの順)|
+|プロパティ名|型|概要|指定されるタイミング|
+|---|---|---|---|
+|X|numpy.ndarray|説明変数データ|クラス初期化時の`X`引数|
+|y|numpy.ndarray|説明変数データ|クラス初期化時の`y`引数|
+|x_colnames|list[str]|説明変数の名称|クラス初期化時の`x_colnames`引数|
+|y_colname|str|目的変数の名称|クラス初期化時の`y_colname`引数|
+|cv_group|numpy.ndarray|GroupKFold、LeaveOneGroupOutのグルーピング対象データ|クラス初期化時の`cv_group`引数|
+|eval_set_selection|str|XGBoost, LightGBMにおける`fit_params['eval_set']`の指定方法|クラス初期化時の`eval_set_selection`引数|
+|tuning_params|dict[str, {list, tuple}]|チューニング対象のパラメータ一覧|チューニング用メソッド実行時の`tuning_params`引数|
+|not_opt_params|dict[str]|チューニング対象外のパラメータ一覧|チューニング用メソッド実行時の`not_opt_params`引数|
+|int_params|list[str]|整数型のパラメータのリスト(ベイズ最適化のみ)|チューニング用メソッド実行時の`int_params`引数|
+|param_scales|dict[str, {'linear', 'log'}]|パラメータのスケール|チューニング用メソッド実行時の`param_scales`引数|
+|scoring|str|チューニングで最大化する評価スコア|チューニング用メソッド実行時の`scoring`引数|
+|seed|int|乱数シード(クロスバリデーション分割、ベイズ最適化のサンプラー等で使用)|チューニング用メソッド実行時の`seed`引数|
+|cv|cross-validation generator|クロスバリデーション分割法|チューニング用メソッド実行時の`cv`引数|
+|estimator|estimator object implementing 'fit'|チューニング対象の学習器インスタンス|チューニング用メソッド実行時の`estimator`引数|
+|learner_name|str|パイプライン処理時の学習器名称(estimatorがパイプラインのときのみ)|(パイプライン末尾の学習器を自動取得)|
+|fit_params|str|学習時のfit()に渡すパラメータをdict指定|チューニング用メソッド実行時の`fit_params`引数|
+|score_before|float|チューニング前のスコア|(チューニング用メソッド実行時に自動算出)|
+|tuning_algo|{'grid', 'random', 'bayes-opt', 'optuna'}|チューニングに使用したアルゴリズム名|(実行したチューニング用メソッドから自動記録)|
+|best_params|dict[str, {float, int}]|チューニング後の最適パラメータ|(チューニング用メソッド実行時に自動算出)|
+|best_score|float|チューニング後のスコア|(チューニング用メソッド実行時に自動算出)|
+|elapsed_time|float|所要時間|(チューニング用メソッド実行時に自動算出)|
+|best_estimator|estimator object implementing 'fit'|チューニング後の最適パラメータを渡した学習器|(チューニング用メソッド実行時に自動算出)|
+|search_history|dict[str]|探索履歴(パラメータ名をキーとしたdict)|(チューニング用メソッド実行時に自動算出)|
+|param_importances|pandas.Series|ランダムフォレストで求めた各パラメータのスコアに対する重要度(x_colnamesの順)|(`plot_search_map`メソッド実行時に自動算出)|
 
 # 定数一覧
 各機械学習アルゴリズムごとのデフォルト値は、[クラス一覧](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#クラス一覧)項の、「デフォルトパラメータのリンク」のリンク先を参照ください
