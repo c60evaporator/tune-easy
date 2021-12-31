@@ -799,7 +799,7 @@ class AllInOneTuning():
                             mlflow_logging=False, mlflow_tracking_uri=None, mlflow_artifact_location=None, mlflow_experiment_name=None,
                             tuning_kws=None):
         """
-        Parameter tuning with multiple estimators. Easy to use even if your brain is made of muscle.
+        Parameter tuning with multiple estimators, extremely easy to use.
 
         Parameters
         ----------
@@ -860,14 +860,14 @@ class AllInOneTuning():
             
             If None, the `SCORING` constant is used.
 
-            See https://c60evaporator.github.io/muscle-tuning/muscle_tuning.html#muscle_tuning.muscle_tuning.MuscleTuning.SCORING
+            See https://c60evaporator.github.io/tune-easy/all_in_one_tuning.html#tune_easy.all_in_one_tuning.AllInOneTuning.SCORING
         
         other_scores : list[str], default=None
             Score names calculated after tuning. Available score names are written in the explatnation of `scoring` argument.
 
             If None, the `OTHER_SCORES` constant is used.
 
-            See https://c60evaporator.github.io/muscle-tuning/muscle_tuning.html#muscle_tuning.muscle_tuning.MuscleTuning.OTHER_SCORES
+            See https://c60evaporator.github.io/tune-easy/all_in_one_tuning.html#tune_easy.all_in_one_tuning.AllInOneTuning.OTHER_SCORES
 
             .. note::"rmsle" score may causes an error if predicted values or true values include negative value.
         
@@ -891,7 +891,7 @@ class AllInOneTuning():
 
             If None, the `LEARNING_ALGOS` constant is used.
 
-            See https://c60evaporator.github.io/muscle-tuning/muscle_tuning.html#muscle_tuning.muscle_tuning.MuscleTuning.LEARNING_ALGOS
+            See https://c60evaporator.github.io/tune-easy/all_in_one_tuning.html#tune_easy.all_in_one_tuning.AllInOneTuning.LEARNING_ALGOS
         
         n_iter : dict[str, int], default=None
             Iteration number of parameter tuning. Keys should be members of ``learning_algos`` argument.
@@ -899,7 +899,7 @@ class AllInOneTuning():
 
             If None, the `N_ITER` constant is used.
 
-            See https://c60evaporator.github.io/muscle-tuning/muscle_tuning.html#muscle_tuning.muscle_tuning.MuscleTuning.N_ITER
+            See https://c60evaporator.github.io/tune-easy/all_in_one_tuning.html#tune_easy.all_in_one_tuning.AllInOneTuning.N_ITER
         
         cv : int, cross-validation generator, or an iterable, default=5
             Determines the cross-validation splitting strategy. If None, to use the default 5-fold cross validation. If int, to specify the number of folds in a KFold.
@@ -917,7 +917,7 @@ class AllInOneTuning():
 
             If None, use default estimators of tuning instances
 
-            See https://c60evaporator.github.io/muscle-tuning/each_estimators.html
+            See https://c60evaporator.github.io/tune-easy/each_estimators.html
         
         tuning_params : dict[str, dict[str, {list, tuple}]], default=None
             Values should be dictionary with parameters names as keys and 
@@ -926,7 +926,7 @@ class AllInOneTuning():
 
             If None, use default values of tuning instances
 
-            See https://c60evaporator.github.io/muscle-tuning/each_estimators.html
+            See https://c60evaporator.github.io/tune-easy/each_estimators.html
         
         mlflow_logging : str, default=None
             Strategy to record the result by MLflow library.

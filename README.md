@@ -1,14 +1,14 @@
-# muscle-tuning
-[![python](https://img.shields.io/pypi/pyversions/muscle-tuning)](https://www.python.org/)
-[![pypi](https://img.shields.io/pypi/v/muscle-tuning?color=blue)](https://pypi.org/project/muscle-tuning/)
-[![license](https://img.shields.io/pypi/l/muscle-tuning?color=blue)](https://github.com/c60evaporator/muscle-tuning/blob/master/LICENSE)
+# tune-easy
+[![python](https://img.shields.io/pypi/pyversions/tune-easy)](https://www.python.org/)
+[![pypi](https://img.shields.io/pypi/v/tune-easy?color=blue)](https://pypi.org/project/tune-easy/)
+[![license](https://img.shields.io/pypi/l/tune-easy?color=blue)](https://github.com/c60evaporator/tune-easy/blob/master/LICENSE)
 
-**A hyperparameter tuning tool, easy to use even if your brain is made of muscle**
+**A hyperparameter tuning tool, extremely easy to use.**
 
 This documentation is Japanese language version.
-**[English version is here](https://github.com/c60evaporator/muscle-tuning/blob/master/README.rst)**
+**[English version is here](https://github.com/c60evaporator/tune-easy/blob/master/README.rst)**
 
-**[API reference is here](https://c60evaporator.github.io/muscle-tuning/)**
+**[API reference is here](https://c60evaporator.github.io/tune-easy/)**
 
 <br>
 
@@ -17,7 +17,7 @@ This documentation is Japanese language version.
 複数の機械学習アルゴリズムを一括チューニングして比較できます
 
 ```python
-from muscle_tuning import MuscleTuning
+from tune_easy import AllInOneTuning
 import seaborn as sns
 # データセット読込
 iris = sns.load_dataset("iris")
@@ -27,9 +27,9 @@ USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']
 y = iris[TARGET_VARIALBLE].values
 X = iris[USE_EXPLANATORY].values
 ###### チューニング一括実行 ######
-kinnikun = MuscleTuning()
-kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2)
-kinnikun.df_scores
+all_tuner = AllInOneTuning()
+all_tuner.all_in_one_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2)
+all_tuner.df_scores
 ```
 
 <img width="320" src="https://user-images.githubusercontent.com/59557625/140383755-bca64ab3-1593-47ef-8401-affcd0b20a0a.png">
@@ -41,7 +41,7 @@ kinnikun.df_scores
 1種類の機械学習アルゴリズムのパラメータを詳細にチューニング・可視化できます
 
 ```python
-from muscle_tuning import LGBMClassifierTuning
+from tune_easy import LGBMClassifierTuning
 import seaborn as sns
 # データセット読込
 iris = sns.load_dataset("iris")
@@ -69,7 +69,7 @@ tuning.plot_best_validation_curve()  # 検証曲線の可視化
 ### MLflowによるチューニング履歴の記録
 
 ```python
-from muscle_tuning import MuscleTuning
+from tune_easy import AllInOneTuning
 import seaborn as sns
 # データセット読込
 iris = sns.load_dataset("iris")
@@ -79,8 +79,8 @@ USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']
 y = iris[TARGET_VARIALBLE].values
 X = iris[USE_EXPLANATORY].values
 ###### チューニング一括実行 ######
-kinnikun = MuscleTuning()
-kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2,
+all_tuner = AllInOneTuning()
+all_tuner.all_in_one_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2,
                              mlflow_logging=True)  # MLflowによる記録を指定
 ```
 
@@ -90,7 +90,7 @@ kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2,
 
 # インストール方法
 ```
-$ pip install muscle-tuning
+$ pip install tune-easy
 ```
 
 <br>
@@ -111,7 +111,7 @@ $ pip install muscle-tuning
 <br>
 
 # サポート
-バグ等は[Issues](https://github.com/c60evaporator/muscle-tuning/issues)で報告してください。
+バグ等は[Issues](https://github.com/c60evaporator/tune-easy/issues)で報告してください。
 
 機能追加の要望（対応する学習器の追加etc.）もIssuesまでお願いします。
 
@@ -122,8 +122,8 @@ $ pip install muscle-tuning
 
 |方法|クラス名|用途|使用手順リンク|API仕様リンク|
 |---|---|---|---|---|
-|一括チューニング|[MuscleTuning](https://github.com/c60evaporator/muscle-tuning#一括チューニング用クラス)|複数の機械学習アルゴリズムを一括チューニングして比較|[使用手順](https://github.com/c60evaporator/muscle-tuning#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E6%89%8B%E9%A0%86-muscle_brain_tuning)|[API仕様]()|
-|詳細チューニング|[学習器の種類毎に異なる](https://github.com/c60evaporator/muscle-tuning#詳細チューニング用クラス)|1種類の機械学習アルゴリズムのパラメータを詳細にチューニング|[使用手順](https://github.com/c60evaporator/muscle-tuning#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E6%89%8B%E9%A0%86-%E8%A9%B3%E7%B4%B0%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0)|[API仕様]()|
+|一括チューニング|[AllInOneTuning](https://github.com/c60evaporator/tune-easy#一括チューニング用クラス)|複数の機械学習アルゴリズムを一括チューニングして比較|[使用手順](https://github.com/c60evaporator/tune-easy#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E6%89%8B%E9%A0%86-all_in_one_tuning)|[API仕様]()|
+|詳細チューニング|[学習器の種類毎に異なる](https://github.com/c60evaporator/tune-easy#詳細チューニング用クラス)|1種類の機械学習アルゴリズムのパラメータを詳細にチューニング|[使用手順](https://github.com/c60evaporator/tune-easy#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E6%89%8B%E9%A0%86-%E8%A9%B3%E7%B4%B0%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0)|[API仕様]()|
 
 <br>
 
@@ -135,14 +135,14 @@ $ pip install muscle-tuning
 
 |クラス名|パッケージ名|概要|API仕様(日本語)|API仕様(英語)|
 |---|---|---|---|---|
-|MuscleTuning|muscle_tuning.py|複数の機械学習アルゴリズムでのチューニングを一括実行、結果をグラフ表示|[API仕様]()|[API Reference]()|
+|AllInOneTuning|tune_easy.py|複数の機械学習アルゴリズムでのチューニングを一括実行、結果をグラフ表示|[API仕様]()|[API Reference]()|
 
 <br>
 
 ## 詳細チューニング用クラス
 1種類の機械学習アルゴリズムのパラメータを詳細にチューニングしたい際に使用するクラスです。
-全てベースクラスである[muscle_tuning.param_tuning.ParamTuning]()クラスを継承しています。
-メソッドのAPIリファレンスを見たい際には、[ベースクラスのAPIリファレンス](https://c60evaporator.github.io/muscle-tuning/param_tuning.html#muscle_tuning.param_tuning.ParamTuning)を参照ください
+全てベースクラスである[tune_easy.param_tuning.ParamTuning]()クラスを継承しています。
+メソッドのAPIリファレンスを見たい際には、[ベースクラスのAPIリファレンス](https://c60evaporator.github.io/tune-easy/param_tuning.html#tune_easy.param_tuning.ParamTuning)を参照ください
 
 ### - 分類
 

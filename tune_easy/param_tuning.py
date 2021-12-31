@@ -358,7 +358,7 @@ class ParamTuning():
 
             If 'inside', mlflow process is started in the tuning instance. So you need not use ``start_run()`` explicitly.
 
-            If 'outside', mlflow process is NOT started in the tuning instance. So you should use ``start_run()`` outside the muscle-tuning library.
+            If 'outside', mlflow process is NOT started in the tuning instance. So you should use ``start_run()`` outside the tune-easy library.
 
             If None, mlflow is not used.
         
@@ -558,7 +558,7 @@ class ParamTuning():
 
             If 'inside', mlflow process is started in the tuning instance. So you need not use ``start_run()`` explicitly.
 
-            If 'outside', mlflow process is NOT started in the tuning instance. So you should use ``start_run()`` outside the muscle-tuning library.
+            If 'outside', mlflow process is NOT started in the tuning instance. So you should use ``start_run()`` outside the tune-easy library.
 
             If None, mlflow is not used.
 
@@ -818,7 +818,7 @@ class ParamTuning():
 
             If 'inside', mlflow process is started in the tuning instance. So you need not use ``start_run()`` explicitly.
 
-            If 'outside', mlflow process is NOT started in the tuning instance. So you should use ``start_run()`` outside the muscle-tuning library.
+            If 'outside', mlflow process is NOT started in the tuning instance. So you should use ``start_run()`` outside the tune-easy library.
 
             If None, mlflow is not used.
         
@@ -1084,7 +1084,7 @@ class ParamTuning():
             So you need not use ``start_run()`` explicitly.
 
             If 'outside', mlflow process is NOT started in the tuning instance.
-            So you should use ``start_run()`` outside the muscle-tuning library.
+            So you should use ``start_run()`` outside the tune-easy library.
 
             If None, mlflow is not used.
         

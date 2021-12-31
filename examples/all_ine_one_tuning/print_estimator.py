@@ -10,10 +10,10 @@ USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']
 y = iris[TARGET_VARIALBLE].values
 X = iris[USE_EXPLANATORY].values
 # Run parameter tuning
-kinnikun = AllInOneTuning()
-kinnikun.all_in_one_tuning(X, y, x_colnames=USE_EXPLANATORY)
+all_tuner = AllInOneTuning()
+all_tuner.all_in_one_tuning(X, y, x_colnames=USE_EXPLANATORY)
 # Print estimator
-kinnikun.print_estimator('randomforest', 'randomforest estimator')
+all_tuner.print_estimator('randomforest', 'randomforest estimator')
 
 # %% AllInOneTuning, multiclass, no argument, print_estimator
 import parent_import
@@ -26,10 +26,10 @@ USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']
 y = iris[TARGET_VARIALBLE].values
 X = iris[USE_EXPLANATORY].values
 # Run parameter tuning
-kinnikun = AllInOneTuning()
-kinnikun.all_in_one_tuning(X, y, x_colnames=USE_EXPLANATORY)
+all_tuner = AllInOneTuning()
+all_tuner.all_in_one_tuning(X, y, x_colnames=USE_EXPLANATORY)
 # Print estimator
-kinnikun.print_estimator('randomforest', 'randomforest estimator')
+all_tuner.print_estimator('randomforest', 'randomforest estimator')
 
 # %% AllInOneTuning, regression, no argument, print_estimator
 import parent_import
@@ -46,7 +46,7 @@ california_housing = california_housing.sample(n=1000, random_state=42)  # sampl
 y = california_housing[TARGET_VARIALBLE].values  # Explanatory variables
 X = california_housing[USE_EXPLANATORY].values  # Objective variable
 # Run parameter tuning
-kinnikun = AllInOneTuning()
-kinnikun.all_in_one_tuning(X, y, x_colnames=USE_EXPLANATORY)
+all_tuner = AllInOneTuning()
+all_tuner.all_in_one_tuning(X, y, x_colnames=USE_EXPLANATORY)
 # Print estimator
-kinnikun.print_estimator('svr', 'svr estimator')
+all_tuner.print_estimator('svr', 'svr estimator')

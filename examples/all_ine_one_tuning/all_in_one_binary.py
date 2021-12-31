@@ -10,9 +10,9 @@ USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']
 y = iris[TARGET_VARIALBLE].values
 X = iris[USE_EXPLANATORY].values
 # Run parameter tuning
-kinnikun = AllInOneTuning()
-kinnikun.all_in_one_tuning(X, y, x_colnames=USE_EXPLANATORY)
-kinnikun.df_scores
+all_tuner = AllInOneTuning()
+all_tuner.all_in_one_tuning(X, y, x_colnames=USE_EXPLANATORY)
+all_tuner.df_scores
 
 # %% AllInOneTuning, binary, all arguments
 import parent_import
@@ -46,8 +46,8 @@ tuning_params_xgb = {'learning_rate': (0.05, 0.3),
                      'subsample': (0.2, 1.0)
                      }
 # Run parameter tuning
-kinnikun = AllInOneTuning()
-kinnikun.all_in_one_tuning(X, y, x_colnames=USE_EXPLANATORY,
+all_tuner = AllInOneTuning()
+all_tuner.all_in_one_tuning(X, y, x_colnames=USE_EXPLANATORY,
                              objective='classification', 
                              scoring='auc_ovo',
                              other_scores=['accuracy', 'precision_macro', 'recall_macro', 'f1_micro', 'f1_macro', 'f1_weighted', 'auc_ovr', 'auc_ovo'],
@@ -63,6 +63,6 @@ kinnikun.all_in_one_tuning(X, y, x_colnames=USE_EXPLANATORY,
                                          'xgboost': {'not_opt_params': not_opt_params_xgb,
                                                      'fit_params': fit_params_xgb}}
                              )
-kinnikun.df_scores
+all_tuner.df_scores
 
 # %%

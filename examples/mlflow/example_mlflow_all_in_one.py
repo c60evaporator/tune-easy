@@ -12,7 +12,7 @@ california_housing = california_housing.sample(n=1000, random_state=42)  # sampl
 y = california_housing[TARGET_VARIALBLE].values  # Explanatory variables
 X = california_housing[USE_EXPLANATORY].values  # Target variable
 # Run tuning
-kinnikun = MuscleTuning()
-kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2, mlflow_logging=True)
-kinnikun.df_scores
+all_tuner = MuscleTuning()
+all_tuner.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2, mlflow_logging=True)
+all_tuner.df_scores
 # %%

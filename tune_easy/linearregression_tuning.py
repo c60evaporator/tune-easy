@@ -6,7 +6,7 @@ class LinearRegressionTuning(ParamTuning):
     """
     Dummy class for LinearRegression
 
-    See ``muscle_tuning.param_tuning.ParamTuning`` to see API Reference of all methods
+    See ``tune_easy.param_tuning.ParamTuning`` to see API Reference of all methods
     """
 
     # 共通定数

@@ -13,13 +13,13 @@ california_housing = california_housing.sample(n=1000, random_state=42)  # sampl
 y = california_housing[TARGET_VARIALBLE].values  # Explanatory variables
 X = california_housing[USE_EXPLANATORY].values  # Target variable
 # Run tuning
-kinnikun = MuscleTuning()
-kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY)
-kinnikun.df_scores
+all_tuner = AllInOneTuning()
+all_tuner.all_in_one_tuning(X, y, x_colnames=USE_EXPLANATORY)
+all_tuner.df_scores
 
 # %% AllInOneTuning, regression, with argumets
 import parent_import
-from tune_easy import MuscleTuning
+from tune_easy import AllInOneTuning
 from sklearn.datasets import fetch_california_housing
 import pandas as pd
 import numpy as np
@@ -53,23 +53,23 @@ tuning_params_xgb = {'learning_rate': (0.05, 0.3),
                      'subsample': (0.2, 1.0)
                      }
 # Run tuning
-kinnikun = MuscleTuning()
-kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY,
-                             objective='regression',
-                             scoring='mae',
-                             other_scores=['rmse', 'mae', 'mape', 'r2'],
-                             learning_algos=['svr', 'xgboost'], 
-                             n_iter={'svr': 50,
-                                     'xgboost': 20},
-                             cv=3, tuning_algo='optuna', seed=42,
-                             estimators={'svr': SVR(),
-                                         'xgboost': XGBRegressor()},
-                             tuning_params={'svr': tuning_params_svr,
-                                            'xgboost': tuning_params_xgb},
-                             tuning_kws={'svr': {'not_opt_params': not_opt_params_svr},
-                                         'xgboost': {'not_opt_params': not_opt_params_xgb,
-                                                     'fit_params': fit_params_xgb}}
-                             )
-kinnikun.df_scores
+all_tuner = AllInOneTuning()
+all_tuner.all_in_one_tuning(X, y, x_colnames=USE_EXPLANATORY,
+                        objective='regression',
+                        scoring='mae',
+                        other_scores=['rmse', 'mae', 'mape', 'r2'],
+                        learning_algos=['svr', 'xgboost'], 
+                        n_iter={'svr': 50,
+                                'xgboost': 20},
+                        cv=3, tuning_algo='optuna', seed=42,
+                        estimators={'svr': SVR(),
+                                        'xgboost': XGBRegressor()},
+                        tuning_params={'svr': tuning_params_svr,
+                                        'xgboost': tuning_params_xgb},
+                        tuning_kws={'svr': {'not_opt_params': not_opt_params_svr},
+                                        'xgboost': {'not_opt_params': not_opt_params_xgb,
+                                                'fit_params': fit_params_xgb}}
+                        )
+all_tuner.df_scores
 
 # %%

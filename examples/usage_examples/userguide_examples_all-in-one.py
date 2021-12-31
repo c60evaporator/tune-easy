@@ -10,9 +10,9 @@ USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']
 y = iris[TARGET_VARIALBLE].values
 X = iris[USE_EXPLANATORY].values
 ###### チューニング一括実行 ######
-kinnikun = AllInOneTuning()
-kinnikun.all_in_one_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2)
-kinnikun.df_scores
+all_tuner = AllInOneTuning()
+all_tuner.all_in_one_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2)
+all_tuner.df_scores
 
 # %% Regression
 import parent_import
@@ -28,9 +28,9 @@ california_housing = california_housing.sample(n=1000, random_state=42)  # sampl
 y = california_housing[TARGET_VARIALBLE].values  # Explanatory variables
 X = california_housing[USE_EXPLANATORY].values  # Target variable
 ###### チューニング一括実行 ######
-kinnikun = AllInOneTuning()
-kinnikun.all_in_one_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2)
-kinnikun.df_scores
+all_tuner = AllInOneTuning()
+all_tuner.all_in_one_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2)
+all_tuner.df_scores
 
 # %% MLflow
 import parent_import
@@ -46,8 +46,8 @@ california_housing = california_housing.sample(n=1000, random_state=42)  # sampl
 y = california_housing[TARGET_VARIALBLE].values  # Explanatory variables
 X = california_housing[USE_EXPLANATORY].values  # Target variable
 ###### チューニング一括実行 ######
-kinnikun = AllInOneTuning()
-kinnikun.all_in_one_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2,
+all_tuner = AllInOneTuning()
+all_tuner.all_in_one_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2,
                              mlflow_logging=True)  # MLflowによるロギング有効化
-kinnikun.df_scores
+all_tuner.df_scores
 # %%

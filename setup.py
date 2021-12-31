@@ -5,13 +5,13 @@
 from setuptools import setup
 import tune_easy
 
-DESCRIPTION = "muscle-tuning: A hyperparameter tuning tool, easy to use even if your brain is made of muscle"
-NAME = 'muscle-tuning'
+DESCRIPTION = "tune-easy: A hyperparameter tuning tool, extremely easy to use."
+NAME = 'tune-easy'
 AUTHOR = 'Kenta Nakamura'
 AUTHOR_EMAIL = 'c60evaporator@gmail.com'
-URL = 'https://github.com/c60evaporator/muscle-tuning'
+URL = 'https://github.com/c60evaporator/tune-easy'
 LICENSE = 'BSD 3-Clause'
-DOWNLOAD_URL = 'https://github.com/c60evaporator/muscle-tuning'
+DOWNLOAD_URL = 'https://github.com/c60evaporator/tune-easy'
 VERSION = tune_easy.__version__
 PYTHON_REQUIRES = ">=3.6"
 
@@ -34,7 +34,7 @@ EXTRAS_REQUIRE = {
 }
 
 PACKAGES = [
-    'muscle_tuning'
+    'tune_easy'
 ]
 
 CLASSIFIERS = [

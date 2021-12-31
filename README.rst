@@ -1,17 +1,17 @@
-=============
-muscle-tuning
-=============
+=========
+tune-easy
+=========
 
 |python| |pypi| |license|
 
-.. |python| image:: https://img.shields.io/pypi/pyversions/muscle-tuning
+.. |python| image:: https://img.shields.io/pypi/pyversions/tune-easy
    :target: https://www.python.org/
 
-.. |pypi| image:: https://img.shields.io/pypi/v/muscle-tuning?color=blue
-   :target: https://pypi.org/project/muscle-tuning/
+.. |pypi| image:: https://img.shields.io/pypi/v/tune-easy?color=blue
+   :target: https://pypi.org/project/tune-easy/
 
-.. |license| image:: https://img.shields.io/pypi/l/muscle-tuning?color=blue
-   :target: https://github.com/c60evaporator/muscle-tuning/blob/master/LICENSE
+.. |license| image:: https://img.shields.io/pypi/l/tune-easy?color=blue
+   :target: https://github.com/c60evaporator/tune-easy/blob/master/LICENSE
 
 A hyperparameter tuning tool, easy to use for scikit-learn API
 
@@ -24,7 +24,7 @@ Example of All-in-one Tuning
 
 .. code-block:: python
 
-    from muscle_tuning import MuscleTuning
+    from tune_easy import AllInOneTuning
     import seaborn as sns
     # Load Dataset
     iris = sns.load_dataset("iris")
@@ -34,9 +34,9 @@ Example of All-in-one Tuning
     y = iris[OBJECTIVE_VARIALBLE].values
     X = iris[USE_EXPLANATORY].values
     ###### Run All-in-one Tuning######
-    kinnikun = MuscleTuning()
-    kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2)
-    kinnikun.df_scores
+    all_tuner = AllInOneTuning()
+    all_tuner.all_in_one_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2)
+    all_tuner.df_scores
 
 .. image:: https://user-images.githubusercontent.com/59557625/140383755-bca64ab3-1593-47ef-8401-affcd0b20a0a.png
    :width: 320px
@@ -45,15 +45,15 @@ Example of All-in-one Tuning
    :width: 480px
 
 If you want to know usage of the other classes, see `API Reference
-<https://c60evaporator.github.io/muscle-tuning/muscle_tuning.html>`__ and `Examples
-<https://github.com/c60evaporator/muscle-tuning/tree/master/examples/muscle_brain_tuning>`__
+<https://c60evaporator.github.io/tune-easy/all_in_one_tuning.html>`__ and `Examples
+<https://github.com/c60evaporator/tune-easy/tree/master/examples/all_in_one_tuning>`__
 
 Example of Detailed Tuning
 ==========================
 
 .. code-block:: python
 
-    from muscle_tuning import LGBMClassifierTuning
+    from tune_easy import LGBMClassifierTuning
     from sklearn.datasets import load_boston
     import seaborn as sns
     # データセット読込
@@ -82,15 +82,15 @@ Example of Detailed Tuning
    :width: 320px
 
 If you want to know usage of the other classes, see `API Reference
-<https://c60evaporator.github.io/muscle-tuning/each_estimators.html>`__ and `Examples
-<https://github.com/c60evaporator/muscle-tuning/tree/master/examples/method_examples>`__
+<https://c60evaporator.github.io/tune-easy/each_estimators.html>`__ and `Examples
+<https://github.com/c60evaporator/tune-easy/tree/master/examples/method_examples>`__
 
 Example of MLflow logging
 =========================
 
 .. code-block:: python
 
-    from muscle_tuning import MuscleTuning
+    from tune_easy import AllInOneTuning
     import seaborn as sns
     # Load dataset
     iris = sns.load_dataset("iris")
@@ -100,16 +100,16 @@ Example of MLflow logging
     y = iris[TARGET_VARIALBLE].values
     X = iris[USE_EXPLANATORY].values
     ###### Run All-in-one Tuning with MLflow logging ######
-    kinnikun = MuscleTuning()
-    kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2,
+    all_tuner = AllInOneTuning()
+    all_tuner.all_in_one_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2,
                                  mlflow_logging=True)  # Set MLflow logging argument
 
 .. image:: https://user-images.githubusercontent.com/59557625/147270240-f779cf1f-b216-42a2-8156-37169511ec3e.png
    :width: 640px
 
 If you want to know usage of the other classes, see `API Reference
-<https://c60evaporator.github.io/muscle-tuning/muscle_tuning.html#muscle_tuning.muscle_tuning.MuscleTuning.muscle_brain_tuning>`__ and `Examples
-<https://github.com/c60evaporator/muscle-tuning/tree/master/examples/mlflow>`__
+<https://c60evaporator.github.io/tune-easy/all_in_one_tuning.html#tune_easy.all_in_one_tuning.AllInOneTuning.all_in_one_tuning>`__ and `Examples
+<https://github.com/c60evaporator/tune-easy/tree/master/examples/mlflow>`__
 
 
 ============
@@ -129,16 +129,16 @@ param-tuning-utility 0.1.10 requires
 * LightGBM >=3.2.1
 * XGBoost >=1.4.2
 
-========================
-Installing muscle-tuning
-========================
-Use pip to install the binary wheels on `PyPI <https://pypi.org/project/muscle-tuning/>`__
+====================
+Installing tune-easy
+====================
+Use pip to install the binary wheels on `PyPI <https://pypi.org/project/tune-easy/>`__
 
 .. code-block:: console
 
-    $ pip install muscle-tuning
+    $ pip install tune-easy
 
 =======
 Support
 =======
-Bugs may be reported at https://github.com/c60evaporator/muscle-tuning/issues
+Bugs may be reported at https://github.com/c60evaporator/tune-easy/issues

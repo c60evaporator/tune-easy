@@ -1,34 +1,34 @@
 # 詳細チューニング API仕様
-詳細チューニング実施用クラスのAPI仕様を記載します ([English version](https://c60evaporator.github.io/muscle-tuning/each_estimators.html))
+詳細チューニング実施用クラスのAPI仕様を記載します ([English version](https://c60evaporator.github.io/tune-easy/each_estimators.html))
 
-チューニングの実行手順は[こちら](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md)を参照ください
+チューニングの実行手順は[こちら](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_each.md)を参照ください
 
-[サンプルコードはこちらにアップロードしています](https://github.com/c60evaporator/muscle-tuning/tree/master/examples/method_examples)
+[サンプルコードはこちらにアップロードしています](https://github.com/c60evaporator/tune-easy/tree/master/examples/method_examples)
 
 # クラス一覧
 使用したい機械学習アルゴリズム（学習器）に合わせて適切なクラスを選択してください
 
-※ここにない学習器の追加希望があれば、[Issues](https://github.com/c60evaporator/muscle-tuning/issues)または[私のTwitter](https://twitter.com/c60evaporator)まで連絡下さい
+※ここにない学習器の追加希望があれば、[Issues](https://github.com/c60evaporator/tune-easy/issues)または[私のTwitter](https://twitter.com/c60evaporator)まで連絡下さい
 
 - **分類**
 
 |クラス名|パッケージ名|概要|デフォルトパラメータのリンク|
 |---|---|---|---|
-|LGBMClassifierTuning|lgbm_tuning.py|LightGBM分類のパラメータチューニング用クラス|[リンク](https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.lgbm_tuning.LGBMClassifierTuning)|
-|XGBClassifierTuning|xgb_tuning.py|XGBoost分類のパラメータチューニング用クラス|[リンク](https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.xgb_tuning.XGBClassifierTuning)|
-|SVMClassifierTuning|svm_tuning.py|サポートベクターマシン分類のパラメータチューニング用クラス|[リンク](https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.svm_tuning.SVMClassifierTuning)|
-|RFClassifierTuning|rf_tuning.py|ランダムフォレスト分類のパラメータチューニング用クラス|[リンク](https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.rf_tuning.RFClassifierTuning)|
-|LogisticRegressionTuning|logisticregression_tuning.py|ロジスティック回帰分類のパラメータチューニング用クラス|[リンク](https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.logisticregression_tuning.LogisticRegressionTuning)|
+|LGBMClassifierTuning|lgbm_tuning.py|LightGBM分類のパラメータチューニング用クラス|[リンク](https://c60evaporator.github.io/tune-easy/each_estimators.html#tune_easy.lgbm_tuning.LGBMClassifierTuning)|
+|XGBClassifierTuning|xgb_tuning.py|XGBoost分類のパラメータチューニング用クラス|[リンク](https://c60evaporator.github.io/tune-easy/each_estimators.html#tune_easy.xgb_tuning.XGBClassifierTuning)|
+|SVMClassifierTuning|svm_tuning.py|サポートベクターマシン分類のパラメータチューニング用クラス|[リンク](https://c60evaporator.github.io/tune-easy/each_estimators.html#tune_easy.svm_tuning.SVMClassifierTuning)|
+|RFClassifierTuning|rf_tuning.py|ランダムフォレスト分類のパラメータチューニング用クラス|[リンク](https://c60evaporator.github.io/tune-easy/each_estimators.html#tune_easy.rf_tuning.RFClassifierTuning)|
+|LogisticRegressionTuning|logisticregression_tuning.py|ロジスティック回帰分類のパラメータチューニング用クラス|[リンク](https://c60evaporator.github.io/tune-easy/each_estimators.html#tune_easy.logisticregression_tuning.LogisticRegressionTuning)|
 
 - **回帰**
 
 |クラス名|パッケージ名|概要|デフォルトパラメータのリンク|
 |---|---|---|---|
-|LGBMRegressorTuning|lgbm_tuning.py|LightGBM回帰のパラメータチューニング用クラス|[リンク](https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.lgbm_tuning.LGBMRegressorTuning)|
-|XGBRegressorTuning|xgb_tuning.py|XGBoost回帰のパラメータチューニング用クラス|[リンク](https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.xgb_tuning.XGBRegressorTuning)|
-|SVMRegressorTuning|svm_tuning.py|サポートベクター回帰のパラメータチューニング用クラス|[リンク](https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.svm_tuning.SVMRegressorTuning)|
-|RFRegressorTuning|rf_tuning.py|ランダムフォレスト回帰のパラメータチューニング用クラス|[リンク](https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.rf_tuning.RFRegressorTuning)|
-|ElasticNetTuning|elasticnet_tuning.py|ElasticNet回帰のパラメータチューニング用クラス|[リンク](https://c60evaporator.github.io/muscle-tuning/each_estimators.html#muscle_tuning.elasticnet_tuning.ElasticNetTuning)|
+|LGBMRegressorTuning|lgbm_tuning.py|LightGBM回帰のパラメータチューニング用クラス|[リンク](https://c60evaporator.github.io/tune-easy/each_estimators.html#tune_easy.lgbm_tuning.LGBMRegressorTuning)|
+|XGBRegressorTuning|xgb_tuning.py|XGBoost回帰のパラメータチューニング用クラス|[リンク](https://c60evaporator.github.io/tune-easy/each_estimators.html#tune_easy.xgb_tuning.XGBRegressorTuning)|
+|SVMRegressorTuning|svm_tuning.py|サポートベクター回帰のパラメータチューニング用クラス|[リンク](https://c60evaporator.github.io/tune-easy/each_estimators.html#tune_easy.svm_tuning.SVMRegressorTuning)|
+|RFRegressorTuning|rf_tuning.py|ランダムフォレスト回帰のパラメータチューニング用クラス|[リンク](https://c60evaporator.github.io/tune-easy/each_estimators.html#tune_easy.rf_tuning.RFRegressorTuning)|
+|ElasticNetTuning|elasticnet_tuning.py|ElasticNet回帰のパラメータチューニング用クラス|[リンク](https://c60evaporator.github.io/tune-easy/each_estimators.html#tune_easy.elasticnet_tuning.ElasticNetTuning)|
 
 <br>
 
@@ -54,12 +54,12 @@
   - 'original_transformed' : チューニング用メソッドの`fit_params`引数に明示的に与えた'eval_set' (estimatorがパイプラインの時、前処理を自動適用)
 
 ### 実行例
-コードは[こちらにもアップロードしています](https://github.com/c60evaporator/muscle-tuning/blob/master/examples/method_examples/init.py)
+コードは[こちらにもアップロードしています](https://github.com/c60evaporator/tune-easy/blob/master/examples/method_examples/init.py)
 #### オプション引数指定なしで初期化
 LightGBM回帰におけるクラス初期化実行例
 
 ```python
-from muscle_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -75,7 +75,7 @@ tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)
 SVRにおける引数指定例
 
 ```python
-from param_tuning import XGBRegressorTuning
+from tune_easy import XGBRegressorTuning
 from sklearn.model_selection import LeaveOneGroupOut
 import pandas as pd
 # データセット読込
@@ -93,7 +93,7 @@ tuning = XGBRegressorTuning(X, y, USE_EXPLANATORY,  # 必須引数
 デフォルトではeval_set (early_stopping_roundの判定に使用するデータ)は全てのデータ (self.X, self.y)を使用しますが、eval_data_source='valid'を指定するとクロスバリデーションの検証用データのみを使用します
 
 ```python
-from muscle_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -136,24 +136,24 @@ get_feature_importancesおよびplot_feature_importancesメソッドは、XGBoos
 ### 引数一覧
 |引数名|必須引数orオプション|型|デフォルト値|内容|
 |---|---|---|---|---|
-|estimator|オプション|estimator object implementing 'fit'|[クラスごとに異なるESTIMATOR定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|最適化対象の学習器インスタンス。`not_opt_params`で指定したパラメータは上書きされるので注意|
-|validation_<br>curve_params|オプション　　|dict[str, list[float]]|[クラスごとに異なるVALIDATION_CURVE_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|検証曲線プロット対象のパラメータ範囲|
+|estimator|オプション|estimator object implementing 'fit'|[クラスごとに異なるESTIMATOR定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|最適化対象の学習器インスタンス。`not_opt_params`で指定したパラメータは上書きされるので注意|
+|validation_<br>curve_params|オプション　　|dict[str, list[float]]|[クラスごとに異なるVALIDATION_CURVE_PARAMS定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|検証曲線プロット対象のパラメータ範囲|
 |cv|オプション|int, cross-validation generator, or an iterable|5|クロスバリデーション分割法 (int入力時はKFoldで分割)|
 |seed|オプション|int|42|乱数シード (学習器の`random_state`に適用、`cv`引数がint型のときKFoldの乱数シードにも指定)|
 |scoring|オプション|str|'neg_mean_squared_error'|最適化で最大化する評価指標 ('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)|
-|not_opt_params|オプション|dict|[クラスごとに異なるNOT_OPT_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|`validation_curve_params`以外のチューニング対象外パラメータを指定|
-|param_scales|オプション|dict[str, str]|[クラスごとに異なるPARAM_SCALES定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|`validation_curve_params`のパラメータごとのスケール('linear', 'log')|
+|not_opt_params|オプション|dict|[クラスごとに異なるNOT_OPT_PARAMS定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|`validation_curve_params`以外のチューニング対象外パラメータを指定|
+|param_scales|オプション|dict[str, str]|[クラスごとに異なるPARAM_SCALES定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|`validation_curve_params`のパラメータごとのスケール('linear', 'log')|
 |plot_stats|オプション|str|'mean'|検証曲線グラフにプロットする統計値 ('mean'(平均±標準偏差), 'median'(中央値&最大最小値))|
 |axes|オプション|list[matplotlib.axes.Axes]|None|グラフ描画に使用するaxes (Noneならmatplotlib.pyplot.plotで1枚ごとにプロット)|
-|fit_params|オプション|dict|[クラスごとに異なるFIT_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|学習器の`fit()`メソッドに渡すパラメータ|
+|fit_params|オプション|dict|[クラスごとに異なるFIT_PARAMS定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|学習器の`fit()`メソッドに渡すパラメータ|
 
 ### 実行例
-コードは[こちらにもアップロードしています](https://github.com/c60evaporator/muscle-tuning/blob/master/examples/method_examples/plot_first_validation_curve.py)
+コードは[こちらにもアップロードしています](https://github.com/c60evaporator/tune-easy/blob/master/examples/method_examples/plot_first_validation_curve.py)
 #### オプション引数指定なしで検証曲線プロット
 オプション引数を指定しないとき、[前述のデフォルト値]()を使用してプロットします
 
 ```python
-from param_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -173,7 +173,7 @@ tuning.plot_first_validation_curve()
 `validation_curve_params`引数で、検証曲線のパラメータ範囲を指定する事ができます
 
 ```python
-from param_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 from sklearn.datasets import fetch_california_housing
 import pandas as pd
 import numpy as np
@@ -213,27 +213,27 @@ tuning.plot_first_validation_curve(validation_curve_params=VALIDATION_CURVE_PARA
 ### 引数一覧
 |引数名|必須引数orオプション|型|デフォルト値|内容|
 |---|---|---|---|---|
-|estimator|オプション|estimator object implementing 'fit'|[クラスごとに異なるESTIMATOR定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|最適化対象の学習器インスタンス。`not_opt_params`で指定したパラメータは上書きされるので注意|
-|tuning_params|オプション|dict[str, list[float]]|[クラスごとに異なるTUNING_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|チューニング対象のパラメータ範囲|
+|estimator|オプション|estimator object implementing 'fit'|[クラスごとに異なるESTIMATOR定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|最適化対象の学習器インスタンス。`not_opt_params`で指定したパラメータは上書きされるので注意|
+|tuning_params|オプション|dict[str, list[float]]|[クラスごとに異なるTUNING_PARAMS定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|チューニング対象のパラメータ範囲|
 |cv|オプション|int, cross-validation generator, or an iterable|5|クロスバリデーション分割法 (int入力時はKFoldで分割)|
 |seed|オプション|int|42|乱数シード (学習器の`random_state`に適用、`cv`引数がint型のときKFoldの乱数シードにも指定)|
 |scoring|オプション|str|'neg_mean_squared_error' in regression.'neg_log_loss' in clasification|最適化で最大化する評価指標 ('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)|
-|not_opt_<br>params|オプション　　|dict|[クラスごとに異なるNOT_OPT_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|`tuning_params`以外のチューニング対象外パラメータを指定|
-|param_scales|オプション|dict[str, str]|[クラスごとに異なるPARAM_SCALES定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|`tuning_params`のパラメータごとのスケール('linear', 'log')|
+|not_opt_<br>params|オプション　　|dict|[クラスごとに異なるNOT_OPT_PARAMS定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|`tuning_params`以外のチューニング対象外パラメータを指定|
+|param_scales|オプション|dict[str, str]|[クラスごとに異なるPARAM_SCALES定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|`tuning_params`のパラメータごとのスケール('linear', 'log')|
 |mlflow_logging|オプション|{'inside','outside',None}|None|MLflowでの結果記録有無('inside':with構文で記録, 'outside':外部でRun実行, None:MLflow実行なし)。詳細は[こちら]()|
 |mlflow_<br>tracking_uri|オプション|str|None|MLflowのTracking URI。[こちらを参照ください]()|
 |mlflow_<br>artifact_location|オプション　　|str|None|MLflowのArtifact URI。[こちらを参照ください]()|
 |mlflow_<br>experiment_name|オプション|str|None|MLflowのExperiment名。[こちらを参照ください]()|
 |grid_kws|オプション|dict|None|sklearn.model_selection.GridSearchCVに渡す引数 (estimator, tuning_params, cv, scoring以外)|
-|fit_params|オプション|dict|[クラスごとに異なるFIT_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|学習器の`fit()`メソッドに渡すパラメータ|
+|fit_params|オプション|dict|[クラスごとに異なるFIT_PARAMS定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|学習器の`fit()`メソッドに渡すパラメータ|
 
 ### 実行例
-コードは[こちらにもアップロードしています](https://github.com/c60evaporator/muscle-tuning/blob/master/examples/method_examples/grid_search_tuning.py)
+コードは[こちらにもアップロードしています](https://github.com/c60evaporator/tune-easy/blob/master/examples/method_examples/grid_search_tuning.py)
 #### オプション引数指定なしでグリッドサーチ
 オプション引数を指定しないとき、[デフォルトの引数]()を使用してプロットします
 
 ```python
-from param_tuning import RFRegressorTuning
+from tune_easy import RFRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -257,7 +257,7 @@ score after tuning = -0.018313930236533316
 `tuning_params`引数で、グリッドサーチのパラメータ探索範囲を指定する事ができます
 
 ```python
-from param_tuning import RFRegressorTuning
+from tune_easy import RFRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -287,7 +287,7 @@ score after tuning = -0.018313930236533316
 `estimator`引数で、学習器を指定する事ができます。パイプラインも指定可能です
 
 ```python
-from param_tuning import RFRegressorTuning
+from tune_easy import RFRegressorTuning
 import pandas as pd
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
@@ -334,28 +334,28 @@ score after tuning = -0.018483563545478098
 ### 引数一覧
 |引数名|必須引数orオプション|型|デフォルト値|内容|
 |---|---|---|---|---|
-|estimator|オプション|estimator object implementing 'fit'|[クラスごとに異なるESTIMATOR定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|最適化対象の学習器インスタンス。`not_opt_params`で指定したパラメータは上書きされるので注意|
-|tuning_params|オプション|dict[str, list[float]]|[クラスごとに異なるTUNING_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|チューニング対象のパラメータ範囲|
+|estimator|オプション|estimator object implementing 'fit'|[クラスごとに異なるESTIMATOR定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|最適化対象の学習器インスタンス。`not_opt_params`で指定したパラメータは上書きされるので注意|
+|tuning_params|オプション|dict[str, list[float]]|[クラスごとに異なるTUNING_PARAMS定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|チューニング対象のパラメータ範囲|
 |cv|オプション|int, cross-validation generator, or an iterable|5|クロスバリデーション分割法 (int入力時はKFoldで分割)|
 |seed|オプション|int|42|乱数シード (学習器の`random_state`に適用、`cv`引数がint型のときKFoldの乱数シードにも指定)|
 |scoring|オプション|str|'neg_mean_squared_error'|最適化で最大化する評価指標 ('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)|
-|n_iter|オプション|int|[クラスごとに異なるN_ITER定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|ランダムサーチの試行数|
-|not_opt_<br>params|オプション　　|dict|[クラスごとに異なるNOT_OPT_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|`tuning_params`以外のチューニング対象外パラメータを指定|
-|param_scales|オプション|dict[str, str]|[クラスごとに異なるPARAM_SCALES定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|`tuning_params`のパラメータごとのスケール('linear', 'log')|
+|n_iter|オプション|int|[クラスごとに異なるN_ITER定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|ランダムサーチの試行数|
+|not_opt_<br>params|オプション　　|dict|[クラスごとに異なるNOT_OPT_PARAMS定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|`tuning_params`以外のチューニング対象外パラメータを指定|
+|param_scales|オプション|dict[str, str]|[クラスごとに異なるPARAM_SCALES定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|`tuning_params`のパラメータごとのスケール('linear', 'log')|
 |mlflow_logging|オプション|{'inside','outside',None}|None|MLflowでの結果記録有無('inside':with構文で記録, 'outside':外部でRun実行, None:MLflow実行なし)。詳細は[こちら]()|
 |mlflow_<br>tracking_uri|オプション|str|None|MLflowのTracking URI。[こちらを参照ください]()|
 |mlflow_<br>artifact_location|オプション　　|str|None|MLflowのArtifact URI。[こちらを参照ください]()|
 |mlflow_<br>experiment_name|オプション|str|None|MLflowのExperiment名。[こちらを参照ください]()|
 |rand_kws|オプション|dict|None|sklearn.model_selection.RondomizedSearchCVに渡す引数 (estimator, tuning_params, cv, scoring, n_iter以外)|
-|fit_params|オプション|dict|[クラスごとに異なるFIT_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|学習器の`fit()`メソッドに渡すパラメータ|
+|fit_params|オプション|dict|[クラスごとに異なるFIT_PARAMS定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|学習器の`fit()`メソッドに渡すパラメータ|
 
 ### 実行例
-コードは[こちらにもアップロードしています](https://github.com/c60evaporator/muscle-tuning/blob/master/examples/method_examples/random_search_tuning.py)
+コードは[こちらにもアップロードしています](https://github.com/c60evaporator/tune-easy/blob/master/examples/method_examples/random_search_tuning.py)
 #### オプション引数指定なしでランダムサーチ
 オプション引数を指定しないとき、[デフォルトの引数]()を使用してプロットします
 
 ```python
-from param_tuning import RFRegressorTuning
+from tune_easy import RFRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -381,7 +381,7 @@ score after tuning = -0.017934841860748053
 また、`n_iter`引数で探索の試行数を指定できます
 
 ```python
-from param_tuning import RFRegressorTuning
+from tune_easy import RFRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -412,7 +412,7 @@ score after tuning = -0.01786570144420851
 `estimator`引数で、学習器を指定する事ができます。パイプラインも指定可能です
 
 ```python
-from param_tuning import RFRegressorTuning
+from tune_easy import RFRegressorTuning
 import pandas as pd
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
@@ -460,31 +460,31 @@ score after tuning = -0.01786570144420851
 ### 引数一覧
 |引数名|必須引数orオプション|型|デフォルト値|内容|
 |---|---|---|---|---|
-|estimator|オプション|estimator object implementing 'fit'|[クラスごとに異なるESTIMATOR定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|最適化対象の学習器インスタンス。`not_opt_params`で指定したパラメータは上書きされるので注意|
-|tuning_params|オプション|dict[str, list[float]]|[クラスごとに異なるTUNING_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|チューニング対象のパラメータ範囲|
+|estimator|オプション|estimator object implementing 'fit'|[クラスごとに異なるESTIMATOR定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|最適化対象の学習器インスタンス。`not_opt_params`で指定したパラメータは上書きされるので注意|
+|tuning_params|オプション|dict[str, list[float]]|[クラスごとに異なるTUNING_PARAMS定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|チューニング対象のパラメータ範囲|
 |cv|オプション|int, cross-validation generator, or an iterable|5|クロスバリデーション分割法 (int入力時はKFoldで分割)|
 |seed|オプション|int|42|乱数シード (BayesianOptimization初期化時の`random_state`引数、および学習器の`random_state`に適用、`cv`引数がint型のときKFoldの乱数シードにも指定)|
 |scoring|オプション|str|'neg_mean_squared_error'|最適化で最大化する評価指標 ('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)|
-|n_iter|オプション|int|[クラスごとに異なるN_ITER定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|ベイズ最適化の試行数|
-|init_points|オプション|int|[クラスごとに異なるINIT_POINTS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|ランダムな初期探索点の個数|
+|n_iter|オプション|int|[クラスごとに異なるN_ITER定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|ベイズ最適化の試行数|
+|init_points|オプション|int|[クラスごとに異なるINIT_POINTS定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|ランダムな初期探索点の個数|
 |acq|オプション|{'ei', 'pi', 'ucb'}|'ei'|獲得関数 ('ei': EI戦略, 'pi': PI戦略, 'ucb': UCB戦略)|
-|not_opt_<br>params|オプション　　|dict|[クラスごとに異なるNOT_OPT_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|`tuning_params`以外のチューニング対象外パラメータを指定|
-|int_params|オプション|int|[クラスごとに異なるINT_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|整数型のパラメータ一覧のリスト|
-|param_scales|オプション|dict[str, str]|[クラスごとに異なるPARAM_SCALES定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|`tuning_params`のパラメータごとのスケール('linear', 'log')|
+|not_opt_<br>params|オプション　　|dict|[クラスごとに異なるNOT_OPT_PARAMS定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|`tuning_params`以外のチューニング対象外パラメータを指定|
+|int_params|オプション|int|[クラスごとに異なるINT_PARAMS定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|整数型のパラメータ一覧のリスト|
+|param_scales|オプション|dict[str, str]|[クラスごとに異なるPARAM_SCALES定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|`tuning_params`のパラメータごとのスケール('linear', 'log')|
 |mlflow_logging|オプション|{'inside','outside',None}|None|MLflowでの結果記録有無('inside':with構文で記録, 'outside':外部でRun実行, None:MLflow実行なし)。詳細は[こちら]()|
 |mlflow_<br>tracking_uri|オプション|str|None|MLflowのTracking URI。[こちらを参照ください]()|
 |mlflow_<br>artifact_location|オプション　　|str|None|MLflowのArtifact URI。[こちらを参照ください]()|
 |mlflow_<br>experiment_name|オプション|str|None|MLflowのExperiment名。[こちらを参照ください]()|
-|fit_params|オプション|dict|[クラスごとに異なるFIT_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|学習器の`fit()`メソッドに渡すパラメータ|
+|fit_params|オプション|dict|[クラスごとに異なるFIT_PARAMS定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|学習器の`fit()`メソッドに渡すパラメータ|
 
 ### 実行例
-コードは[こちらにもアップロードしています](https://github.com/c60evaporator/muscle-tuning/blob/master/examples/method_examples/bayes_opt_tuning.py)
+コードは[こちらにもアップロードしています](https://github.com/c60evaporator/tune-easy/blob/master/examples/method_examples/bayes_opt_tuning.py)
 
 #### オプション引数指定なしでBayesianOptimization
 オプション引数を指定しないとき、[デフォルトの引数]()を使用してBayesianOptimizationでチューニングします
 
 ```python
-from param_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -521,7 +521,7 @@ score after tuning = -0.015674379678829172
 探索の合計試行数は、`init_points`で指定したランダム初期点数 + `n_iter`となります
 
 ```python
-from param_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -565,7 +565,7 @@ score after tuning = -0.016980186157125283
 `estimator`引数で、学習器を指定する事ができます。パイプラインも指定可能です
 
 ```python
-from param_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 import pandas as pd
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
@@ -624,29 +624,29 @@ score after tuning = -0.016169025610778674
 ### 引数一覧
 |引数名|必須引数orオプション|型|デフォルト値|内容|
 |---|---|---|---|---|
-|estimator|オプション|estimator object implementing 'fit'|[クラスごとに異なるESTIMATOR定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|最適化対象の学習器インスタンス。`not_opt_params`で指定したパラメータは上書きされるので注意|
-|tuning_params|オプション|dict[str, list[float]]|[クラスごとに異なるTUNING_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|チューニング対象のパラメータ範囲|
+|estimator|オプション|estimator object implementing 'fit'|[クラスごとに異なるESTIMATOR定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|最適化対象の学習器インスタンス。`not_opt_params`で指定したパラメータは上書きされるので注意|
+|tuning_params|オプション|dict[str, list[float]]|[クラスごとに異なるTUNING_PARAMS定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|チューニング対象のパラメータ範囲|
 |cv|オプション|int, cross-validation generator, or an iterable|5|クロスバリデーション分割法 (int入力時はKFoldで分割)|
 |seed|オプション|int|42|乱数シード (TPESamplerの`seed`引数、および学習器の`random_state`に適用、`cv`引数がint型のときKFoldの乱数シードにも指定)|
 |scoring|オプション|str|'neg_mean_squared_error'|最適化で最大化する評価指標 ('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)|
-|n_trials|オプション|int|[クラスごとに異なるN_TRIALS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|ベイズ最適化の試行数|
+|n_trials|オプション|int|[クラスごとに異なるN_TRIALS定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|ベイズ最適化の試行数|
 |study_kws|オプション|dict|{'sampler': TPESampler(), 'direction': 'maximize'}|optuna.study.create_study()に渡す引数|
 |optimize_kws|オプション|dict|{}|optuna.study.Study.optimize()に渡す引数 (n_trials以外)|
-|not_opt_<br>params|オプション　　|dict|[クラスごとに異なるNOT_OPT_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|`tuning_params`以外のチューニング対象外パラメータを指定|
-|int_params|オプション|int|[クラスごとに異なるINT_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|整数型のパラメータ一覧のリスト|
-|param_scales|オプション|dict[str, str]|[クラスごとに異なるPARAM_SCALES定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|`tuning_params`のパラメータごとのスケール('linear', 'log')|
+|not_opt_<br>params|オプション　　|dict|[クラスごとに異なるNOT_OPT_PARAMS定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|`tuning_params`以外のチューニング対象外パラメータを指定|
+|int_params|オプション|int|[クラスごとに異なるINT_PARAMS定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|整数型のパラメータ一覧のリスト|
+|param_scales|オプション|dict[str, str]|[クラスごとに異なるPARAM_SCALES定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|`tuning_params`のパラメータごとのスケール('linear', 'log')|
 |mlflow_logging|オプション|{'inside','outside',None}|None|MLflowでの結果記録有無('inside':with構文で記録, 'outside':外部でRun実行, None:MLflow実行なし)。詳細は[こちら]()|
 |mlflow_<br>tracking_uri|オプション|str|None|MLflowのTracking URI。[こちらを参照ください]()|
 |mlflow_<br>artifact_location|オプション　　|str|None|MLflowのArtifact URI。[こちらを参照ください]()|
 |mlflow_<br>experiment_name|オプション|str|None|MLflowのExperiment名。[こちらを参照ください]()|
-|fit_params|オプション|dict|[クラスごとに異なるFIT_PARAMS定数](https://c60evaporator.github.io/muscle-tuning/each_estimators.html)|学習器の`fit()`メソッドに渡すパラメータ|
+|fit_params|オプション|dict|[クラスごとに異なるFIT_PARAMS定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|学習器の`fit()`メソッドに渡すパラメータ|
 
 ### 実行例
-コードは[こちらにもアップロードしています](https://github.com/c60evaporator/muscle-tuning/blob/master/examples/method_examples/optuna_tuning.py)
+コードは[こちらにもアップロードしています](https://github.com/c60evaporator/tune-easy/blob/master/examples/method_examples/optuna_tuning.py)
 #### オプション引数指定なしでOptunaチューニング
 オプション引数を指定しないとき、[デフォルトの引数]()を使用してOptunaでチューニングします
 ```python
-from param_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -678,7 +678,7 @@ score after tuning = -0.015348697968670694
 また、`n_trials`引数でベイズ最適化の試行数を指定できます
 
 ```python
-from param_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -719,7 +719,7 @@ score after tuning = -0.016369607641459265
 #### 学習器を指定してOptunaチューニング実行
 `estimator`引数で、学習器を指定する事ができます。パイプラインも指定可能です
 ```python
-from param_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 import pandas as pd
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
@@ -783,11 +783,11 @@ score after tuning = -0.014828721902099879
 |plot_kws|オプション|dist|None|プロット用のmatplotlib.pyplot.plotに渡す引数|
 
 ### 実行例
-コードは[こちらにもアップロードしています](https://github.com/c60evaporator/muscle-tuning/blob/master/examples/method_examples/plot_search_history.py)
+コードは[こちらにもアップロードしています](https://github.com/c60evaporator/tune-easy/blob/master/examples/method_examples/plot_search_history.py)
 #### オプション引数指定なしでスコアの上昇履歴を表示
 オプション引数を指定しないとき、[デフォルトの引数]()を使用してOptunaでチューニングします
 ```python
-from param_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -808,7 +808,7 @@ tuning.plot_search_history()
 `x_axis`引数='time'と指定する事で、横軸を試行数 → 時間に変更する事ができます。
 
 ```python
-from param_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -838,10 +838,10 @@ tuning.plot_search_history(x_axis='time')
 引数はありません
 
 ### 実行例
-コードは[こちらにもアップロードしています](https://github.com/c60evaporator/muscle-tuning/blob/master/examples/method_examples/get_search_history.py)
+コードは[こちらにもアップロードしています](https://github.com/c60evaporator/tune-easy/blob/master/examples/method_examples/get_search_history.py)
 
 ```python
-from param_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -885,11 +885,11 @@ reg_alpha	reg_lambda	num_leaves	colsample_bytree	subsample	subsample_freq	min_ch
 |scatter_kws|オプション|dict|None|プロット用のplt.subplots()に渡す引数 (グリッドサーチ以外)|
 
 ### 実行例
-コードは[こちらにもアップロードしています](https://github.com/c60evaporator/muscle-tuning/blob/master/examples/method_examples/plot_search_map.py)
+コードは[こちらにもアップロードしています](https://github.com/c60evaporator/tune-easy/blob/master/examples/method_examples/plot_search_map.py)
 #### オプション引数指定なしで探索履歴をプロット
 オプション引数を指定しないとき、[デフォルトの引数]()を使用して探索履歴をプロットします
 ```python
-from param_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -912,7 +912,7 @@ tuning.plot_search_map()
 `order`引数で、軸のパラメータをリストで指定する事ができます。リスト指定順に、グラフ横軸 → グラフ縦軸 → 全体縦軸 → 全体横軸の順番でプロットされます。`order`=Noneなら[param_importances]()順にプロットされます。
 
 ```python
-from param_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -947,11 +947,11 @@ tuning.plot_search_map(pair_n=6,
 |ax|オプション|matplotlib.axes.Axes|None|表示対象のax (Noneならmatplotlib.pyplot.plotで1枚ごとにプロット)|
 
 ### 実行例
-コードは[こちらにもアップロードしています](https://github.com/c60evaporator/muscle-tuning/blob/master/examples/method_examples/plot_best_learning_curve.py)
+コードは[こちらにもアップロードしています](https://github.com/c60evaporator/tune-easy/blob/master/examples/method_examples/plot_best_learning_curve.py)
 #### オプション引数指定なしで学習曲線をプロット
 オプション引数を指定しないとき、[デフォルトの引数]()を使用して学習曲線をプロットします
 ```python
-from param_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -987,12 +987,12 @@ tuning.plot_best_learning_curve()
 |axes|オプション|list[matplotlib.axes.Axes]|None|グラフ描画に使用するaxes (Noneならmatplotlib.pyplot.plotで1枚ごとにプロット)|
 
 ### 実行例
-コードは[こちらにもアップロードしています](https://github.com/c60evaporator/muscle-tuning/blob/master/examples/method_examples/plot_best_validation_curve.py)
+コードは[こちらにもアップロードしています](https://github.com/c60evaporator/tune-easy/blob/master/examples/method_examples/plot_best_validation_curve.py)
 #### オプション引数指定なしで学習曲線をプロット
 オプション引数を指定しないとき、[デフォルトの引数]()を使用して検証曲線をプロットします
 
 ```python
-from param_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -1013,7 +1013,7 @@ tuning.plot_best_validation_curve()
 `validation_curve_params`引数で、検証曲線のパラメータ範囲を指定する事ができます
 
 ```python
-from param_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -1054,10 +1054,10 @@ tuning.plot_best_validation_curve(validation_curve_params=VALIDATION_CURVE_PARAM
 引数はありません
 
 ### 実行例
-コードは[こちらにもアップロードしています](https://github.com/c60evaporator/muscle-tuning/blob/master/examples/method_examples/plot_param_importances.py)
+コードは[こちらにもアップロードしています](https://github.com/c60evaporator/tune-easy/blob/master/examples/method_examples/plot_param_importances.py)
 
 ```python
-from param_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -1091,12 +1091,12 @@ feature_importances_算出に対応した学習器(ランダムフォレスト�
 |ax|オプション|matplotlib.axes.Axes|None|表示対象のax (Noneならmatplotlib.pyplot.plotで1枚ごとにプロット)|
 
 ### 実行例
-コードは[こちらにもアップロードしています](https://github.com/c60evaporator/muscle-tuning/blob/master/examples/method_examples/plot_feature_importances.py)
+コードは[こちらにもアップロードしています](https://github.com/c60evaporator/tune-easy/blob/master/examples/method_examples/plot_feature_importances.py)
 #### オプション引数指定なしでfeature_importancesをプロット
 オプション引数を指定しないとき、[デフォルトの引数]()を使用して学習曲線をプロットします
 
 ```python
-from param_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -1128,12 +1128,12 @@ feature_importances_算出に対応した学習器(ランダムフォレスト�
 引数はありません
 
 ### 実行例
-コードは[こちらにもアップロードしています](https://github.com/c60evaporator/muscle-tuning/blob/master/examples/method_examples/get_feature_importances.py)
+コードは[こちらにもアップロードしています](https://github.com/c60evaporator/tune-easy/blob/master/examples/method_examples/get_feature_importances.py)
 #### feature_importancesを取得
 オプション引数を指定しないとき、[デフォルトの引数]()を使用して学習曲線をプロットします
 
 ```python
-from param_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -1185,7 +1185,7 @@ importances
 |param_importances|pandas.Series|ランダムフォレストで求めた各パラメータのスコアに対する重要度(x_colnamesの順)|
 
 # 定数一覧
-各機械学習アルゴリズムごとのデフォルト値は、[クラス一覧](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/api_each.md#クラス一覧)項の、「デフォルトパラメータのリンク」のリンク先を参照ください
+各機械学習アルゴリズムごとのデフォルト値は、[クラス一覧](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#クラス一覧)項の、「デフォルトパラメータのリンク」のリンク先を参照ください
 
 |プロパティ名|型|概要|
 |---|---|---|

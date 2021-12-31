@@ -1,8 +1,8 @@
 # 一括チューニング 実行手順
 以下の手順で、複数の機械学習アルゴリズム（学習器）でパラメータチューニングを一括実行し、結果をグラフ表示できます
 
-1. [`MuscleTuning`]()クラスのインスタンスを作成
-2. [`muscle_brain_tuning()`]()メソッドを実行
+1. [`AllInOneTuning`]()クラスのインスタンスを作成
+2. [`all_in_one_tuning()`]()メソッドを実行
 
 チューニング自体は2行で終わります。カンタンですね！
 
@@ -12,9 +12,9 @@
 
 |ユースケース|リンク|
 |---|---|
-|分類タスク|[分類タスクでの使用例](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_muscle.md#分類タスクでの使用例)|
-|回帰タスク|[分類タスクでの使用例](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_muscle.md#回帰タスクでの使用例)|
-|MLflowで結果記録|[MLflowによる結果のロギング](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_muscle.md#mlflowによる結果のロギング)|
+|分類タスク|[分類タスクでの使用例](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_all_in_one.md#分類タスクでの使用例)|
+|回帰タスク|[分類タスクでの使用例](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_all_in_one.md#回帰タスクでの使用例)|
+|MLflowで結果記録|[MLflowによる結果のロギング](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_all_in_one.md#mlflowによる結果のロギング)|
 
 <br>
 
@@ -22,7 +22,7 @@
 分類タスクでは、スコアの上昇履歴とチューニング前後のROC曲線を表示します
 
 ```python
-from muscle_tuning import MuscleTuning
+from tune_easy import AllInOneTuning
 import seaborn as sns
 # データセット読込
 iris = sns.load_dataset("iris")
@@ -32,9 +32,9 @@ USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']
 y = iris[TARGET_VARIALBLE].values
 X = iris[USE_EXPLANATORY].values
 # チューニング実行
-kinnikun = MuscleTuning()  # 1. インスタンス作成
-kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2)  # 2. チューニングメソッド実行
-kinnikun.df_scores  # スコア一覧DataFrameを表示
+all_tuner = AllInOneTuning()  # 1. インスタンス作成
+all_tuner.all_in_one_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2)  # 2. チューニングメソッド実行
+all_tuner.df_scores  # スコア一覧DataFrameを表示
 ```
 チューニング完了後に、以下の情報が表示されます
 
@@ -65,7 +65,7 @@ kinnikun.df_scores  # スコア一覧DataFrameを表示
 
 ```python
 import parent_import
-from muscle_tuning import MuscleTuning
+from tune_easy import AllInOneTuning
 from sklearn.datasets import fetch_california_housing
 import pandas as pd
 import numpy as np
@@ -78,9 +78,9 @@ california_housing = california_housing.sample(n=1000, random_state=42)  # デ�
 y = california_housing[TARGET_VARIALBLE].values
 X = california_housing[USE_EXPLANATORY].values
 ###### チューニング一括実行 ######
-kinnikun = MuscleTuning()  # 1. インスタンス作成
-kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2)  # 2. チューニングメソッド実行
-kinnikun.df_scores
+all_tuner = AllInOneTuning()  # 1. インスタンス作成
+all_tuner.all_in_one_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2)  # 2. チューニングメソッド実行
+all_tuner.df_scores
 ```
 チューニング完了後に、以下の情報が表示されます
 
@@ -127,7 +127,7 @@ estimator.fit(X, y)
 `mlflow_logging`引数指定で、[MLflow](https://mlflow.org/docs/latest/tracking.html)による結果ロギングが可能です。
 
 ```python
-from muscle_tuning import MuscleTuning
+from tune_easy import AllInOneTuning
 from sklearn.datasets import fetch_california_housing
 import pandas as pd
 import numpy as np
@@ -139,10 +139,10 @@ california_housing = california_housing.sample(n=1000, random_state=42)  # sampl
 y = california_housing[TARGET_VARIALBLE].values  # Explanatory variables
 X = california_housing[USE_EXPLANATORY].values  #  Target variable
 ###### チューニング一括実行 ######
-kinnikun = MuscleTuning()
-kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2,
-                             mlflow_logging=True)  # MLflowによるロギング有効化
-kinnikun.df_scores
+all_tuner = AllInOneTuning()
+all_tuner.all_in_one_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2,
+                           mlflow_logging=True)  # MLflowによるロギング有効化
+all_tuner.df_scores
 ```
 チューニング完了後、ターミナルで以下のコマンドを打つと、MLflowのUI用Webサーバが立ち上がります。
 
@@ -165,7 +165,7 @@ mlflow ui
 
 #### ・Parameters
 
-[`muscle_brain_tuning()`]()メソッドの引数を記録します
+[`all_in_one_tuning()`]()メソッドの引数を記録します
 
 （ただし、`tuning_algo`, `x_colnames`, `y_colname`引数はTags, `estimators`, `tuning_params`, `tuning_kws`引数はArtifactとして記録）
 
@@ -185,7 +185,7 @@ mlflow ui
 
 #### ・Tags
 
-[`muscle_brain_tuning()`]()メソッドの`tuning_algo`, `x_colnames`, `y_colname`引数を記録します。
+[`all_in_one_tuning()`]()メソッドの`tuning_algo`, `x_colnames`, `y_colname`引数を記録します。
 
 <img width="300" src="https://user-images.githubusercontent.com/59557625/145712936-a417a5a5-0d57-488a-b4b0-ad1ea9ca0c8d.png">
 
@@ -194,20 +194,20 @@ mlflow ui
 
 |名称|内容|備考|
 |---|---|---|
-|arg-estimators.json|[`muscle_brain_tuning()`]()メソッドの`estimators`引数||
-|arg-tuning_params.json|[`muscle_brain_tuning()`]()メソッドの`tuning_params`引数||
-|arg-tuning_kws.json|[`muscle_brain_tuning()`]()メソッドの`tuning_kws`引数||
-|score_history.png|[スコアの上昇履歴](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_muscle.md#スコアの上昇履歴-1)||
-|pred_true_before.png|[チューニング前の予測値-実測値プロット](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_muscle.md#チューニング前の予測値-実測値プロット)|回帰タスクのみ|
-|pred_true_after.png|[チューニング後の予測値-実測値プロット](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_muscle.md#チューニング後の予測値-実測値プロット)|回帰タスクのみ|
-|roc_curve_before.png|[チューニング前のROC曲線](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_muscle.md#チューニング前のroc曲線)|分類タスクのみ|
-|roc_curve_after.png|[チューニング後のROC曲線](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_muscle.md#チューニング後のroc曲線)|分類タスクのみ|
-|score_result.csv|[チューニング前後のスコア](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_muscle.md#チューニング前後のスコア-1)||
+|arg-estimators.json|[`all_in_one_tuning()`]()メソッドの`estimators`引数||
+|arg-tuning_params.json|[`all_in_one_tuning()`]()メソッドの`tuning_params`引数||
+|arg-tuning_kws.json|[`all_in_one_tuning()`]()メソッドの`tuning_kws`引数||
+|score_history.png|[スコアの上昇履歴](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_all_in_one.md#スコアの上昇履歴-1)||
+|pred_true_before.png|[チューニング前の予測値-実測値プロット](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_all_in_one.md#チューニング前の予測値-実測値プロット)|回帰タスクのみ|
+|pred_true_after.png|[チューニング後の予測値-実測値プロット](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_all_in_one.md#チューニング後の予測値-実測値プロット)|回帰タスクのみ|
+|roc_curve_before.png|[チューニング前のROC曲線](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_all_in_one.md#チューニング前のroc曲線)|分類タスクのみ|
+|roc_curve_after.png|[チューニング後のROC曲線](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_all_in_one.md#チューニング後のroc曲線)|分類タスクのみ|
+|score_result.csv|[チューニング前後のスコア](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_all_in_one.md#チューニング前後のスコア-1)||
 |score_result_cv.csv|チューニング前後のスコア (クロスバリデーションごと)|下図参照|
-|how_to_use_best_estimator.py|[チューニング後の機械学習モデル使用法](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_muscle.md#チューニング後の機械学習モデル使用法-1)||
+|how_to_use_best_estimator.py|[チューニング後の機械学習モデル使用法](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_all_in_one.md#チューニング後の機械学習モデル使用法-1)||
 ・score_result_cv.csvの表示例
 
-<img width="681" alt="スクリーンショット 2021-12-12 21 55 11" src="https://user-images.githubusercontent.com/59557625/145713542-57f3f10d-7548-49ed-bb4b-ecc8e5e15b0b.png">
+<img width="681" src="https://user-images.githubusercontent.com/59557625/145713542-57f3f10d-7548-49ed-bb4b-ecc8e5e15b0b.png">
 
 <br>
 

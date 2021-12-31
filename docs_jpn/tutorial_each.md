@@ -1,5 +1,5 @@
 # 詳細チューニング 実行手順
-[学習器の種類に合わせてクラスを選択](https://github.com/c60evaporator/muscle-tuning/blob/master/README.md#02-チューニング用クラスの初期化)し、**下図の手順**([こちらの記事に詳細](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#2-%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E3%81%AE%E6%89%8B%E9%A0%86%E3%81%A8%E3%82%A2%E3%83%AB%E3%82%B4%E3%83%AA%E3%82%BA%E3%83%A0%E4%B8%80%E8%A6%A7))でパラメータチューニングを実施します。
+[学習器の種類に合わせてクラスを選択](https://github.com/c60evaporator/tune-easy/blob/master/README.md#02-チューニング用クラスの初期化)し、**下図の手順**([こちらの記事に詳細](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#2-%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E3%81%AE%E6%89%8B%E9%A0%86%E3%81%A8%E3%82%A2%E3%83%AB%E3%82%B4%E3%83%AA%E3%82%BA%E3%83%A0%E4%B8%80%E8%A6%A7))でパラメータチューニングを実施します。
 
 2022/1現在、Scikit-LearnのAPIに対応した学習器が対象となります。
 
@@ -8,43 +8,43 @@
 ## 手順一覧
 **0. チューニングの準備**
 
-&nbsp;├─ [0.1. データの読込＆前処理](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md#01-データの読込前処理)
+&nbsp;├─ [0.1. データの読込＆前処理](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_each.md#01-データの読込前処理)
 
-&nbsp;└─ [0.2. チューニング用クラスの初期化](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md#02-チューニング用クラスの初期化)
+&nbsp;└─ [0.2. チューニング用クラスの初期化](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_each.md#02-チューニング用クラスの初期化)
 
 **1. 最大化したい評価指標を定義**
 
-&nbsp;└─ [1.1. 評価指標の選択](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md#1-評価指標の選択)
+&nbsp;└─ [1.1. 評価指標の選択](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_each.md#1-評価指標の選択)
 
 **2. パラメータ探索範囲の選択**
 
-&nbsp;└─ [2.1. パラメータ探索範囲の選択](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md#2-パラメータ探索範囲の選択)
+&nbsp;└─ [2.1. パラメータ探索範囲の選択](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_each.md#2-パラメータ探索範囲の選択)
 
 **3. 探索法を選択**
 
-&nbsp;└─ [3.1. 探索手法を選択](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md#3-探索法を選択)
+&nbsp;└─ [3.1. 探索手法を選択](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_each.md#3-探索法を選択)
 
 **4. クロスバリデーションでチューニングを実行**
 
-&nbsp;├─ [4.1. クロスバリデーション手法を選択](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md#41-クロスバリデーション手法を選択)
+&nbsp;├─ [4.1. クロスバリデーション手法を選択](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_each.md#41-クロスバリデーション手法を選択)
 
-&nbsp;├─ [4.2. チューニング前のスコアを確認](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md#42-チューニング前のスコアを確認)
+&nbsp;├─ [4.2. チューニング前のスコアを確認](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_each.md#42-チューニング前のスコアを確認)
 
-&nbsp;└─ [4.3. チューニング実行](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md#43-チューニング実行)
+&nbsp;└─ [4.3. チューニング実行](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_each.md#43-チューニング実行)
 
 **5. 学習曲線・検証曲線等でチューニング結果を確認**
 
-&nbsp;├─ [5.1. チューニング履歴の確認](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md#51-チューニング履歴の確認)
+&nbsp;├─ [5.1. チューニング履歴の確認](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_each.md#51-チューニング履歴の確認)
 
-&nbsp;├─ [5.2. パラメータと評価指標の関係をマップ表示して確認](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md#52-パラメータと評価指標の関係をマップ表示して確認)
+&nbsp;├─ [5.2. パラメータと評価指標の関係をマップ表示して確認](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_each.md#52-パラメータと評価指標の関係をマップ表示して確認)
 
-&nbsp;├─ [5.3. 学習曲線を確認](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md#53-学習曲線を確認)
+&nbsp;├─ [5.3. 学習曲線を確認](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_each.md#53-学習曲線を確認)
 
-&nbsp;└─ [5.4. 検証曲線を確認](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md#54-検証曲線を確認)
+&nbsp;└─ [5.4. 検証曲線を確認](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_each.md#54-検証曲線を確認)
 
 **6. チューニング結果の活用**
 
-&nbsp;└─ [6.1. チューニング後の学習器を使用する](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md#6-チューニング後の学習器を使用する)
+&nbsp;└─ [6.1. チューニング後の学習器を使用する](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_each.md#6-チューニング後の学習器を使用する)
 
 <br>
 <br>
@@ -129,7 +129,7 @@ LightGBM回帰のチューニング用クラス初期化
 from param_tuning import LGBMRegressorTuning
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY, eval_set_selection='all')
 ```
-※eval_set_selection引数に関しては[こちらのリンク](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/api_each.md#-eval_data_sourceの指定値によるeval_setに入るデータの変化)参照
+※eval_set_selection引数に関しては[こちらのリンク](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#-eval_data_sourceの指定値によるeval_setに入るデータの変化)参照
 
 ### 1. 評価指標の選択
 [こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#21-%E8%A9%95%E4%BE%A1%E6%8C%87%E6%A8%99%E3%81%AE%E5%AE%9A%E7%BE%A9)チューニングの評価指標を選択します。
@@ -183,10 +183,10 @@ tuning.plot_first_validation_curve(validation_curve_params=VALIDATION_CURVE_PARA
 
 |探索法|使用するメソッド|
 |---|---|
-|グリッドサーチ|[grid_search_tuning()](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/api_each.md#grid_search_tuningメソッド)|
-|ランダムサーチ|[random_search_tuning()](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/api_each.md#random_search_tuningメソッド)|
-|ベイズ最適化 (BayesianOptimization)|[bayes_opt_tuning()](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/api_each.md#random_search_tuningメソッド)|
-|ベイズ最適化 (Optuna)|[optuna_tuning()](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/api_each.md#random_search_tuningメソッド)|
+|グリッドサーチ|[grid_search_tuning()](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#grid_search_tuningメソッド)|
+|ランダムサーチ|[random_search_tuning()](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#random_search_tuningメソッド)|
+|ベイズ最適化 (BayesianOptimization)|[bayes_opt_tuning()](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#random_search_tuningメソッド)|
+|ベイズ最適化 (Optuna)|[optuna_tuning()](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#random_search_tuningメソッド)|
 
 ### 4.1. クロスバリデーション手法を選択
 [こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#24-%E3%82%AF%E3%83%AD%E3%82%B9%E3%83%90%E3%83%AA%E3%83%87%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3)クロスバリデーションの手法を選択します。
@@ -263,16 +263,16 @@ regplot.regression_pred_true(lgbmr,
 ```
 <img width="240" src="https://user-images.githubusercontent.com/59557625/146212543-8c49c900-eedb-453b-9c37-32eb3b25074a.png">
 
-`eval_set_selection`引数については[こちら](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/api_each.md#-eval_data_sourceの指定値によるeval_setに入るデータの変化)を参照ください
+`eval_set_selection`引数については[こちら](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#-eval_data_sourceの指定値によるeval_setに入るデータの変化)を参照ください
 
 ### 4.3. チューニング実行
 [3.で選択したチューニング用メソッド]()に対し、
 
-・[1.で選択した評価指標](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md#1-評価指標の選択)を`scoring`引数に
+・[1.で選択した評価指標](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_each.md#1-評価指標の選択)を`scoring`引数に
 
-・[2.で選択したチューニング範囲](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md#2-パラメータ探索範囲の選択)を`tuning_params`引数に
+・[2.で選択したチューニング範囲](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_each.md#2-パラメータ探索範囲の選択)を`tuning_params`引数に
 
-・[4.1で選択したクロスバリデーション手法](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/tutorial_each.md#41-クロスバリデーション手法を選択)を`cv`引数に
+・[4.1で選択したクロスバリデーション手法](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_each.md#41-クロスバリデーション手法を選択)を`cv`引数に
 
 指定し、実行します
 
@@ -325,10 +325,10 @@ Elapsed time
 
 |探索法|メソッドのAPI仕様リンク|
 |---|---|
-|グリッドサーチ|[grid_search_tuning()](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/api_each.md#grid_search_tuningメソッド)|
-|ランダムサーチ|[random_search_tuning()](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/api_each.md#random_search_tuningメソッド)|
-|ベイズ最適化 (BayesianOptimization)|[bayes_opt_tuning()](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/api_each.md#bayes_opt_tuningメソッド)|
-|ベイズ最適化 (Optuna)|[optuna_tuning()](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/api_each.md#optuna_tuningメソッド)|
+|グリッドサーチ|[grid_search_tuning()](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#grid_search_tuningメソッド)|
+|ランダムサーチ|[random_search_tuning()](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#random_search_tuningメソッド)|
+|ベイズ最適化 (BayesianOptimization)|[bayes_opt_tuning()](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#bayes_opt_tuningメソッド)|
+|ベイズ最適化 (Optuna)|[optuna_tuning()](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#optuna_tuningメソッド)|
 
 ### 5.1. チューニング履歴の確認
 [`plot_search_history()`]()メソッドでチューニング進行に伴うスコアの上昇履歴をグラフ表示し、スコアの上昇具合を確認します。
@@ -449,13 +449,13 @@ regplot.regression_pred_true(lgbmr,
 # MLflowによる結果ロギング
 以下4種類のチューニング用メソッドの`mlflow_logging`引数を指定することで、MLflowで結果をロギングできます。
 
-- [grid_search_tuning()](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/api_each.md#grid_search_tuningメソッド)
+- [grid_search_tuning()](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#grid_search_tuningメソッド)
 
-- [random_search_tuning()](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/api_each.md#random_search_tuningメソッド)
+- [random_search_tuning()](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#random_search_tuningメソッド)
 
-- [bayes_opt_tuning()](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/api_each.md#random_search_tuningメソッド)
+- [bayes_opt_tuning()](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#random_search_tuningメソッド)
 
-- [optuna_tuning()](https://github.com/c60evaporator/muscle-tuning/blob/master/docs_jpn/api_each.md#random_search_tuningメソッド)
+- [optuna_tuning()](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#random_search_tuningメソッド)
 
 ## ロギング時の引数指定
 以下の
@@ -475,7 +475,7 @@ regplot.regression_pred_true(lgbmr,
 以下のように、チューニング用メソッド実行時に`mlflow_logging`='inside'を指定するとMLflowによるロギングが自動実行されます
 
 ```python
-from muscle_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 import pandas as pd
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -513,7 +513,7 @@ mlflow ui
 [こちらの記事のシナリオ2の構成]()での実行例（SQLiteをバックエンドに指定）を下記します
 
 ```python
-from muscle_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 import pandas as pd
 import sqlite3
 import os
@@ -543,7 +543,7 @@ tuning.optuna_tuning(mlflow_logging='inside')  # MLflowのロギングを指定�
 ### ・実装例
 
 ```python
-from muscle_tuning import SVMRegressorTuning
+from tune_easy import SVMRegressorTuning
 import pandas as pd
 import mlflow
 # データセット読込
