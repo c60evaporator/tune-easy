@@ -458,7 +458,7 @@ regplot.regression_pred_true(lgbmr,
 - [optuna_tuning()](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#random_search_tuningメソッド)
 
 ## ロギング時の引数指定
-以下の
+`mlflow_logging`引数の指定内容を変えることで、以下のようにロギング方法を変えることができます
 
 |`mlflow_logging`引数|動作|
 |---|---|
@@ -493,7 +493,70 @@ tuning.optuna_tuning(mlflow_logging='inside')  # MLflowのロギングを指定�
 mlflow ui
 ```
 `mlflow_logging`[以外のMLflow用引数]()を指定していなければ、ローカルホストにUIが作成される（[こちらの記事]()のシナリオ1に相当）ので、ブラウザに`http://127.0.0.1:5000`と打つと、以下のような画面が表示されます。
+
 <img width="800" src="https://user-images.githubusercontent.com/59557625/146404411-dc0102e9-e57c-49b4-82b4-0bc4a5c4bbf4.png">
+
+各RUNの`Start Time`をクリックすると、保存されている情報の詳細を表示させることができます。詳細を後述します。
+
+#### - RUNの保存内容
+各RUNには、以下のような情報が保存されます
+
+<img width="800" src="https://user-images.githubusercontent.com/59557625/147819096-fca5b4da-eca1-4898-bc04-592d74359571.png">
+
+##### ・Parameters
+以下の内容が記録されます
+
+<img width="720" src="https://user-images.githubusercontent.com/59557625/147819346-1def6aa2-7f7a-4529-88b2-9abdc94014cb.png">
+
+|名称|内容|値の取得元|再現方法|
+|---|---|---|---|
+|best__* |各パラメータの最適値|-|-|
+|cv|クロスバリデーション分割法|[`cv`プロパティ](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#プロパティ一覧)の値|チューニング用メソッド実行時の`cv`引数|
+|estimator|チューニング対象の学習器|[`estimator`プロパティ](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#プロパティ一覧)の値|チューニング用メソッド実行時の`estimator`引数|
+|fit_params|学習時の`fit()`メソッドに渡す引数|[`fit_params`プロパティ](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#プロパティ一覧)の値|チューニング用メソッド実行時の`fit_params`引数|
+|int_params|整数型のパラメータのリスト(ベイズ最適化系のみ)|[`int_params`プロパティ](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#プロパティ一覧)の値|チューニング用メソッド実行時の`int_params`引数|
+|not_opt_params|チューニング対象外のパラメータ一覧|[`not_opt_params`プロパティ](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#プロパティ一覧)の値|チューニング用メソッド実行時の`not_opt_params`引数|
+|param_scales|パラメータのスケール|[`param_scales`プロパティ](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#プロパティ一覧)の値|チューニング用メソッド実行時の`param_scales`引数|
+|scoring|チューニングで最大化する評価スコア|[`scoring`プロパティ](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#プロパティ一覧)の値|チューニング用メソッド実行時の`scoring`引数|
+|seed|乱数シード(クロスバリデーション分割、ベイズ最適化のサンプラー等で使用)|[`seed`プロパティ](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#プロパティ一覧)の値|チューニング用メソッド実行時の`seed`引数|
+|tuning_params|チューニング対象のパラメータ一覧|[`tuning_params`プロパティ](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#プロパティ一覧)の値|チューニング用メソッド実行時の`tuning_params`引数|
+
+##### ・Metrics
+以下の内容が記録されます
+
+<img width="200" src="https://user-images.githubusercontent.com/59557625/147820639-9e0d5be7-36de-494d-8dc0-ece3be7d33dd.png">
+
+|名称|内容|
+|---|---|
+|elapsed_time|チューニングの所要時間（秒）|
+|score_before|チューニング前のスコア（`scoring`で指定した指標）|
+|score_best|チューニング後の最高スコア（`scoring`で指定した指標）|
+|score_history|チューニング中のスコア推移（`scoring`で指定した指標）|
+
+score_historyは、クリックすると推移をグラフ表示することができます
+
+<img width="600" src="https://user-images.githubusercontent.com/59557625/147820829-2d40f343-cb99-4214-9c87-46e74fb680a3.png">
+
+##### ・Tags
+以下の内容が記録されます
+
+<img width="240" src="https://user-images.githubusercontent.com/59557625/147820868-e1a2f50c-1706-4064-9404-77cf705ab3cd.png">
+
+|名称|内容|値の取得元|再現方法|
+|---|---|---|---|
+|tuning_algo|クロスバリデーション分割法|[`tuning_algo`プロパティ](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#プロパティ一覧)の値|実行するチューニング用メソッド（'optuna'と記録されていたら`optuna_tuning()`メソッドを実行）|
+|x_colnames|説明変数の名称|[`x_colnames`プロパティ](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#プロパティ一覧)の値|クラス初期化時の`x_colnames`引数|
+|y_colname|目的変数の名称|[`y_colname`プロパティ](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#プロパティ一覧)の値|クラス初期化時の`y_colname`引数|
+
+##### ・Artifacts
+以下の内容が記録されます
+
+<img width="640" alt="スクリーンショット 2021-12-31 19 32 54" src="https://user-images.githubusercontent.com/59557625/147821140-4e32bad9-434e-4c34-b157-d4654db03d79.png">
+
+|名称|内容|
+|---|---|
+|best_estimator_* |最適パラメータを渡した学習器の[MLflow Modelsフォーマット](https://mlflow.org/docs/latest/models.html#storage-format)での保存データ|
+|search_history.csv|探索履歴をCSV保存したファイル（[`search_history`プロパティ](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#プロパティ一覧)をDataFrame化して保存）|
 
 ### ・トラッキングサーバを指定した実行例
 `mlflow_logging`[以外のMLflow用引数]()を指定すると、[トラッキングサーバ]()や[エクスペリメント名]()を指定したロギングが実行可能です
