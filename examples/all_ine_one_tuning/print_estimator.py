@@ -1,6 +1,6 @@
-# %% MuscleTuning, binary, no argument, print_estimator
+# %% AllInOneTuning, binary, no argument, print_estimator
 import parent_import
-from muscle_tuning import MuscleTuning
+from tune_easy import AllInOneTuning
 import seaborn as sns
 # Load dataset
 iris = sns.load_dataset("iris")
@@ -10,14 +10,14 @@ USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']
 y = iris[TARGET_VARIALBLE].values
 X = iris[USE_EXPLANATORY].values
 # Run parameter tuning
-kinnikun = MuscleTuning()
-kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY)
+kinnikun = AllInOneTuning()
+kinnikun.all_in_one_tuning(X, y, x_colnames=USE_EXPLANATORY)
 # Print estimator
 kinnikun.print_estimator('randomforest', 'randomforest estimator')
 
-# %% MuscleTuning, multiclass, no argument, print_estimator
+# %% AllInOneTuning, multiclass, no argument, print_estimator
 import parent_import
-from muscle_tuning import MuscleTuning
+from tune_easy import AllInOneTuning
 import seaborn as sns
 # Load dataset
 iris = sns.load_dataset("iris")
@@ -26,14 +26,14 @@ USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']
 y = iris[TARGET_VARIALBLE].values
 X = iris[USE_EXPLANATORY].values
 # Run parameter tuning
-kinnikun = MuscleTuning()
-kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY)
+kinnikun = AllInOneTuning()
+kinnikun.all_in_one_tuning(X, y, x_colnames=USE_EXPLANATORY)
 # Print estimator
 kinnikun.print_estimator('randomforest', 'randomforest estimator')
 
-# %% MuscleTuning, regression, no argument, print_estimator
+# %% AllInOneTuning, regression, no argument, print_estimator
 import parent_import
-from muscle_tuning import MuscleTuning
+from tune_easy import AllInOneTuning
 from sklearn.datasets import fetch_california_housing
 import pandas as pd
 import numpy as np
@@ -46,7 +46,7 @@ california_housing = california_housing.sample(n=1000, random_state=42)  # sampl
 y = california_housing[TARGET_VARIALBLE].values  # Explanatory variables
 X = california_housing[USE_EXPLANATORY].values  # Objective variable
 # Run parameter tuning
-kinnikun = MuscleTuning()
-kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY)
+kinnikun = AllInOneTuning()
+kinnikun.all_in_one_tuning(X, y, x_colnames=USE_EXPLANATORY)
 # Print estimator
 kinnikun.print_estimator('svr', 'svr estimator')

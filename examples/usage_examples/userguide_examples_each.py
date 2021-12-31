@@ -34,7 +34,7 @@ X = california_housing[USE_EXPLANATORY].values  # Explanatory variables
 
 # %% 0.3. Initialize tuning class
 import parent_import
-from muscle_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)
 
 # %% 1. Select validation score
@@ -163,7 +163,7 @@ regplot.regression_pred_true(best_estimator,
 
 # %% MLflow logging Default
 import parent_import
-from muscle_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 import pandas as pd
 # Load dataset
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -177,7 +177,7 @@ tuning.optuna_tuning(mlflow_logging='inside')  # Run tuning with MLflow logging
 
 # %% MLflow logging SQLite
 import parent_import
-from muscle_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 import pandas as pd
 import sqlite3
 import os

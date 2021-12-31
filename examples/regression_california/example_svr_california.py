@@ -1,6 +1,6 @@
 # %% SVR, GridSearch, no argument
 import parent_import
-from muscle_tuning import SVMRegressorTuning
+from tune_easy import SVMRegressorTuning
 from sklearn.datasets import fetch_california_housing
 import pandas as pd
 import numpy as np
@@ -24,7 +24,7 @@ tuning.plot_param_importances()
 
 # %% SVR, RandomSearch, no argument
 import parent_import
-from muscle_tuning import SVMRegressorTuning
+from tune_easy import SVMRegressorTuning
 from sklearn.datasets import fetch_california_housing
 import pandas as pd
 import numpy as np
@@ -47,7 +47,7 @@ tuning.plot_param_importances()
 
 # %% SVR, BayesianOptimization, no argument
 import parent_import
-from muscle_tuning import SVMRegressorTuning
+from tune_easy import SVMRegressorTuning
 from sklearn.datasets import fetch_california_housing
 import pandas as pd
 import numpy as np
@@ -70,7 +70,7 @@ tuning.plot_param_importances()
 
 # %% SVR, Optuna, no argument
 import parent_import
-from muscle_tuning import SVMRegressorTuning
+from tune_easy import SVMRegressorTuning
 from sklearn.datasets import fetch_california_housing
 import pandas as pd
 import numpy as np

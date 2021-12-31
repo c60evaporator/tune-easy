@@ -1,6 +1,6 @@
 # %% RandomForestClassifier, GridSearch, no argument
 import parent_import
-from muscle_tuning import RFClassifierTuning
+from tune_easy import RFClassifierTuning
 import seaborn as sns
 # Load dataset
 iris = sns.load_dataset("iris")
@@ -20,7 +20,7 @@ tuning.plot_param_importances()
 
 # %% RandomForestClassifier, RandomSearch, no argument
 import parent_import
-from muscle_tuning import RFClassifierTuning
+from tune_easy import RFClassifierTuning
 import seaborn as sns
 # Load dataset
 iris = sns.load_dataset("iris")
@@ -39,7 +39,7 @@ tuning.plot_param_importances()
 
 # %% RandomForestClassifier, BayesianOptimization, no argument
 import parent_import
-from muscle_tuning import RFClassifierTuning
+from tune_easy import RFClassifierTuning
 import seaborn as sns
 # Load dataset
 iris = sns.load_dataset("iris")
@@ -58,7 +58,7 @@ tuning.plot_param_importances()
 
 # %% RandomForestClassifier, Optuna, no argument
 import parent_import
-from muscle_tuning import RFClassifierTuning
+from tune_easy import RFClassifierTuning
 import seaborn as sns
 # Load dataset
 iris = sns.load_dataset("iris")

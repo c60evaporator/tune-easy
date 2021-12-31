@@ -1,6 +1,6 @@
 # %% optuna_tuning(), no argument
 import parent_import
-from muscle_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 import pandas as pd
 # Load dataset
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -14,7 +14,7 @@ best_params, best_score = tuning.optuna_tuning()
 
 # %% optuna_tuning(), Set parameter range by 'tuning_params' argument
 import parent_import
-from muscle_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 import pandas as pd
 # Load dataset
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -38,7 +38,7 @@ best_params, best_score = tuning.optuna_tuning(tuning_params=BAYES_PARAMS,
                                                )
 # %% optuna_tuning(), Set estimator by 'estimator' argument
 import parent_import
-from muscle_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 import pandas as pd
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler

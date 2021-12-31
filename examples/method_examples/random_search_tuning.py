@@ -1,6 +1,6 @@
 # %% random_search_tuning(), no argument
 import parent_import
-from muscle_tuning import RFRegressorTuning
+from tune_easy import RFRegressorTuning
 import pandas as pd
 # Load dataset
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -14,7 +14,7 @@ best_params, best_score = tuning.random_search_tuning()
 
 # %% random_search_tuning(), Set parameter range by 'tuning_params' argument
 import parent_import
-from muscle_tuning import RFRegressorTuning
+from tune_easy import RFRegressorTuning
 import pandas as pd
 # Load dataset
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -36,7 +36,7 @@ best_params, best_score = tuning.random_search_tuning(tuning_params=CV_PARAMS_RA
 
 # %% random_search_tuning(), Set estimator by 'estimator' argument
 import parent_import
-from muscle_tuning import RFRegressorTuning
+from tune_easy import RFRegressorTuning
 import pandas as pd
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler

@@ -1,6 +1,6 @@
 # %% ElasticNet, GridSearch, no argument
 import parent_import
-from muscle_tuning import ElasticNetTuning
+from tune_easy import ElasticNetTuning
 import pandas as pd
 # Load dataset
 df_reg = pd.read_csv('../sample_data/osaka_metropolis_english.csv')
@@ -20,7 +20,7 @@ tuning.plot_param_importances()
 
 # %% ElasticNet, RandomSearch, no argument
 import parent_import
-from muscle_tuning import ElasticNetTuning
+from tune_easy import ElasticNetTuning
 import pandas as pd
 # Load dataset
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -39,7 +39,7 @@ tuning.plot_param_importances()
 
 # %% ElasticNet, BayesianOptimization, no argument
 import parent_import
-from muscle_tuning import ElasticNetTuning
+from tune_easy import ElasticNetTuning
 import pandas as pd
 # Load dataset
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -58,7 +58,7 @@ tuning.plot_param_importances()
 
 # %% ElasticNet, Optuna, no argument
 import parent_import
-from muscle_tuning import ElasticNetTuning
+from tune_easy import ElasticNetTuning
 import pandas as pd
 # Load dataset
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -77,7 +77,7 @@ tuning.plot_param_importances()
 
 # %% ElasticNet, GridSearch, all arguments
 import parent_import
-from muscle_tuning import ElasticNetTuning
+from tune_easy import ElasticNetTuning
 from sklearn.linear_model import ElasticNet
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
@@ -130,7 +130,7 @@ tuning.plot_param_importances()
 
 # %% ElasticNet, Optuna, all arguments
 import parent_import
-from muscle_tuning import ElasticNetTuning
+from tune_easy import ElasticNetTuning
 from sklearn.linear_model import ElasticNet
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler

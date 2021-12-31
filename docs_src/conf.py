@@ -17,13 +17,13 @@ sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'muscle-tuning'
+project = 'tune-easy'
 copyright = '2021, Kenta Nakamura'
 author = 'Kenta Nakamura'
 
 # The full version, including alpha/beta/rc tags
-import muscle_tuning
-release = muscle_tuning.__version__
+import tune_easy
+release = tune_easy.__version__
 
 
 # -- General configuration ---------------------------------------------------

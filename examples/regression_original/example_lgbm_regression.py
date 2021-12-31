@@ -1,6 +1,6 @@
 # %% LGBMRegressor, GridSearch, no argument
 import parent_import
-from muscle_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 import pandas as pd
 # Load dataset
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -21,7 +21,7 @@ tuning.plot_feature_importances()
 
 # %% LGBMRegressor, RandomSearch, no argument
 import parent_import
-from muscle_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 import pandas as pd
 # Load dataset
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -41,7 +41,7 @@ tuning.plot_feature_importances()
 
 # %% LGBMRegressor, BayesianOptimization, no argument
 import parent_import
-from muscle_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 import pandas as pd
 # Load dataset
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -61,7 +61,7 @@ tuning.plot_feature_importances()
 
 # %% LGBMRegressor, Optuna, no argument
 import parent_import
-from muscle_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 import pandas as pd
 # Load dataset
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -81,7 +81,7 @@ tuning.plot_feature_importances()
 
 # %% LGBMRegressor, GridSearch, all arguments
 import parent_import
-from muscle_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 from lightgbm import LGBMRegressor
 import pandas as pd
 from sklearn.model_selection import KFold
@@ -158,7 +158,7 @@ tuning.plot_feature_importances(ax=ax)
 
 # %% LGBMRegressor, Optuna, all arguments
 import parent_import
-from muscle_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 from lightgbm import LGBMRegressor
 import pandas as pd
 from sklearn.model_selection import KFold

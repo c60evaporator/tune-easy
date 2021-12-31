@@ -1,6 +1,6 @@
-# %% Usage of MuscleTuning
+# %% Usage of AllInOneTuning
 import parent_import
-from muscle_tuning import MuscleTuning
+from tune_easy import AllInOneTuning
 import seaborn as sns
 # Load dataset
 iris = sns.load_dataset("iris")
@@ -10,13 +10,13 @@ USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']
 y = iris[TARGET_VARIALBLE].values
 X = iris[USE_EXPLANATORY].values
 ###### Run All-in-one Tuning######
-kinnikun = MuscleTuning()
-kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2)
+kinnikun = AllInOneTuning()
+kinnikun.all_in_one_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2)
 kinnikun.df_scores
 
 # %% Usage of each estimater's Tuning class
 import parent_import
-from muscle_tuning import LGBMClassifierTuning
+from tune_easy import LGBMClassifierTuning
 import seaborn as sns
 # Load dataset
 iris = sns.load_dataset("iris")
@@ -36,7 +36,7 @@ tuning.plot_best_validation_curve()  # Plot validation curve
 
 # %% MLflow example
 import parent_import
-from muscle_tuning import MuscleTuning
+from tune_easy import AllInOneTuning
 import seaborn as sns
 # Load dataset
 iris = sns.load_dataset("iris")
@@ -46,7 +46,7 @@ USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']
 y = iris[TARGET_VARIALBLE].values
 X = iris[USE_EXPLANATORY].values
 ###### Run All-in-one Tuning with MLflow logging ######
-kinnikun = MuscleTuning()
-kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2,
-                             mlflow_logging=True)  # Set MLflow logging argument
+kinnikun = AllInOneTuning()
+kinnikun.all_in_one_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2,
+                           mlflow_logging=True)  # Set MLflow logging argument
 # %%

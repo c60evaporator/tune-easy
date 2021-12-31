@@ -1,6 +1,6 @@
 # %% SVR, GridSearch, no argument
 import parent_import
-from muscle_tuning import SVMRegressorTuning
+from tune_easy import SVMRegressorTuning
 from sklearn.model_selection import LeaveOneGroupOut
 import pandas as pd
 # Load dataset
@@ -21,7 +21,7 @@ tuning.plot_param_importances()
 
 # %% SVR, RandomSearch, no argument
 import parent_import
-from muscle_tuning import SVMRegressorTuning
+from tune_easy import SVMRegressorTuning
 from sklearn.model_selection import LeaveOneGroupOut
 import pandas as pd
 # Load dataset
@@ -41,7 +41,7 @@ tuning.plot_param_importances()
 
 # %% SVR, BayesianOptimization, no argument
 import parent_import
-from muscle_tuning import SVMRegressorTuning
+from tune_easy import SVMRegressorTuning
 import pandas as pd
 from sklearn.model_selection import LeaveOneGroupOut
 # Load dataset
@@ -61,7 +61,7 @@ tuning.plot_param_importances()
 
 # %% SVR, Optuna, no argument
 import parent_import
-from muscle_tuning import SVMRegressorTuning
+from tune_easy import SVMRegressorTuning
 import pandas as pd
 from sklearn.model_selection import LeaveOneGroupOut
 # Load dataset
@@ -81,7 +81,7 @@ tuning.plot_param_importances()
 
 # %% SVR, GridSearch, all arguments
 import parent_import
-from muscle_tuning import SVMRegressorTuning
+from tune_easy import SVMRegressorTuning
 from sklearn.model_selection import LeaveOneGroupOut
 from sklearn.svm import SVR
 import pandas as pd
@@ -136,7 +136,7 @@ tuning.plot_param_importances()
 
 # %% SVR, RandomSearch, all arguments
 import parent_import
-from muscle_tuning import SVMRegressorTuning
+from tune_easy import SVMRegressorTuning
 from sklearn.model_selection import LeaveOneGroupOut
 from sklearn.svm import SVR
 import pandas as pd
@@ -185,7 +185,7 @@ tuning.plot_param_importances()
 
 # %% SVR, BayesianOptimization, all arguments
 import parent_import
-from muscle_tuning import SVMRegressorTuning
+from tune_easy import SVMRegressorTuning
 from sklearn.model_selection import LeaveOneGroupOut
 from sklearn.svm import SVR
 import pandas as pd
@@ -234,7 +234,7 @@ tuning.plot_best_validation_curve(validation_curve_params=validation_curve_param
 
 # %% SVR, Optuna, all arguments
 import parent_import
-from muscle_tuning import SVMRegressorTuning
+from tune_easy import SVMRegressorTuning
 from sklearn.model_selection import LeaveOneGroupOut
 from sklearn.svm import SVR
 import pandas as pd

@@ -1,6 +1,6 @@
 # %% get_search_history(), no argument
 import parent_import
-from muscle_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 import pandas as pd
 # Load dataset
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')

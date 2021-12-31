@@ -1,6 +1,6 @@
 # %% RandomForest, GridSearch, no argument
 import parent_import
-from muscle_tuning import RFRegressorTuning
+from tune_easy import RFRegressorTuning
 import pandas as pd
 # Load dataset
 df_reg = pd.read_csv('../sample_data/osaka_metropolis_english.csv')
@@ -21,7 +21,7 @@ tuning.plot_feature_importances()
 
 # %% RandomForest, RandomSearch, no argument
 import parent_import
-from muscle_tuning import RFRegressorTuning
+from tune_easy import RFRegressorTuning
 import pandas as pd
 # Load dataset
 df_reg = pd.read_csv('../sample_data/osaka_metropolis_english.csv')
@@ -41,7 +41,7 @@ tuning.plot_feature_importances()
 
 # %% RandomForest, BayesianOptimization, no argument
 import parent_import
-from muscle_tuning import RFRegressorTuning
+from tune_easy import RFRegressorTuning
 import pandas as pd
 # Load dataset
 df_reg = pd.read_csv('../sample_data/osaka_metropolis_english.csv')
@@ -61,7 +61,7 @@ tuning.plot_feature_importances()
 
 # %% RandomForest, Optuna, no argument
 import parent_import
-from muscle_tuning import RFRegressorTuning
+from tune_easy import RFRegressorTuning
 import pandas as pd
 # Load dataset
 df_reg = pd.read_csv('../sample_data/osaka_metropolis_english.csv')
@@ -81,7 +81,7 @@ tuning.plot_feature_importances()
 
 # %% ElasticNet, GridSearch, all arguments
 import parent_import
-from muscle_tuning import RFRegressorTuning
+from tune_easy import RFRegressorTuning
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import KFold
 import pandas as pd
@@ -141,7 +141,7 @@ tuning.plot_param_importances()
 
 # %% ElasticNet, Optuna, all arguments
 import parent_import
-from muscle_tuning import RFRegressorTuning
+from tune_easy import RFRegressorTuning
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import KFold
 import pandas as pd

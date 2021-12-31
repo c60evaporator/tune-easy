@@ -3,7 +3,7 @@
 # License: BSD 3 clause
 
 from setuptools import setup
-import muscle_tuning
+import tune_easy
 
 DESCRIPTION = "muscle-tuning: A hyperparameter tuning tool, easy to use even if your brain is made of muscle"
 NAME = 'muscle-tuning'
@@ -12,7 +12,7 @@ AUTHOR_EMAIL = 'c60evaporator@gmail.com'
 URL = 'https://github.com/c60evaporator/muscle-tuning'
 LICENSE = 'BSD 3-Clause'
 DOWNLOAD_URL = 'https://github.com/c60evaporator/muscle-tuning'
-VERSION = muscle_tuning.__version__
+VERSION = tune_easy.__version__
 PYTHON_REQUIRES = ">=3.6"
 
 INSTALL_REQUIRES = [

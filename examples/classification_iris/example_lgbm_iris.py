@@ -1,6 +1,6 @@
 # %% LGBMClassifier, GridSearch, no argument
 import parent_import
-from muscle_tuning import LGBMClassifierTuning
+from tune_easy import LGBMClassifierTuning
 import seaborn as sns
 # Load dataset
 iris = sns.load_dataset("iris")
@@ -20,7 +20,7 @@ tuning.plot_param_importances()
 
 # %% LGBMClassifier, RandomSearch, no argument
 import parent_import
-from muscle_tuning import LGBMClassifierTuning
+from tune_easy import LGBMClassifierTuning
 import seaborn as sns
 # Load dataset
 iris = sns.load_dataset("iris")
@@ -39,7 +39,7 @@ tuning.plot_param_importances()
 
 # %% LGBMClassifier, BayesianOptimization, no argument
 import parent_import
-from muscle_tuning import LGBMClassifierTuning
+from tune_easy import LGBMClassifierTuning
 import seaborn as sns
 # Load dataset
 iris = sns.load_dataset("iris")
@@ -58,7 +58,7 @@ tuning.plot_param_importances()
 
 # %% LGBMClassifier, Optuna, no argument
 import parent_import
-from muscle_tuning import LGBMClassifierTuning
+from tune_easy import LGBMClassifierTuning
 import seaborn as sns
 # Load dataset
 iris = sns.load_dataset("iris")

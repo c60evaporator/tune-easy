@@ -1,6 +1,6 @@
 # %% plot_search_map(), no argument
 import parent_import
-from muscle_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 import pandas as pd
 # Load dataset
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -15,7 +15,7 @@ tuning.plot_search_map()
 
 # %% plot_search_map(), set number of maps by 'pair_n' argument, set axis parameter by 'order' argument
 import parent_import
-from muscle_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 import pandas as pd
 # Load dataset
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')

@@ -1,6 +1,6 @@
 # %% SVC, GridSearch, no argument
 import parent_import
-from muscle_tuning import SVMClassifierTuning
+from tune_easy import SVMClassifierTuning
 import seaborn as sns
 # Load dataset
 iris = sns.load_dataset("iris")
@@ -20,7 +20,7 @@ tuning.plot_param_importances()
 
 # %% SVC, RandomSearch, no argument
 import parent_import
-from muscle_tuning import SVMClassifierTuning
+from tune_easy import SVMClassifierTuning
 import seaborn as sns
 # Load dataset
 iris = sns.load_dataset("iris")
@@ -39,7 +39,7 @@ tuning.plot_param_importances()
 
 # %% SVC, BayesianOptimization, no argument
 import parent_import
-from muscle_tuning import SVMClassifierTuning
+from tune_easy import SVMClassifierTuning
 import seaborn as sns
 # Load dataset
 iris = sns.load_dataset("iris")
@@ -58,7 +58,7 @@ tuning.plot_param_importances()
 
 # %% SVC, Optuna, no argument
 import parent_import
-from muscle_tuning import SVMClassifierTuning
+from tune_easy import SVMClassifierTuning
 import seaborn as sns
 # Load dataset
 iris = sns.load_dataset("iris")

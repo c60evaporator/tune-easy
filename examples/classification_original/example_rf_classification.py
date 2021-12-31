@@ -1,6 +1,6 @@
 # %% RFC, GridSearch, no argument
 import parent_import
-from muscle_tuning import RFClassifierTuning
+from tune_easy import RFClassifierTuning
 import pandas as pd
 # Load dataset
 df_clf = pd.read_csv('../sample_data/nba_nfl_2.csv')
@@ -20,7 +20,7 @@ tuning.plot_param_importances()
 
 # %% RFC, RandomSearch, no argument
 import parent_import
-from muscle_tuning import RFClassifierTuning
+from tune_easy import RFClassifierTuning
 import pandas as pd
 # Load dataset
 df_clf = pd.read_csv('../sample_data/nba_nfl_2.csv')
@@ -39,7 +39,7 @@ tuning.plot_param_importances()
 
 # %% RFC, BayesianOptimization, no argument
 import parent_import
-from muscle_tuning import RFClassifierTuning
+from tune_easy import RFClassifierTuning
 import pandas as pd
 # Load dataset
 df_clf = pd.read_csv('../sample_data/nba_nfl_2.csv')
@@ -58,7 +58,7 @@ tuning.plot_param_importances()
 
 # %% RFC, Optuna, no argument
 import parent_import
-from muscle_tuning import RFClassifierTuning
+from tune_easy import RFClassifierTuning
 import pandas as pd
 # Load dataset
 df_clf = pd.read_csv('../sample_data/nba_nfl_2.csv')

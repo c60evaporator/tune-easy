@@ -7,6 +7,6 @@ _tracking_uri
 _artifact_location
 build/
 dist/
-muscle_tuning.egg-info/
+tune_easy.egg-info/
 docs/_build/
 docs/_templates/

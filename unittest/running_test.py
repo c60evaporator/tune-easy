@@ -2,9 +2,7 @@ import sys
 import os
 sys.path.append(os.path.abspath(".."))  # 親ディレクトリからライブラリ読込
 import pytest
-from svm_tuning import SVMRegressorTuning, SVMClassifierTuning
-from xgb_tuning import XGBRegressorTuning
-from rf_tuning import RFRegressorTuning
+from tune_easy import SVMRegressorTuning, SVMClassifierTuning, XGBRegressorTuning, RFRegressorTuning
 import pandas as pd
 import numpy as np
 from datetime import datetime

@@ -1,6 +1,6 @@
 # %% XGBClassifier, GridSearch, no argument
 import parent_import
-from muscle_tuning import XGBClassifierTuning
+from tune_easy import XGBClassifierTuning
 import pandas as pd
 # Load dataset
 df_clf = pd.read_csv('../sample_data/nba_nfl_2.csv')
@@ -20,7 +20,7 @@ tuning.plot_param_importances()
 
 # %% XGBClassifier, RandomSearch, no argument
 import parent_import
-from muscle_tuning import XGBClassifierTuning
+from tune_easy import XGBClassifierTuning
 import pandas as pd
 # Load dataset
 df_clf = pd.read_csv('../sample_data/nba_nfl_2.csv')
@@ -39,7 +39,7 @@ tuning.plot_param_importances()
 
 # %% XGBClassifier, BayesianOptimization, no argument
 import parent_import
-from muscle_tuning import XGBClassifierTuning
+from tune_easy import XGBClassifierTuning
 import pandas as pd
 # Load dataset
 df_clf = pd.read_csv('../sample_data/nba_nfl_2.csv')
@@ -58,7 +58,7 @@ tuning.plot_param_importances()
 
 # %% XGBClassifier, Optuna, no argument
 import parent_import
-from muscle_tuning import XGBClassifierTuning
+from tune_easy import XGBClassifierTuning
 import pandas as pd
 # Load dataset
 df_clf = pd.read_csv('../sample_data/nba_nfl_2.csv')

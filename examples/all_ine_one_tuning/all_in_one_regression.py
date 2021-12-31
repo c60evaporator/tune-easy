@@ -1,6 +1,6 @@
-# %% MuscleTuning, regression, no argument
+# %% AllInOneTuning, regression, no argument
 import parent_import
-from muscle_tuning import MuscleTuning
+from tune_easy import AllInOneTuning
 from sklearn.datasets import fetch_california_housing
 import pandas as pd
 import numpy as np
@@ -17,9 +17,9 @@ kinnikun = MuscleTuning()
 kinnikun.muscle_brain_tuning(X, y, x_colnames=USE_EXPLANATORY)
 kinnikun.df_scores
 
-# %% MuscleTuning, regression, with argumets
+# %% AllInOneTuning, regression, with argumets
 import parent_import
-from muscle_tuning import MuscleTuning
+from tune_easy import MuscleTuning
 from sklearn.datasets import fetch_california_housing
 import pandas as pd
 import numpy as np

@@ -1,6 +1,6 @@
 # %% MLFlow　Grid search
 import parent_import
-from muscle_tuning import XGBRegressorTuning
+from tune_easy import XGBRegressorTuning
 from xgboost import XGBRegressor
 from sklearn.model_selection import KFold
 import pandas as pd
@@ -34,7 +34,7 @@ tuning.grid_search_tuning(estimator=xgbr, mlflow_logging='inside', tuning_params
 
 # %% MLFlow Random search
 import parent_import
-from muscle_tuning import SVMRegressorTuning
+from tune_easy import SVMRegressorTuning
 import pandas as pd
 # Load dataset
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -48,7 +48,7 @@ tuning.random_search_tuning(mlflow_logging='inside')
 
 # %% MLFlow実装　BayesianOptimization
 import parent_import
-from muscle_tuning import SVMRegressorTuning
+from tune_easy import SVMRegressorTuning
 import pandas as pd
 # Load dataset
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -62,7 +62,7 @@ tuning.bayes_opt_tuning(mlflow_logging='inside')
 
 # %% MLFlow　Optuna
 import parent_import
-from muscle_tuning import SVMRegressorTuning
+from tune_easy import SVMRegressorTuning
 import pandas as pd
 # Load dataset
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -76,7 +76,7 @@ tuning.optuna_tuning(mlflow_logging='inside')
 
 # %% MLFlow　Optuna SQLite
 import parent_import
-from muscle_tuning import SVMRegressorTuning
+from tune_easy import SVMRegressorTuning
 import pandas as pd
 import sqlite3
 import os
@@ -100,7 +100,7 @@ tuning.optuna_tuning(mlflow_logging='inside', mlflow_tracking_uri=tracking_uri,
 
 # %% MLFlow　Optuna outside
 import parent_import
-from muscle_tuning import SVMRegressorTuning
+from tune_easy import SVMRegressorTuning
 import pandas as pd
 import mlflow
 # Load dataset

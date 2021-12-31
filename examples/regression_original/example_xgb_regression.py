@@ -1,6 +1,6 @@
 # %% XGBRegressor, GridSearch, no argument
 import parent_import
-from muscle_tuning import XGBRegressorTuning
+from tune_easy import XGBRegressorTuning
 import pandas as pd
 # Load dataset
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -21,7 +21,7 @@ tuning.plot_feature_importances()
 
 # %% XGBRegressor, Optuna, no argument
 import parent_import
-from muscle_tuning import XGBRegressorTuning
+from tune_easy import XGBRegressorTuning
 import pandas as pd
 # Load dataset
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -41,7 +41,7 @@ tuning.plot_feature_importances()
 
 # %% XGBRegressor, GridSearch, all arguments
 import parent_import
-from muscle_tuning import XGBRegressorTuning
+from tune_easy import XGBRegressorTuning
 from xgboost import XGBRegressor
 import pandas as pd
 from sklearn.model_selection import KFold
@@ -106,7 +106,7 @@ tuning.plot_feature_importances(ax=ax)
 
 # %% XGBRegressor, RandomSearch, all arguments
 import parent_import
-from muscle_tuning import XGBRegressorTuning
+from tune_easy import XGBRegressorTuning
 from xgboost import XGBRegressor
 import pandas as pd
 from sklearn.model_selection import KFold
@@ -172,7 +172,7 @@ tuning.plot_feature_importances(ax=ax)
 
 # %% XGBRegressor, BayesianOptimization, all arguments
 import parent_import
-from muscle_tuning import XGBRegressorTuning
+from tune_easy import XGBRegressorTuning
 from xgboost import XGBRegressor
 import pandas as pd
 from sklearn.model_selection import KFold
@@ -240,7 +240,7 @@ tuning.plot_feature_importances(ax=ax)
 
 # %% XGBRegressor, Optuna, all arguments
 import parent_import
-from muscle_tuning import XGBRegressorTuning
+from tune_easy import XGBRegressorTuning
 from xgboost import XGBRegressor
 import pandas as pd
 from sklearn.model_selection import KFold

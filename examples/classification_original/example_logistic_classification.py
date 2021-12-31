@@ -1,6 +1,6 @@
 # %% SVC, GridSearch, no argument
 import parent_import
-from muscle_tuning import LogisticRegressionTuning
+from tune_easy import LogisticRegressionTuning
 import pandas as pd
 # Load dataset
 df_clf = pd.read_csv('../sample_data/nba_nfl_2.csv')

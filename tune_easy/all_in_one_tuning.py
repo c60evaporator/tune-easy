@@ -23,7 +23,7 @@ from .xgb_tuning import XGBClassifierTuning, XGBRegressorTuning
 from .logisticregression_tuning import LogisticRegressionTuning
 
 
-class MuscleTuning():
+class AllInOneTuning():
     SCORING = {'regression': 'rmse',
                'binary': 'logloss',
                'multiclass': 'logloss'
@@ -791,7 +791,7 @@ class MuscleTuning():
         if mlflow_logging:
             mlflow.log_text(printed_model, 'how_to_use_best_estimator.py')
 
-    def muscle_brain_tuning(self, x, y, data=None, x_colnames=None, cv_group=None,
+    def all_in_one_tuning(self, x, y, data=None, x_colnames=None, cv_group=None,
                             objective=None, 
                             scoring=None, other_scores=None, learning_algos=None, n_iter=None,
                             cv=5, tuning_algo='optuna', seed=42,

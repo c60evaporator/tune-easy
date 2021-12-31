@@ -1,6 +1,6 @@
 # %% plot_first_validation_curve(), no argument
 import parent_import
-from muscle_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 import pandas as pd
 # Load dataset
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -14,7 +14,7 @@ tuning.plot_first_validation_curve()
 
 # %% plot_first_validation_curve(), Set parameter range by 'validation_curve_params' argument
 import parent_import
-from muscle_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 from sklearn.datasets import fetch_california_housing
 import pandas as pd
 import numpy as np

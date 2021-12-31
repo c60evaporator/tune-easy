@@ -1,6 +1,6 @@
 # %% __init__(), no argument
 import parent_import
-from muscle_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 import pandas as pd
 # Load dataset
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
@@ -13,7 +13,7 @@ tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)
 
 # %% __init__(), for LeaveOneGroupOut
 import parent_import
-from muscle_tuning import XGBRegressorTuning
+from tune_easy import XGBRegressorTuning
 from sklearn.model_selection import LeaveOneGroupOut
 import pandas as pd
 # Load dataset
@@ -28,7 +28,7 @@ tuning = XGBRegressorTuning(X, y, USE_EXPLANATORY,  # Required argument
 
 # %% __init__(), use validation data as eval_data in fit_params
 import parent_import
-from muscle_tuning import LGBMRegressorTuning
+from tune_easy import LGBMRegressorTuning
 import pandas as pd
 # Load dataset
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')

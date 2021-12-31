@@ -1,6 +1,6 @@
 # %% MuscleTuning, MLflow, no argument
 import parent_import
-from muscle_tuning import MuscleTuning
+from tune_easy import MuscleTuning
 from sklearn.datasets import fetch_california_housing
 import pandas as pd
 import numpy as np

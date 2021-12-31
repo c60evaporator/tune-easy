@@ -3,50 +3,50 @@ Tuning class of each ML estimator
 
 Select appropreate tuning class for your machine learning estimator.
 
-muscle\_tuning.elasticnet\_tuning module
-----------------------------------------
+tune\_easy.elasticnet\_tuning module
+------------------------------------
 
-.. automodule:: muscle_tuning.elasticnet_tuning
+.. automodule:: tune_easy.elasticnet_tuning
    :members:
    :undoc-members:
    :show-inheritance:
 
-muscle\_tuning.lgbm\_tuning module
-----------------------------------
+tune\_easy.lgbm\_tuning module
+------------------------------
 
-.. automodule:: muscle_tuning.lgbm_tuning
+.. automodule:: tune_easy.lgbm_tuning
    :members:
    :undoc-members:
    :show-inheritance:
 
-muscle\_tuning.logisticregression\_tuning module
-------------------------------------------------
+tune\_easy.logisticregression\_tuning module
+--------------------------------------------
 
-.. automodule:: muscle_tuning.logisticregression_tuning
+.. automodule:: tune_easy.logisticregression_tuning
    :members:
    :undoc-members:
    :show-inheritance:
 
-muscle\_tuning.rf\_tuning module
---------------------------------
+tune\_easy.rf\_tuning module
+----------------------------
 
-.. automodule:: muscle_tuning.rf_tuning
+.. automodule:: tune_easy.rf_tuning
    :members:
    :undoc-members:
    :show-inheritance:
 
-muscle\_tuning.svm\_tuning module
----------------------------------
+tune\_easy.svm\_tuning module
+-----------------------------
 
-.. automodule:: muscle_tuning.svm_tuning
+.. automodule:: tune_easy.svm_tuning
    :members:
    :undoc-members:
    :show-inheritance:
 
-muscle\_tuning.xgb\_tuning module
----------------------------------
+tune\_easy.xgb\_tuning module
+-----------------------------
 
-.. automodule:: muscle_tuning.xgb_tuning
+.. automodule:: tune_easy.xgb_tuning
    :members:
    :undoc-members:
    :show-inheritance:
