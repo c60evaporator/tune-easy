@@ -13,7 +13,9 @@ tune-easy
 .. |license| image:: https://img.shields.io/pypi/l/tune-easy?color=blue
    :target: https://github.com/c60evaporator/tune-easy/blob/master/LICENSE
 
-A hyperparameter tuning tool, easy to use for scikit-learn API
+A hyperparameter tuning tool, extremely easy to use.
+
+This package supports scikit-learn API estimators, such as SVM and LightGBM.
 
 =====
 Usage
