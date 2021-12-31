@@ -157,10 +157,12 @@ mlflow ui
 
 <img width="292" src="https://user-images.githubusercontent.com/59557625/145711846-3a445abf-4013-44ef-862f-9ace3839ffe5.png">
 
+各RUNをクリックすると、保存されている情報の詳細を表示させることができます。詳細を後述します。
 <br>
 
 ### - 親RUNの保存内容
 親RUNには、以下のような情報が保存されます
+
 <img width="681" src="https://user-images.githubusercontent.com/59557625/145712480-15fc8916-2d16-410c-9889-50d18414fbe5.png">
 
 #### ・Parameters
