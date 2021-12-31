@@ -161,7 +161,7 @@ regplot.regression_pred_true(best_estimator,
                              eval_set_selection='test'
                              )
 
-# %% MLflow logging Default
+# %% MLflow logging 'inside' Default
 import parent_import
 from tune_easy import LGBMRegressorTuning
 import pandas as pd
@@ -175,7 +175,7 @@ X = df_reg[USE_EXPLANATORY].values
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # Make tuning instance
 tuning.optuna_tuning(mlflow_logging='inside')  # Run tuning with MLflow logging
 
-# %% MLflow logging SQLite
+# %% MLflow logging 'inside' SQLite
 import parent_import
 from tune_easy import LGBMRegressorTuning
 import pandas as pd
@@ -197,3 +197,22 @@ X = df_reg[USE_EXPLANATORY].values
 # Optimization with MLflow logging
 tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)  # Make tuning instance
 tuning.optuna_tuning(mlflow_logging='inside')  # Run tuning with MLflow logging
+
+# %% MLflow logging 'outside'
+from tune_easy import SVMRegressorTuning
+import pandas as pd
+import mlflow
+# データセット読込
+df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
+TARGET_VARIALBLE_REG = 'approval_rate'  # 目的変数
+USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
+y = df_reg[TARGET_VARIALBLE_REG].values
+X = df_reg[USE_EXPLANATORY_REG].values
+tuning = SVMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=TARGET_VARIALBLE_REG)
+# MLflowのRun開始
+with mlflow.start_run() as run:
+    # Optunaでのチューニング結果をMLflowでロギング
+    tuning.optuna_tuning(mlflow_logging='outside')
+    # 追加で記録したい情報
+    mlflow.log_param('data_name', 'osaka_metropolis')
+    mlflow.log_dict(tuning.tuning_params, 'tuning_params.json')
