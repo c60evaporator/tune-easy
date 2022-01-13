@@ -3,7 +3,7 @@
 [![pypi](https://img.shields.io/pypi/v/tune-easy?color=blue)](https://pypi.org/project/tune-easy/)
 [![license](https://img.shields.io/pypi/l/tune-easy?color=blue)](https://github.com/c60evaporator/tune-easy/blob/master/LICENSE)
 
-**A hyperparameter tuning tool, extremely easy to use.**
+**A hyperparameter tuning tool for Machine Learning, extremely easy to use.**
 
 This documentation is Japanese language version.
 **[English version is here](https://github.com/c60evaporator/tune-easy/blob/master/README.rst)**
@@ -22,9 +22,9 @@ import seaborn as sns
 # データセット読込
 iris = sns.load_dataset("iris")
 iris = iris[iris['species'] != 'setosa']  # 2クラスに絞る
-TARGET_VARIALBLE = 'species'  # 目的変数
+TARGET_VARIABLE = 'species'  # 目的変数
 USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']  # 説明変数
-y = iris[TARGET_VARIALBLE].values
+y = iris[TARGET_VARIABLE].values
 X = iris[USE_EXPLANATORY].values
 ###### チューニング一括実行 ######
 all_tuner = AllInOneTuning()
@@ -46,9 +46,9 @@ import seaborn as sns
 # データセット読込
 iris = sns.load_dataset("iris")
 iris = iris[iris['species'] != 'setosa']  # 2クラスに絞る
-TARGET_VARIALBLE = 'species'  # 目的変数
+TARGET_VARIABLE = 'species'  # 目的変数
 USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']  # 説明変数
-y = iris[TARGET_VARIALBLE].values
+y = iris[TARGET_VARIABLE].values
 X = iris[USE_EXPLANATORY].values
 ###### チューニング実行と結果の可視化 ######
 tuning = LGBMClassifierTuning(X, y, USE_EXPLANATORY)  # チューニング用クラス
@@ -74,9 +74,9 @@ import seaborn as sns
 # データセット読込
 iris = sns.load_dataset("iris")
 iris = iris[iris['species'] != 'setosa']  # 2クラスに絞る
-TARGET_VARIALBLE = 'species'  # 目的変数
+TARGET_VARIABLE = 'species'  # 目的変数
 USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']  # 説明変数
-y = iris[TARGET_VARIALBLE].values
+y = iris[TARGET_VARIABLE].values
 X = iris[USE_EXPLANATORY].values
 ###### チューニング一括実行 ######
 all_tuner = AllInOneTuning()
