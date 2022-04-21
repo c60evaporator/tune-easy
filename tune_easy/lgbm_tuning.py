@@ -1,6 +1,7 @@
 import time
 import numpy as np
 from lightgbm import LGBMRegressor, LGBMClassifier
+from lightgbm import early_stopping
 
 from .param_tuning import ParamTuning
 from seaborn_analyzer._cv_eval_set import cross_val_score_eval_set, init_eval_set
@@ -19,8 +20,7 @@ class LGBMRegressorTuning(ParamTuning):
     # 学習器のインスタンス (LightGBM)
     ESTIMATOR = LGBMRegressor()
     # 学習時のパラメータのデフォルト値
-    FIT_PARAMS = {'verbose': 0,  # 学習中のコマンドライン出力
-                  'early_stopping_rounds': 10,  # 学習時、評価指標がこの回数連続で改善しなくなった時点でストップ
+    FIT_PARAMS = {'callbacks': [early_stopping(stopping_rounds=10, verbose=0)], # 学習時、評価指標がこの回数連続で改善しなくなった時点でストップ
                   'eval_metric': 'rmse'  # early_stopping_roundsの評価指標
                   }
     # 最適化で最大化するデフォルト評価指標('r2', 'neg_mean_squared_error', 'neg_root_mean_squared_error', etc.)
@@ -167,7 +167,7 @@ class LGBMClassifierTuning(ParamTuning):
     ESTIMATOR = LGBMClassifier()
     # 学習時のパラメータのデフォルト値
     FIT_PARAMS = {'verbose': 0,  # 学習中のコマンドライン出力
-                  'early_stopping_rounds': 10,  # 学習時、評価指標がこの回数連続で改善しなくなった時点でストップ
+                  'callbacks': [early_stopping(stopping_rounds=10, verbose=0)],  # 学習時、評価指標がこの回数連続で改善しなくなった時点でストップ
                   'eval_metric': 'binary_logloss'  # early_stopping_roundsの評価指標
                   }
     # 最適化で最大化するデフォルト評価指標('neg_log_loss', 'roc_auc', 'roc_auc_ovr'など)
