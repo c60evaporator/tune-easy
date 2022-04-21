@@ -166,8 +166,7 @@ class LGBMClassifierTuning(ParamTuning):
     # 学習器のインスタンス (LightGBM)
     ESTIMATOR = LGBMClassifier()
     # 学習時のパラメータのデフォルト値
-    FIT_PARAMS = {'verbose': 0,  # 学習中のコマンドライン出力
-                  'callbacks': [early_stopping(stopping_rounds=10, verbose=0)],  # 学習時、評価指標がこの回数連続で改善しなくなった時点でストップ
+    FIT_PARAMS = {'callbacks': [early_stopping(stopping_rounds=10, verbose=0)],  # 学習時、評価指標がこの回数連続で改善しなくなった時点でストップ
                   'eval_metric': 'binary_logloss'  # early_stopping_roundsの評価指標
                   }
     # 最適化で最大化するデフォルト評価指標('neg_log_loss', 'roc_auc', 'roc_auc_ovr'など)
