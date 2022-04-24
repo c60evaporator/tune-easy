@@ -113,19 +113,19 @@ tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY,
 
 |メソッド名|機能|
 |---|---|
-|[plot_first_validation_curve]()|範囲を定めてチューニング前の検証曲線をプロットし、パラメータ調整範囲の参考とします|
-|[grid_search_tuning]()|グリッドサーチを実行します|
-|[random_search_tuning]()|ランダムサーチを実行します|
-|[bayes_opt_tuning]()|BayesianOptimizationでベイズ最適化を実行します|
-|[optuna_tuning]()|Optunaでベイズ最適化を実行します|
-|[plot_search_history]()|チューニング進行に伴うスコアの上昇履歴をグラフ表示します|
-|[get_search_history]()|チューニング進行に伴うスコアの上昇履歴をpandas.DataFrameで取得します|
-|[plot_search_map]()|パラメータ空間上での探索位置とスコアをマップ表示します (グリッドサーチはヒートマップ、それ以外は散布図)|
-|[plot_best_learning_curve]()|チューニング後の学習曲線をプロットし、モデルのバイアスとバリアンスの判断材料とします|
-|[plot_best_validation_curve]()|チューニング後の検証曲線をプロットし、チューニング妥当性の判断材料とします|
-|[plot_param_importances]()|パラメータを説明変数としてスコアをランダムフォレスト回帰した際のfeature_importancesを取得します。スコアの変化に寄与するパラメータの判断材料とします|
-|[get_feature_importances]()|チューニング後の最適モデルのfeature_importancesを取得します (feature_importances対応学習器のみ)|
-|[plot_feature_importances]()|チューニング後の最適モデルのfeature_importancesをグラフ表示します (feature_importances対応学習器のみ)|
+|[plot_first_validation_curve](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#plot_first_validation_curveメソッド)|範囲を定めてチューニング前の検証曲線をプロットし、パラメータ調整範囲の参考とします|
+|[grid_search_tuning](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#grid_search_tuningメソッド)|グリッドサーチを実行します|
+|[random_search_tuning](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#random_search_tuningメソッド)|ランダムサーチを実行します|
+|[bayes_opt_tuning](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#bayes_opt_tuningメソッド)|BayesianOptimizationでベイズ最適化を実行します|
+|[optuna_tuning](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#optuna_tuningメソッド)|Optunaでベイズ最適化を実行します|
+|[plot_search_history](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#plot_search_historyメソッド)|チューニング進行に伴うスコアの上昇履歴をグラフ表示します|
+|[get_search_history](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#get_search_historyメソッド)|チューニング進行に伴うスコアの上昇履歴をpandas.DataFrameで取得します|
+|[plot_search_map](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#plot_search_mapメソッド)|パラメータ空間上での探索位置とスコアをマップ表示します (グリッドサーチはヒートマップ、それ以外は散布図)|
+|[plot_best_learning_curve](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#plot_best_learning_curveメソッド)|チューニング後の学習曲線をプロットし、モデルのバイアスとバリアンスの判断材料とします|
+|[plot_best_validation_curve](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#plot_best_validation_curveメソッド)|チューニング後の検証曲線をプロットし、チューニング妥当性の判断材料とします|
+|[plot_param_importances](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#plot_param_importancesメソッド)|パラメータを説明変数としてスコアをランダムフォレスト回帰した際のfeature_importancesを取得します。スコアの変化に寄与するパラメータの判断材料とします|
+|[plot_feature_importances](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#plot_feature_importancesメソッド)|チューニング後の最適モデルのfeature_importancesをグラフ表示します (feature_importances対応学習器のみ)|
+|[get_feature_importances](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#get_feature_importancesメソッド)|チューニング後の最適モデルのfeature_importancesを取得します (feature_importances対応学習器のみ)|
 
 ※大半のメソッドは全てのクラスに対応していますが、
 get_feature_importancesおよびplot_feature_importancesメソッドは、XGBoostおよびLightGBMのみ対応しています。
@@ -150,7 +150,7 @@ get_feature_importancesおよびplot_feature_importancesメソッドは、XGBoos
 ### 実行例
 コードは[こちらにもアップロードしています](https://github.com/c60evaporator/tune-easy/blob/master/examples/method_examples/plot_first_validation_curve.py)
 #### オプション引数指定なしで検証曲線プロット
-オプション引数を指定しないとき、[前述のデフォルト値]()を使用してプロットします
+オプション引数を指定しないとき、[デフォルト値](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#引数一覧)を使用してプロットします
 
 ```python
 from tune_easy import LGBMRegressorTuning
@@ -220,10 +220,10 @@ tuning.plot_first_validation_curve(validation_curve_params=VALIDATION_CURVE_PARA
 |scoring|オプション|str|'neg_mean_squared_error' in regression.'neg_log_loss' in clasification|最適化で最大化する評価指標 ('neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_log_loss', 'f1'など)|
 |not_opt_<br>params|オプション　　|dict|[クラスごとに異なるNOT_OPT_PARAMS定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|`tuning_params`以外のチューニング対象外パラメータを指定|
 |param_scales|オプション|dict[str, str]|[クラスごとに異なるPARAM_SCALES定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|`tuning_params`のパラメータごとのスケール('linear', 'log')|
-|mlflow_logging|オプション|{'inside','outside',None}|None|MLflowでの結果記録有無('inside':with構文で記録, 'outside':外部でRun実行, None:MLflow実行なし)。詳細は[こちら]()|
-|mlflow_<br>tracking_uri|オプション|str|None|MLflowのTracking URI。[こちらを参照ください]()|
-|mlflow_<br>artifact_location|オプション　　|str|None|MLflowのArtifact URI。[こちらを参照ください]()|
-|mlflow_<br>experiment_name|オプション|str|None|MLflowのExperiment名。[こちらを参照ください]()|
+|mlflow_logging|オプション|{'inside','outside',None}|None|MLflowでの結果記録有無('inside':with構文で記録, 'outside':外部でRun実行, None:MLflow実行なし)。詳細は[こちら](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_each.md#ロギング時の引数指定)|
+|mlflow_<br>tracking_uri|オプション|str|None|MLflowのTracking URI。[こちらを参照ください](https://qiita.com/c60evaporator/items/e0eb1a0c521d1310d95d#シナリオ1-バックエンドartifactストレージを明示的に指定した場合)|
+|mlflow_<br>artifact_location|オプション　　|str|None|MLflowのArtifact URI。[こちら](https://qiita.com/c60evaporator/items/e0eb1a0c521d1310d95d#シナリオ1-バックエンドartifactストレージを明示的に指定した場合)または[こちら](https://qiita.com/c60evaporator/items/e1fd57a0263a19b629d1#コンテナ4-tracking-server)を参照ください|
+|mlflow_<br>experiment_name|オプション|str|None|MLflowのExperiment名。[こちらを参照ください](https://qiita.com/c60evaporator/items/e0eb1a0c521d1310d95d#手順3-エクスペリメントの作成)|
 |grid_kws|オプション|dict|None|sklearn.model_selection.GridSearchCVに渡す引数 (estimator, tuning_params, cv, scoring以外)|
 |fit_params|オプション|dict|[クラスごとに異なるFIT_PARAMS定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|学習器の`fit()`メソッドに渡すパラメータ|
 
@@ -342,10 +342,10 @@ score after tuning = -0.018483563545478098
 |n_iter|オプション|int|[クラスごとに異なるN_ITER定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|ランダムサーチの試行数|
 |not_opt_<br>params|オプション　　|dict|[クラスごとに異なるNOT_OPT_PARAMS定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|`tuning_params`以外のチューニング対象外パラメータを指定|
 |param_scales|オプション|dict[str, str]|[クラスごとに異なるPARAM_SCALES定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|`tuning_params`のパラメータごとのスケール('linear', 'log')|
-|mlflow_logging|オプション|{'inside','outside',None}|None|MLflowでの結果記録有無('inside':with構文で記録, 'outside':外部でRun実行, None:MLflow実行なし)。詳細は[こちら]()|
-|mlflow_<br>tracking_uri|オプション|str|None|MLflowのTracking URI。[こちらを参照ください]()|
-|mlflow_<br>artifact_location|オプション　　|str|None|MLflowのArtifact URI。[こちらを参照ください]()|
-|mlflow_<br>experiment_name|オプション|str|None|MLflowのExperiment名。[こちらを参照ください]()|
+|mlflow_logging|オプション|{'inside','outside',None}|None|MLflowでの結果記録有無('inside':with構文で記録, 'outside':外部でRun実行, None:MLflow実行なし)。詳細は[こちら](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_each.md#ロギング時の引数指定)|
+|mlflow_<br>tracking_uri|オプション|str|None|MLflowのTracking URI。[こちらを参照ください](https://qiita.com/c60evaporator/items/e0eb1a0c521d1310d95d#シナリオ1-バックエンドartifactストレージを明示的に指定した場合)|
+|mlflow_<br>artifact_location|オプション　　|str|None|MLflowのArtifact URI。[こちら](https://qiita.com/c60evaporator/items/e0eb1a0c521d1310d95d#シナリオ1-バックエンドartifactストレージを明示的に指定した場合)または[こちら](https://qiita.com/c60evaporator/items/e1fd57a0263a19b629d1#コンテナ4-tracking-server)を参照ください|
+|mlflow_<br>experiment_name|オプション|str|None|MLflowのExperiment名。[こちらを参照ください](https://qiita.com/c60evaporator/items/e0eb1a0c521d1310d95d#手順3-エクスペリメントの作成)|
 |rand_kws|オプション|dict|None|sklearn.model_selection.RondomizedSearchCVに渡す引数 (estimator, tuning_params, cv, scoring, n_iter以外)|
 |fit_params|オプション|dict|[クラスごとに異なるFIT_PARAMS定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|学習器の`fit()`メソッドに渡すパラメータ|
 
@@ -471,10 +471,10 @@ score after tuning = -0.01786570144420851
 |not_opt_<br>params|オプション　　|dict|[クラスごとに異なるNOT_OPT_PARAMS定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|`tuning_params`以外のチューニング対象外パラメータを指定|
 |int_params|オプション|int|[クラスごとに異なるINT_PARAMS定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|整数型のパラメータ一覧のリスト|
 |param_scales|オプション|dict[str, str]|[クラスごとに異なるPARAM_SCALES定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|`tuning_params`のパラメータごとのスケール('linear', 'log')|
-|mlflow_logging|オプション|{'inside','outside',None}|None|MLflowでの結果記録有無('inside':with構文で記録, 'outside':外部でRun実行, None:MLflow実行なし)。詳細は[こちら]()|
-|mlflow_<br>tracking_uri|オプション|str|None|MLflowのTracking URI。[こちらを参照ください]()|
-|mlflow_<br>artifact_location|オプション　　|str|None|MLflowのArtifact URI。[こちらを参照ください]()|
-|mlflow_<br>experiment_name|オプション|str|None|MLflowのExperiment名。[こちらを参照ください]()|
+|mlflow_logging|オプション|{'inside','outside',None}|None|MLflowでの結果記録有無('inside':with構文で記録, 'outside':外部でRun実行, None:MLflow実行なし)。詳細は[こちら](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_each.md#ロギング時の引数指定)|
+|mlflow_<br>tracking_uri|オプション|str|None|MLflowのTracking URI。[こちらを参照ください](https://qiita.com/c60evaporator/items/e0eb1a0c521d1310d95d#シナリオ1-バックエンドartifactストレージを明示的に指定した場合)|
+|mlflow_<br>artifact_location|オプション　　|str|None|MLflowのArtifact URI。[こちら](https://qiita.com/c60evaporator/items/e0eb1a0c521d1310d95d#シナリオ1-バックエンドartifactストレージを明示的に指定した場合)または[こちら](https://qiita.com/c60evaporator/items/e1fd57a0263a19b629d1#コンテナ4-tracking-server)を参照ください|
+|mlflow_<br>experiment_name|オプション|str|None|MLflowのExperiment名。[こちらを参照ください](https://qiita.com/c60evaporator/items/e0eb1a0c521d1310d95d#手順3-エクスペリメントの作成)|
 |fit_params|オプション|dict|[クラスごとに異なるFIT_PARAMS定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|学習器の`fit()`メソッドに渡すパラメータ|
 
 ### 実行例
@@ -635,10 +635,10 @@ score after tuning = -0.016169025610778674
 |not_opt_<br>params|オプション　　|dict|[クラスごとに異なるNOT_OPT_PARAMS定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|`tuning_params`以外のチューニング対象外パラメータを指定|
 |int_params|オプション|int|[クラスごとに異なるINT_PARAMS定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|整数型のパラメータ一覧のリスト|
 |param_scales|オプション|dict[str, str]|[クラスごとに異なるPARAM_SCALES定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|`tuning_params`のパラメータごとのスケール('linear', 'log')|
-|mlflow_logging|オプション|{'inside','outside',None}|None|MLflowでの結果記録有無('inside':with構文で記録, 'outside':外部でRun実行, None:MLflow実行なし)。詳細は[こちら]()|
-|mlflow_<br>tracking_uri|オプション|str|None|MLflowのTracking URI。[こちらを参照ください]()|
-|mlflow_<br>artifact_location|オプション　　|str|None|MLflowのArtifact URI。[こちらを参照ください]()|
-|mlflow_<br>experiment_name|オプション|str|None|MLflowのExperiment名。[こちらを参照ください]()|
+|mlflow_logging|オプション|{'inside','outside',None}|None|MLflowでの結果記録有無('inside':with構文で記録, 'outside':外部でRun実行, None:MLflow実行なし)。詳細は[こちら](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_each.md#ロギング時の引数指定)|
+|mlflow_<br>tracking_uri|オプション|str|None|MLflowのTracking URI。[こちらを参照ください](https://qiita.com/c60evaporator/items/e0eb1a0c521d1310d95d#シナリオ1-バックエンドartifactストレージを明示的に指定した場合)|
+|mlflow_<br>artifact_location|オプション　　|str|None|MLflowのArtifact URI。[こちら](https://qiita.com/c60evaporator/items/e0eb1a0c521d1310d95d#シナリオ1-バックエンドartifactストレージを明示的に指定した場合)または[こちら](https://qiita.com/c60evaporator/items/e1fd57a0263a19b629d1#コンテナ4-tracking-server)を参照ください|
+|mlflow_<br>experiment_name|オプション|str|None|MLflowのExperiment名。[こちらを参照ください](https://qiita.com/c60evaporator/items/e0eb1a0c521d1310d95d#手順3-エクスペリメントの作成)|
 |fit_params|オプション|dict|[クラスごとに異なるFIT_PARAMS定数](https://c60evaporator.github.io/tune-easy/each_estimators.html)|学習器の`fit()`メソッドに渡すパラメータ|
 
 ### 実行例
@@ -909,7 +909,7 @@ tuning.plot_search_map()
 #### 図の枚数と軸のパラメータを指定して探索位置をプロット
 `pair_n`引数で、プロットする図の縦横枚数を指定する事ができます
 
-`order`引数で、軸のパラメータをリストで指定する事ができます。リスト指定順に、グラフ横軸 → グラフ縦軸 → 全体縦軸 → 全体横軸の順番でプロットされます。`order`=Noneなら[param_importances]()順にプロットされます。
+`order`引数で、軸のパラメータをリストで指定する事ができます。リスト指定順に、グラフ横軸 → グラフ縦軸 → 全体縦軸 → 全体横軸の順番でプロットされます。`order`=Noneなら[param_importances](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#plot_param_importancesメソッド)順にプロットされます。
 
 ```python
 from tune_easy import LGBMRegressorTuning

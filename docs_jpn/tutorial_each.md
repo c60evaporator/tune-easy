@@ -50,7 +50,7 @@
 <br>
 
 **App. MLflowによる結果ロギング**
-[MLflowによる結果ロギング]()
+[MLflowによる結果ロギング](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_each.md#mlflowによる結果ロギング)
 
 <br>
 
@@ -149,9 +149,9 @@ SCORING = 'neg_mean_squared_error'
 ```
 
 ### 2. パラメータ探索範囲の選択
-[`plot_first_validation_curve()`]()メソッドで検証曲線をプロットし、[こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#22-%E3%83%91%E3%83%A9%E3%83%A1%E3%83%BC%E3%82%BF%E7%A8%AE%E9%A1%9E%E3%81%A8%E6%8E%A2%E7%B4%A2%E7%AF%84%E5%9B%B2%E3%81%AE%E9%81%B8%E6%8A%9E)パラメータ探索範囲を選択します
+[`plot_first_validation_curve()`](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#plot_first_validation_curveメソッド)メソッドで検証曲線をプロットし、[こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#22-%E3%83%91%E3%83%A9%E3%83%A1%E3%83%BC%E3%82%BF%E7%A8%AE%E9%A1%9E%E3%81%A8%E6%8E%A2%E7%B4%A2%E7%AF%84%E5%9B%B2%E3%81%AE%E9%81%B8%E6%8A%9E)パラメータ探索範囲を選択します
 
-事前に[4.1. クロスバリデーション手法の選択]()を実施し、`cv`引数に指定する事が望ましいです
+事前に[4.1. クロスバリデーション手法の選択](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_each.md#41-クロスバリデーション手法を選択)を実施し、`cv`引数に指定する事が望ましいです
 
 #### 実行例
 範囲を指定して検証曲線を描画
@@ -266,7 +266,7 @@ regplot.regression_pred_true(lgbmr,
 `eval_set_selection`引数については[こちら](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#-eval_data_sourceの指定値によるeval_setに入るデータの変化)を参照ください
 
 ### 4.3. チューニング実行
-[3.で選択したチューニング用メソッド]()に対し、
+[3.で選択したチューニング用メソッド](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_each.md#3-探索法を選択)に対し、
 
 ・[1.で選択した評価指標](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_each.md#1-評価指標の選択)を`scoring`引数に
 
@@ -331,7 +331,7 @@ Elapsed time
 |ベイズ最適化 (Optuna)|[optuna_tuning()](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#optuna_tuningメソッド)|
 
 ### 5.1. チューニング履歴の確認
-[`plot_search_history()`]()メソッドでチューニング進行に伴うスコアの上昇履歴をグラフ表示し、スコアの上昇具合を確認します。
+[`plot_search_history()`](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#plot_search_historyメソッド)メソッドでチューニング進行に伴うスコアの上昇履歴をグラフ表示し、スコアの上昇具合を確認します。
 
 通常は進行とともに傾きが小さくなりますが、終了時点でもグラフの傾きが大きい場合、試行数を増やせばスコアが向上する可能性が高いです。
 
@@ -353,14 +353,14 @@ tuning.plot_search_history(x_axis='time')
 ```
 
 ### 5.2. パラメータと評価指標の関係をマップ表示して確認
-[`plot_search_history()`]()メソッドでパラメータと評価指標の関係をプロットし、評価指標のピークを捉えられているか確認します。
+[`plot_search_map()`](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#plot_search_mapメソッド)メソッドでパラメータ空間上での探索位置とスコアをプロットし、評価指標のピークを捉えられているか確認します。
 4.2で使用した手法がグリッドサーチならヒートマップで、それ以外なら散布図でプロットします。
 
 パラメータが5次元以上のとき、以下の方法で表示軸を選択します。
 
 ・グリッドサーチ：パラメータの要素数()上位4パラメータを軸として表示します。表示軸以外のパラメータは最適値を使用します。
 
-・グリッドサーチ以外：[`param_importances`]()の上位4パラメータを軸として表示します。
+・グリッドサーチ以外：[`param_importances`](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#プロパティ一覧)の上位4パラメータを軸として表示します。
 
 #### 実行例
 Optunaでのチューニング実行後のパラメータと評価指標の関係表示
@@ -373,7 +373,7 @@ tuning.plot_search_map()
 <img width="720" src="https://user-images.githubusercontent.com/59557625/146214163-d85658d6-3ff4-4df1-a564-48a7c77cb456.png">
 
 ### 5.3. 学習曲線を確認
-[`plot_best_learning_curve()`]()メソッドで学習曲線をプロットし、[こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#%E5%AD%A6%E7%BF%92%E6%9B%B2%E7%B7%9A-1)「目的の性能を達成しているか」「過学習していないか」を確認します
+[`plot_best_learning_curve()`](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#plot_best_learning_curveメソッド)メソッドで学習曲線をプロットし、[こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#%E5%AD%A6%E7%BF%92%E6%9B%B2%E7%B7%9A-1)「目的の性能を達成しているか」「過学習していないか」を確認します
 
 #### 実行例
 Optunaでのチューニング実行後の学習曲線を表示
@@ -386,7 +386,7 @@ tuning.plot_best_learning_curve()
 <img width="360" src="https://user-images.githubusercontent.com/59557625/146214383-2c784424-173c-4c0c-b2c4-56e04bb1eb1b.png">
 
 ### 5.4. 検証曲線を確認
-[`plot_best_validation_curve()`]()メソッドで検証曲線をプロットし、[こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#%E6%A4%9C%E8%A8%BC%E6%9B%B2%E7%B7%9A-2)「性能の最大値を捉えられているか」「過学習していないか」を確認します
+[`plot_best_validation_curve()`](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#plot_best_validation_curveメソッド)メソッドで検証曲線をプロットし、[こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#%E6%A4%9C%E8%A8%BC%E6%9B%B2%E7%B7%9A-2)「性能の最大値を捉えられているか」「過学習していないか」を確認します
 
 #### 実行例
 Optunaでのチューニング実行後の検証曲線を表示
@@ -492,7 +492,7 @@ tuning.optuna_tuning(mlflow_logging='inside')  # MLflowのロギングを指定�
 ```
 mlflow ui
 ```
-`mlflow_logging`[以外のMLflow用引数]()を指定していなければ、ローカルホストにUIが作成される（[こちらの記事]()のシナリオ1に相当）ので、ブラウザに`http://127.0.0.1:5000`と打つと、以下のような画面が表示されます。
+`mlflow_logging`以外のMLflow用引数(`mlflow_tracking_uri`, `mlflow_artifact_location`, `mlflow_experiment_name`)を指定していなければ、ローカルホストにUIが作成される（[こちらの記事](https://qiita.com/c60evaporator/items/e1fd57a0263a19b629d1#シナリオ1-mlflow-on-localhost)のシナリオ1に相当）ので、ブラウザに`http://127.0.0.1:5000`と打つと、以下のような画面が表示されます。
 
 <img width="800" src="https://user-images.githubusercontent.com/59557625/146404411-dc0102e9-e57c-49b4-82b4-0bc4a5c4bbf4.png">
 
@@ -559,9 +559,9 @@ score_historyは、クリックすると推移をグラフ表示することが�
 |search_history.csv|探索履歴をCSV保存したファイル（[`search_history`プロパティ](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#プロパティ一覧)をDataFrame化して保存）|
 
 ### ・トラッキングサーバを指定した実行例
-`mlflow_logging`[以外のMLflow用引数]()を指定すると、[トラッキングサーバ]()や[エクスペリメント名]()を指定したロギングが実行可能です
+`mlflow_logging`以外のMLflow用引数(`mlflow_tracking_uri`, `mlflow_artifact_location`, `mlflow_experiment_name`)を指定すると、[トラッキングサーバ](https://qiita.com/c60evaporator/items/e0eb1a0c521d1310d95d#手順2-トラッキングサーバの構築)や[エクスペリメント名](https://qiita.com/c60evaporator/items/e0eb1a0c521d1310d95d#手順3-エクスペリメントの作成)を指定したロギングが実行可能です
 
-（トラッキングサーバやエクスペリメントについては[こちらの記事]()を参照ください）
+（トラッキングサーバやエクスペリメントについては[こちらの記事](https://qiita.com/c60evaporator/items/e0eb1a0c521d1310d95d)を参照ください）
 
 リモートにトラッキングサーバを立ち上げた場合は、こちらの方法を利用ください
 
@@ -571,9 +571,9 @@ score_historyは、クリックすると推移をグラフ表示することが�
 |mlflow_artifact_location|Artifactストレージを指定※|
 |mlflow_experiment_name|エクスペリメント名を指定|
 
-※トラッキングサーバ作成時に[--default-artifact-root]()オプションを指定していれば、不要です。
+※トラッキングサーバ作成時に[--default-artifact-root](https://qiita.com/c60evaporator/items/e1fd57a0263a19b629d1#コンテナ4-tracking-server)オプションを指定していれば、不要です。
 
-[こちらの記事のシナリオ2の構成]()での実行例（SQLiteをバックエンドに指定）を下記します
+[こちらの記事のシナリオ2の構成](https://qiita.com/c60evaporator/items/e1fd57a0263a19b629d1#シナリオ2-mlflow-on-localhost-with-sqlite)での実行例（SQLiteをバックエンドに指定）を下記します
 
 ```python
 from tune_easy import LGBMRegressorTuning
@@ -624,4 +624,4 @@ with mlflow.start_run() as run:
     mlflow.log_param('data_name', 'osaka_metropolis')
     mlflow.log_dict(tuning.tuning_params, 'tuning_params.json')
 ```
-※ なお、この方法では`mlflow_logging`以外のMLflow用引数 (`mlflow_tracking_uri`, `mlflow_artifact_location`, `mlflow_experiment_name`)は指定できないのでご注意ください。
+※ なお、この方法では`mlflow_logging`以外のMLflow用引数(`mlflow_tracking_uri`, `mlflow_artifact_location`, `mlflow_experiment_name`)は指定できないのでご注意ください。

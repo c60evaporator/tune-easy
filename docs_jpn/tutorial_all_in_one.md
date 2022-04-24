@@ -1,8 +1,8 @@
 # 一括チューニング 実行手順
 以下の手順で、複数の機械学習アルゴリズム（学習器）でパラメータチューニングを一括実行し、結果をグラフ表示できます
 
-1. [`AllInOneTuning`]()クラスのインスタンスを作成
-2. [`all_in_one_tuning()`]()メソッドを実行
+1. [`AllInOneTuning`](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_all_in_one.md#クラス初期化)クラスのインスタンスを作成
+2. [`all_in_one_tuning()`](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_all_in_one.md#all_in_one_tuningメソッド)メソッドを実行
 
 チューニング自体は2行で終わります。カンタンですね！
 
@@ -149,7 +149,7 @@ all_tuner.df_scores
 ```
 mlflow ui
 ```
-`mlflow_logging`[以外のMLflow用引数]()を指定していなければ、ローカルホストにUIが作成される（[こちらの記事]()のシナリオ1に相当）ので、ブラウザに`http://127.0.0.1:5000`と打つと、以下のような画面が表示されます。
+`mlflow_logging`以外のMLflow用引数(`mlflow_tracking_uri`, `mlflow_artifact_location`, `mlflow_experiment_name`)を指定していなければ、ローカルホストにUIが作成される（[こちらの記事](https://qiita.com/c60evaporator/items/e1fd57a0263a19b629d1#シナリオ1-mlflow-on-localhost)のシナリオ1に相当）ので、ブラウザに`http://127.0.0.1:5000`と打つと、以下のような画面が表示されます。
 
 <img width="794" src="https://user-images.githubusercontent.com/59557625/145711588-be0e393f-be7b-4833-b17a-05eecd6ad014.png">
 
@@ -167,7 +167,7 @@ mlflow ui
 
 #### ・Parameters
 
-[`all_in_one_tuning()`]()メソッドの引数を記録します
+[`all_in_one_tuning()`](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_all_in_one.md#all_in_one_tuningメソッド)メソッドの引数を記録します
 
 （ただし、`tuning_algo`, `x_colnames`, `y_colname`引数はTags, `estimators`, `tuning_params`, `tuning_kws`引数はArtifactとして記録）
 
@@ -187,7 +187,7 @@ mlflow ui
 
 #### ・Tags
 
-[`all_in_one_tuning()`]()メソッドの`tuning_algo`, `x_colnames`, `y_colname`引数を記録します。
+[`all_in_one_tuning()`](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_all_in_one.md#all_in_one_tuningメソッド)メソッドの`tuning_algo`, `x_colnames`, `y_colname`引数を記録します。
 
 <img width="300" src="https://user-images.githubusercontent.com/59557625/145712936-a417a5a5-0d57-488a-b4b0-ad1ea9ca0c8d.png">
 
@@ -196,9 +196,9 @@ mlflow ui
 
 |名称|内容|備考|
 |---|---|---|
-|arg-estimators.json|[`all_in_one_tuning()`]()メソッドの`estimators`引数||
-|arg-tuning_params.json|[`all_in_one_tuning()`]()メソッドの`tuning_params`引数||
-|arg-tuning_kws.json|[`all_in_one_tuning()`]()メソッドの`tuning_kws`引数||
+|arg-estimators.json|[`all_in_one_tuning()`](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_all_in_one.md#all_in_one_tuningメソッド)メソッドの`estimators`引数||
+|arg-tuning_params.json|[`all_in_one_tuning()`](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_all_in_one.md#all_in_one_tuningメソッド)メソッドの`tuning_params`引数||
+|arg-tuning_kws.json|[`all_in_one_tuning()`](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_all_in_one.md#all_in_one_tuningメソッド)メソッドの`tuning_kws`引数||
 |score_history.png|[スコアの上昇履歴](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_all_in_one.md#スコアの上昇履歴-1)||
 |pred_true_before.png|[チューニング前の予測値-実測値プロット](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_all_in_one.md#チューニング前の予測値-実測値プロット)|回帰タスクのみ|
 |pred_true_after.png|[チューニング後の予測値-実測値プロット](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_all_in_one.md#チューニング後の予測値-実測値プロット)|回帰タスクのみ|
@@ -215,4 +215,4 @@ mlflow ui
 <br>
 
 ### - 子RUNの保存内容
-子RUNの保存内容は、[詳細チューニングにおける保存内容]()と同様です。
+子RUNの保存内容は、[詳細チューニングにおける保存内容](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_each.md#mlflowによる結果ロギング)と同様です。

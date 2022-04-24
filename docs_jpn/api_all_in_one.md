@@ -25,8 +25,8 @@ all_tuner = AllInOneTuning()
 
 |メソッド名|機能|
 |---|---|
-|[all_in_one_tuning]()|一括チューニングを実行|
-|[print_estimator]()|チューニング後の最適モデルの実装方法をコマンドラインに表示|
+|[all_in_one_tuning](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_all_in_one.md#all_in_one_tuningメソッド)|一括チューニングを実行|
+|[print_estimator](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_all_in_one.md#print_estimatorメソッド)|チューニング後の最適モデルの実装方法をコマンドラインに表示|
 
 ## all_in_one_tuningメソッド
 一括チューニングを実行します
@@ -53,9 +53,9 @@ all_tuner = AllInOneTuning()
 |estimators|オプション|dict[str, estimator object implementing 'fit']|`learning_algos`で指定した[チューニングクラス](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#クラス一覧)のデフォルト値|チューニングに使用する学習器インスタンスをdict指定 (Key:`learning_algos`の指定名, Value:学習器インスタンス(sckit-learn API))|
 |tuning_params|オプション|dict[str, dict[str, {list, tuple}]]|`learning_algos`で指定した[チューニングクラス](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#クラス一覧)のデフォルト値|チューニングに使用するパラメータ範囲をdict指定 (Key:`learning_algos`の指定名, Value:パラメータ範囲(`tuning_algo`により[指定法異なる](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_each.md#3-探索法を選択)))|
 |mlflow_logging|オプション|bool|False|MLflowでの結果記録有無(True:MLflow記録あり, False:MLflow記録なし|
-|mlflow_<br>tracking_uri|オプション|str|None|MLflowのTracking URI。[こちらを参照ください]()|
-|mlflow_<br>artifact_location|オプション　　|str|None|MLflowのArtifact URI。[こちらを参照ください]()|
-|mlflow_<br>experiment_name|オプション|str|None|MLflowのExperiment名。[こちらを参照ください]()|
+|mlflow_<br>tracking_uri|オプション|str|None|MLflowのTracking URI。[こちらを参照ください](https://qiita.com/c60evaporator/items/e0eb1a0c521d1310d95d#シナリオ1-バックエンドartifactストレージを明示的に指定した場合)|
+|mlflow_<br>artifact_location|オプション　　|str|None|MLflowのArtifact URI。[こちら](https://qiita.com/c60evaporator/items/e0eb1a0c521d1310d95d#シナリオ1-バックエンドartifactストレージを明示的に指定した場合)または[こちら](https://qiita.com/c60evaporator/items/e1fd57a0263a19b629d1#コンテナ4-tracking-server)を参照ください|
+|mlflow_<br>experiment_name|オプション|str|None|MLflowのExperiment名。[こちらを参照ください](https://qiita.com/c60evaporator/items/e0eb1a0c521d1310d95d#手順3-エクスペリメントの作成)|
 |tuning_kws|オプション|dict[str, dict]|None|詳細チューニング用メソッドに渡す変数 (Key:`learning_algos`の指定名, Value:チューニング用メソッドに渡したい引数(`tuning_algo`により[指定法異なる](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_each.md#3-探索法を選択)))|
 
 ### 実行例
