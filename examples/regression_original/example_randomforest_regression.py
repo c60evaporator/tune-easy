@@ -5,11 +5,11 @@ import pandas as pd
 # Load dataset
 df_reg = pd.read_csv('../sample_data/osaka_metropolis_english.csv')
 TARGET_VARIABLE = 'approval_rate'  # Target variable
-USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
 y = df_reg[TARGET_VARIABLE].values
-X = df_reg[USE_EXPLATATORY].values
+X = df_reg[USE_EXPLANATORY].values
 # Run parameter tuning
-tuning = RFRegressorTuning(X, y, USE_EXPLATATORY, y_colname=TARGET_VARIABLE)
+tuning = RFRegressorTuning(X, y, USE_EXPLANATORY, y_colname=TARGET_VARIABLE)
 tuning.plot_first_validation_curve()
 tuning.grid_search_tuning()
 tuning.plot_search_history()
@@ -26,11 +26,11 @@ import pandas as pd
 # Load dataset
 df_reg = pd.read_csv('../sample_data/osaka_metropolis_english.csv')
 TARGET_VARIABLE = 'approval_rate'  # Target variable
-USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
 y = df_reg[TARGET_VARIABLE].values
-X = df_reg[USE_EXPLATATORY].values
+X = df_reg[USE_EXPLANATORY].values
 # Run parameter tuning
-tuning = RFRegressorTuning(X, y, USE_EXPLATATORY, y_colname=TARGET_VARIABLE)
+tuning = RFRegressorTuning(X, y, USE_EXPLANATORY, y_colname=TARGET_VARIABLE)
 tuning.random_search_tuning()
 tuning.plot_search_history()
 tuning.plot_search_map()
@@ -46,11 +46,11 @@ import pandas as pd
 # Load dataset
 df_reg = pd.read_csv('../sample_data/osaka_metropolis_english.csv')
 TARGET_VARIABLE = 'approval_rate'  # Target variable
-USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
 y = df_reg[TARGET_VARIABLE].values
-X = df_reg[USE_EXPLATATORY].values
+X = df_reg[USE_EXPLANATORY].values
 # Run parameter tuning
-tuning = RFRegressorTuning(X, y, USE_EXPLATATORY, y_colname=TARGET_VARIABLE)
+tuning = RFRegressorTuning(X, y, USE_EXPLANATORY, y_colname=TARGET_VARIABLE)
 tuning.bayes_opt_tuning()
 tuning.plot_search_history()
 tuning.plot_search_map()
@@ -152,9 +152,9 @@ df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
 TARGET_VARIABLE = 'approval_rate'  # Target variable
 USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
 y = df_reg[TARGET_VARIABLE].values
-X = df_reg[USE_EXPLATATORY].values
+X = df_reg[USE_EXPLANATORY].values
 # Run parameter tuning
-tuning = RFRegressorTuning(X, y, USE_EXPLATATORY, y_colname=TARGET_VARIABLE)
+tuning = RFRegressorTuning(X, y, USE_EXPLANATORY, y_colname=TARGET_VARIABLE)
 tuning_params = {'n_estimators': (20, 80),
                  'max_features': (1, 40),
                  'max_depth': (2, 8),

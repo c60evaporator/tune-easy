@@ -5,11 +5,11 @@ import pandas as pd
 # Load dataset
 df_reg = pd.read_csv('../sample_data/osaka_metropolis_english.csv')
 TARGET_VARIABLE = 'approval_rate'  # Target variable
-USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
 y = df_reg[TARGET_VARIABLE].values
-X = df_reg[USE_EXPLATATORY].values
+X = df_reg[USE_EXPLANATORY].values
 # Run parameter tuning
-tuning = ElasticNetTuning(X, y, USE_EXPLATATORY, y_colname=TARGET_VARIABLE)
+tuning = ElasticNetTuning(X, y, USE_EXPLANATORY, y_colname=TARGET_VARIABLE)
 tuning.plot_first_validation_curve()
 tuning.grid_search_tuning()
 tuning.plot_search_history()
@@ -25,11 +25,11 @@ import pandas as pd
 # Load dataset
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
 TARGET_VARIABLE = 'approval_rate'  # Target variable
-USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
 y = df_reg[TARGET_VARIABLE].values
-X = df_reg[USE_EXPLATATORY].values
+X = df_reg[USE_EXPLANATORY].values
 # Run parameter tuning
-tuning = ElasticNetTuning(X, y, USE_EXPLATATORY, y_colname=TARGET_VARIABLE)
+tuning = ElasticNetTuning(X, y, USE_EXPLANATORY, y_colname=TARGET_VARIABLE)
 tuning.random_search_tuning()
 tuning.plot_search_history()
 tuning.plot_search_map()
@@ -44,11 +44,11 @@ import pandas as pd
 # Load dataset
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
 TARGET_VARIABLE = 'approval_rate'  # Target variable
-USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
 y = df_reg[TARGET_VARIABLE].values
-X = df_reg[USE_EXPLATATORY].values
+X = df_reg[USE_EXPLANATORY].values
 # Run parameter tuning
-tuning = ElasticNetTuning(X, y, USE_EXPLATATORY, y_colname=TARGET_VARIABLE)
+tuning = ElasticNetTuning(X, y, USE_EXPLANATORY, y_colname=TARGET_VARIABLE)
 tuning.bayes_opt_tuning()
 tuning.plot_search_history()
 tuning.plot_search_map()
@@ -63,11 +63,11 @@ import pandas as pd
 # Load dataset
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
 TARGET_VARIABLE = 'approval_rate'  # Target variable
-USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
 y = df_reg[TARGET_VARIABLE].values
-X = df_reg[USE_EXPLATATORY].values
+X = df_reg[USE_EXPLANATORY].values
 # Run parameter tuning
-tuning = ElasticNetTuning(X, y, USE_EXPLATATORY, y_colname=TARGET_VARIABLE)
+tuning = ElasticNetTuning(X, y, USE_EXPLANATORY, y_colname=TARGET_VARIABLE)
 tuning.optuna_tuning()
 tuning.plot_search_history()
 tuning.plot_search_map()
@@ -87,11 +87,11 @@ import matplotlib.pyplot as plt
 # Load dataset
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
 TARGET_VARIABLE = 'approval_rate'  # Target variable
-USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
 y = df_reg[TARGET_VARIABLE].values
-X = df_reg[USE_EXPLATATORY].values
+X = df_reg[USE_EXPLANATORY].values
 # Run parameter tuning
-tuning = ElasticNetTuning(X, y, USE_EXPLATATORY, y_colname=TARGET_VARIABLE)
+tuning = ElasticNetTuning(X, y, USE_EXPLANATORY, y_colname=TARGET_VARIABLE)
 validation_curve_params = {'alpha': [0, 0.00001, 0.0001, 0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1, 3, 10, 100],
                            'l1_ratio': [0, 0.00001, 0.0001, 0.001, 0.01, 0.03, 0.1, 0.3, 0.5, 0.9, 0.97, 0.99, 1]
                            }
@@ -141,11 +141,11 @@ import optuna
 # Load dataset
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
 TARGET_VARIABLE = 'approval_rate'  # Target variable
-USE_EXPLATATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
+USE_EXPLANATORY = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # Explanatory variables
 y = df_reg[TARGET_VARIABLE].values
-X = df_reg[USE_EXPLATATORY].values
+X = df_reg[USE_EXPLANATORY].values
 # Run parameter tuning
-tuning = ElasticNetTuning(X, y, USE_EXPLATATORY, y_colname=TARGET_VARIABLE)
+tuning = ElasticNetTuning(X, y, USE_EXPLANATORY, y_colname=TARGET_VARIABLE)
 tuning_params = {'alpha':(0.0001, 1),
                  'l1_ratio': (0, 1)
                  }

@@ -792,12 +792,12 @@ class AllInOneTuning():
             mlflow.log_text(printed_model, 'how_to_use_best_estimator.py')
 
     def all_in_one_tuning(self, x, y, data=None, x_colnames=None, cv_group=None,
-                            objective=None, 
-                            scoring=None, other_scores=None, learning_algos=None, n_iter=None,
-                            cv=5, tuning_algo='optuna', seed=42,
-                            estimators=None, tuning_params=None,
-                            mlflow_logging=False, mlflow_tracking_uri=None, mlflow_artifact_location=None, mlflow_experiment_name=None,
-                            tuning_kws=None):
+                          objective=None, 
+                          scoring=None, other_scores=None, learning_algos=None, n_iter=None,
+                          cv=5, tuning_algo='optuna', seed=42,
+                          estimators=None, tuning_params=None,
+                          mlflow_logging=False, mlflow_tracking_uri=None, mlflow_artifact_location=None, mlflow_experiment_name=None,
+                          tuning_kws=None):
         """
         Parameter tuning with multiple estimators, extremely easy to use.
 

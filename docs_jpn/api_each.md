@@ -113,16 +113,16 @@ tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY,
 
 |メソッド名|機能|
 |---|---|
-|[plot_first_validation_curve]()|範囲を定めて検証曲線をプロットし、パラメータ調整範囲の参考とします|
+|[plot_first_validation_curve]()|範囲を定めてチューニング前の検証曲線をプロットし、パラメータ調整範囲の参考とします|
 |[grid_search_tuning]()|グリッドサーチを実行します|
 |[random_search_tuning]()|ランダムサーチを実行します|
 |[bayes_opt_tuning]()|BayesianOptimizationでベイズ最適化を実行します|
 |[optuna_tuning]()|Optunaでベイズ最適化を実行します|
 |[plot_search_history]()|チューニング進行に伴うスコアの上昇履歴をグラフ表示します|
 |[get_search_history]()|チューニング進行に伴うスコアの上昇履歴をpandas.DataFrameで取得します|
-|[plot_search_map]()|チューニング探索点と評価指標をマップ表示します (グリッドサーチはヒートマップ、それ以外は散布図)|
-|[plot_best_learning_curve]()|学習曲線をプロットし、チューニング後モデルのバイアスとバリアンスの判断材料とします|
-|[plot_best_validation_curve]()|学習後の検証曲線をプロットし、チューニング妥当性の判断材料とします|
+|[plot_search_map]()|パラメータ空間上での探索位置とスコアをマップ表示します (グリッドサーチはヒートマップ、それ以外は散布図)|
+|[plot_best_learning_curve]()|チューニング後の学習曲線をプロットし、モデルのバイアスとバリアンスの判断材料とします|
+|[plot_best_validation_curve]()|チューニング後の検証曲線をプロットし、チューニング妥当性の判断材料とします|
 |[plot_param_importances]()|パラメータを説明変数としてスコアをランダムフォレスト回帰した際のfeature_importancesを取得します。スコアの変化に寄与するパラメータの判断材料とします|
 |[get_feature_importances]()|チューニング後の最適モデルのfeature_importancesを取得します (feature_importances対応学習器のみ)|
 |[plot_feature_importances]()|チューニング後の最適モデルのfeature_importancesをグラフ表示します (feature_importances対応学習器のみ)|
@@ -868,7 +868,7 @@ reg_alpha	reg_lambda	num_leaves	colsample_bytree	subsample	subsample_freq	min_ch
 <br>
 
 ## plot_search_mapメソッド
-探索履歴 (グリッドサーチ：ヒートマップ、その他：散布図)をプロットします。
+パラメータ空間上での探索位置とスコア (グリッドサーチ：ヒートマップ、その他：散布図)をプロットします。
 
 事前に、grid_search_tuning(), random_search_tuning(), bayes_opt_tuning(), optuna_tuning()いずれかを実行する必要があります
 
@@ -886,7 +886,7 @@ reg_alpha	reg_lambda	num_leaves	colsample_bytree	subsample	subsample_freq	min_ch
 
 ### 実行例
 コードは[こちらにもアップロードしています](https://github.com/c60evaporator/tune-easy/blob/master/examples/method_examples/plot_search_map.py)
-#### オプション引数指定なしで探索履歴をプロット
+#### オプション引数指定なしで探索位置をプロット
 オプション引数を指定しないとき、[デフォルトの引数]()を使用して探索履歴をプロットします
 ```python
 from tune_easy import LGBMRegressorTuning
@@ -906,7 +906,7 @@ tuning.plot_search_map()
 
 <img width="720px" src="https://user-images.githubusercontent.com/59557625/146015194-811bf37c-d487-4ade-ab06-b57cb5f34c6d.png">
 
-#### 図の枚数と軸のパラメータを指定してスコアの上昇履歴を表示
+#### 図の枚数と軸のパラメータを指定して探索位置をプロット
 `pair_n`引数で、プロットする図の縦横枚数を指定する事ができます
 
 `order`引数で、軸のパラメータをリストで指定する事ができます。リスト指定順に、グラフ横軸 → グラフ縦軸 → 全体縦軸 → 全体横軸の順番でプロットされます。`order`=Noneなら[param_importances]()順にプロットされます。
