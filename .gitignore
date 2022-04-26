@@ -10,3 +10,4 @@ dist/
 tune_easy.egg-info/
 docs/_build/
 docs/_templates/
+.vscode/launch.json

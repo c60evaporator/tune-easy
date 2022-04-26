@@ -25,9 +25,9 @@ INSTALL_REQUIRES = [
     'optuna>=2.7.0',
     'bayesian-optimization>=1.2.0',
     'mlflow>=1.17.0',
-    'lightgbm>=3.2.1',
+    'lightgbm>=3.3.2',
     'xgboost>=1.4.2',
-    'seaborn-analyzer>=0.1.6'
+    'seaborn-analyzer>=0.2.11'
 ]
 
 EXTRAS_REQUIRE = {
