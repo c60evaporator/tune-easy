@@ -1,7 +1,7 @@
 # tune-easy
 [![python](https://img.shields.io/pypi/pyversions/tune-easy)](https://www.python.org/)
 [![pypi](https://img.shields.io/pypi/v/tune-easy?color=blue)](https://pypi.org/project/tune-easy/)
-[![license](https://img.shields.io/pypi/l/tune-easy?color=blue)](https://github.com/c60evaporator/tune-easy/blob/master/LICENSE)
+[![license](https://img.shields.io/pypi/l/tune-easy)](https://github.com/c60evaporator/tune-easy/blob/master/LICENSE)
 
 **A hyperparameter tuning tool for Machine Learning, extremely easy to use.**
 
