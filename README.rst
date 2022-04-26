@@ -58,7 +58,7 @@ Example of Detailed Tuning
     from tune_easy import LGBMClassifierTuning
     from sklearn.datasets import load_boston
     import seaborn as sns
-    # データセット読込
+    # Load dataset
     iris = sns.load_dataset("iris")
     iris = iris[iris['species'] != 'setosa']  # Select 2 classes
     OBJECTIVE_VARIALBLE = 'species'  # Target variable
