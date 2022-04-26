@@ -8,4 +8,4 @@ from .logisticregression_tuning import *
 from .linearregression_tuning import *
 from .all_in_one_tuning import *
 
-__version__ = '0.1.10'
+__version__ = '0.2.0'

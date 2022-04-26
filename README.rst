@@ -117,7 +117,7 @@ If you want to know usage of the other classes, see `API Reference
 ============
 Requirements
 ============
-param-tuning-utility 0.1.10 requires
+param-tuning-utility 0.2.0 requires
 
 * Python >=3.6
 * Scikit-learn >=0.24.2
@@ -128,8 +128,9 @@ param-tuning-utility 0.1.10 requires
 * Optuna >=2.7.0
 * BayesianOptimization >=1.2.0
 * MLFlow >=1.17.0
-* LightGBM >=3.2.1
+* LightGBM >=3.3.2
 * XGBoost >=1.4.2
+* seaborn-analyzer >=0.2.11
 
 ====================
 Installing tune-easy
