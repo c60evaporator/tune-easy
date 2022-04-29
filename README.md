@@ -32,7 +32,7 @@ all_tuner.all_in_one_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2)
 all_tuner.df_scores
 ```
 
-<img width="320" src="https://user-images.githubusercontent.com/59557625/140383755-bca64ab3-1593-47ef-8401-affcd0b20a0a.png">
+<img width="320" src="https://user-images.githubusercontent.com/59557625/165905780-d153541a-6c74-4dc6-a37f-7d63151bf582.png">
 
 <img width="480" src="https://user-images.githubusercontent.com/59557625/145702196-50f6781e-2ca2-4cbf-9344-ab58cb08d34b.png">
 
