@@ -1,15 +1,14 @@
 from sklearn.model_selection import KFold, GroupKFold, LeaveOneGroupOut
-from sklearn.model_selection import cross_validate
 from sklearn.metrics import make_scorer, precision_score, recall_score
 from sklearn.preprocessing import LabelEncoder
 from sklearn.pipeline import Pipeline
-from sklearn.gaussian_process import GaussianProcessRegressor
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import colors
 import mlflow
 from seaborn_analyzer import regplot, classplot
+from seaborn_analyzer._cv_eval_set import cross_validate_eval_set
 import numbers
 import copy
 import os
@@ -558,7 +557,8 @@ class AllInOneTuning():
         else:
             y_trans = tuner.y
         # スコア算出
-        scores = cross_validate(estimator, tuner.X, y_trans,
+        scores = cross_validate_eval_set(tuner.eval_set_selection,
+                                estimator, tuner.X, y_trans,
                                 groups=tuner.cv_group,
                                 scoring={k: self._SCORE_RENAME_DICT[k] for k in self.other_scores},
                                 cv = tuner.cv,
