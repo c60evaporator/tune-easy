@@ -5,9 +5,9 @@ import seaborn as sns
 # Load dataset
 iris = sns.load_dataset("iris")
 iris = iris[iris['species'] != 'setosa']  # Select 2 classes
-TARGET_VARIALBLE = 'species'  # Target variable
+TARGET_VARIABLE = 'species'  # Target variable
 USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']  # Explanatory variables
-y = iris[TARGET_VARIALBLE].values
+y = iris[TARGET_VARIABLE].values
 X = iris[USE_EXPLANATORY].values
 ###### Run All-in-one Tuning######
 all_tuner = AllInOneTuning()
@@ -21,9 +21,9 @@ import seaborn as sns
 # Load dataset
 iris = sns.load_dataset("iris")
 iris = iris[iris['species'] != 'setosa']  # Select 2 classes
-TARGET_VARIALBLE = 'species'  # Target variable
+TARGET_VARIABLE = 'species'  # Target variable
 USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']  # Explanatory variables
-y = iris[TARGET_VARIALBLE].values
+y = iris[TARGET_VARIABLE].values
 X = iris[USE_EXPLANATORY].values
 ###### Run Detailed Tuning######
 tuning = LGBMClassifierTuning(X, y, USE_EXPLANATORY)  # Initialize tuning instance
@@ -41,9 +41,9 @@ import seaborn as sns
 # Load dataset
 iris = sns.load_dataset("iris")
 iris = iris[iris['species'] != 'setosa']  # Select 2 classes
-TARGET_VARIALBLE = 'species'  # Target variable
+TARGET_VARIABLE = 'species'  # Target variable
 USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']  # Explanatory variables
-y = iris[TARGET_VARIALBLE].values
+y = iris[TARGET_VARIABLE].values
 X = iris[USE_EXPLANATORY].values
 ###### Run All-in-one Tuning with MLflow logging ######
 all_tuner = AllInOneTuning()

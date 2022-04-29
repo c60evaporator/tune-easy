@@ -29,16 +29,17 @@ california_housing = california_housing.sample(n=1000, random_state=42)  # sampl
 y = california_housing[TARGET_VARIABLE].values  # Target variable
 X = california_housing[USE_EXPLANATORY].values  # Explanatory variables
 
-# %% 0.2. Confirm validation score before tuning
-
-
-# %% 0.3. Initialize tuning class
+# %% 0.2. Initialize tuning class
 import parent_import
 from tune_easy import LGBMRegressorTuning
-tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY)
+tuning = LGBMRegressorTuning(X,  # Explanatory variables(numpy.ndarray)
+                             y,  # Target variables(numpy.ndarray)
+                             USE_EXPLANATORY,  # Column names of explanatory variables
+                             eval_set_selection='test'  # How to choose "eval_set" data
+                             )
 
 # %% 1. Select validation score
-SCORING = 'neg_mean_squared_error'  # RMSE
+SCORING = 'neg_root_mean_squared_error'  # RMSE
 
 # %% 2. Select parameter range using validation curve
 from sklearn.model_selection import KFold
@@ -82,7 +83,7 @@ lgbmr = LGBMRegressor(**NOT_OPT_PARAMS)
 scores = cross_val_score_eval_set('test',  # How to choose "eval_set" data
         lgbmr, X, y,  # Input data
         scoring=SCORING,  # Validation score selected in section 1
-        cv=CV,  # Cross validation instance selected in section 4.2
+        cv=CV,  # Cross validation instance selected in section 4.1
         fit_params=FIT_PARAMS  # Fit parameters passed to estimator.fit()
         )
 print(np.mean(scores))
@@ -94,7 +95,7 @@ regplot.regression_pred_true(lgbmr,
                              x=tuning.x_colnames,
                              y='price',
                              data=california_housing,
-                             scores='mse',
+                             scores='rmse',
                              cv=CV,
                              fit_params=FIT_PARAMS,
                              eval_set_selection='test'
@@ -155,7 +156,7 @@ regplot.regression_pred_true(best_estimator,
                              x=tuning.x_colnames,
                              y='price',
                              data=california_housing,
-                             scores='mse',
+                             scores='rmse',
                              cv=tuning.cv,
                              fit_params=tuning.fit_params,
                              eval_set_selection='test'
@@ -205,11 +206,11 @@ import pandas as pd
 import mlflow
 # データセット読込
 df_reg = pd.read_csv(f'../sample_data/osaka_metropolis_english.csv')
-TARGET_VARIALBLE_REG = 'approval_rate'  # 目的変数
+TARGET_VARIABLE_REG = 'approval_rate'  # 目的変数
 USE_EXPLANATORY_REG = ['2_between_30to60', '3_male_ratio', '5_household_member', 'latitude']  # 説明変数
-y = df_reg[TARGET_VARIALBLE_REG].values
+y = df_reg[TARGET_VARIABLE_REG].values
 X = df_reg[USE_EXPLANATORY_REG].values
-tuning = SVMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=TARGET_VARIALBLE_REG)
+tuning = SVMRegressorTuning(X, y, USE_EXPLANATORY_REG, y_colname=TARGET_VARIABLE_REG)
 # MLflowのRun開始
 with mlflow.start_run() as run:
     # Optunaでのチューニング結果をMLflowでロギング
