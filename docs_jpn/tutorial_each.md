@@ -126,10 +126,14 @@ print(selector.get_support())
 LightGBM回帰のチューニング用クラス初期化
 
 ```python
-from param_tuning import LGBMRegressorTuning
-tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY, eval_set_selection='all')
+from tune_easy import LGBMRegressorTuning
+tuning = LGBMRegressorTuning(X,  # numpy化した説明変数
+                             y,  # numpy化した目的変数
+                             USE_EXPLANATORY,  # 説明変数の名称リスト
+                             eval_set_selection='test'  # eval_set指定法(後述)
+                             )
 ```
-※eval_set_selection引数に関しては[こちらのリンク](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#-eval_data_sourceの指定値によるeval_setに入るデータの変化)参照
+※LightGBMおよびXGBoostにおける`eval_set_selection`引数に関しては[こちらのリンク](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#-eval_data_sourceの指定値によるeval_setに入るデータの変化)参照
 
 ### 1. 評価指標の選択
 [こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#21-%E8%A9%95%E4%BE%A1%E6%8C%87%E6%A8%99%E3%81%AE%E5%AE%9A%E7%BE%A9)チューニングの評価指標を選択します。
@@ -142,10 +146,10 @@ tuning = LGBMRegressorTuning(X, y, USE_EXPLANATORY, eval_set_selection='all')
 |多クラス分類|LogLoss|'neg_log_loss'|
 
 #### 実行例
-MSEを指標に使用するとき
+RMSEを指標に使用するとき
 
 ```
-SCORING = 'neg_mean_squared_error'
+SCORING = 'neg_root_mean_squared_error'
 ```
 
 ### 2. パラメータ探索範囲の選択
@@ -171,7 +175,7 @@ tuning.plot_first_validation_curve(validation_curve_params=VALIDATION_CURVE_PARA
 ```
 実行結果
 
-<img width="800" src="https://user-images.githubusercontent.com/59557625/146211814-5ac00ce2-c2cf-4292-9e38-5036ea3c2669.png">
+<img width="800" src="https://user-images.githubusercontent.com/59557625/165936421-6b642cac-0bdc-4384-a68d-9130151a9649.png">
 
 下図 (SVMでの実行例)のように検証曲線から過学習にも未学習にもなりすぎていない範囲を抽出し、探索範囲とすることが望ましいです
 
@@ -215,7 +219,7 @@ LightGBM回帰において、`fit()`メソッドに渡す引数`fit_params`お�
 
 ```python
 from lightgbm import LGBMRegressor
-from sklearn.model_selection import cross_val_score
+from seaborn_analyzer import cross_val_score_eval_set
 import numpy as np
 # 学習器のfit()メソッドに渡す引数
 FIT_PARAMS = {'verbose': 0,
@@ -232,17 +236,18 @@ NOT_OPT_PARAMS = {'objective': 'regression',
 # 学習器のインスタンス作成
 lgbmr = LGBMRegressor(**NOT_OPT_PARAMS)
 # クロスバリデーションでスコア算出
-scores = cross_val_score(lgbmr, X, y,
-                         scoring=SCORING,  # 評価指標 (1で選択)
-                         cv=CV,  # クロスバリデーション手法 (4.1で選択)
-                         fit_params=FIT_PARAMS  # 学習器のfit()メソッド引数
-                         )
+scores = cross_val_score_eval_set('test',  # eval_set指定法
+                                  lgbmr, X, y,
+                                  scoring=SCORING,  # 評価指標 (1で選択)
+                                  cv=CV,  # クロスバリデーション手法 (4.1で選択)
+                                  fit_params=FIT_PARAMS  # 学習器のfit()メソッド引数
+                                  )
 print(np.mean(scores))
 ```
 実行結果
 
 ```
--0.4561245619412457
+-0.6740490637662134
 ```
 <br>
 
@@ -255,13 +260,14 @@ regplot.regression_pred_true(lgbmr,
                              x=tuning.x_colnames,
                              y='price',
                              data=california_housing,
-                             scores='mse',
+                             scores='rmse',
                              cv=CV,
                              fit_params=FIT_PARAMS,
                              eval_set_selection='test'
                              )
 ```
-<img width="240" src="https://user-images.githubusercontent.com/59557625/146212543-8c49c900-eedb-453b-9c37-32eb3b25074a.png">
+
+<img width="240" src="https://user-images.githubusercontent.com/59557625/165942988-882678fe-d959-4680-a5a6-6f23b6db3daa.png">
 
 `eval_set_selection`引数については[こちら](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#-eval_data_sourceの指定値によるeval_setに入るデータの変化)を参照ください
 
@@ -308,16 +314,16 @@ print(f'Elapsed time\n{tuning.elapsed_time}')  # チューニング所要時間
 
 ```
 Best parameters
-{'reg_alpha': 0.0016384726888678286, 'reg_lambda': 0.04644984234834465, 'num_leaves': 7, 'colsample_bytree': 0.7968135425414318, 'subsample': 0.7878217860051357, 'subsample_freq': 0, 'min_child_samples': 4}
+{'reg_alpha': 0.009747720238128973, 'reg_lambda': 0.0019035568970260388, 'num_leaves': 7, 'colsample_bytree': 0.6798230151766298, 'subsample': 0.4637173297422183, 'subsample_freq': 0, 'min_child_samples': 4}
 
 Not tuned parameters
 {'objective': 'regression', 'random_state': 42, 'boosting_type': 'gbdt', 'n_estimators': 10000}
 
 Best score
--0.4124940780628491
+-0.6389635695838989
 
 Elapsed time
-304.8196430206299
+209.75491404533386
 ```
 
 上記以外にも、チューニングの試行数や乱数シード、チューニング対象外のパラメータ等を引数として渡せます。
@@ -344,7 +350,7 @@ tuning.plot_search_history()
 
 実行結果
 
-<img width="360" src="https://user-images.githubusercontent.com/59557625/146213822-f42bba74-bd6d-408a-a93b-d0c25f976253.png">
+<img width="360" src="https://user-images.githubusercontent.com/59557625/165947268-eeef42c2-2ac8-4348-a3c6-1a5e49bd7f58.png">
 
 横軸は試行数以外に時間も指定できます(`x_axis`引数='time')
 
@@ -370,7 +376,7 @@ tuning.plot_search_map()
 ```
 実行結果
 
-<img width="720" src="https://user-images.githubusercontent.com/59557625/146214163-d85658d6-3ff4-4df1-a564-48a7c77cb456.png">
+<img width="720" src="https://user-images.githubusercontent.com/59557625/165947582-52b35712-554b-47fc-b446-864317f85945.png">
 
 ### 5.3. 学習曲線を確認
 [`plot_best_learning_curve()`](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#plot_best_learning_curveメソッド)メソッドで学習曲線をプロットし、[こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#%E5%AD%A6%E7%BF%92%E6%9B%B2%E7%B7%9A-1)「目的の性能を達成しているか」「過学習していないか」を確認します
@@ -383,7 +389,7 @@ tuning.plot_best_learning_curve()
 ```
 実行結果
 
-<img width="360" src="https://user-images.githubusercontent.com/59557625/146214383-2c784424-173c-4c0c-b2c4-56e04bb1eb1b.png">
+<img width="360" src="https://user-images.githubusercontent.com/59557625/165947672-527bf192-a31a-464b-9e05-517f0acb08bd.png">
 
 ### 5.4. 検証曲線を確認
 [`plot_best_validation_curve()`](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md#plot_best_validation_curveメソッド)メソッドで検証曲線をプロットし、[こちらを参考に](https://qiita.com/c60evaporator/items/ca7eb70e1508d2ba5359#%E6%A4%9C%E8%A8%BC%E6%9B%B2%E7%B7%9A-2)「性能の最大値を捉えられているか」「過学習していないか」を確認します
@@ -396,7 +402,7 @@ tuning.plot_best_validation_curve()
 ```
 実行結果
 
-<img width="800" src="https://user-images.githubusercontent.com/59557625/146214628-1fbddbe2-9198-4515-8536-2c1d858f7126.png">
+<img width="800" src="https://user-images.githubusercontent.com/59557625/165949420-3b6124e4-6f00-43bd-9841-dadcf5a5f4e4.png">
 
 ### 6. チューニング後の学習器を使用する
 チューニング後の学習器は`best_estimator`プロパティから取得できます。
@@ -425,7 +431,7 @@ print(np.mean(scores))
 実行結果
 
 ```
--0.4124940780628491
+-0.6389635695838989
 ```
 <br>
 
@@ -444,7 +450,7 @@ regplot.regression_pred_true(lgbmr,
                              )
 ```
 
-<img width="240" src="https://user-images.githubusercontent.com/59557625/146214802-22dfeb48-a9c8-4557-a6c6-d72581cd827d.png">
+<img width="240" src="https://user-images.githubusercontent.com/59557625/165946964-03f25f34-0db4-4a35-bb3a-018e51639924.png">
 
 # MLflowによる結果ロギング
 以下4種類のチューニング用メソッドの`mlflow_logging`引数を指定することで、MLflowで結果をロギングできます。
