@@ -27,9 +27,9 @@ import seaborn as sns
 # データセット読込
 iris = sns.load_dataset("iris")
 iris = iris[iris['species'] != 'setosa']  # 2クラスに絞る
-TARGET_VARIALBLE = 'species'  # 目的変数
+TARGET_VARIABLE = 'species'  # 目的変数
 USE_EXPLANATORY = ['petal_width', 'petal_length', 'sepal_width', 'sepal_length']  # 説明変数
-y = iris[TARGET_VARIALBLE].values
+y = iris[TARGET_VARIABLE].values
 X = iris[USE_EXPLANATORY].values
 # チューニング実行
 all_tuner = AllInOneTuning()  # 1. インスタンス作成
@@ -40,15 +40,15 @@ all_tuner.df_scores  # スコア一覧DataFrameを表示
 
 #### ・スコアの上昇履歴
 
-<img width="320px" src="https://user-images.githubusercontent.com/59557625/140383755-bca64ab3-1593-47ef-8401-affcd0b20a0a.png">
+<img width="320px" src="https://user-images.githubusercontent.com/59557625/165905780-d153541a-6c74-4dc6-a37f-7d63151bf582.png">
 
 #### ・チューニング前のROC曲線
 
-<img width="640px" src="https://user-images.githubusercontent.com/59557625/140382285-206752d5-3def-44e3-a2ca-fc0871a5f181.png">
+<img width="640px" src="https://user-images.githubusercontent.com/59557625/165906414-7928c742-b4cf-49c4-9a9a-3f75af306114.png">
 
 #### ・チューニング後のROC曲線
 
-<img width="640px" src="https://user-images.githubusercontent.com/59557625/140382175-a8261675-33ee-4a07-9a1b-074890d95ecd.png">
+<img width="640px" src="https://user-images.githubusercontent.com/59557625/165906496-2adc4f51-c9c3-4a4e-960d-12175b799217.png">
 
 #### ・チューニング前後のスコア
 
@@ -56,7 +56,7 @@ all_tuner.df_scores  # スコア一覧DataFrameを表示
 
 #### ・チューニング後の機械学習モデル使用法
 
-<img width="400" src="https://user-images.githubusercontent.com/59557625/145702328-fa3845d9-10fd-43b6-8593-0544294a5c93.png">
+<img width="480" src="https://user-images.githubusercontent.com/59557625/145702328-fa3845d9-10fd-43b6-8593-0544294a5c93.png">
 
 <br>
 
@@ -70,12 +70,12 @@ from sklearn.datasets import fetch_california_housing
 import pandas as pd
 import numpy as np
 # データセット読込
-TARGET_VARIALBLE = 'price'  # 目的変数
+TARGET_VARIABLE = 'price'  # 目的変数
 USE_EXPLANATORY = ['MedInc', 'AveOccup', 'Latitude', 'HouseAge']  # 説明変数
 california_housing = pd.DataFrame(np.column_stack((fetch_california_housing().data, fetch_california_housing().target)),
-        columns = np.append(fetch_california_housing().feature_names, TARGET_VARIALBLE))
+        columns = np.append(fetch_california_housing().feature_names, TARGET_VARIABLE))
 california_housing = california_housing.sample(n=1000, random_state=42)  # データ数多いので1000点にサンプリング
-y = california_housing[TARGET_VARIALBLE].values
+y = california_housing[TARGET_VARIABLE].values
 X = california_housing[USE_EXPLANATORY].values
 ###### チューニング一括実行 ######
 all_tuner = AllInOneTuning()  # 1. インスタンス作成
@@ -86,7 +86,7 @@ all_tuner.df_scores
 
 #### ・スコアの上昇履歴
 
-<img width="320px" src="https://user-images.githubusercontent.com/59557625/145703714-2a83b29d-a8cc-4bab-a28f-5895cadcd44d.png">
+<img width="320px" src="https://user-images.githubusercontent.com/59557625/165920858-d74df476-d9c7-4359-9851-94e9e5339e9b.png">
 
 #### ・チューニング前の予測値-実測値プロット
 
@@ -94,15 +94,15 @@ all_tuner.df_scores
 
 #### ・チューニング後の予測値-実測値プロット
 
-<img width="640px" src="https://user-images.githubusercontent.com/59557625/145703814-bca7a2c5-2f78-4c2e-9ff8-7eae8b1fd839.png">
+<img width="640px" src="https://user-images.githubusercontent.com/59557625/165921166-c40f7c44-02a4-4991-bd9b-643236f948d0.png">
 
 #### ・チューニング前後のスコア
 
-<img width="420" src="https://user-images.githubusercontent.com/59557625/145704306-738cf2ee-86ae-4d7d-8909-b416a5ec9b7c.png">
+<img width="420" src="https://user-images.githubusercontent.com/59557625/165928968-2c802ac9-aa3b-4293-a86c-70226323c975.png">
 
 #### ・チューニング後の機械学習モデル使用法
 
-<img width="400" src="https://user-images.githubusercontent.com/59557625/145703822-81940d44-229d-484d-b73a-5720282bb3a5.png">
+<img width="640" src="https://user-images.githubusercontent.com/59557625/165928913-1783ab4d-8faf-446f-ade8-bbc0f6f96f63.png">
 
 上図の`----The following is how to use the best estimator----`以降のコードを以下のようにコピペすれば、
 チューニング後のモデルを再現することができます
@@ -131,12 +131,12 @@ from tune_easy import AllInOneTuning
 from sklearn.datasets import fetch_california_housing
 import pandas as pd
 import numpy as np
-TARGET_VARIALBLE = 'price'  #  Target variable name
+TARGET_VARIABLE = 'price'  #  Target variable name
 USE_EXPLANATORY = ['MedInc', 'AveOccup', 'Latitude', 'HouseAge']  # Selected explanatory variables
 california_housing = pd.DataFrame(np.column_stack((fetch_california_housing().data, fetch_california_housing().target)),
-        columns = np.append(fetch_california_housing().feature_names, TARGET_VARIALBLE))
+        columns = np.append(fetch_california_housing().feature_names, TARGET_VARIABLE))
 california_housing = california_housing.sample(n=1000, random_state=42)  # sampling from 20640 to 1000
-y = california_housing[TARGET_VARIALBLE].values  # Explanatory variables
+y = california_housing[TARGET_VARIABLE].values  # Explanatory variables
 X = california_housing[USE_EXPLANATORY].values  #  Target variable
 ###### チューニング一括実行 ######
 all_tuner = AllInOneTuning()
