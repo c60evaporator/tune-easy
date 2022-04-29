@@ -16,6 +16,8 @@
 |回帰タスク|[分類タスクでの使用例](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_all_in_one.md#回帰タスクでの使用例)|
 |MLflowで結果記録|[MLflowによる結果のロギング](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/tutorial_all_in_one.md#mlflowによる結果のロギング)|
 
+※コードは[Jupyter形式でもアップロード](https://github.com/c60evaporator/tune-easy/blob/master/examples/usage_examples/userguide_examples_all-in-one.ipynb)しています
+
 <br>
 
 ## 分類タスクでの使用例

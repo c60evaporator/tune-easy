@@ -5,6 +5,8 @@
 
 <img width="600" src="https://user-images.githubusercontent.com/59557625/130362754-a85fc7fc-38f7-4d5a-9e8f-c24321a2ed98.png">
 
+※コードは[Jupyter形式でもアップロード](https://github.com/c60evaporator/tune-easy/blob/master/examples/usage_examples/userguide_examples_each.ipynb)しています
+
 ## 手順一覧
 **0. チューニングの準備**
 
