@@ -110,15 +110,16 @@ all_tuner.df_scores
 （後述のMLflowでPickleでも保存可能）
 
 ```python
-from sklearn.ensemble import RandomForestRegressor
-NOT_OPT_PARAMS = {'random_state': 42}
-BEST_PARAMS = {'n_estimators': 86, 'max_features': 2, 'max_depth': 11, 'min_samples_split': 5, 'min_samples_leaf': 6}
+from lightgbm import LGBMRegressor
+NOT_OPT_PARAMS = {'objective': 'regression', 'random_state': 42, 'boosting_type': 'gbdt', 'n_estimators': 10000}
+BEST_PARAMS = {'reg_alpha': 0.00013463201150608505, 'reg_lambda': 0.03832397165103329, 'num_leaves': 6, 'colsample_bytree': 0.6351581078709001, 'subsample': 0.5251370914241965, 'subsample_freq': 1, 'min_child_samples': 9}
 params = {}
 params.update(NOT_OPT_PARAMS)
 params.update(BEST_PARAMS)
-estimator = RandomForestRegressor()
+estimator = LGBMRegressor()
 estimator.set_params(**params)
-estimator.fit(X, y)
+FIT_PARAMS = {'verbose': 0, 'early_stopping_rounds': 10, 'eval_metric': 'rmse', 'eval_set': [(X, y)]}
+estimator.fit(X, y, FIT_PARAMS)
 ```
 
 <br>
