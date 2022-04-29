@@ -117,7 +117,7 @@ If you want to know usage of the other classes, see `API Reference
 ============
 Requirements
 ============
-param-tuning-utility 0.2.0 requires
+param-tuning-utility 0.2.1 requires
 
 * Python >=3.6
 * Scikit-learn >=0.24.2
