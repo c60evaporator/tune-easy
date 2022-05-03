@@ -113,7 +113,7 @@ $ pip install tune-easy
 * Optuna >=2.7.0
 * BayesianOptimization >=1.2.0
 * MLflow >=1.17.0
-* LightGBM >=3.2.1
+* LightGBM >=3.3.2
 * XGBoost >=1.4.2
 * seaborn-analyzer>=0.2.11
 <br>
