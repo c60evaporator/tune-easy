@@ -25,8 +25,8 @@ USE_EXPLANATORY = ['MedInc', 'AveOccup', 'Latitude', 'HouseAge']  # Selected exp
 california_housing = pd.DataFrame(np.column_stack((fetch_california_housing().data, fetch_california_housing().target)),
         columns = np.append(fetch_california_housing().feature_names, TARGET_VARIABLE))
 california_housing = california_housing.sample(n=1000, random_state=42)  # sampling from 20640 to 1000
-y = california_housing[TARGET_VARIABLE].values  # Explanatory variables
-X = california_housing[USE_EXPLANATORY].values  # Target variable
+y = california_housing[TARGET_VARIABLE].values  # Target variable
+X = california_housing[USE_EXPLANATORY].values  # Explanatory variables
 ###### チューニング一括実行 ######
 all_tuner = AllInOneTuning()
 all_tuner.all_in_one_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2)
@@ -43,8 +43,8 @@ USE_EXPLANATORY = ['MedInc', 'AveOccup', 'Latitude', 'HouseAge']  # Selected exp
 california_housing = pd.DataFrame(np.column_stack((fetch_california_housing().data, fetch_california_housing().target)),
         columns = np.append(fetch_california_housing().feature_names, TARGET_VARIABLE))
 california_housing = california_housing.sample(n=1000, random_state=42)  # sampling from 20640 to 1000
-y = california_housing[TARGET_VARIABLE].values  # Explanatory variables
-X = california_housing[USE_EXPLANATORY].values  # Target variable
+y = california_housing[TARGET_VARIABLE].values  # Target variable
+X = california_housing[USE_EXPLANATORY].values  # Explanatory variables
 ###### チューニング一括実行 ######
 all_tuner = AllInOneTuning()
 all_tuner.all_in_one_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2,
