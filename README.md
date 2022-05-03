@@ -152,16 +152,6 @@ $ pip install tune-easy
 全てベースクラスである[tune_easy.param_tuning.ParamTuning]()クラスを継承しています。
 メソッドのAPIリファレンスを見たい際には、[ベースクラスのAPIリファレンス](https://c60evaporator.github.io/tune-easy/param_tuning.html#tune_easy.param_tuning.ParamTuning)を参照ください
 
-### - 分類
-
-|クラス名|ファイル名|概要|API仕様(日本語)|API仕様(英語)|
-|---|---|---|---|---|
-|LGBMClassifierTuning|[lgbm_tuning.py](https://github.com/c60evaporator/tune-easy/blob/master/tune_easy/lgbm_tuning.py)|LightGBM分類のパラメータチューニング用クラス|[API仕様](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md)|[API Reference]()|
-|XGBClassifierTuning|[xgb_tuning.py](https://github.com/c60evaporator/tune-easy/blob/master/tune_easy/xgb_tuning.py)|XGBoost分類のパラメータチューニング用クラス|[API仕様](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md)|[API Reference]()|
-|SVMClassifierTuning|[svm_tuning.py](https://github.com/c60evaporator/tune-easy/blob/master/tune_easy/svm_tuning.py)|サポートベクターマシン分類のパラメータチューニング用クラス|[API仕様](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md)|[API Reference]()|
-|RFClassifierTuning|[rf_tuning.py](https://github.com/c60evaporator/tune-easy/blob/master/tune_easy/rf_tuning.py)|ランダムフォレスト分類のパラメータチューニング用クラス|[API仕様](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md)|[API Reference]()|
-|LogisticRegressionTuning|[logisticregression_tuning.py](https://github.com/c60evaporator/tune-easy/blob/master/tune_easy/logisticregression_tuning.py)|ロジスティック回帰分類のパラメータチューニング用クラス|[API仕様](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md)|[API Reference]()|
-
 ### - 回帰
 
 |クラス名|ファイル名|概要|API仕様(日本語)|API仕様(英語)|
@@ -171,3 +161,13 @@ $ pip install tune-easy
 |SVMRegressorTuning|[svm_tuning.py](https://github.com/c60evaporator/tune-easy/blob/master/tune_easy/svm_tuning.py)|サポートベクター回帰のパラメータチューニング用クラス|[API仕様](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md)|[API Reference]()|
 |RFRegressorTuning|[rf_tuning.py](https://github.com/c60evaporator/tune-easy/blob/master/tune_easy/rf_tuning.py)|ランダムフォレスト回帰のパラメータチューニング用クラス|[API仕様](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md)|[API Reference]()|
 |ElasticNetTuning|[elasticnet_tuning.py](https://github.com/c60evaporator/tune-easy/blob/master/tune_easy/elasticnet_tuning.py)|ElasticNet回帰のパラメータチューニング用クラス|[API仕様](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md)|[API Reference]()|
+
+### - 分類
+
+|クラス名|ファイル名|概要|API仕様(日本語)|API仕様(英語)|
+|---|---|---|---|---|
+|LGBMClassifierTuning|[lgbm_tuning.py](https://github.com/c60evaporator/tune-easy/blob/master/tune_easy/lgbm_tuning.py)|LightGBM分類のパラメータチューニング用クラス|[API仕様](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md)|[API Reference]()|
+|XGBClassifierTuning|[xgb_tuning.py](https://github.com/c60evaporator/tune-easy/blob/master/tune_easy/xgb_tuning.py)|XGBoost分類のパラメータチューニング用クラス|[API仕様](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md)|[API Reference]()|
+|SVMClassifierTuning|[svm_tuning.py](https://github.com/c60evaporator/tune-easy/blob/master/tune_easy/svm_tuning.py)|サポートベクターマシン分類のパラメータチューニング用クラス|[API仕様](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md)|[API Reference]()|
+|RFClassifierTuning|[rf_tuning.py](https://github.com/c60evaporator/tune-easy/blob/master/tune_easy/rf_tuning.py)|ランダムフォレスト分類のパラメータチューニング用クラス|[API仕様](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md)|[API Reference]()|
+|LogisticRegressionTuning|[logisticregression_tuning.py](https://github.com/c60evaporator/tune-easy/blob/master/tune_easy/logisticregression_tuning.py)|ロジスティック回帰分類のパラメータチューニング用クラス|[API仕様](https://github.com/c60evaporator/tune-easy/blob/master/docs_jpn/api_each.md)|[API Reference]()|
