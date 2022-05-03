@@ -5,6 +5,14 @@
 
 **A hyperparameter tuning tool for Machine Learning, extremely easy to use.**
 
+<img width="320" src="https://user-images.githubusercontent.com/59557625/165905780-d153541a-6c74-4dc6-a37f-7d63151bf582.png">
+
+<img width="480" src="https://user-images.githubusercontent.com/59557625/145702196-50f6781e-2ca2-4cbf-9344-ab58cb08d34b.png">
+
+<img width="600" src="https://user-images.githubusercontent.com/59557625/166449341-16c08d20-d2b5-400e-ac79-e749e5f167a3.png">
+
+<img width="320" src="https://user-images.githubusercontent.com/59557625/166449590-b1f1efaf-00c8-432e-92d7-994085c034c6.png">
+
 This documentation is Japanese language version.
 **[English version is here](https://github.com/c60evaporator/tune-easy/blob/master/README.rst)**
 
@@ -84,7 +92,11 @@ all_tuner.all_in_one_tuning(X, y, x_colnames=USE_EXPLANATORY, cv=2,
                              mlflow_logging=True)  # MLflowによる記録を指定
 ```
 
-<img width="640" src="https://user-images.githubusercontent.com/59557625/147270240-f779cf1f-b216-42a2-8156-37169511ec3e.png">
+```shell
+$ mlflow ui
+```
+
+<img width="800" src="https://user-images.githubusercontent.com/59557625/147270240-f779cf1f-b216-42a2-8156-37169511ec3e.png">
 
 <br>
 
@@ -104,10 +116,10 @@ $ pip install tune-easy
 * Seaborn >=0.11.0
 * Optuna >=2.7.0
 * BayesianOptimization >=1.2.0
-* MLFlow >=1.17.0
+* MLflow >=1.17.0
 * LightGBM >=3.2.1
 * XGBoost >=1.4.2
-
+* seaborn-analyzer>=0.2.11
 <br>
 
 # サポート
