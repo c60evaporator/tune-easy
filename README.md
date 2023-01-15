@@ -1,13 +1,15 @@
-# tune-easy
+# Easytuner
 [![python](https://img.shields.io/pypi/pyversions/tune-easy)](https://www.python.org/)
 [![pypi](https://img.shields.io/pypi/v/tune-easy?color=blue)](https://pypi.org/project/tune-easy/)
 [![license](https://img.shields.io/pypi/l/tune-easy)](https://github.com/c60evaporator/tune-easy/blob/master/LICENSE)
 
-**A hyperparameter tuning tool for Machine Learning, extremely easy to use.**
+**A hyperparameter tuning tool for Machine Learning, extremely easy to use**
 
 <img width="320" src="https://user-images.githubusercontent.com/59557625/165905780-d153541a-6c74-4dc6-a37f-7d63151bf582.png"><img width="320" src="https://user-images.githubusercontent.com/59557625/166449590-b1f1efaf-00c8-432e-92d7-994085c034c6.png">
 
 <img width="540" src="https://user-images.githubusercontent.com/59557625/145702196-50f6781e-2ca2-4cbf-9344-ab58cb08d34b.png">
+
+Currently, Easytuner is compatible with Scikit-Learn. Compatibilities with other ML flameworks are under development.
 
 This documentation is Japanese language version.
 **[English version is here](https://github.com/c60evaporator/tune-easy/blob/master/README.rst)**
