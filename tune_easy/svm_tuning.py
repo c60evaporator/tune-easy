@@ -45,7 +45,7 @@ class SVMRegressorTuning(ParamTuning):
     _ACQ = 'ei'  # BayesianOptimizationの獲得関数(https://ohke.hateblo.jp/entry/2018/08/04/230000)
     N_ITER_OPTUNA = 300  # Optunaの試行数
     BAYES_PARAMS = {'gamma': (0.001, 10),
-                    'C': (0.01, 10),
+                    'C': (0.01, 100),
                     'epsilon': (0, 0.2)
                     }
     INT_PARAMS = []
